@@ -2,13 +2,13 @@ export const t = {
   vi: {
     nav: {
       overview: 'Tổng quan',
-      models: 'Đội đua & Xe F1',
+      models: 'Showroom Xe',
       anatomy: 'Bộ sưu tập',
       compare: 'So sánh',
       gallery: 'Thư viện Động',
       regulations: 'Tay đua & Đội đua',
-      view3d: 'Xem Đội đua & Xe F1',
-      brandSub: 'F1 Fan Gallery',
+      view3d: 'Khám Phá Showroom',
+      brandSub: 'F1 Hyper-Showroom',
     },
     home: {
       eraBadge: 'Formula 1 · 11 Đội Đua · Mùa Giải 2025',
@@ -198,13 +198,13 @@ export const t = {
   en: {
     nav: {
       overview: 'Overview',
-      models: 'Teams & Cars',
+      models: 'F1 Showroom',
       anatomy: 'Gallery',
       compare: 'Compare',
       gallery: 'Photo Library',
       regulations: 'Drivers & Teams',
-      view3d: 'View Teams & Cars',
-      brandSub: 'F1 Fan Gallery',
+      view3d: 'Explore Showroom',
+      brandSub: 'F1 Hyper-Showroom',
     },
     home: {
       eraBadge: 'Formula 1 · 11 Teams · 2025 Season',
