@@ -36,3 +36,4 @@ pnpm-debug.log*
 
 # Skills cache & local tools (keep repo clean)
 manage-skills.ps1
+.agent/
