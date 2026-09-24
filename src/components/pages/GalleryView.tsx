@@ -18,7 +18,9 @@ import {
 interface GalleryItem {
   id: string;
   title: string;
+  titleEn?: string;
   subtitle: string;
+  subtitleEn?: string;
   team: string;
   carId: string;
   driver: string;
@@ -41,7 +43,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'rb20_sparks',
     title: 'Red Bull RB20 · Cơn Mưa Tia Lửa Sàn Xe',
+    titleEn: 'Red Bull RB20 · Titanium Spark Shower',
     subtitle: 'Chạy đè áp suất gầm đỉnh cao tại khúc cua vận tốc lớn',
+    subtitleEn: 'Peak underfloor aerodynamic compression through high-speed apex',
     team: 'Oracle Red Bull Racing',
     carId: 'rb20',
     driver: 'Max Verstappen #1',
@@ -62,7 +66,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'sf24_monza',
     title: 'Ferrari SF-24 · Khúc Cua Vàng Monza',
+    titleEn: 'Ferrari SF-24 · Curva Grande at Monza',
     subtitle: 'Rosso Corsa rực cháy trong ánh hoàng hôn Curva Grande',
+    subtitleEn: 'Rosso Corsa in golden hour light through Curva Grande',
     team: 'Scuderia Ferrari',
     carId: 'sf24',
     driver: 'Charles Leclerc #16',
@@ -83,7 +89,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'mcl38_singapore',
     title: 'McLaren MCL38 · Vũ Điệu Đêm Marina Bay',
+    titleEn: 'McLaren MCL38 · Marina Bay Night Dance',
     subtitle: 'Phanh đĩa carbon rực lửa dưới ánh đèn rực rỡ Singapore',
+    subtitleEn: 'Glowing carbon brake discs beneath Singapore floodlights',
     team: 'McLaren F1 Team',
     carId: 'mcl38',
     driver: 'Lando Norris #4',
@@ -104,7 +112,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'w15_vortex',
     title: 'Mercedes-AMG W15 · Xoáy Khí Áp Suất Silverstone',
+    titleEn: 'Mercedes-AMG W15 · Silverstone Pressure Vortices',
     subtitle: 'Vệt hơi nước ngưng tụ ngoạn mục qua khúc cua Maggotts',
+    subtitleEn: 'Spectacular moisture vapor trails through Maggotts & Becketts',
     team: 'Mercedes-AMG Petronas F1 Team',
     carId: 'w15',
     driver: 'Lewis Hamilton #44',
@@ -125,7 +135,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'cockpit_pov',
     title: 'Góc Nhìn Buồng Lái F1 · 338 km/h Trên Đại Lộ Baku',
+    titleEn: 'F1 Cockpit POV · 338 km/h on Baku Boulevard',
     subtitle: 'Trải nghiệm trực quan góc nhìn của tay đua đằng sau vô lăng',
+    subtitleEn: 'First-person driver perspective behind the steering wheel',
     team: 'Oracle Red Bull Racing / F1 Cockpit',
     carId: 'rb20',
     driver: 'First-Person POV Driver',
@@ -146,7 +158,9 @@ const GALLERY_DATA: GalleryItem[] = [
   {
     id: 'pitstop_record',
     title: 'Pit Stop Kỷ Lục · 1.9 Giây Thay Cả 4 Bánh',
+    titleEn: 'Record Pit Stop · 1.9-Second Four-Wheel Swap',
     subtitle: 'Đỉnh cao của sự phối hợp và cơ khí chính xác tuyệt đối',
+    subtitleEn: 'The pinnacle of human coordination and mechanical precision',
     team: 'Red Bull Racing Pit Crew',
     carId: 'rb20',
     driver: 'Pit Crew Squad',
@@ -273,7 +287,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ item, velocityMode, onSelect, lang 
           </div>
 
           <h3 className="font-display text-base font-bold text-studio-950 group-hover:text-f1red transition-colors line-clamp-1">
-            {item.title}
+            {lang === 'en' && item.titleEn ? item.titleEn : item.title}
           </h3>
 
           <p className="text-[11px] font-body text-studio-600 mt-2 line-clamp-2 leading-relaxed">
@@ -420,7 +434,7 @@ export const GalleryView: React.FC = () => {
               </div>
 
               <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-white max-w-3xl leading-tight">
-                {heroItem.title}
+                {lang === 'en' && heroItem.titleEn ? heroItem.titleEn : heroItem.title}
               </h2>
               <p className="text-white/80 text-xs sm:text-sm font-body max-w-2xl mt-2 line-clamp-2 leading-relaxed">
                 {lang === 'vi' ? heroItem.descriptionVi : heroItem.descriptionEn}
@@ -523,7 +537,9 @@ export const GalleryView: React.FC = () => {
             <div className="flex items-center gap-3">
               <span className="w-3 h-3 rounded-full" style={{ background: selectedItem.accentColor }} />
               <div>
-                <h3 className="font-display text-lg font-bold text-white leading-tight">{selectedItem.title}</h3>
+                <h3 className="font-display text-lg font-bold text-white leading-tight">
+                  {lang === 'en' && selectedItem.titleEn ? selectedItem.titleEn : selectedItem.title}
+                </h3>
                 <span className="text-[11px] font-body text-white/60">{selectedItem.team} · {selectedItem.track}</span>
               </div>
             </div>
@@ -558,7 +574,9 @@ export const GalleryView: React.FC = () => {
             className="bg-studio-950/80 border border-white/15 backdrop-blur-md rounded-sm p-4 sm:p-5 z-10 max-w-3xl mx-auto w-full text-white"
             onClick={(e) => e.stopPropagation()}
           >
-            <h4 className="font-display font-bold text-sm text-white mb-2">{selectedItem.subtitle}</h4>
+            <h4 className="font-display font-bold text-sm text-white mb-2">
+              {lang === 'en' && selectedItem.subtitleEn ? selectedItem.subtitleEn : selectedItem.subtitle}
+            </h4>
             <p className="text-xs font-body text-white/80 leading-relaxed">
               {lang === 'vi' ? selectedItem.descriptionVi : selectedItem.descriptionEn}
             </p>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useCarStore } from '../../store/useCarStore';
 import { CARS_DATA } from '../../data/cars';
 import { CarId } from '../../types';
+import { t } from '../../i18n/translations';
 import {
   Play,
   Pause,
@@ -35,8 +36,10 @@ const ALL_TEAMS_ORDER: CarId[] = [
 
 interface PhotoItem {
   id: string;
-  title: string;
-  subtitle: string;
+  titleVi: string;
+  titleEn: string;
+  subtitleVi: string;
+  subtitleEn: string;
   team: string;
   imageUrl: string;
   type: 'studio' | 'action';
@@ -46,37 +49,226 @@ interface PhotoItem {
 
 const PHOTO_DATA: PhotoItem[] = [
   // 11 Studio shots
-  { id: 'studio_sf24',      title: 'Ferrari SF-24',                   subtitle: 'Rosso Corsa Vĩnh Cửu · Scuderia Ferrari HP',    team: 'Scuderia Ferrari HP',     imageUrl: '/images/teams/sf24.jpg',       type: 'studio', accentColor: '#e80020', carId: 'sf24' },
-  { id: 'studio_mcl38',     title: 'McLaren MCL38',                   subtitle: 'Papaya Power · Mùa Giải Hoàng Kim',          team: 'McLaren F1 Team',         imageUrl: '/images/teams/mcl38.jpg',      type: 'studio', accentColor: '#ff8000', carId: 'mcl38' },
-  { id: 'studio_rb20',      title: 'Red Bull RB20',                   subtitle: 'Tốc Độ Vô Song · Oracle Red Bull Racing',    team: 'Oracle Red Bull Racing',  imageUrl: '/images/teams/rb20.jpg',       type: 'studio', accentColor: '#3671c6', carId: 'rb20' },
-  { id: 'studio_w15',       title: 'Mercedes-AMG W15 E Performance', subtitle: 'Mũi Tên Bạc Tái Sinh · Mùa Giải 2025',        team: 'Mercedes-AMG Petronas',   imageUrl: '/images/teams/w15.jpg',        type: 'studio', accentColor: '#00a19c', carId: 'w15' },
-  { id: 'studio_am',        title: 'Aston Martin AMR25',              subtitle: 'British Racing Green · Aston Martin Aramco',  team: 'Aston Martin Aramco F1',  imageUrl: '/images/teams/astonmartin.jpg',type: 'studio', accentColor: '#00594f', carId: 'astonmartin' },
-  { id: 'studio_alpine',    title: 'Alpine A525',                     subtitle: 'Bleu de France · BWT Alpine F1 Team',         team: 'BWT Alpine F1 Team',      imageUrl: '/images/teams/alpine.jpg',     type: 'studio', accentColor: '#ff87bc', carId: 'alpine' },
-  { id: 'studio_rbulls',    title: 'Racing Bulls VCARB 02',           subtitle: 'Thiết Kế Đột Phá · Visa Cash App RB',        team: 'Visa Cash App RB F1 Team',imageUrl: '/images/teams/racingbulls.jpg',type: 'studio', accentColor: '#6692ff', carId: 'racingbulls' },
-  { id: 'studio_haas',      title: 'Haas VF-25',                      subtitle: 'Đội Đua Mỹ Duy Nhất · Haas F1 Team',         team: 'MoneyGram Haas F1 Team',  imageUrl: '/images/teams/haas.jpg',       type: 'studio', accentColor: '#b6babd', carId: 'haas' },
-  { id: 'studio_williams',  title: 'Williams FW47',                   subtitle: 'Racing Blue Sails · Williams Racing',        team: 'Williams Racing',         imageUrl: '/images/teams/williams.jpg',   type: 'studio', accentColor: '#005aff', carId: 'williams' },
-  { id: 'studio_audi',      title: 'Audi F1 AG 001',                  subtitle: 'Vorsprung Durch Technik · Audi F1 AG',      team: 'Audi F1 AG',              imageUrl: '/images/teams/audi.jpg',       type: 'studio', accentColor: '#bb0a30', carId: 'audi' },
-  { id: 'studio_cadillac',  title: 'Cadillac TWO',                    subtitle: 'Biểu Tượng Cơ Bắp Trở Lại · GM Cadillac',    team: 'GM Cadillac F1 Team',     imageUrl: '/images/teams/cadillac.jpg',   type: 'studio', accentColor: '#b8992c', carId: 'cadillac' },
+  {
+    id: 'studio_sf24',
+    titleVi: 'Ferrari SF-24',
+    titleEn: 'Ferrari SF-24',
+    subtitleVi: 'Rosso Corsa Vĩnh Cửu · Scuderia Ferrari HP',
+    subtitleEn: 'Eternal Rosso Corsa · Scuderia Ferrari HP',
+    team: 'Scuderia Ferrari HP',
+    imageUrl: '/images/teams/sf24.jpg',
+    type: 'studio',
+    accentColor: '#e80020',
+    carId: 'sf24',
+  },
+  {
+    id: 'studio_mcl38',
+    titleVi: 'McLaren MCL38',
+    titleEn: 'McLaren MCL38',
+    subtitleVi: 'Papaya Power · Mùa Giải Hoàng Kim',
+    subtitleEn: 'Papaya Power · Championship Season',
+    team: 'McLaren F1 Team',
+    imageUrl: '/images/teams/mcl38.jpg',
+    type: 'studio',
+    accentColor: '#ff8000',
+    carId: 'mcl38',
+  },
+  {
+    id: 'studio_rb20',
+    titleVi: 'Red Bull RB20',
+    titleEn: 'Red Bull RB20',
+    subtitleVi: 'Tốc Độ Vô Song · Oracle Red Bull Racing',
+    subtitleEn: 'Unrivaled Pace · Oracle Red Bull Racing',
+    team: 'Oracle Red Bull Racing',
+    imageUrl: '/images/teams/rb20.jpg',
+    type: 'studio',
+    accentColor: '#3671c6',
+    carId: 'rb20',
+  },
+  {
+    id: 'studio_w15',
+    titleVi: 'Mercedes-AMG W15 E Performance',
+    titleEn: 'Mercedes-AMG W15 E Performance',
+    subtitleVi: 'Mũi Tên Bạc Tái Sinh · Mùa Giải 2025',
+    subtitleEn: 'Silver Arrows Reborn · 2025 Season',
+    team: 'Mercedes-AMG Petronas',
+    imageUrl: '/images/teams/w15.jpg',
+    type: 'studio',
+    accentColor: '#00a19c',
+    carId: 'w15',
+  },
+  {
+    id: 'studio_am',
+    titleVi: 'Aston Martin AMR25',
+    titleEn: 'Aston Martin AMR25',
+    subtitleVi: 'British Racing Green · Aston Martin Aramco',
+    subtitleEn: 'British Racing Green · Aston Martin Aramco',
+    team: 'Aston Martin Aramco F1',
+    imageUrl: '/images/teams/astonmartin.jpg',
+    type: 'studio',
+    accentColor: '#00594f',
+    carId: 'astonmartin',
+  },
+  {
+    id: 'studio_alpine',
+    titleVi: 'Alpine A525',
+    titleEn: 'Alpine A525',
+    subtitleVi: 'Bleu de France · BWT Alpine F1 Team',
+    subtitleEn: 'Bleu de France · BWT Alpine F1 Team',
+    team: 'BWT Alpine F1 Team',
+    imageUrl: '/images/teams/alpine.jpg',
+    type: 'studio',
+    accentColor: '#ff87bc',
+    carId: 'alpine',
+  },
+  {
+    id: 'studio_rbulls',
+    titleVi: 'Racing Bulls VCARB 02',
+    titleEn: 'Racing Bulls VCARB 02',
+    subtitleVi: 'Thiết Kế Đột Phá · Visa Cash App RB',
+    subtitleEn: 'Striking Livery · Visa Cash App RB',
+    team: 'Visa Cash App RB F1 Team',
+    imageUrl: '/images/teams/racingbulls.jpg',
+    type: 'studio',
+    accentColor: '#6692ff',
+    carId: 'racingbulls',
+  },
+  {
+    id: 'studio_haas',
+    titleVi: 'Haas VF-25',
+    titleEn: 'Haas VF-25',
+    subtitleVi: 'Đội Đua Mỹ Duy Nhất · Haas F1 Team',
+    subtitleEn: 'America\'s F1 Team · MoneyGram Haas F1',
+    team: 'MoneyGram Haas F1 Team',
+    imageUrl: '/images/teams/haas.jpg',
+    type: 'studio',
+    accentColor: '#b6babd',
+    carId: 'haas',
+  },
+  {
+    id: 'studio_williams',
+    titleVi: 'Williams FW47',
+    titleEn: 'Williams FW47',
+    subtitleVi: 'Racing Blue Sails · Williams Racing',
+    subtitleEn: 'Heritage Racing Blue · Williams Racing',
+    team: 'Williams Racing',
+    imageUrl: '/images/teams/williams.jpg',
+    type: 'studio',
+    accentColor: '#005aff',
+    carId: 'williams',
+  },
+  {
+    id: 'studio_audi',
+    titleVi: 'Audi F1 AG 001',
+    titleEn: 'Audi F1 AG 001',
+    subtitleVi: 'Vorsprung Durch Technik · Audi F1 AG',
+    subtitleEn: 'Vorsprung Durch Technik · Audi F1 AG',
+    team: 'Audi F1 AG',
+    imageUrl: '/images/teams/audi.jpg',
+    type: 'studio',
+    accentColor: '#bb0a30',
+    carId: 'audi',
+  },
+  {
+    id: 'studio_cadillac',
+    titleVi: 'Cadillac TWO',
+    titleEn: 'Cadillac TWO',
+    subtitleVi: 'Biểu Tượng Cơ Bắp Trở Lại · GM Cadillac',
+    subtitleEn: 'American Icon Returns · GM Cadillac F1',
+    team: 'GM Cadillac F1 Team',
+    imageUrl: '/images/teams/cadillac.jpg',
+    type: 'studio',
+    accentColor: '#b8992c',
+    carId: 'cadillac',
+  },
   // 6 Action shots
-  { id: 'action_sf24',      title: 'SF-24 · Khúc Cua Vàng Monza',    subtitle: 'Curva Grande · Rosso Corsa Bừng Sáng',        team: 'Scuderia Ferrari HP',     imageUrl: '/images/gallery/sf24_action.jpg',      type: 'action', accentColor: '#e80020', carId: 'sf24' },
-  { id: 'action_mcl38',     title: 'MCL38 · Đêm Marina Bay',          subtitle: 'Singapore GP · Đĩa Phanh Đỏ Rực 1050°C',     team: 'McLaren F1 Team',         imageUrl: '/images/gallery/mcl38_action.jpg',     type: 'action', accentColor: '#ff8000', carId: 'mcl38' },
-  { id: 'action_rb20',      title: 'RB20 · Tia Lửa Đỉnh Cao',        subtitle: 'Red Bull Ring · Mưa Tia Lửa Titan',           team: 'Oracle Red Bull Racing',  imageUrl: '/images/gallery/rb20_action.jpg',       type: 'action', accentColor: '#cc1e4a', carId: 'rb20' },
-  { id: 'action_w15',       title: 'W15 · Xoáy Khí Silverstone',      subtitle: 'Maggotts & Becketts · 5.3G Lateral',         team: 'Mercedes-AMG Petronas',   imageUrl: '/images/gallery/w15_action.jpg',        type: 'action', accentColor: '#27f4d2', carId: 'w15' },
-  { id: 'action_cockpit',   title: 'Góc Nhìn Buồng Lái · 338 km/h',  subtitle: 'Baku City Circuit · Halo & Carbon Wheel',    team: 'Oracle Red Bull Racing',  imageUrl: '/images/gallery/cockpit_action.jpg',    type: 'action', accentColor: '#38bdf8' },
-  { id: 'action_pitstop',   title: 'Pit Stop Kỷ Lục · 1.9 Giây',     subtitle: 'Spa-Francorchamps · 20 Thợ Máy Tinh Nhuệ',   team: 'Red Bull Racing Pit Crew',imageUrl: '/images/gallery/pitstop_action.jpg',    type: 'action', accentColor: '#eab308' },
+  {
+    id: 'action_sf24',
+    titleVi: 'SF-24 · Khúc Cua Vàng Monza',
+    titleEn: 'SF-24 · Curva Grande at Monza',
+    subtitleVi: 'Curva Grande · Rosso Corsa Bừng Sáng',
+    subtitleEn: 'Curva Grande · Rosso Corsa in Full Flight',
+    team: 'Scuderia Ferrari HP',
+    imageUrl: '/images/gallery/sf24_action.jpg',
+    type: 'action',
+    accentColor: '#e80020',
+    carId: 'sf24',
+  },
+  {
+    id: 'action_mcl38',
+    titleVi: 'MCL38 · Đêm Marina Bay',
+    titleEn: 'MCL38 · Marina Bay Night Race',
+    subtitleVi: 'Singapore GP · Đĩa Phanh Đỏ Rực 1050°C',
+    subtitleEn: 'Singapore GP · Carbon Discs Glowing at 1,050°C',
+    team: 'McLaren F1 Team',
+    imageUrl: '/images/gallery/mcl38_action.jpg',
+    type: 'action',
+    accentColor: '#ff8000',
+    carId: 'mcl38',
+  },
+  {
+    id: 'action_rb20',
+    titleVi: 'RB20 · Tia Lửa Đỉnh Cao',
+    titleEn: 'RB20 · Titanium Spark Shower',
+    subtitleVi: 'Red Bull Ring · Mưa Tia Lửa Titan',
+    subtitleEn: 'Red Bull Ring · 12mm Ride Height Spark Shower',
+    team: 'Oracle Red Bull Racing',
+    imageUrl: '/images/gallery/rb20_action.jpg',
+    type: 'action',
+    accentColor: '#cc1e4a',
+    carId: 'rb20',
+  },
+  {
+    id: 'action_w15',
+    titleVi: 'W15 · Xoáy Khí Silverstone',
+    titleEn: 'W15 · Silverstone Complex',
+    subtitleVi: 'Maggotts & Becketts · 5.3G Lateral',
+    subtitleEn: 'Maggotts & Becketts · 5.3G Lateral Force',
+    team: 'Mercedes-AMG Petronas',
+    imageUrl: '/images/gallery/w15_action.jpg',
+    type: 'action',
+    accentColor: '#27f4d2',
+    carId: 'w15',
+  },
+  {
+    id: 'action_cockpit',
+    titleVi: 'Góc Nhìn Buồng Lái · 338 km/h',
+    titleEn: 'Cockpit POV · 338 km/h',
+    subtitleVi: 'Baku City Circuit · Halo & Carbon Wheel',
+    subtitleEn: 'Baku City Circuit · Carbon Wheel & Halo',
+    team: 'Oracle Red Bull Racing',
+    imageUrl: '/images/gallery/cockpit_action.jpg',
+    type: 'action',
+    accentColor: '#38bdf8',
+  },
+  {
+    id: 'action_pitstop',
+    titleVi: 'Pit Stop Kỷ Lục · 1.9 Giây',
+    titleEn: 'Record Pit Stop · 1.9 Seconds',
+    subtitleVi: 'Spa-Francorchamps · 20 Thợ Máy Tinh Nhuệ',
+    subtitleEn: 'Spa-Francorchamps · 20 Elite Pit Mechanics',
+    team: 'Red Bull Racing Pit Crew',
+    imageUrl: '/images/gallery/pitstop_action.jpg',
+    type: 'action',
+    accentColor: '#eab308',
+  },
 ];
 
 // 3D Tilt Card with glare spotlight
 interface TiltPhotoCardProps {
   item: PhotoItem;
+  lang: 'vi' | 'en';
   onSelect: (item: PhotoItem) => void;
 }
 
-const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, onSelect }) => {
+const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, lang, onSelect }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)');
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
   const [hovered, setHovered] = useState(false);
+
+  const title = lang === 'vi' ? item.titleVi : item.titleEn;
+  const subtitle = lang === 'vi' ? item.subtitleVi : item.subtitleEn;
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -113,7 +305,7 @@ const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, onSelect }) => {
       <div className="relative aspect-video w-full overflow-hidden bg-studio-950">
         <img
           src={item.imageUrl}
-          alt={item.title}
+          alt={title}
           loading="lazy"
           className={`w-full h-full object-cover transition-transform duration-700 ease-out ${hovered ? 'scale-105' : 'scale-100'}`}
         />
@@ -136,7 +328,7 @@ const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, onSelect }) => {
             color: '#fff',
           }}
         >
-          {item.type === 'studio' ? 'Studio 4K' : 'Action Track'}
+          {item.type === 'studio' ? 'Studio 4K' : (lang === 'vi' ? 'Action Đường Đua' : 'Track Action')}
         </span>
       </div>
 
@@ -150,11 +342,11 @@ const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, onSelect }) => {
             </span>
           </div>
           <h4 className="text-xs font-display font-bold text-studio-950 group-hover:text-f1red transition-colors line-clamp-1">
-            {item.title}
+            {title}
           </h4>
         </div>
         <p className="text-[10.5px] font-body text-studio-500 line-clamp-1 mt-1 font-light">
-          {item.subtitle}
+          {subtitle}
         </p>
       </div>
     </div>
@@ -162,8 +354,9 @@ const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, onSelect }) => {
 };
 
 export const ModelsView: React.FC = () => {
-  const { selectedCarId, setCarId } = useCarStore();
+  const { selectedCarId, setCarId, lang } = useCarStore();
   const car = CARS_DATA[selectedCarId] || CARS_DATA['sf24'];
+  const s = t[lang].models;
 
   const stageRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
@@ -263,21 +456,21 @@ export const ModelsView: React.FC = () => {
       <div className="page-container">
 
         {/* ══════════════════════════════════════════════════════
-            1. SHOWROOM HEADER (MINIMALIST & ART GALLERY VIBE)
+            1. SHOWROOM HEADER (BILINGUAL)
             ══════════════════════════════════════════════════════ */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
               <span className="text-[11px] font-mono uppercase tracking-widest text-f1red font-bold">
-                F1 Hyper-Showroom · 11 Cỗ Máy 2025/2026
+                {s.badge}
               </span>
             </div>
             <h1 className="heading-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-studio-950">
-              Trưng Bày Siêu Xe F1
+              {s.title}
             </h1>
             <p className="text-xs sm:text-sm font-body text-studio-600 mt-2 max-w-2xl font-light leading-relaxed">
-              Chiêm ngưỡng vẻ đẹp đỉnh cao của các cỗ máy tốc độ đắt giá nhất hành tinh với chất lượng ảnh Dark Studio 4K và khoảnh khắc đường đua nghẹt thở.
+              {s.desc}
             </p>
           </div>
 
@@ -288,7 +481,7 @@ export const ModelsView: React.FC = () => {
               className="px-4 py-2 rounded-xs bg-white hover:bg-studio-950 text-studio-800 hover:text-white border border-studio-200 text-xs font-body font-semibold transition-all shadow-subtle flex items-center gap-2"
             >
               <Camera className="w-3.5 h-3.5 text-f1red" />
-              <span>Xem Bộ Sưu Tập 17 Ảnh</span>
+              <span>{s.viewGalleryBtn}</span>
             </a>
           </div>
         </div>
@@ -300,10 +493,10 @@ export const ModelsView: React.FC = () => {
           <div className="flex items-center justify-between mb-2.5 px-0.5">
             <span className="text-[10px] font-mono uppercase tracking-widest text-studio-500 font-bold flex items-center gap-1.5">
               <Layers className="w-3 h-3 text-studio-400" />
-              Chọn xe để chiêm ngưỡng (11 Đội đua)
+              {s.selectHint}
             </span>
             <span className="text-[10px] font-mono text-studio-400 font-medium">
-              Đang chọn: <strong className="text-studio-950">{car.name}</strong>
+              {s.viewingLabel} <strong className="text-studio-950">{car.name}</strong>
             </span>
           </div>
 
@@ -444,7 +637,7 @@ export const ModelsView: React.FC = () => {
           <div className="absolute top-4 right-4 z-20 pointer-events-none hidden sm:flex items-center gap-2">
             <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3.5 py-2 rounded-sm shadow-luxury text-right">
               <span className="text-[8px] uppercase tracking-widest text-white/50 block font-mono">
-                BỘ ĐÔI TAY ĐUA
+                {s.driverPair}
               </span>
               <span className="text-xs font-mono font-bold text-white tracking-wide">
                 {car.drivers.join(' · ')}
@@ -459,7 +652,7 @@ export const ModelsView: React.FC = () => {
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 className="w-5 h-5 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-all"
-                title={isPlaying ? 'Tạm dừng góc xoay nhẹ' : 'Tiếp tục xoay nhẹ'}
+                title={isPlaying ? s.pauseDrift : s.playDrift}
               >
                 {isPlaying ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
               </button>
@@ -472,7 +665,7 @@ export const ModelsView: React.FC = () => {
               </div>
 
               <span className="text-[8.5px] font-mono text-white/60">
-                {isHovered ? 'Rê chuột để chỉnh góc' : 'Góc xoay 3D'}
+                {isHovered ? s.hoverNote : s.driftNote}
               </span>
             </div>
 
@@ -480,7 +673,7 @@ export const ModelsView: React.FC = () => {
             <button
               onClick={toggleFullscreen}
               className="w-8 h-8 rounded-full bg-black/80 hover:bg-black/95 text-white/80 hover:text-white flex items-center justify-center border border-white/20 transition-all shadow-subtle"
-              title={isFullscreen ? 'Thu nhỏ' : 'Toàn màn hình'}
+              title={isFullscreen ? s.minimize : s.fullscreen}
             >
               {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
             </button>
@@ -498,14 +691,14 @@ export const ModelsView: React.FC = () => {
               <div className="flex items-center justify-between pb-3.5 border-b border-studio-100 mb-5">
                 <div>
                   <span className="text-[9px] font-mono uppercase tracking-widest text-studio-400 font-bold block mb-0.5">
-                    THÔNG SỐ HIỆU NĂNG
+                    {s.specsBadge}
                   </span>
                   <h3 className="font-display text-lg font-bold text-studio-950">
-                    4 Chỉ Số Vàng Của {car.name}
+                    {s.specsTitle} {car.name}
                   </h3>
                 </div>
                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 bg-studio-100 rounded-xs text-studio-700">
-                  {car.year} FIA Spec
+                  {car.year} {s.fiaSpec}
                 </span>
               </div>
 
@@ -515,13 +708,13 @@ export const ModelsView: React.FC = () => {
                 <div className="bg-studio-50/80 border border-studio-200/80 p-3.5 rounded-sm">
                   <div className="flex items-center gap-1.5 text-studio-500 mb-1">
                     <Zap className="w-3.5 h-3.5 text-yellow-500" />
-                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">Công Suất</span>
+                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.power}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    {car.horsepower} <span className="text-[11px] font-mono font-normal text-studio-500">BHP</span>
+                    {car.horsepower} <span className="text-[11px] font-mono font-normal text-studio-500">{s.powerUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
-                    Động cơ Turbo Hybrid V6
+                    {s.powerSub}
                   </span>
                 </div>
 
@@ -529,13 +722,13 @@ export const ModelsView: React.FC = () => {
                 <div className="bg-studio-50/80 border border-studio-200/80 p-3.5 rounded-sm">
                   <div className="flex items-center gap-1.5 text-studio-500 mb-1">
                     <Gauge className="w-3.5 h-3.5 text-f1red" />
-                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">Tốc Độ Đỉnh</span>
+                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.topSpeed}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    {car.topSpeedKmh} <span className="text-[11px] font-mono font-normal text-studio-500">KM/H</span>
+                    {car.topSpeedKmh} <span className="text-[11px] font-mono font-normal text-studio-500">{s.speedUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
-                    Vận tốc tối đa DRS mở
+                    {s.speedSub}
                   </span>
                 </div>
 
@@ -543,13 +736,13 @@ export const ModelsView: React.FC = () => {
                 <div className="bg-studio-50/80 border border-studio-200/80 p-3.5 rounded-sm">
                   <div className="flex items-center gap-1.5 text-studio-500 mb-1">
                     <Timer className="w-3.5 h-3.5 text-cyan-600" />
-                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">0–100 KM/H</span>
+                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.accel}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    {car.zeroToHundredSec} <span className="text-[11px] font-mono font-normal text-studio-500">Giây</span>
+                    {car.zeroToHundredSec} <span className="text-[11px] font-mono font-normal text-studio-500">{s.accelUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
-                    Khởi động đứng yên
+                    {s.accelSub}
                   </span>
                 </div>
 
@@ -557,20 +750,20 @@ export const ModelsView: React.FC = () => {
                 <div className="bg-studio-50/80 border border-studio-200/80 p-3.5 rounded-sm">
                   <div className="flex items-center gap-1.5 text-studio-500 mb-1">
                     <Scale className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">Trọng Lượng</span>
+                    <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.weight}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    798 <span className="text-[11px] font-mono font-normal text-studio-500">KG</span>
+                    798 <span className="text-[11px] font-mono font-normal text-studio-500">{s.weightUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
-                    Tiêu chuẩn tối thiểu FIA
+                    {s.weightSub}
                   </span>
                 </div>
               </div>
 
               {/* Minimal Engine Specs Line */}
               <div className="py-2.5 px-3 bg-studio-100 rounded-sm flex items-center justify-between text-[11px] font-mono">
-                <span className="text-studio-500 uppercase tracking-wider text-[9px] font-bold">Nhà Cung Cấp Động Cơ</span>
+                <span className="text-studio-500 uppercase tracking-wider text-[9px] font-bold">{s.engineSupplier}</span>
                 <span className="text-studio-950 font-bold truncate max-w-[200px]">{car.engine}</span>
               </div>
             </div>
@@ -579,7 +772,7 @@ export const ModelsView: React.FC = () => {
             <div className="mt-4 pt-3 border-t border-studio-100 text-[11px] font-body text-studio-600 font-light leading-relaxed flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-f1red shrink-0" />
               <span>
-                Cỗ máy đại diện cho đỉnh cao khí động học và sức mạnh của <strong>{car.team}</strong>.
+                {s.summaryPre} <strong>{car.team}</strong>.
               </span>
             </div>
           </div>
@@ -590,14 +783,14 @@ export const ModelsView: React.FC = () => {
               <div className="flex items-center justify-between pb-3.5 border-b border-studio-100 mb-4">
                 <div>
                   <span className="text-[9px] font-mono uppercase tracking-widest text-studio-400 font-bold block mb-0.5">
-                    GÓC ẢNH ĐẶC TẢ
+                    {s.momentsBadge}
                   </span>
                   <h3 className="font-display text-lg font-bold text-studio-950">
-                    Khoảnh Khắc Của {car.name}
+                    {s.momentsTitle} {car.name}
                   </h3>
                 </div>
                 <span className="text-[10px] font-mono text-studio-500">
-                  {currentCarActionPhoto ? 'Studio 4K & Action Track' : 'Studio 4K Render'}
+                  {currentCarActionPhoto ? s.momentsSubBoth : s.momentsSubStudio}
                 </span>
               </div>
 
@@ -619,8 +812,8 @@ export const ModelsView: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                   <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
                     <div>
-                      <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block">Góc Chụp</span>
-                      <span className="text-xs font-display font-bold">Studio Chi Tiết 4K</span>
+                      <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block">{s.angleLabel}</span>
+                      <span className="text-xs font-display font-bold">{s.studioShot}</span>
                     </div>
                     <Maximize2 className="w-3.5 h-3.5 text-white/70 group-hover:text-white" />
                   </div>
@@ -634,15 +827,15 @@ export const ModelsView: React.FC = () => {
                   >
                     <img
                       src={currentCarActionPhoto.imageUrl}
-                      alt={currentCarActionPhoto.title}
+                      alt={lang === 'vi' ? currentCarActionPhoto.titleVi : currentCarActionPhoto.titleEn}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                     <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
                       <div>
-                        <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block">Đường Đua</span>
+                        <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block">{s.trackLabel}</span>
                         <span className="text-xs font-display font-bold truncate max-w-[140px]">
-                          {currentCarActionPhoto.title}
+                          {lang === 'vi' ? currentCarActionPhoto.titleVi : currentCarActionPhoto.titleEn}
                         </span>
                       </div>
                       <Maximize2 className="w-3.5 h-3.5 text-white/70 group-hover:text-white" />
@@ -652,10 +845,10 @@ export const ModelsView: React.FC = () => {
                   <div className="aspect-video rounded-sm bg-studio-50 border border-dashed border-studio-300 flex flex-col items-center justify-center p-4 text-center">
                     <Camera className="w-6 h-6 text-studio-400 mb-2" />
                     <span className="text-xs font-display font-bold text-studio-800">
-                      Góc Studio Chuẩn Quốc Tế
+                      {s.studioStandardTitle}
                     </span>
                     <span className="text-[10px] font-body text-studio-500 mt-0.5">
-                      Ảnh độ phân giải cao được render với hệ thống ánh sáng studio độc quyền.
+                      {s.studioStandardDesc}
                     </span>
                   </div>
                 )}
@@ -665,13 +858,13 @@ export const ModelsView: React.FC = () => {
             {/* Bottom Bar: Action link to open gallery */}
             <div className="mt-4 pt-3.5 border-t border-studio-100 flex items-center justify-between">
               <span className="text-[10px] font-mono text-studio-500">
-                Nhấn vào ảnh để xem chi tiết ở chế độ toàn màn hình.
+                {s.clickHint}
               </span>
               <a
                 href="#gallery-section"
                 className="text-xs font-mono uppercase tracking-wider font-bold text-f1red hover:underline flex items-center gap-1"
               >
-                <span>Xem Thư Viện 17 Ảnh</span>
+                <span>{s.viewAllGallery}</span>
                 <span>→</span>
               </a>
             </div>
@@ -688,14 +881,14 @@ export const ModelsView: React.FC = () => {
               <div className="flex items-center gap-2 mb-2">
                 <Camera className="w-4 h-4 text-f1red" />
                 <span className="text-[11px] font-mono uppercase tracking-widest text-f1red font-bold">
-                  Bộ Sưu Tập Nghệ Thuật F1
+                  {s.galleryBadge}
                 </span>
               </div>
               <h2 className="heading-display text-2xl sm:text-4xl font-bold text-studio-950">
-                17 Bức Ảnh Xe Đua & Khoảnh Khắc Đỉnh Cao
+                {s.galleryTitle}
               </h2>
               <p className="text-xs sm:text-sm font-body text-studio-600 mt-1 max-w-xl font-light">
-                Trọn bộ 11 cỗ máy F1 studio chuyên nghiệp và các khoảnh khắc đua nghẹt thở trên đường đua thế giới.
+                {s.galleryDesc}
               </p>
             </div>
 
@@ -709,7 +902,7 @@ export const ModelsView: React.FC = () => {
                     : 'text-studio-600 hover:text-studio-950'
                 }`}
               >
-                Tất Cả ({PHOTO_DATA.length})
+                {s.filterAll} ({PHOTO_DATA.length})
               </button>
               <button
                 onClick={() => setGalleryFilter('studio')}
@@ -719,7 +912,7 @@ export const ModelsView: React.FC = () => {
                     : 'text-studio-600 hover:text-studio-950'
                 }`}
               >
-                Studio 4K (11)
+                {s.filterStudio} (11)
               </button>
               <button
                 onClick={() => setGalleryFilter('action')}
@@ -729,7 +922,7 @@ export const ModelsView: React.FC = () => {
                     : 'text-studio-600 hover:text-studio-950'
                 }`}
               >
-                Action Đường Đua (6)
+                {s.filterAction} (6)
               </button>
             </div>
           </div>
@@ -737,7 +930,7 @@ export const ModelsView: React.FC = () => {
           {/* 3D Tilt Card Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {filteredPhotos.map((item) => (
-              <TiltPhotoCard key={item.id} item={item} onSelect={setSelectedPhoto} />
+              <TiltPhotoCard key={item.id} item={item} lang={lang} onSelect={setSelectedPhoto} />
             ))}
           </div>
         </section>
@@ -770,7 +963,7 @@ export const ModelsView: React.FC = () => {
               <button
                 onClick={() => setSelectedPhoto(null)}
                 className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
-                title="Đóng (ESC)"
+                title={s.close}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -780,7 +973,7 @@ export const ModelsView: React.FC = () => {
             <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[300px] max-h-[68vh]">
               <img
                 src={selectedPhoto.imageUrl}
-                alt={selectedPhoto.title}
+                alt={lang === 'vi' ? selectedPhoto.titleVi : selectedPhoto.titleEn}
                 className="max-w-full max-h-full object-contain"
               />
             </div>
@@ -789,10 +982,10 @@ export const ModelsView: React.FC = () => {
             <div className="p-5 bg-studio-950 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="text-base sm:text-lg font-display font-bold text-white mb-0.5">
-                  {selectedPhoto.title}
+                  {lang === 'vi' ? selectedPhoto.titleVi : selectedPhoto.titleEn}
                 </h3>
                 <p className="text-xs font-body text-white/60">
-                  {selectedPhoto.subtitle}
+                  {lang === 'vi' ? selectedPhoto.subtitleVi : selectedPhoto.subtitleEn}
                 </p>
               </div>
 
@@ -805,7 +998,7 @@ export const ModelsView: React.FC = () => {
                   }}
                   className="px-4 py-2 bg-f1red hover:bg-red-700 text-white rounded-xs text-xs font-body uppercase tracking-wider font-bold transition-all shadow-subtle flex items-center gap-2 self-start sm:self-auto"
                 >
-                  <span>Xem Trên Sân Khấu Chính</span>
+                  <span>{s.viewOnStage}</span>
                   <ArrowUp className="w-3.5 h-3.5" />
                 </button>
               )}
