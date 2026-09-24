@@ -12,6 +12,7 @@
   - **Animation:** GSAP / Lenis Smooth Scroll
 
 ## 🛡️ Git Workflow & Branching Strategy
+
 - **`main`**: Protected branch. Direct pushes are disabled. All code merges must pass through Pull Requests reviewed and approved by the repository owner.
 - **`develop`**: Main integration branch for active development.
 - **`feature/*`**: Feature branches for individual milestones (e.g. `feature/3d-scene-setup`, `feature/exploded-view`, `feature/telemetry-hud`).
