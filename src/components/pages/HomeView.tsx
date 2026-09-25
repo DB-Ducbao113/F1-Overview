@@ -9,27 +9,26 @@ import {
   Gauge,
   Wind,
   Shield,
-  Camera,
-  Layers,
   Trophy,
   Medal,
   ChevronRight,
   Sparkles,
+  Maximize2,
 } from 'lucide-react';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
-// 11 Official teams in championship order
+// 11 Official teams in order inspired by the official F1 "We Race As One" lineup
 const ALL_11_TEAMS: CarId[] = [
-  'sf24',
-  'mcl38',
   'rb20',
   'w15',
+  'sf24',
+  'mcl38',
   'astonmartin',
   'alpine',
-  'racingbulls',
-  'haas',
   'williams',
+  'haas',
+  'racingbulls',
   'audi',
   'cadillac',
 ];
@@ -106,316 +105,235 @@ export const HomeView: React.FC = () => {
   const cars = Object.values(CARS_DATA);
   const strings = t[lang].home;
 
-  // Selected car on Hero showcase (Defaults to Ferrari SF-24)
-  const [featuredCarId, setFeaturedCarId] = useState<CarId>('sf24');
-  const featuredCar = CARS_DATA[featuredCarId] || CARS_DATA['sf24'];
+  // Active expanded team in the Hero accordion (default Ferrari SF-24)
+  const [activeTeamId, setActiveTeamId] = useState<CarId>('sf24');
+  const activeCar = CARS_DATA[activeTeamId] || CARS_DATA['sf24'];
 
-  // Leaderboard state
+  // Leaderboard tab state
   const [leaderboardTab, setLeaderboardTab] = useState<'drivers' | 'constructors'>('drivers');
-
-  // 3D Tilt state for hero showcase card
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const rx = ((y - rect.height / 2) / rect.height) * -6;
-    const ry = ((x - rect.width / 2) / rect.width) * 6;
-    setTilt({ rx, ry });
-  };
-
-  const handleHeroMouseLeave = () => {
-    setIsHovered(false);
-    setTilt({ rx: 0, ry: 0 });
-  };
 
   return (
     <div className="bg-studio-100 text-studio-900 selection:bg-f1red selection:text-white">
 
       {/* ══════════════════════════════════════════════════════
-          1. DYNAMIC AUTOMOTIVE HERO — ALL 11 TEAMS SELECTOR
+          1. ICONIC HERO: "WE RACE AS ONE" EXPANDING ACCORDION
+          (Hover on any team strip to expand full car showcase)
           ══════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-white via-studio-50 to-studio-100 pt-20 pb-14 lg:py-20 border-b border-studio-200">
-        {/* Subtle engineering grid & ambient glow */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-40"
-          style={{
-            backgroundImage: `
-              radial-gradient(ellipse 80% 50% at 50% -20%, rgba(225,6,0,0.12) 0%, transparent 70%),
-              repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0,0,0,0.03) 50px),
-              repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0,0,0,0.03) 50px)
-            `,
-          }}
-        />
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-studio-50 to-studio-100 pt-20 pb-12 lg:pt-24 lg:pb-16 border-b border-studio-200">
+        <div className="page-container">
 
-        <div className="page-container relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-
-            {/* ── Left Column: Editorial Typography & All 11 Cars Selector ── */}
-            <div className="lg:col-span-5 flex flex-col justify-center">
-              {/* Badge */}
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
+          {/* Editorial Headline Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-f1red animate-pulse" />
                 <span className="text-[11px] font-mono uppercase tracking-widest text-f1red font-bold">
-                  {strings.eraBadge}
+                  {strings.accordionBadge}
                 </span>
               </div>
-
-              {/* Headline */}
-              <h1 className="heading-display text-4xl sm:text-6xl lg:text-[72px] font-light italic leading-tight text-studio-950">
-                {strings.heroTitle1}
-              </h1>
-              <h1 className="heading-display text-4xl sm:text-6xl lg:text-[72px] font-bold leading-tight text-studio-950 mb-3">
-                {strings.heroTitle2}
-              </h1>
-
-              {/* Red racing bar */}
-              <div className="w-16 h-[3px] bg-f1red mb-5" />
-
-              {/* Description */}
-              <p className="text-xs sm:text-sm font-body text-studio-600 leading-relaxed font-light mb-6 max-w-lg">
-                {strings.heroDesc}
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <h1 className="heading-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-studio-950 uppercase">
+                  WE RACE AS ONE
+                </h1>
+                <span className="text-xl sm:text-2xl font-light font-display text-studio-400 italic">
+                  / 2025–2026
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-body text-studio-600 mt-2 max-w-2xl font-light">
+                {strings.accordionSubtitle}
               </p>
-
-              {/* ALL 11 TEAMS CAR SELECTOR CHIPS */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-studio-400 font-bold">
-                    {strings.heroContenders} (11 Đội đua)
-                  </span>
-                  <span className="text-[10px] font-mono text-studio-500 font-semibold">
-                    {featuredCar.name}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto pr-1 scrollbar-none">
-                  {ALL_11_TEAMS.map((id) => {
-                    const c = CARS_DATA[id];
-                    if (!c) return null;
-                    const isSelected = featuredCarId === id;
-                    return (
-                      <button
-                        key={id}
-                        onClick={() => setFeaturedCarId(id)}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border text-[11px] font-mono font-bold transition-all ${
-                          isSelected
-                            ? 'bg-studio-950 text-white border-studio-950 shadow-md scale-105 ring-1 ring-black'
-                            : 'bg-white hover:bg-studio-50 text-studio-700 border-studio-200 shadow-xs'
-                        }`}
-                      >
-                        <span
-                          className={`w-2 h-2 rounded-full shrink-0 ${isSelected ? 'ring-2 ring-white/60' : ''}`}
-                          style={{ background: c.primaryColor }}
-                        />
-                        <span className="truncate max-w-[120px]">{c.shortName}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <button
-                  onClick={() => openCarIn3D(featuredCarId)}
-                  className="btn-primary shadow-luxury flex items-center gap-2"
-                >
-                  <span>{strings.viewAnatomy}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setActiveTab('gallery')}
-                  className="btn-ghost"
-                >
-                  <Camera className="w-3.5 h-3.5 text-f1red" />
-                  <span>{strings.explore3d}</span>
-                </button>
-              </div>
-
-              {/* Telemetry Micro Stats Strip */}
-              <div className="grid grid-cols-3 gap-3 pt-5 border-t border-studio-200">
-                <div>
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">{strings.stats.hp}</span>
-                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
-                    {featuredCar.horsepower} <span className="text-[10px] font-mono font-normal text-studio-500">bhp</span>
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">{strings.stats.downforce}</span>
-                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
-                    {featuredCar.topSpeedKmh} <span className="text-[10px] font-mono font-normal text-studio-500">km/h</span>
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">0–100 KM/H</span>
-                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
-                    {featuredCar.zeroToHundredSec} <span className="text-[10px] font-mono font-normal text-studio-500">s</span>
-                  </span>
-                </div>
-              </div>
-
             </div>
 
-            {/* ── Right Column: Automotive Hero Stage (Centerpiece) ── */}
-            <div className="lg:col-span-7 relative">
-              <div
-                onMouseMove={handleHeroMouseMove}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={handleHeroMouseLeave}
-                className="relative aspect-[16/10] sm:aspect-[16/9.5] w-full rounded-sm overflow-hidden bg-studio-950 border border-studio-300 shadow-2xl transition-all duration-300 group cursor-pointer"
-                style={{
-                  transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-                  transformStyle: 'preserve-3d',
-                  transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-                onClick={() => openCarIn3D(featuredCarId)}
+            {/* Quick action buttons */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => openCarIn3D(activeTeamId)}
+                className="btn-primary shadow-luxury flex items-center gap-2 py-2.5 px-4 text-xs"
               >
-                {/* Dynamic Livery Halo Ambient Glow */}
+                <span>{strings.viewAnatomy}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setActiveTab('gallery')}
+                className="btn-ghost py-2.5 px-4 text-xs"
+              >
+                <span>{strings.explore3d}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* ── THE INTERACTIVE ACCORDION SHOWCASE (11 Teams) ── */}
+          <div className="relative w-full h-[580px] sm:h-[640px] lg:h-[700px] overflow-hidden rounded-sm border border-studio-300 shadow-2xl bg-studio-950 flex flex-row select-none">
+            {ALL_11_TEAMS.map((id) => {
+              const car = CARS_DATA[id];
+              if (!car) return null;
+              const isExpanded = activeTeamId === id;
+
+              return (
                 <div
-                  className="absolute inset-0 pointer-events-none transition-all duration-700"
+                  key={id}
+                  onMouseEnter={() => setActiveTeamId(id)}
+                  onClick={() => openCarIn3D(id)}
                   style={{
-                    background: `radial-gradient(ellipse 85% 65% at 50% 50%, ${featuredCar.primaryColor}2e 0%, transparent 70%)`,
+                    flex: isExpanded ? '7' : '0.85',
+                    minWidth: isExpanded ? '340px' : '48px',
+                    transition: 'flex 0.48s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease',
+                    background: isExpanded
+                      ? `radial-gradient(ellipse 90% 75% at 50% 55%, ${car.primaryColor}2e 0%, rgba(10,12,16,0.96) 65%, #050608 100%)`
+                      : `linear-gradient(180deg, ${car.primaryColor}22 0%, rgba(12,14,18,0.95) 45%, #050608 100%)`,
                   }}
-                />
-
-                {/* Studio Top Lighting Grid Bar */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-
-                {/* Spotlight from top */}
-                <div
-                  className="absolute -top-24 left-1/2 -translate-x-1/2 w-3/4 h-48 pointer-events-none rounded-full blur-3xl opacity-30"
-                  style={{ background: 'radial-gradient(circle, #ffffff 0%, transparent 70%)' }}
-                />
-
-                {/* Ground reflection floor line */}
-                <div className="absolute bottom-10 left-12 right-12 h-16 pointer-events-none opacity-40 blur-xl rounded-full bg-white/10" />
-
-                {/* Top-Left Floating Badge: Power */}
-                <div className="absolute top-4 left-4 z-20 pointer-events-none">
-                  <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-sm shadow-luxury flex items-center gap-2 text-white">
-                    <Zap className="w-3.5 h-3.5 text-yellow-400" />
-                    <div>
-                      <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block leading-none">
-                        {strings.stats.hp}
-                      </span>
-                      <span className="text-xs font-mono font-bold leading-tight">
-                        {featuredCar.horsepower} bhp · {featuredCar.engine}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Top-Right Floating Badge: Top Speed */}
-                <div className="absolute top-4 right-4 z-20 pointer-events-none">
-                  <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-sm shadow-luxury flex items-center gap-2 text-white">
-                    <Gauge className="w-3.5 h-3.5 text-f1red" />
-                    <div>
-                      <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/60 block leading-none">
-                        TOP SPEED
-                      </span>
-                      <span className="text-xs font-mono font-bold leading-tight">
-                        {featuredCar.topSpeedKmh} km/h (0-100: {featuredCar.zeroToHundredSec}s)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Hero Car Center Visual */}
-                <div
-                  key={featuredCarId}
-                  className="absolute inset-0 flex items-center justify-center p-6 sm:p-10 pointer-events-none animate-car-switch"
+                  className={`relative h-full overflow-hidden flex flex-col justify-between border-r border-white/10 last:border-r-0 cursor-pointer group ${
+                    isExpanded ? 'z-20' : 'hover:brightness-125'
+                  }`}
                 >
-                  <img
-                    src={featuredCar.image}
-                    alt={featuredCar.name}
-                    className="max-w-[94%] max-h-[88%] object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.85)] filter contrast-105"
-                  />
-                </div>
-
-                {/* Bottom Left: Team & Drivers Card */}
-                <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
-                  <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3.5 py-2 rounded-sm shadow-luxury flex items-center gap-2.5 text-white">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full ring-2 ring-white/30 shrink-0"
-                      style={{ background: featuredCar.primaryColor }}
-                    />
-                    <div>
-                      <span
-                        className="text-[9px] font-mono uppercase font-bold tracking-wider block leading-none mb-0.5"
-                        style={{ color: featuredCar.primaryColor }}
-                      >
-                        {featuredCar.team}
-                      </span>
-                      <span className="text-xs font-display font-bold leading-none block">
-                        {featuredCar.name} · {featuredCar.drivers.join(' & ')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Right: Quick Enter Showroom Button */}
-                <div className="absolute bottom-4 right-4 z-20">
-                  <button
-                    onClick={() => openCarIn3D(featuredCarId)}
-                    className="bg-f1red hover:bg-f1red-dark text-white px-3.5 py-2 rounded-xs text-[10.5px] font-mono uppercase tracking-wider font-bold shadow-luxury flex items-center gap-1.5 transition-all group-hover:scale-105"
-                  >
-                    <span>{strings.viewInShowroom}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-
-      {/* ══════════════════════════════════════════════════════
-          2. 11 TEAMS CHAMPIONSHIP LIVERY TICKER
-          ══════════════════════════════════════════════════════ */}
-      <section className="bg-white border-b border-studio-200 py-3 shadow-xs">
-        <div className="page-container">
-          <div className="flex items-center gap-3 overflow-x-auto scrollbar-none py-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-studio-400 font-bold shrink-0 flex items-center gap-1.5">
-              <Layers className="w-3 h-3 text-f1red" />
-              {strings.tickerTitle}:
-            </span>
-            <div className="flex items-center gap-2 shrink-0">
-              {ALL_11_TEAMS.map((id) => {
-                const c = CARS_DATA[id];
-                if (!c) return null;
-                const isCurrent = featuredCarId === id;
-                return (
-                  <button
-                    key={id}
-                    onClick={() => {
-                      setFeaturedCarId(id);
-                      openCarIn3D(id);
+                  {/* Top livery color bar */}
+                  <div
+                    className="w-full h-1.5 shrink-0 transition-all duration-300"
+                    style={{
+                      background: car.primaryColor,
+                      boxShadow: isExpanded ? `0 0 12px ${car.primaryColor}` : 'none',
                     }}
-                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xs border text-[11px] font-mono font-bold transition-all shrink-0 ${
-                      isCurrent
-                        ? 'bg-studio-950 text-white border-studio-950 shadow-xs'
-                        : 'bg-studio-50 hover:bg-studio-100 text-studio-700 border-studio-200'
-                    }`}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ background: c.primaryColor }}
-                    />
-                    <span className="uppercase">{c.shortName}</span>
-                  </button>
-                );
-              })}
-            </div>
+                  />
+
+                  {/* ── COLLAPSED VIEW: VERTICAL TEAM STRIP ── */}
+                  {!isExpanded && (
+                    <div className="flex-1 flex flex-col items-center justify-between py-6 px-1 pointer-events-none">
+                      {/* Top color dot */}
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                        style={{ background: car.primaryColor }}
+                      />
+
+                      {/* Rotated vertical text (Team / Car Code) */}
+                      <div className="flex-1 flex items-center justify-center my-4 overflow-hidden">
+                        <span
+                          className="text-[11px] font-mono font-bold tracking-widest text-white/60 uppercase whitespace-nowrap group-hover:text-white transition-colors"
+                          style={{
+                            writingMode: 'vertical-rl',
+                            transform: 'rotate(180deg)',
+                          }}
+                        >
+                          {car.shortName} · {car.team}
+                        </span>
+                      </div>
+
+                      {/* Bottom partial wheel/nose icon */}
+                      <div className="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-mono text-white/50 group-hover:border-white/30 group-hover:text-white">
+                        <span>#</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── EXPANDED VIEW: HUGE HERO CAR & TELEMETRY SPECS ── */}
+                  {isExpanded && (
+                    <div className="flex-1 flex flex-col justify-between p-6 sm:p-8 animate-page-enter relative z-10 overflow-hidden">
+                      {/* Top Header inside Expanded Strip */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span
+                              className="w-3 h-3 rounded-full ring-2 ring-white/40 shadow-xs"
+                              style={{ background: car.primaryColor }}
+                            />
+                            <span
+                              className="text-xs font-mono uppercase tracking-widest font-bold"
+                              style={{ color: car.primaryColor }}
+                            >
+                              {car.team}
+                            </span>
+                          </div>
+                          <h2 className="text-2xl sm:text-4xl font-display font-black text-white leading-tight">
+                            {car.name}
+                          </h2>
+                          <p className="text-xs font-mono text-white/60 mt-1 font-medium">
+                            {strings.modelRange.driversLabel}: <strong className="text-white">{car.drivers.join(' · ')}</strong>
+                          </p>
+                        </div>
+
+                        {/* Top-Right Badge: Engine Supplier */}
+                        <div className="hidden sm:block bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xs border border-white/15 text-right">
+                          <span className="text-[8.5px] font-mono uppercase tracking-wider text-white/50 block">
+                            POWER UNIT
+                          </span>
+                          <span className="text-xs font-mono font-bold text-white">
+                            {car.engine}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* CENTERPIECE: HUGE CAR IMAGE (PHÓNG BỰ RA HẾT CỠ) */}
+                      <div className="relative flex-1 flex items-center justify-center py-4 my-auto">
+                        <img
+                          src={car.image}
+                          alt={car.name}
+                          className="max-h-[360px] sm:max-h-[420px] lg:max-h-[460px] w-auto max-w-[96%] object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)] animate-car-switch"
+                        />
+                      </div>
+
+                      {/* Bottom Footer inside Expanded Strip: Telemetry + Button */}
+                      <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        {/* 4 Telemetry Metrics */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-white">
+                          <div>
+                            <span className="text-[8.5px] font-mono uppercase text-white/50 block">
+                              {strings.stats.hp}
+                            </span>
+                            <span className="text-base sm:text-lg font-display font-bold">
+                              {fmt(car.horsepower)} <span className="text-[10px] font-mono text-white/60">bhp</span>
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[8.5px] font-mono uppercase text-white/50 block">
+                              TOP SPEED
+                            </span>
+                            <span className="text-base sm:text-lg font-display font-bold">
+                              {car.topSpeedKmh} <span className="text-[10px] font-mono text-white/60">km/h</span>
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[8.5px] font-mono uppercase text-white/50 block">
+                              0–100 KM/H
+                            </span>
+                            <span className="text-base sm:text-lg font-display font-bold">
+                              {car.zeroToHundredSec} <span className="text-[10px] font-mono text-white/60">s</span>
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[8.5px] font-mono uppercase text-white/50 block">
+                              DOWNFORCE
+                            </span>
+                            <span className="text-base sm:text-lg font-display font-bold">
+                              {car.downforceAt250KmhKgf} <span className="text-[10px] font-mono text-white/60">kgf</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Direct Button to open this car */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCarIn3D(car.id);
+                          }}
+                          className="bg-f1red hover:bg-f1red-dark text-white px-4 py-2.5 rounded-xs text-xs font-mono uppercase tracking-wider font-bold shadow-luxury flex items-center justify-center gap-2 transition-transform hover:scale-105 shrink-0"
+                        >
+                          <span>{strings.viewInShowroom}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+
         </div>
       </section>
 
 
       {/* ══════════════════════════════════════════════════════
-          3. F1 LIVE CHAMPIONSHIP LEADERBOARD & STANDINGS
+          2. F1 LIVE CHAMPIONSHIP LEADERBOARD & STANDINGS
+          (Bảng xếp hạng live score các thứ hạng & điểm số)
           ══════════════════════════════════════════════════════ */}
       <section className="page-section bg-studio-100 border-b border-studio-200">
         <div className="page-container">
@@ -711,7 +629,7 @@ export const HomeView: React.FC = () => {
 
 
       {/* ══════════════════════════════════════════════════════
-          4. THE 11 CARS — MODEL RANGE GRID
+          3. THE 11 CARS — MODEL RANGE GRID
           ══════════════════════════════════════════════════════ */}
       <section className="page-section bg-white border-b border-studio-200">
         <div className="page-container">
@@ -817,7 +735,7 @@ export const HomeView: React.FC = () => {
 
 
       {/* ══════════════════════════════════════════════════════
-          5. TECHNICAL BENTO GRID (GROUND EFFECT, ENGINE, CHASSIS)
+          4. TECHNICAL BENTO GRID (GROUND EFFECT, ENGINE, CHASSIS)
           ══════════════════════════════════════════════════════ */}
       <section className="page-section bg-studio-100 border-b border-studio-200">
         <div className="page-container">
@@ -891,7 +809,7 @@ export const HomeView: React.FC = () => {
 
 
       {/* ══════════════════════════════════════════════════════
-          6. FEATURES — 3-COLUMN SHORTCUT STRIP
+          5. FEATURES — 3-COLUMN SHORTCUT STRIP
           ══════════════════════════════════════════════════════ */}
       <section className="page-section bg-white">
         <div className="page-container">

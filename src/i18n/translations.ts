@@ -105,6 +105,9 @@ export const t = {
       colPoints: 'Điểm số',
       colGap: 'Cách biệt',
       viewCarBtn: 'Xem xe',
+      accordionBadge: 'We Race As One · FIA Formula 1',
+      accordionTitle: '11 Cỗ Máy Tốc Độ · Một Đam Mê',
+      accordionSubtitle: 'Rê chuột vào bất kỳ đội đua nào để mở rộng toàn bộ cỗ máy và xem chi tiết thông số kỹ thuật.',
     },
     models: {
       badge: 'F1 Hyper-Showroom · 11 Cỗ Máy 2025/2026',
@@ -351,6 +354,9 @@ export const t = {
       colPoints: 'Points (PTS)',
       colGap: 'Gap',
       viewCarBtn: 'Inspect Car',
+      accordionBadge: 'We Race As One · FIA Formula 1',
+      accordionTitle: '11 Speed Machines · One Passion',
+      accordionSubtitle: 'Hover over any constructor strip to expand the full machine and view official telemetry.',
     },
     models: {
       badge: 'F1 Hyper-Showroom · 11 Machines 2025/2026',
