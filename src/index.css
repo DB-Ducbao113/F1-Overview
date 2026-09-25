@@ -205,3 +205,91 @@ canvas.r3f { display: block; }
   stroke-dasharray: 8, 12;
   animation: dashStreamline 1.2s linear infinite;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE TRANSITIONS & TELEMETRY MICRO-ANIMATIONS
+   ───────────────────────────────────────────────────────────── */
+@keyframes pageEnterTransition {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.996);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnterTransition 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes f1SpeedBarScan {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.2;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-f1-speed-scan {
+  animation: f1SpeedBarScan 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes carSwitchFade {
+  0% {
+    opacity: 0.2;
+    transform: perspective(1200px) scale(0.95) translateY(10px);
+    filter: blur(8px);
+  }
+  60% {
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-car-switch {
+  animation: carSwitchFade 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes metricPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-metric-pop {
+  animation: metricPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pulseGlowRed {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px 3px rgba(225, 6, 0, 0.7);
+  }
+}
+
+.animate-glow-red {
+  animation: pulseGlowRed 2s infinite ease-in-out;
+}
+

@@ -138,12 +138,13 @@ export const HomeView: React.FC = () => {
             </p>
           </div>
 
-          {/* Car grid — Responsive columns for 11 official teams */}
+          {/* Car grid — Responsive columns for 11 official teams with staggered entrance */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {cars.map((car) => (
+            {cars.map((car, idx) => (
               <div
                 key={car.id}
-                className="model-card rounded-sm relative group flex flex-col justify-between"
+                className="model-card rounded-sm relative group flex flex-col justify-between animate-metric-pop"
+                style={{ animationDelay: `${(idx % 8) * 55}ms` }}
                 onClick={() => openCarIn3D(car.id as CarId)}
               >
                 {/* Livery colour strip */}
@@ -215,7 +216,11 @@ export const HomeView: React.FC = () => {
             {strings.features.map((f, idx) => {
               const tabTarget = idx === 0 ? 'models' : idx === 1 ? 'gallery' : 'compare';
               return (
-                <div key={f.no} className="bg-white p-9 border border-studio-300 rounded-sm shadow-subtle flex flex-col justify-between min-h-[280px]">
+                <div
+                  key={f.no}
+                  className="bg-white p-9 border border-studio-300 rounded-sm shadow-subtle flex flex-col justify-between min-h-[280px] animate-metric-pop"
+                  style={{ animationDelay: `${idx * 90}ms` }}
+                >
                   <div>
                     <span className="text-[11px] font-body text-studio-400 font-bold tracking-widest block mb-4">{f.no}</span>
                     <h3 className="heading-display text-2xl font-semibold mb-3 text-studio-950">{f.title}</h3>

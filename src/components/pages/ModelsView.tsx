@@ -353,10 +353,39 @@ const TiltPhotoCard: React.FC<TiltPhotoCardProps> = ({ item, lang, onSelect }) =
   );
 };
 
+// Snappy telemetry metric counter for horsepower and top speed
+function useCountUp(target: number, durationMs = 450): number {
+  const [val, setVal] = useState(target);
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const startVal = Math.max(0, target - 50);
+    let frameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / durationMs, 1);
+      // Fast ease-out curve for automotive tachometer feel
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setVal(Math.round(startVal + (target - startVal) * ease));
+      if (progress < 1) {
+        frameId = requestAnimationFrame(step);
+      }
+    };
+
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
+  }, [target, durationMs]);
+
+  return val;
+}
+
 export const ModelsView: React.FC = () => {
   const { selectedCarId, setCarId, lang } = useCarStore();
   const car = CARS_DATA[selectedCarId] || CARS_DATA['sf24'];
   const s = t[lang].models;
+
+  const animatedHp = useCountUp(car.horsepower);
+  const animatedTopSpeed = useCountUp(car.topSpeedKmh);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
@@ -588,9 +617,10 @@ export const ModelsView: React.FC = () => {
             style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.7) 0%, transparent 70%)' }}
           />
 
-          {/* Interactive Car Canvas / Image with Pan & Scale */}
+          {/* Interactive Car Canvas / Image with Pan & Scale and smooth switch transition */}
           <div
-            className="absolute inset-0 flex items-center justify-center p-4 sm:p-8 transition-transform duration-100 ease-out pointer-events-none"
+            key={selectedCarId}
+            className="absolute inset-0 flex items-center justify-center p-4 sm:p-8 transition-transform duration-100 ease-out pointer-events-none animate-car-switch"
             style={{
               transform: `perspective(1200px) rotateY(${panAngle}deg) scale(${1 + Math.abs(panAngle) * 0.008})`,
               transformStyle: 'preserve-3d',
@@ -702,8 +732,8 @@ export const ModelsView: React.FC = () => {
                 </span>
               </div>
 
-              {/* The 4 Big Metric Cards */}
-              <div className="grid grid-cols-2 gap-3 mb-5">
+              {/* The 4 Big Metric Cards with animated pop-in and rev-up counter */}
+              <div key={selectedCarId + '-specs'} className="grid grid-cols-2 gap-3 mb-5 animate-metric-pop">
                 {/* 1. Công suất */}
                 <div className="bg-studio-50/80 border border-studio-200/80 p-3.5 rounded-sm">
                   <div className="flex items-center gap-1.5 text-studio-500 mb-1">
@@ -711,7 +741,7 @@ export const ModelsView: React.FC = () => {
                     <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.power}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    {car.horsepower} <span className="text-[11px] font-mono font-normal text-studio-500">{s.powerUnit}</span>
+                    {animatedHp} <span className="text-[11px] font-mono font-normal text-studio-500">{s.powerUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
                     {s.powerSub}
@@ -725,7 +755,7 @@ export const ModelsView: React.FC = () => {
                     <span className="text-[9px] font-mono uppercase font-bold tracking-wider">{s.topSpeed}</span>
                   </div>
                   <div className="text-2xl font-display font-bold text-studio-950 leading-none">
-                    {car.topSpeedKmh} <span className="text-[11px] font-mono font-normal text-studio-500">{s.speedUnit}</span>
+                    {animatedTopSpeed} <span className="text-[11px] font-mono font-normal text-studio-500">{s.speedUnit}</span>
                   </div>
                   <span className="text-[9.5px] font-body text-studio-400 mt-1 block">
                     {s.speedSub}
@@ -795,7 +825,7 @@ export const ModelsView: React.FC = () => {
               </div>
 
               {/* 2-Column Photo Comparison (Studio Render + Action Photo if available) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div key={selectedCarId + '-moments'} className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-metric-pop">
                 {/* Photo 1: Studio Shot */}
                 <div
                   onClick={() => {
@@ -927,10 +957,16 @@ export const ModelsView: React.FC = () => {
             </div>
           </div>
 
-          {/* 3D Tilt Card Grid */}
+          {/* 3D Tilt Card Grid with Staggered Entrance */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {filteredPhotos.map((item) => (
-              <TiltPhotoCard key={item.id} item={item} lang={lang} onSelect={setSelectedPhoto} />
+            {filteredPhotos.map((item, idx) => (
+              <div
+                key={item.id}
+                className="animate-metric-pop"
+                style={{ animationDelay: `${(idx % 8) * 45}ms` }}
+              >
+                <TiltPhotoCard item={item} lang={lang} onSelect={setSelectedPhoto} />
+              </div>
             ))}
           </div>
         </section>
