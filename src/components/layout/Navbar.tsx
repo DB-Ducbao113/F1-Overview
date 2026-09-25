@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useCarStore } from '../../store/useCarStore';
+import { useNavigationStore } from '../../store/useNavigationStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { AdminLoginModal } from '../auth/AdminLoginModal';
 import { NavTab } from '../../types';
 import { t } from '../../i18n/translations';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Trophy, LayoutGrid, Home, ShieldCheck, LogOut, KeyRound } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { activeTab, setActiveTab, lang, setLang } = useCarStore();
+  const { activeTab, setActiveTab, lang, setLang } = useNavigationStore();
+  const { user, isAdmin, logout } = useAuthStore();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const strings = t[lang].nav;
 
-  const NAV_ITEMS: { id: NavTab; label: string }[] = [
-    { id: 'home',    label: strings.overview },
-    { id: 'models',  label: strings.models   },
-    { id: 'compare', label: strings.compare  },
-    { id: 'gallery', label: strings.gallery  },
+  const NAV_ITEMS: { id: NavTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'home', label: strings.home, icon: <Home className="w-4 h-4" /> },
+    { id: 'championship', label: strings.championship, icon: <Trophy className="w-4 h-4" /> },
+    { id: 'collection', label: strings.collection, icon: <LayoutGrid className="w-4 h-4" /> },
   ];
 
   useEffect(() => {
@@ -32,60 +35,87 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* ── Fixed Navbar (White Luxury Studio) ── */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md border-b border-studio-300 shadow-subtle'
-            : 'bg-white/80 backdrop-blur-sm border-b border-studio-200'
+            : 'bg-white/85 backdrop-blur-sm border-b border-studio-200'
         }`}
         style={{ height: 64 }}
       >
         <div className="page-container h-full flex items-center justify-between gap-6">
-
-          {/* Left — Logo mark */}
+          {/* Brand Logo */}
           <button
             onClick={() => handleNav('home')}
-            className="flex items-center gap-3 group shrink-0"
-            aria-label="F1 Ground Effect Home"
+            className="flex items-center gap-3 group shrink-0 text-left focus:outline-none"
+            aria-label="Formula 1 Hub"
           >
-            {/* F1 ring emblem */}
-            <span className="w-8 h-8 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle">
-              <span className="text-[10px] font-body font-black text-studio-950 tracking-tight">F1</span>
+            <span className="w-9 h-9 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle group-hover:scale-105 transition-transform duration-200">
+              <span className="text-[11px] font-black text-studio-950 tracking-tight">F1</span>
             </span>
-            {/* Wordmark */}
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-[12px] font-body uppercase tracking-widest2 text-studio-950 font-bold group-hover:text-f1red transition-colors duration-200 leading-tight">
-                Ground Effect
+            <div className="flex flex-col">
+              <span className="text-[13px] font-display uppercase tracking-widest font-black text-studio-950 group-hover:text-f1red transition-colors duration-200 leading-tight">
+                {strings.brandTitle}
               </span>
-              <span className="text-[9px] font-body uppercase tracking-widest text-studio-500 font-medium">
+              <span className="text-[9px] uppercase tracking-widest text-studio-500 font-semibold">
                 {strings.brandSub}
               </span>
             </div>
           </button>
 
-          {/* Center — Navigation links */}
-          <nav className="hidden md:flex items-center gap-7 lg:gap-9" aria-label="Main navigation">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNav(item.id)}
-                className={`nav-link pb-1 ${activeTab === item.id ? 'nav-link-active' : ''}`}
-              >
-                {item.label}
-              </button>
-            ))}
+          {/* Center Navigation Links */}
+          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNav(item.id)}
+                  className={`flex items-center gap-2 py-1 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
+                    isActive
+                      ? 'border-f1red text-f1red'
+                      : 'border-transparent text-studio-600 hover:text-studio-950 hover:border-studio-300'
+                  }`}
+                >
+                  <span className={isActive ? 'text-f1red' : 'text-studio-400'}>{item.icon}</span>
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
 
-          {/* Right — Language Switcher + CTA */}
+          {/* Right — Language Selector & Mobile Toggle */}
           <div className="flex items-center gap-3 shrink-0">
-            {/* ── Language Switcher Toggle [ VI | EN ] ── */}
-            <div className="flex items-center bg-studio-200 p-0.5 rounded-full border border-studio-300">
+            {/* Admin Profile Chip or Key Button */}
+            {isAdmin && user ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-[11px] font-mono font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">@{user.username}</span>
+                <button
+                  onClick={logout}
+                  className="hover:text-f1red transition-colors p-0.5"
+                  title="Đăng xuất Admin"
+                >
+                  <LogOut className="w-3 h-3 text-studio-500 hover:text-f1red" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setLoginModalOpen(true)}
+                className="p-1.5 rounded-full text-studio-500 hover:text-studio-950 hover:bg-studio-100 transition-colors"
+                title="Đăng nhập Quản Trị Viên (Admin)"
+              >
+                <KeyRound className="w-4 h-4 text-studio-600" />
+              </button>
+            )}
+
+            {/* Language Switcher */}
+            <div className="flex items-center bg-studio-100 p-0.5 rounded-full border border-studio-200">
               <button
                 onClick={() => setLang('vi')}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-body uppercase tracking-wider font-bold transition-all duration-200 ${
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-200 ${
                   lang === 'vi'
-                    ? 'bg-white text-f1red shadow-subtle'
+                    ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-600 hover:text-studio-950'
                 }`}
                 title="Tiếng Việt"
@@ -94,9 +124,9 @@ export const Navbar: React.FC = () => {
               </button>
               <button
                 onClick={() => setLang('en')}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-body uppercase tracking-wider font-bold transition-all duration-200 ${
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-200 ${
                   lang === 'en'
-                    ? 'bg-white text-f1red shadow-subtle'
+                    ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-600 hover:text-studio-950'
                 }`}
                 title="English"
@@ -105,19 +135,11 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
 
-            {/* 3D Action CTA */}
+            {/* Mobile menu button */}
             <button
-              onClick={() => handleNav('models')}
-              className="hidden md:inline-flex btn-primary"
-            >
-              {strings.view3d}
-            </button>
-
-            {/* Mobile hamburger */}
-            <button
-              className="md:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
+              className="md:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors"
+              aria-label="Toggle navigation menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -125,52 +147,36 @@ export const Navbar: React.FC = () => {
         </div>
       </header>
 
-      {/* ── Mobile Fullscreen Menu (White Theme) ── */}
-      <div
-        className={`fixed inset-0 z-40 bg-white flex flex-col justify-center items-center gap-6 transition-all duration-300 md:hidden ${
-          menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        {/* Language switch on mobile menu */}
-        <div className="flex items-center gap-2 mb-4 bg-studio-100 p-1 rounded-full border border-studio-300">
-          <Globe className="w-3.5 h-3.5 text-studio-500 ml-2" />
-          <button
-            onClick={() => setLang('vi')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
-              lang === 'vi' ? 'bg-f1red text-white' : 'text-studio-600'
-            }`}
+      {/* Admin Login Modal from Navbar */}
+      <AdminLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />
+
+      {/* Mobile Drawer Menu */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden animate-fade-in" onClick={() => setMenuOpen(false)}>
+          <div
+            className="fixed top-16 left-0 right-0 bg-white border-b border-studio-300 shadow-xl p-6 flex flex-col gap-4 animate-slide-down"
+            onClick={(e) => e.stopPropagation()}
           >
-            Tiếng Việt
-          </button>
-          <button
-            onClick={() => setLang('en')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
-              lang === 'en' ? 'bg-f1red text-white' : 'text-studio-600'
-            }`}
-          >
-            English
-          </button>
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNav(item.id)}
+                className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
+                  activeTab === item.id
+                    ? 'bg-f1red/10 text-f1red'
+                    : 'text-studio-700 hover:bg-studio-100'
+                }`}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
-
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => handleNav(item.id)}
-            className={`text-2xl font-display font-medium tracking-wide transition-colors ${
-              activeTab === item.id ? 'text-f1red' : 'text-studio-800 hover:text-f1red'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-
-        <button
-          onClick={() => handleNav('models')}
-          className="mt-6 btn-primary"
-        >
-          {strings.view3d}
-        </button>
-      </div>
+      )}
     </>
   );
 };
