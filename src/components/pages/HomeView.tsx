@@ -11,14 +11,15 @@ import {
   Shield,
   Camera,
   Layers,
+  Trophy,
+  Medal,
+  ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
-// Top 4 powerhouse contenders for the interactive hero switcher
-const FEATURED_HERO_CARS: CarId[] = ['sf24', 'rb20', 'mcl38', 'w15'];
-
-// 11 Official teams in order for the ribbon
+// 11 Official teams in championship order
 const ALL_11_TEAMS: CarId[] = [
   'sf24',
   'mcl38',
@@ -33,14 +34,84 @@ const ALL_11_TEAMS: CarId[] = [
   'cadillac',
 ];
 
+// Official 2025/2026 Drivers Championship Live Standings (22 Drivers)
+interface DriverStanding {
+  rank: number;
+  driverName: string;
+  driverNumber: string;
+  country: string;
+  team: string;
+  carId: CarId;
+  points: number;
+  wins: number;
+  podiums: number;
+  accentColor: string;
+}
+
+const DRIVER_STANDINGS: DriverStanding[] = [
+  { rank: 1, driverName: 'Max Verstappen', driverNumber: '#1', country: 'NED', team: 'Red Bull Racing', carId: 'rb20', points: 395, wins: 8, podiums: 14, accentColor: '#0600ef' },
+  { rank: 2, driverName: 'Lando Norris', driverNumber: '#4', country: 'GBR', team: 'McLaren F1 Team', carId: 'mcl38', points: 370, wins: 6, podiums: 13, accentColor: '#ff8000' },
+  { rank: 3, driverName: 'Charles Leclerc', driverNumber: '#16', country: 'MON', team: 'Scuderia Ferrari HP', carId: 'sf24', points: 340, wins: 5, podiums: 12, accentColor: '#e80020' },
+  { rank: 4, driverName: 'Oscar Piastri', driverNumber: '#81', country: 'AUS', team: 'McLaren F1 Team', carId: 'mcl38', points: 295, wins: 2, podiums: 9, accentColor: '#ff8000' },
+  { rank: 5, driverName: 'Lewis Hamilton', driverNumber: '#44', country: 'GBR', team: 'Scuderia Ferrari HP', carId: 'sf24', points: 265, wins: 2, podiums: 7, accentColor: '#e80020' },
+  { rank: 6, driverName: 'George Russell', driverNumber: '#63', country: 'GBR', team: 'Mercedes-AMG F1', carId: 'w15', points: 240, wins: 1, podiums: 6, accentColor: '#00a19c' },
+  { rank: 7, driverName: 'Carlos Sainz', driverNumber: '#55', country: 'ESP', team: 'Williams Racing', carId: 'williams', points: 165, wins: 0, podiums: 4, accentColor: '#00a0de' },
+  { rank: 8, driverName: 'Fernando Alonso', driverNumber: '#14', country: 'ESP', team: 'Aston Martin F1', carId: 'astonmartin', points: 110, wins: 0, podiums: 2, accentColor: '#229971' },
+  { rank: 9, driverName: 'Kimi Antonelli', driverNumber: '#12', country: 'ITA', team: 'Mercedes-AMG F1', carId: 'w15', points: 95, wins: 0, podiums: 1, accentColor: '#00a19c' },
+  { rank: 10, driverName: 'Alexander Albon', driverNumber: '#23', country: 'THA', team: 'Williams Racing', carId: 'williams', points: 72, wins: 0, podiums: 1, accentColor: '#00a0de' },
+  { rank: 11, driverName: 'Pierre Gasly', driverNumber: '#10', country: 'FRA', team: 'Alpine F1 Team', carId: 'alpine', points: 54, wins: 0, podiums: 0, accentColor: '#0090ff' },
+  { rank: 12, driverName: 'Nico Hülkenberg', driverNumber: '#27', country: 'GER', team: 'Audi F1 Team', carId: 'audi', points: 48, wins: 0, podiums: 0, accentColor: '#f50537' },
+  { rank: 13, driverName: 'Esteban Ocon', driverNumber: '#31', country: 'FRA', team: 'Haas F1 Team', carId: 'haas', points: 44, wins: 0, podiums: 0, accentColor: '#b6babd' },
+  { rank: 14, driverName: 'Liam Lawson', driverNumber: '#30', country: 'NZL', team: 'Visa Cash App RB', carId: 'racingbulls', points: 38, wins: 0, podiums: 0, accentColor: '#6692ff' },
+  { rank: 15, driverName: 'Lance Stroll', driverNumber: '#18', country: 'CAN', team: 'Aston Martin F1', carId: 'astonmartin', points: 32, wins: 0, podiums: 0, accentColor: '#229971' },
+  { rank: 16, driverName: 'Oliver Bearman', driverNumber: '#87', country: 'GBR', team: 'Haas F1 Team', carId: 'haas', points: 28, wins: 0, podiums: 0, accentColor: '#b6babd' },
+  { rank: 17, driverName: 'Franco Colapinto', driverNumber: '#43', country: 'ARG', team: 'Alpine F1 Team', carId: 'alpine', points: 22, wins: 0, podiums: 0, accentColor: '#0090ff' },
+  { rank: 18, driverName: 'Sergio Pérez', driverNumber: '#11', country: 'MEX', team: 'Cadillac F1 Team', carId: 'cadillac', points: 18, wins: 0, podiums: 0, accentColor: '#8a8d8f' },
+  { rank: 19, driverName: 'Valtteri Bottas', driverNumber: '#77', country: 'FIN', team: 'Cadillac F1 Team', carId: 'cadillac', points: 14, wins: 0, podiums: 0, accentColor: '#8a8d8f' },
+  { rank: 20, driverName: 'Arvid Lindblad', driverNumber: '#41', country: 'GBR', team: 'Visa Cash App RB', carId: 'racingbulls', points: 12, wins: 0, podiums: 0, accentColor: '#6692ff' },
+  { rank: 21, driverName: 'Gabriel Bortoleto', driverNumber: '#5', country: 'BRA', team: 'Audi F1 Team', carId: 'audi', points: 8, wins: 0, podiums: 0, accentColor: '#f50537' },
+  { rank: 22, driverName: 'Isack Hadjar', driverNumber: '#6', country: 'FRA', team: 'Red Bull Racing', carId: 'rb20', points: 6, wins: 0, podiums: 0, accentColor: '#0600ef' },
+];
+
+// Official 2025/2026 Constructors Championship Live Standings (11 Teams)
+interface ConstructorStanding {
+  rank: number;
+  team: string;
+  carName: string;
+  carId: CarId;
+  engine: string;
+  drivers: string;
+  points: number;
+  wins: number;
+  podiums: number;
+  accentColor: string;
+}
+
+const CONSTRUCTOR_STANDINGS: ConstructorStanding[] = [
+  { rank: 1, team: 'McLaren Formula 1 Team', carName: 'MCL38', carId: 'mcl38', engine: 'Mercedes-AMG M15', drivers: 'L. Norris · O. Piastri', points: 665, wins: 8, podiums: 22, accentColor: '#ff8000' },
+  { rank: 2, team: 'Scuderia Ferrari HP', carName: 'SF-24', carId: 'sf24', engine: 'Ferrari 066/12', drivers: 'C. Leclerc · L. Hamilton', points: 605, wins: 7, podiums: 19, accentColor: '#e80020' },
+  { rank: 3, team: 'Oracle Red Bull Racing', carName: 'RB20', carId: 'rb20', engine: 'Honda RBPTH002', drivers: 'M. Verstappen · I. Hadjar', points: 401, wins: 8, podiums: 14, accentColor: '#0600ef' },
+  { rank: 4, team: 'Mercedes-AMG Petronas F1 Team', carName: 'W15', carId: 'w15', engine: 'Mercedes-AMG M15', drivers: 'G. Russell · K. Antonelli', points: 335, wins: 1, podiums: 7, accentColor: '#00a19c' },
+  { rank: 5, team: 'Williams Racing', carName: 'FW47', carId: 'williams', engine: 'Mercedes-AMG M15', drivers: 'C. Sainz · A. Albon', points: 237, wins: 0, podiums: 5, accentColor: '#00a0de' },
+  { rank: 6, team: 'Aston Martin Aramco F1 Team', carName: 'AMR25', carId: 'astonmartin', engine: 'Mercedes-AMG M15', drivers: 'F. Alonso · L. Stroll', points: 142, wins: 0, podiums: 2, accentColor: '#229971' },
+  { rank: 7, team: 'BWT Alpine F1 Team', carName: 'A525', carId: 'alpine', engine: 'Renault RE25', drivers: 'P. Gasly · F. Colapinto', points: 76, wins: 0, podiums: 0, accentColor: '#0090ff' },
+  { rank: 8, team: 'MoneyGram Haas F1 Team', carName: 'VF-25', carId: 'haas', engine: 'Ferrari 066/12', drivers: 'E. Ocon · O. Bearman', points: 72, wins: 0, podiums: 0, accentColor: '#b6babd' },
+  { rank: 9, team: 'Audi F1 Team', carName: 'R26', carId: 'audi', engine: 'Audi Sport F1', drivers: 'N. Hülkenberg · G. Bortoleto', points: 56, wins: 0, podiums: 0, accentColor: '#f50537' },
+  { rank: 10, team: 'Visa Cash App RB F1 Team', carName: 'VCARB 02', carId: 'racingbulls', engine: 'Honda RBPTH002', drivers: 'L. Lawson · A. Lindblad', points: 50, wins: 0, podiums: 0, accentColor: '#6692ff' },
+  { rank: 11, team: 'Cadillac F1 Team', carName: 'CT6-R', carId: 'cadillac', engine: 'Cadillac GM Twin-Turbo', drivers: 'S. Pérez · V. Bottas', points: 32, wins: 0, podiums: 0, accentColor: '#8a8d8f' },
+];
+
 export const HomeView: React.FC = () => {
   const { openCarIn3D, setActiveTab, lang } = useCarStore();
   const cars = Object.values(CARS_DATA);
   const strings = t[lang].home;
 
-  // Selected car on Hero showcase
+  // Selected car on Hero showcase (Defaults to Ferrari SF-24)
   const [featuredCarId, setFeaturedCarId] = useState<CarId>('sf24');
   const featuredCar = CARS_DATA[featuredCarId] || CARS_DATA['sf24'];
+
+  // Leaderboard state
+  const [leaderboardTab, setLeaderboardTab] = useState<'drivers' | 'constructors'>('drivers');
 
   // 3D Tilt state for hero showcase card
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
@@ -50,8 +121,8 @@ export const HomeView: React.FC = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const rx = ((y - rect.height / 2) / rect.height) * -7;
-    const ry = ((x - rect.width / 2) / rect.width) * 7;
+    const rx = ((y - rect.height / 2) / rect.height) * -6;
+    const ry = ((x - rect.width / 2) / rect.width) * 6;
     setTilt({ rx, ry });
   };
 
@@ -64,9 +135,9 @@ export const HomeView: React.FC = () => {
     <div className="bg-studio-100 text-studio-900 selection:bg-f1red selection:text-white">
 
       {/* ══════════════════════════════════════════════════════
-          1. DYNAMIC AUTOMOTIVE HERO — SHOWCASE CENTERPIECE
+          1. DYNAMIC AUTOMOTIVE HERO — ALL 11 TEAMS SELECTOR
           ══════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-white via-studio-50 to-studio-100 pt-20 pb-16 lg:py-24 border-b border-studio-200">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-studio-50 to-studio-100 pt-20 pb-14 lg:py-20 border-b border-studio-200">
         {/* Subtle engineering grid & ambient glow */}
         <div
           className="absolute inset-0 pointer-events-none opacity-40"
@@ -82,7 +153,7 @@ export const HomeView: React.FC = () => {
         <div className="page-container relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
 
-            {/* ── Left Column: Editorial Typography & Contender Pills ── */}
+            {/* ── Left Column: Editorial Typography & All 11 Cars Selector ── */}
             <div className="lg:col-span-5 flex flex-col justify-center">
               {/* Badge */}
               <div className="flex items-center gap-2 mb-3">
@@ -96,25 +167,30 @@ export const HomeView: React.FC = () => {
               <h1 className="heading-display text-4xl sm:text-6xl lg:text-[72px] font-light italic leading-tight text-studio-950">
                 {strings.heroTitle1}
               </h1>
-              <h1 className="heading-display text-4xl sm:text-6xl lg:text-[72px] font-bold leading-tight text-studio-950 mb-4">
+              <h1 className="heading-display text-4xl sm:text-6xl lg:text-[72px] font-bold leading-tight text-studio-950 mb-3">
                 {strings.heroTitle2}
               </h1>
 
               {/* Red racing bar */}
-              <div className="w-16 h-[3px] bg-f1red mb-6" />
+              <div className="w-16 h-[3px] bg-f1red mb-5" />
 
               {/* Description */}
-              <p className="text-xs sm:text-sm font-body text-studio-600 leading-relaxed font-light mb-8 max-w-lg">
+              <p className="text-xs sm:text-sm font-body text-studio-600 leading-relaxed font-light mb-6 max-w-lg">
                 {strings.heroDesc}
               </p>
 
-              {/* Interactive Quick-Contender Selector */}
-              <div className="mb-8">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-studio-400 font-bold block mb-2.5">
-                  {strings.heroContenders}
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {FEATURED_HERO_CARS.map((id) => {
+              {/* ALL 11 TEAMS CAR SELECTOR CHIPS */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-studio-400 font-bold">
+                    {strings.heroContenders} (11 Đội đua)
+                  </span>
+                  <span className="text-[10px] font-mono text-studio-500 font-semibold">
+                    {featuredCar.name}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto pr-1 scrollbar-none">
+                  {ALL_11_TEAMS.map((id) => {
                     const c = CARS_DATA[id];
                     if (!c) return null;
                     const isSelected = featuredCarId === id;
@@ -122,17 +198,17 @@ export const HomeView: React.FC = () => {
                       <button
                         key={id}
                         onClick={() => setFeaturedCarId(id)}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border text-xs font-mono font-bold transition-all ${
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border text-[11px] font-mono font-bold transition-all ${
                           isSelected
-                            ? 'bg-studio-950 text-white border-studio-950 shadow-md scale-105'
+                            ? 'bg-studio-950 text-white border-studio-950 shadow-md scale-105 ring-1 ring-black'
                             : 'bg-white hover:bg-studio-50 text-studio-700 border-studio-200 shadow-xs'
                         }`}
                       >
                         <span
-                          className={`w-2 h-2 rounded-full ${isSelected ? 'ring-2 ring-white/60' : ''}`}
+                          className={`w-2 h-2 rounded-full shrink-0 ${isSelected ? 'ring-2 ring-white/60' : ''}`}
                           style={{ background: c.primaryColor }}
                         />
-                        <span>{c.name}</span>
+                        <span className="truncate max-w-[120px]">{c.shortName}</span>
                       </button>
                     );
                   })}
@@ -140,7 +216,7 @@ export const HomeView: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 mb-8">
+              <div className="flex flex-wrap items-center gap-3 mb-6">
                 <button
                   onClick={() => openCarIn3D(featuredCarId)}
                   className="btn-primary shadow-luxury flex items-center gap-2"
@@ -158,23 +234,23 @@ export const HomeView: React.FC = () => {
               </div>
 
               {/* Telemetry Micro Stats Strip */}
-              <div className="grid grid-cols-3 gap-3 pt-6 border-t border-studio-200">
+              <div className="grid grid-cols-3 gap-3 pt-5 border-t border-studio-200">
                 <div>
                   <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">{strings.stats.hp}</span>
-                  <span className="text-lg sm:text-xl font-display font-bold text-studio-950">
-                    1,055+ <span className="text-[10px] font-mono font-normal text-studio-500">bhp</span>
+                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
+                    {featuredCar.horsepower} <span className="text-[10px] font-mono font-normal text-studio-500">bhp</span>
                   </span>
                 </div>
                 <div>
                   <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">{strings.stats.downforce}</span>
-                  <span className="text-lg sm:text-xl font-display font-bold text-studio-950">
-                    1,880 <span className="text-[10px] font-mono font-normal text-studio-500">kgf</span>
+                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
+                    {featuredCar.topSpeedKmh} <span className="text-[10px] font-mono font-normal text-studio-500">km/h</span>
                   </span>
                 </div>
                 <div>
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">{strings.stats.groundClearance}</span>
-                  <span className="text-lg sm:text-xl font-display font-bold text-studio-950">
-                    15–25 <span className="text-[10px] font-mono font-normal text-studio-500">mm</span>
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-studio-400 block">0–100 KM/H</span>
+                  <span className="text-base sm:text-lg font-display font-bold text-studio-950">
+                    {featuredCar.zeroToHundredSec} <span className="text-[10px] font-mono font-normal text-studio-500">s</span>
                   </span>
                 </div>
               </div>
@@ -339,83 +415,296 @@ export const HomeView: React.FC = () => {
 
 
       {/* ══════════════════════════════════════════════════════
-          3. CINEMATIC DUAL SPOTLIGHT (STUDIO 4K vs TRACK ACTION)
+          3. F1 LIVE CHAMPIONSHIP LEADERBOARD & STANDINGS
           ══════════════════════════════════════════════════════ */}
       <section className="page-section bg-studio-100 border-b border-studio-200">
         <div className="page-container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          {/* Header & Tabs */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
             <div>
-              <span className="label-overline mb-2 block">{strings.spotlightBadge}</span>
+              <div className="flex items-center gap-2 mb-2">
+                <Trophy className="w-4 h-4 text-yellow-500" />
+                <span className="text-[11px] font-mono uppercase tracking-widest text-f1red font-bold">
+                  {strings.leaderboardBadge}
+                </span>
+              </div>
               <h2 className="heading-display text-3xl sm:text-5xl font-light text-studio-950">
-                {strings.spotlightTitle}
+                {strings.leaderboardTitle}
               </h2>
+              <p className="text-xs sm:text-sm font-body text-studio-600 mt-1 max-w-xl font-light">
+                {strings.leaderboardDesc}
+              </p>
+            </div>
+
+            {/* Toggle Tab between Drivers & Constructors */}
+            <div className="flex items-center gap-1.5 bg-white p-1 rounded-sm border border-studio-200 shadow-xs shrink-0">
+              <button
+                onClick={() => setLeaderboardTab('drivers')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xs text-xs font-mono font-bold uppercase tracking-wider transition-all ${
+                  leaderboardTab === 'drivers'
+                    ? 'bg-studio-950 text-white shadow-xs'
+                    : 'text-studio-600 hover:text-studio-950'
+                }`}
+              >
+                <Medal className="w-3.5 h-3.5 text-yellow-400" />
+                <span>{strings.tabDrivers}</span>
+              </button>
+              <button
+                onClick={() => setLeaderboardTab('constructors')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xs text-xs font-mono font-bold uppercase tracking-wider transition-all ${
+                  leaderboardTab === 'constructors'
+                    ? 'bg-studio-950 text-white shadow-xs'
+                    : 'text-studio-600 hover:text-studio-950'
+                }`}
+              >
+                <Trophy className="w-3.5 h-3.5 text-f1red" />
+                <span>{strings.tabConstructors}</span>
+              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Spotlight 1: Studio 4K Precision */}
-            <div
-              onClick={() => setActiveTab('models')}
-              className="group relative rounded-sm overflow-hidden bg-studio-950 border border-studio-300 shadow-subtle hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
-            >
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-studio-950">
-                <img
-                  src="/images/teams/sf24.jpg"
-                  alt="Ferrari SF-24 Studio"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                <span className="absolute top-4 left-4 px-2.5 py-1 bg-black/80 backdrop-blur-md border border-white/20 text-[9.5px] font-mono uppercase tracking-wider text-white font-bold rounded-xs">
-                  {strings.spotlightStudioTitle}
-                </span>
-              </div>
-              <div className="p-6 bg-studio-950 text-white flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xl font-display font-bold text-white group-hover:text-f1red transition-colors mb-2">
-                    {strings.spotlightStudioSubtitle}
-                  </h3>
-                  <p className="text-xs font-body text-white/70 leading-relaxed font-light mb-6">
-                    {strings.spotlightStudioDesc}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-f1red uppercase tracking-wider">
-                  <span>{strings.spotlightStudioCta}</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </div>
+          {/* Standings Table Container */}
+          <div className="bg-white border border-studio-200 rounded-sm shadow-subtle overflow-hidden">
+            {leaderboardTab === 'drivers' ? (
+              /* ── DRIVERS CHAMPIONSHIP TABLE ── */
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-body">
+                  <thead>
+                    <tr className="border-b border-studio-200 bg-studio-50/80 text-[10px] font-mono uppercase tracking-wider text-studio-500">
+                      <th className="py-3.5 px-4 w-16 text-center">{strings.colRank}</th>
+                      <th className="py-3.5 px-4">{strings.colDriver}</th>
+                      <th className="py-3.5 px-4">{strings.colTeam}</th>
+                      <th className="py-3.5 px-4 text-center">{strings.colWins}</th>
+                      <th className="py-3.5 px-4 text-center">{strings.colPodiums}</th>
+                      <th className="py-3.5 px-4 text-right font-bold text-studio-900">{strings.colPoints}</th>
+                      <th className="py-3.5 px-4 text-right">{strings.colGap}</th>
+                      <th className="py-3.5 px-4 text-center w-24">Showroom</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-studio-100">
+                    {DRIVER_STANDINGS.map((d, idx) => {
+                      const isPodium = d.rank <= 3;
+                      const gap = idx === 0 ? 'Leader' : `-${DRIVER_STANDINGS[0].points - d.points}`;
+                      return (
+                        <tr
+                          key={d.driverNumber}
+                          className={`hover:bg-studio-50/80 transition-colors ${
+                            isPodium ? 'bg-studio-50/30 font-medium' : ''
+                          }`}
+                        >
+                          {/* Rank with Podium badges */}
+                          <td className="py-3.5 px-4 text-center">
+                            {d.rank === 1 && (
+                              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-400 text-black font-display font-bold text-xs shadow-xs">
+                                1
+                              </span>
+                            )}
+                            {d.rank === 2 && (
+                              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-zinc-300 text-black font-display font-bold text-xs shadow-xs">
+                                2
+                              </span>
+                            )}
+                            {d.rank === 3 && (
+                              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-600 text-white font-display font-bold text-xs shadow-xs">
+                                3
+                              </span>
+                            )}
+                            {d.rank > 3 && (
+                              <span className="font-mono text-studio-400 font-bold text-xs">
+                                {d.rank}
+                              </span>
+                            )}
+                          </td>
 
-            {/* Spotlight 2: Track Action Thrills */}
-            <div
-              onClick={() => setActiveTab('gallery')}
-              className="group relative rounded-sm overflow-hidden bg-studio-950 border border-studio-300 shadow-subtle hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-between"
-            >
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-studio-950">
-                <img
-                  src="/images/gallery/mcl38_action.jpg"
-                  alt="McLaren MCL38 Marina Bay Action"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                <span className="absolute top-4 left-4 px-2.5 py-1 bg-f1red text-[9.5px] font-mono uppercase tracking-wider text-white font-bold rounded-xs shadow-xs">
-                  {strings.spotlightActionTitle}
-                </span>
+                          {/* Driver Name & Number */}
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="w-1.5 h-6 rounded-full shrink-0"
+                                style={{ background: d.accentColor }}
+                              />
+                              <div>
+                                <span className="font-display font-bold text-studio-950 text-sm block">
+                                  {d.driverName}
+                                </span>
+                                <span className="text-[10px] font-mono text-studio-400 font-medium">
+                                  {d.driverNumber} · {d.country}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Team */}
+                          <td className="py-3.5 px-4 font-body text-studio-600 font-normal">
+                            {d.team}
+                          </td>
+
+                          {/* Wins */}
+                          <td className="py-3.5 px-4 text-center font-mono font-bold text-studio-800">
+                            {d.wins > 0 ? (
+                              <span className="px-2 py-0.5 rounded-xs bg-yellow-100 text-yellow-800 font-bold">
+                                {d.wins}
+                              </span>
+                            ) : (
+                              <span className="text-studio-300">0</span>
+                            )}
+                          </td>
+
+                          {/* Podiums */}
+                          <td className="py-3.5 px-4 text-center font-mono text-studio-700">
+                            {d.podiums}
+                          </td>
+
+                          {/* Points PTS */}
+                          <td className="py-3.5 px-4 text-right">
+                            <span className="font-mono font-bold text-sm text-studio-950 bg-studio-100 px-2 py-0.5 rounded-xs">
+                              {d.points} <span className="text-[9px] text-studio-400 font-normal">PTS</span>
+                            </span>
+                          </td>
+
+                          {/* Gap */}
+                          <td className="py-3.5 px-4 text-right font-mono text-[11px] text-studio-400">
+                            {gap}
+                          </td>
+
+                          {/* Action Link */}
+                          <td className="py-3.5 px-4 text-center">
+                            <button
+                              onClick={() => openCarIn3D(d.carId)}
+                              className="text-[10px] font-mono uppercase tracking-wider font-bold text-f1red hover:underline inline-flex items-center gap-0.5"
+                            >
+                              <span>{strings.viewCarBtn}</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-              <div className="p-6 bg-studio-950 text-white flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xl font-display font-bold text-white group-hover:text-yellow-400 transition-colors mb-2">
-                    {strings.spotlightActionSubtitle}
-                  </h3>
-                  <p className="text-xs font-body text-white/70 leading-relaxed font-light mb-6">
-                    {strings.spotlightActionDesc}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-yellow-400 uppercase tracking-wider">
-                  <span>{strings.spotlightActionCta}</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
+            ) : (
+              /* ── CONSTRUCTORS CHAMPIONSHIP TABLE ── */
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-body">
+                  <thead>
+                    <tr className="border-b border-studio-200 bg-studio-50/80 text-[10px] font-mono uppercase tracking-wider text-studio-500">
+                      <th className="py-3.5 px-4 w-16 text-center">{strings.colRank}</th>
+                      <th className="py-3.5 px-4">{strings.colTeam}</th>
+                      <th className="py-3.5 px-4">{strings.colEngine}</th>
+                      <th className="py-3.5 px-4">{strings.modelRange.driversLabel}</th>
+                      <th className="py-3.5 px-4 text-center">{strings.colWins}</th>
+                      <th className="py-3.5 px-4 text-center">{strings.colPodiums}</th>
+                      <th className="py-3.5 px-4 text-right font-bold text-studio-900">{strings.colPoints}</th>
+                      <th className="py-3.5 px-4 text-center w-24">Showroom</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-studio-100">
+                    {CONSTRUCTOR_STANDINGS.map((c, idx) => {
+                      const maxPts = CONSTRUCTOR_STANDINGS[0].points;
+                      const pct = Math.round((c.points / maxPts) * 100);
+                      return (
+                        <tr
+                          key={c.team}
+                          className="hover:bg-studio-50/80 transition-colors"
+                        >
+                          {/* Rank */}
+                          <td className="py-3.5 px-4 text-center">
+                            {c.rank <= 3 ? (
+                              <span
+                                className={`inline-flex items-center justify-center w-6 h-6 rounded-full font-display font-bold text-xs shadow-xs ${
+                                  c.rank === 1
+                                    ? 'bg-yellow-400 text-black'
+                                    : c.rank === 2
+                                    ? 'bg-zinc-300 text-black'
+                                    : 'bg-amber-600 text-white'
+                                }`}
+                              >
+                                {c.rank}
+                              </span>
+                            ) : (
+                              <span className="font-mono text-studio-400 font-bold text-xs">
+                                {c.rank}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Team Name & Livery Bar */}
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-2.5">
+                              <span
+                                className="w-2 h-7 rounded-xs shrink-0"
+                                style={{ background: c.accentColor }}
+                              />
+                              <div>
+                                <span className="font-display font-bold text-studio-950 text-sm block">
+                                  {c.team}
+                                </span>
+                                <span className="text-[10px] font-mono text-studio-500 font-semibold">
+                                  {c.carName}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Engine */}
+                          <td className="py-3.5 px-4 font-mono text-[11px] text-studio-600">
+                            {c.engine}
+                          </td>
+
+                          {/* Drivers */}
+                          <td className="py-3.5 px-4 font-body text-studio-700">
+                            {c.drivers}
+                          </td>
+
+                          {/* Wins */}
+                          <td className="py-3.5 px-4 text-center font-mono font-bold text-studio-800">
+                            {c.wins > 0 ? (
+                              <span className="px-2 py-0.5 rounded-xs bg-yellow-100 text-yellow-800 font-bold">
+                                {c.wins}
+                              </span>
+                            ) : (
+                              <span className="text-studio-300">0</span>
+                            )}
+                          </td>
+
+                          {/* Podiums */}
+                          <td className="py-3.5 px-4 text-center font-mono text-studio-700">
+                            {c.podiums}
+                          </td>
+
+                          {/* Points PTS & Mini Progress Bar */}
+                          <td className="py-3.5 px-4 text-right">
+                            <div className="flex flex-col items-end gap-1">
+                              <span className="font-mono font-bold text-sm text-studio-950 bg-studio-100 px-2 py-0.5 rounded-xs">
+                                {c.points} <span className="text-[9px] text-studio-400 font-normal">PTS</span>
+                              </span>
+                              <div className="w-20 h-1 bg-studio-200 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full rounded-full transition-all"
+                                  style={{ width: `${pct}%`, background: c.accentColor }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Action */}
+                          <td className="py-3.5 px-4 text-center">
+                            <button
+                              onClick={() => openCarIn3D(c.carId)}
+                              className="text-[10px] font-mono uppercase tracking-wider font-bold text-f1red hover:underline inline-flex items-center gap-0.5"
+                            >
+                              <span>{strings.viewCarBtn}</span>
+                              <ChevronRight className="w-3 h-3" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
