@@ -21,7 +21,8 @@ const CATEGORY_LABELS: Record<string, { vi: string; en: string }> = {
 
 export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, onBack }) => {
   const { lang } = useNavigationStore();
-  const { activeSeason, activeCategory, setActiveSeason, setActiveCategory, items } = useCollectionStore();
+  const { activeSeason, activeCategory, setActiveSeason, setActiveCategory, items } =
+    useCollectionStore();
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -29,19 +30,24 @@ export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, 
   const allItems = items.filter((item) => item.teamId === teamId);
 
   // Get available seasons for this team
-  const seasons = [...new Set(allItems.map((item) => Number(item.season) || 2024))].sort((a, b) => b - a);
+  const seasons = [...new Set(allItems.map((item) => Number(item.season) || 2024))].sort(
+    (a, b) => b - a,
+  );
 
   // Filter items by season + category
   const filteredItems = allItems.filter((item) => {
-    const seasonMatch = activeSeason === 'all' || (item.season && Number(item.season) === activeSeason);
+    const seasonMatch =
+      activeSeason === 'all' || (item.season && Number(item.season) === activeSeason);
     const categoryMatch = activeCategory === 'all' || item.category === activeCategory;
     return seasonMatch && categoryMatch;
   });
 
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);
-  const prevLightbox = () => setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : filteredItems.length - 1));
-  const nextLightbox = () => setLightboxIndex((i) => (i !== null && i < filteredItems.length - 1 ? i + 1 : 0));
+  const prevLightbox = () =>
+    setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : filteredItems.length - 1));
+  const nextLightbox = () =>
+    setLightboxIndex((i) => (i !== null && i < filteredItems.length - 1 ? i + 1 : 0));
 
   const currentLightboxItem = lightboxIndex !== null ? filteredItems[lightboxIndex] : null;
 
@@ -61,7 +67,6 @@ export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, 
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in">
-
       {/* ── Lightbox Modal ── */}
       {currentLightboxItem &&
         createPortal(
@@ -69,99 +74,102 @@ export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, 
             className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
             onClick={closeLightbox}
           >
-          <div
-            className="relative max-w-5xl w-full space-y-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close button */}
-            <button
-              onClick={closeLightbox}
-              className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors"
+            <div
+              className="relative max-w-5xl w-full space-y-4"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-6 h-6" />
-            </button>
+              {/* Close button */}
+              <button
+                onClick={closeLightbox}
+                className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
 
-            {/* Counter */}
-            <div className="absolute -top-10 left-0 text-white/50 text-xs font-mono">
-              {(lightboxIndex ?? 0) + 1} / {filteredItems.length}
-            </div>
+              {/* Counter */}
+              <div className="absolute -top-10 left-0 text-white/50 text-xs font-mono">
+                {(lightboxIndex ?? 0) + 1} / {filteredItems.length}
+              </div>
 
-            {/* Main image */}
-            <div className="relative rounded-xl overflow-hidden bg-studio-950">
-              <img
-                src={currentLightboxItem.imageUrl}
-                alt={lang === 'vi' ? currentLightboxItem.titleVi : currentLightboxItem.titleEn}
-                className="w-full max-h-[70vh] object-contain"
-              />
-              {/* Prev / Next arrows */}
-              {filteredItems.length > 1 && (
-                <>
-                  <button
-                    onClick={prevLightbox}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={nextLightbox}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </>
-              )}
-            </div>
+              {/* Main image */}
+              <div className="relative rounded-xl overflow-hidden bg-studio-950">
+                <img
+                  src={currentLightboxItem.imageUrl}
+                  alt={lang === 'vi' ? currentLightboxItem.titleVi : currentLightboxItem.titleEn}
+                  className="w-full max-h-[70vh] object-contain"
+                />
+                {/* Prev / Next arrows */}
+                {filteredItems.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevLightbox}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={nextLightbox}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </>
+                )}
+              </div>
 
-            {/* Caption + Provenance */}
-            <div className="bg-studio-950/80 rounded-xl p-5 space-y-3">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  <h3 className="font-display font-black text-white text-base">
-                    {lang === 'vi' ? currentLightboxItem.titleVi : currentLightboxItem.titleEn}
-                  </h3>
-                  <p className="text-studio-400 text-xs leading-relaxed">
-                    {lang === 'vi' ? currentLightboxItem.captionVi : currentLightboxItem.captionEn}
-                  </p>
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  {currentLightboxItem.season && (
-                    <span className="px-2 py-0.5 rounded-md bg-white/10 text-white text-[10px] font-bold">
-                      {currentLightboxItem.season}
+              {/* Caption + Provenance */}
+              <div className="bg-studio-950/80 rounded-xl p-5 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-1">
+                    <h3 className="font-display font-black text-white text-base">
+                      {lang === 'vi' ? currentLightboxItem.titleVi : currentLightboxItem.titleEn}
+                    </h3>
+                    <p className="text-studio-400 text-xs leading-relaxed">
+                      {lang === 'vi'
+                        ? currentLightboxItem.captionVi
+                        : currentLightboxItem.captionEn}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    {currentLightboxItem.season && (
+                      <span className="px-2 py-0.5 rounded-md bg-white/10 text-white text-[10px] font-bold">
+                        {currentLightboxItem.season}
+                      </span>
+                    )}
+                    <span className="px-2 py-0.5 rounded-md bg-white/10 text-white text-[10px] font-bold uppercase">
+                      {currentLightboxItem.category}
                     </span>
-                  )}
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-white text-[10px] font-bold uppercase">
-                    {currentLightboxItem.category}
-                  </span>
+                  </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-white/10 pt-3">
-                <div>
-                  <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
-                    {lang === 'vi' ? 'Nhiếp ảnh gia' : 'Photographer'}
-                  </p>
-                  <p className="text-white text-xs font-medium">{currentLightboxItem.photographer}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
-                    {lang === 'vi' ? 'Nguồn ảnh' : 'Source'}
-                  </p>
-                  <p className="text-white text-xs font-medium">{currentLightboxItem.source}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
-                    {lang === 'vi' ? 'Bản quyền' : 'License'}
-                  </p>
-                  <p className="text-white text-xs font-medium">{currentLightboxItem.license}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-white/10 pt-3">
+                  <div>
+                    <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
+                      {lang === 'vi' ? 'Nhiếp ảnh gia' : 'Photographer'}
+                    </p>
+                    <p className="text-white text-xs font-medium">
+                      {currentLightboxItem.photographer}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
+                      {lang === 'vi' ? 'Nguồn ảnh' : 'Source'}
+                    </p>
+                    <p className="text-white text-xs font-medium">{currentLightboxItem.source}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-studio-500 uppercase tracking-wider font-semibold">
+                      {lang === 'vi' ? 'Bản quyền' : 'License'}
+                    </p>
+                    <p className="text-white text-xs font-medium">{currentLightboxItem.license}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>,
-        document.body
-      )}
+          </div>,
+          document.body,
+        )}
 
       <div className="page-container space-y-8 py-10">
-
         {/* ── Back navigation ── */}
         <button
           onClick={onBack}
@@ -256,9 +264,7 @@ export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, 
                   }`}
                 >
                   {CATEGORY_LABELS[cat]?.[lang] ?? cat}
-                  {cat !== 'all' && (
-                    <span className="ml-1 opacity-60">({count})</span>
-                  )}
+                  {cat !== 'all' && <span className="ml-1 opacity-60">({count})</span>}
                 </button>
               );
             })}
@@ -354,11 +360,19 @@ export const TeamCollectionView: React.FC<TeamCollectionViewProps> = ({ teamId, 
             {[
               { label: lang === 'vi' ? 'Đội đua' : 'Team', value: team.fullName },
               { label: lang === 'vi' ? 'Trụ sở' : 'Base', value: team.base },
-              { label: lang === 'vi' ? 'Team Principal' : 'Team Principal', value: team.teamPrincipal },
-              { label: lang === 'vi' ? 'Power Unit' : 'Power Unit', value: team.powerUnit.split(' ').slice(0, 3).join(' ') },
+              {
+                label: lang === 'vi' ? 'Team Principal' : 'Team Principal',
+                value: team.teamPrincipal,
+              },
+              {
+                label: lang === 'vi' ? 'Power Unit' : 'Power Unit',
+                value: team.powerUnit.split(' ').slice(0, 3).join(' '),
+              },
             ].map(({ label, value }) => (
               <div key={label} className="space-y-1">
-                <p className="text-[10px] text-studio-500 uppercase tracking-wider font-bold">{label}</p>
+                <p className="text-[10px] text-studio-500 uppercase tracking-wider font-bold">
+                  {label}
+                </p>
                 <p className="font-semibold text-studio-900 leading-tight">{value}</p>
               </div>
             ))}

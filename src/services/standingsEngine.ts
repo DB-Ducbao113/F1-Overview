@@ -8,7 +8,10 @@ import {
 import { TEAMS_DATA } from '../data/teams';
 
 // Fallback driver metadata map
-const DRIVER_METADATA: Record<string, { code: string; flag: string; teamId: TeamId; teamName: string }> = {
+const DRIVER_METADATA: Record<
+  string,
+  { code: string; flag: string; teamId: TeamId; teamName: string }
+> = {
   verstappen: { code: 'VER', flag: '🇳🇱', teamId: 'redbull', teamName: 'Oracle Red Bull Racing' },
   perez: { code: 'PER', flag: '🇲🇽', teamId: 'redbull', teamName: 'Oracle Red Bull Racing' },
   leclerc: { code: 'LEC', flag: '🇲🇨', teamId: 'ferrari', teamName: 'Scuderia Ferrari HP' },
@@ -46,7 +49,7 @@ export function recalculateStandingsFromRaces(
   season: SeasonYear,
   races: DetailedRaceResult[],
   baseDrivers: DriverStanding[] = [],
-  baseConstructors: ConstructorStanding[] = []
+  baseConstructors: ConstructorStanding[] = [],
 ): { drivers: DriverStanding[]; constructors: ConstructorStanding[] } {
   // If season is already completed (2024 or 2025), standings are official and final
   if (season !== 2026) {
@@ -56,28 +59,34 @@ export function recalculateStandingsFromRaces(
     };
   }
 
-  // For 2026 (ongoing season after 14 events):
-  // Initialize with official baseline standings (reflecting events 1-14)
-  const driverMap = new Map<string, {
-    driverId: string;
-    driverName: string;
-    driverCode: string;
-    teamId: TeamId;
-    teamName: string;
-    points: number;
-    wins: number;
-    podiums: number;
-    countryFlag: string;
-  }>();
+  // For 2026 (ongoing season after 15 events):
+  // Initialize with official baseline standings (reflecting events 1-15)
+  const driverMap = new Map<
+    string,
+    {
+      driverId: string;
+      driverName: string;
+      driverCode: string;
+      teamId: TeamId;
+      teamName: string;
+      points: number;
+      wins: number;
+      podiums: number;
+      countryFlag: string;
+    }
+  >();
 
-  const constructorMap = new Map<string, {
-    teamId: TeamId;
-    teamName: string;
-    points: number;
-    wins: number;
-    podiums: number;
-    engine: string;
-  }>();
+  const constructorMap = new Map<
+    string,
+    {
+      teamId: TeamId;
+      teamName: string;
+      points: number;
+      wins: number;
+      podiums: number;
+      engine: string;
+    }
+  >();
 
   // Initialize driverMap with existing official baseline standings
   baseDrivers.forEach((d) => {
@@ -106,16 +115,16 @@ export function recalculateStandingsFromRaces(
     });
   });
 
-  // Only newly added or simulated races beyond round 14 will contribute additional points
-  // (Rounds 1-14 are already included in the official base points above)
-  const additionalRaces = races.filter((r) => r.status === 'completed' && r.round > 14);
+  // Only races beyond round 15 that are not in the official baseline will contribute additional points
+  // (Rounds 1-15 are already included in the official base points above)
+  const additionalRaces = races.filter((r) => r.status === 'completed' && r.round > 15);
 
   additionalRaces.forEach((race) => {
     race.entries.forEach((entry) => {
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
       if (existingDriver) {
-        existingDriver.points += entry.points || 0;
+        existingDriver.points += (entry.points || 0) + (entry.sprintPoints || 0);
         if (entry.position === 1) existingDriver.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingDriver.podiums += 1;
         existingDriver.teamId = entry.teamId;
@@ -134,7 +143,7 @@ export function recalculateStandingsFromRaces(
           driverCode: dMeta.code,
           teamId: entry.teamId,
           teamName: entry.teamName,
-          points: entry.points || 0,
+          points: (entry.points || 0) + (entry.sprintPoints || 0),
           wins: entry.position === 1 ? 1 : 0,
           podiums: entry.position <= 3 ? 1 : 0,
           countryFlag: dMeta.flag,
@@ -145,7 +154,7 @@ export function recalculateStandingsFromRaces(
       const teamId = entry.teamId;
       const existingTeam = constructorMap.get(teamId);
       if (existingTeam) {
-        existingTeam.points += entry.points || 0;
+        existingTeam.points += (entry.points || 0) + (entry.sprintPoints || 0);
         if (entry.position === 1) existingTeam.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingTeam.podiums += 1;
         constructorMap.set(teamId, existingTeam);
@@ -154,7 +163,7 @@ export function recalculateStandingsFromRaces(
         constructorMap.set(teamId, {
           teamId,
           teamName: teamInfo?.name || entry.teamName,
-          points: entry.points || 0,
+          points: (entry.points || 0) + (entry.sprintPoints || 0),
           wins: entry.position === 1 ? 1 : 0,
           podiums: entry.position <= 3 ? 1 : 0,
           engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',

@@ -1,20 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { NavTab } from '../../types';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, LayoutGrid, Home } from 'lucide-react';
+import { Menu, X, Trophy, LayoutGrid, Home, Users, UserRound } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { activeTab, setActiveTab, lang, setLang } = useNavigationStore();
+  const { lang, setLang } = useNavigationStore();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const strings = t[lang].nav;
 
-  const NAV_ITEMS: { id: NavTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'home', label: strings.home, icon: <Home className="w-4 h-4" /> },
-    { id: 'championship', label: strings.championship, icon: <Trophy className="w-4 h-4" /> },
-    { id: 'collection', label: strings.collection, icon: <LayoutGrid className="w-4 h-4" /> },
+  const NAV_ITEMS = [
+    { id: 'home', path: '/', label: strings.home, icon: <Home className="w-4 h-4" /> },
+    {
+      id: 'championship',
+      path: '/season/2026',
+      label: strings.championship,
+      icon: <Trophy className="w-4 h-4" />,
+    },
+    {
+      id: 'collection',
+      path: '/gallery',
+      label: strings.collection,
+      icon: <LayoutGrid className="w-4 h-4" />,
+    },
+    {
+      id: 'teams',
+      path: '/teams',
+      label: lang === 'vi' ? 'Đội đua' : 'Teams',
+      icon: <Users className="w-4 h-4" />,
+    },
+    {
+      id: 'drivers',
+      path: '/drivers',
+      label: lang === 'vi' ? 'Tay đua' : 'Drivers',
+      icon: <UserRound className="w-4 h-4" />,
+    },
   ];
 
   useEffect(() => {
@@ -22,12 +45,6 @@ export const Navbar: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  const handleNav = (id: NavTab) => {
-    setActiveTab(id);
-    setMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <>
@@ -41,8 +58,8 @@ export const Navbar: React.FC = () => {
       >
         <div className="page-container h-full flex items-center justify-between gap-6">
           {/* Brand Logo */}
-          <button
-            onClick={() => handleNav('home')}
+          <Link
+            to="/"
             className="flex items-center gap-3 group shrink-0 text-left focus:outline-none"
             aria-label="Formula 1 Hub"
           >
@@ -57,16 +74,19 @@ export const Navbar: React.FC = () => {
                 {strings.brandSub}
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-5" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
-              const isActive = activeTab === item.id;
+              const isActive =
+                item.id === 'home'
+                  ? location.pathname === '/'
+                  : location.pathname.startsWith(item.path);
               return (
-                <button
+                <Link
                   key={item.id}
-                  onClick={() => handleNav(item.id)}
+                  to={item.path}
                   className={`flex items-center gap-2 py-1 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
                     isActive
                       ? 'border-f1red text-f1red'
@@ -75,7 +95,7 @@ export const Navbar: React.FC = () => {
                 >
                   <span className={isActive ? 'text-f1red' : 'text-studio-400'}>{item.icon}</span>
                   {item.label}
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -111,7 +131,7 @@ export const Navbar: React.FC = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors"
+              className="lg:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors"
               aria-label="Toggle navigation menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -122,24 +142,32 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden animate-fade-in" onClick={() => setMenuOpen(false)}>
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={() => setMenuOpen(false)}
+        >
           <div
             className="fixed top-16 left-0 right-0 bg-white border-b border-studio-300 shadow-xl p-6 flex flex-col gap-4 animate-slide-down"
             onClick={(e) => e.stopPropagation()}
           >
             {NAV_ITEMS.map((item) => (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => handleNav(item.id)}
+                to={item.path}
+                onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
-                  activeTab === item.id
+                  (
+                    item.id === 'home'
+                      ? location.pathname === '/'
+                      : location.pathname.startsWith(item.path)
+                  )
                     ? 'bg-f1red/10 text-f1red'
                     : 'text-studio-700 hover:bg-studio-100'
                 }`}
               >
                 {item.icon}
                 {item.label}
-              </button>
+              </Link>
             ))}
           </div>
         </div>

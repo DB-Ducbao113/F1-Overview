@@ -49,7 +49,7 @@ const compressImageFile = (
   file: File,
   maxWidth = 1280,
   maxHeight = 1280,
-  quality = 0.82
+  quality = 0.82,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -322,28 +322,47 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                     <Bell className="w-7 h-7" />
                   </div>
                   <p className="text-sm font-bold text-white">Không có thông báo</p>
-                  <p className="text-xs text-studio-400">Chưa có ảnh nào bị từ chối bởi Ban Kiểm Duyệt.</p>
+                  <p className="text-xs text-studio-400">
+                    Chưa có ảnh nào bị từ chối bởi Ban Kiểm Duyệt.
+                  </p>
                 </div>
               ) : (
                 rejectedItems.map((item) => (
-                  <div key={item.id} className="bg-rose-500/5 border border-rose-500/20 rounded-2xl p-4 space-y-2">
+                  <div
+                    key={item.id}
+                    className="bg-rose-500/5 border border-rose-500/20 rounded-2xl p-4 space-y-2"
+                  >
                     <div className="flex items-start gap-3">
                       <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-black/60 border border-white/10">
-                        <img src={item.imageUrl} alt={item.titleVi} className="w-full h-full object-cover" />
+                        <img
+                          src={item.imageUrl}
+                          alt={item.titleVi}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                          <span className="text-xs font-bold text-rose-300 uppercase tracking-wider">Ảnh Bị Từ Chối</span>
+                          <span className="text-xs font-bold text-rose-300 uppercase tracking-wider">
+                            Ảnh Bị Từ Chối
+                          </span>
                         </div>
-                        <p className="text-sm font-bold text-white truncate mt-0.5">{item.titleVi}</p>
-                        <p className="text-[11px] text-studio-400 font-mono">{item.uploadedBy} · {item.createdAt}</p>
+                        <p className="text-sm font-bold text-white truncate mt-0.5">
+                          {item.titleVi}
+                        </p>
+                        <p className="text-[11px] text-studio-400 font-mono">
+                          {item.uploadedBy} · {item.createdAt}
+                        </p>
                       </div>
                     </div>
                     {item.rejectionReason && (
                       <div className="bg-black/40 rounded-xl p-3 border border-rose-500/20">
-                        <p className="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-1">Lý Do Từ Chối:</p>
-                        <p className="text-xs text-studio-200 leading-relaxed">{item.rejectionReason}</p>
+                        <p className="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-1">
+                          Lý Do Từ Chối:
+                        </p>
+                        <p className="text-xs text-studio-200 leading-relaxed">
+                          {item.rejectionReason}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -363,16 +382,29 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
 
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4 max-w-md mx-auto text-left space-y-2">
                 <p className="text-xs text-studio-300">
-                  Ảnh của bạn <span className="font-bold text-white">"{titleVi}"</span> đã được đưa vào hàng chờ kiểm duyệt:
+                  Ảnh của bạn <span className="font-bold text-white">"{titleVi}"</span> đã được đưa
+                  vào hàng chờ kiểm duyệt:
                 </p>
                 <div className="text-[11px] font-mono text-studio-400 space-y-1 bg-black/40 p-3 rounded-lg border border-white/5">
-                  <div>• Mã Submission: <span className="text-amber-400">{submittedId}</span></div>
-                  <div>• Trạng thái: <span className="text-amber-400 font-bold uppercase">Pending Review (Chờ Duyệt)</span></div>
-                  <div>• Người đóng góp: <span className="text-white">{contributorHandle}</span></div>
-                  <div>• Bản quyền: <span className="text-emerald-400">{licenseType}</span></div>
+                  <div>
+                    • Mã Submission: <span className="text-amber-400">{submittedId}</span>
+                  </div>
+                  <div>
+                    • Trạng thái:{' '}
+                    <span className="text-amber-400 font-bold uppercase">
+                      Pending Review (Chờ Duyệt)
+                    </span>
+                  </div>
+                  <div>
+                    • Người đóng góp: <span className="text-white">{contributorHandle}</span>
+                  </div>
+                  <div>
+                    • Bản quyền: <span className="text-emerald-400">{licenseType}</span>
+                  </div>
                 </div>
                 <p className="text-[11px] text-studio-400 italic">
-                  * Sau khi Ban Quản Trị bấm Duyệt (Approve), ảnh sẽ ngay lập tức xuất hiện trong mục Bộ Sưu Tập của đội đua tương ứng.
+                  * Sau khi Ban Quản Trị bấm Duyệt (Approve), ảnh sẽ ngay lập tức xuất hiện trong
+                  mục Bộ Sưu Tập của đội đua tương ứng.
                 </p>
               </div>
 
@@ -405,7 +437,9 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-studio-300 flex items-center justify-between">
                   <span>1. Chọn hoặc Tải Ảnh F1 *</span>
-                  <span className="text-[10px] text-studio-400 font-normal">Hỗ trợ JPG, PNG, WebP (Tối đa 8MB)</span>
+                  <span className="text-[10px] text-studio-400 font-normal">
+                    Hỗ trợ JPG, PNG, WebP (Tối đa 8MB)
+                  </span>
                 </label>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -429,14 +463,18 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                     {isCompressing ? (
                       <>
                         <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-xs font-bold text-amber-300">Đang nén & tối ưu hóa ảnh...</span>
+                        <span className="text-xs font-bold text-amber-300">
+                          Đang nén & tối ưu hóa ảnh...
+                        </span>
                         <span className="text-[10px] text-studio-400">Giảm dung lượng tự động</span>
                       </>
                     ) : (
                       <>
                         <ImageIcon className="w-6 h-6 text-studio-400" />
                         <span className="text-xs font-bold text-white">Tải ảnh từ máy tính</span>
-                        <span className="text-[10px] text-studio-400">Nhấp để chọn file ảnh (Tự động nén tối ưu)</span>
+                        <span className="text-[10px] text-studio-400">
+                          Nhấp để chọn file ảnh (Tự động nén tối ưu)
+                        </span>
                       </>
                     )}
                   </div>
@@ -453,7 +491,9 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                       onChange={(e) => setImageUrl(e.target.value)}
                       className="w-full bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-studio-500 focus:outline-none focus:border-f1red"
                     />
-                    <span className="text-[10px] text-studio-400">Hỗ trợ link ảnh trực tiếp từ Pinterest, Unsplash, v.v.</span>
+                    <span className="text-[10px] text-studio-400">
+                      Hỗ trợ link ảnh trực tiếp từ Pinterest, Unsplash, v.v.
+                    </span>
                   </div>
                 </div>
 
@@ -464,7 +504,11 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                       src={imageUrl}
                       alt="Preview"
                       className="max-h-48 w-full object-contain"
-                      onError={() => setErrorMessage('Không thể tải trước ảnh từ URL này. Vui lòng kiểm tra lại link.')}
+                      onError={() =>
+                        setErrorMessage(
+                          'Không thể tải trước ảnh từ URL này. Vui lòng kiểm tra lại link.',
+                        )
+                      }
                     />
                     <button
                       type="button"
@@ -577,7 +621,8 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                       className="mt-0.5 rounded border-white/20 text-f1red focus:ring-0 w-4 h-4 bg-black"
                     />
                     <span>
-                      Tôi xác nhận tôi là chủ sở hữu bức ảnh này, hoặc có quyền được chia sẻ tác phẩm này lên kho lưu trữ cộng đồng.
+                      Tôi xác nhận tôi là chủ sở hữu bức ảnh này, hoặc có quyền được chia sẻ tác
+                      phẩm này lên kho lưu trữ cộng đồng.
                     </span>
                   </label>
 
@@ -589,13 +634,16 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
                       className="mt-0.5 rounded border-white/20 text-f1red focus:ring-0 w-4 h-4 bg-black"
                     />
                     <span>
-                      Tuân thủ quy chuẩn hình ảnh F1: Không vi phạm nhãn hiệu thương mại, ghi rõ thông tin tác giả và nguồn gốc minh bạch.
+                      Tuân thủ quy chuẩn hình ảnh F1: Không vi phạm nhãn hiệu thương mại, ghi rõ
+                      thông tin tác giả và nguồn gốc minh bạch.
                     </span>
                   </label>
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-4">
-                  <span className="text-[11px] text-studio-400 font-medium">Giấy phép phát hành:</span>
+                  <span className="text-[11px] text-studio-400 font-medium">
+                    Giấy phép phát hành:
+                  </span>
                   <select
                     value={licenseType}
                     onChange={(e) => setLicenseType(e.target.value)}
@@ -642,6 +690,6 @@ export const CommunityUploadModal: React.FC<CommunityUploadModalProps> = ({
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

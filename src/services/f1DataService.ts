@@ -4,12 +4,18 @@ import {
   SeasonYear,
   TeamId,
   F1SyncMetadata,
+  F1SyncReview,
 } from '../types';
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
 
 const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v2';
 const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
+const STORAGE_SYNC_REVIEW_KEY = 'f1_sync_review_v1';
+const STORAGE_DISMISSED_REVIEW_KEY = 'f1_sync_review_dismissed_v1';
+const JOLPICA_API_BASE = import.meta.env.DEV
+  ? '/api/jolpica/ergast/f1'
+  : 'https://api.jolpi.ca/ergast/f1';
 
 // Initial baseline data mapped by season
 export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> = {
@@ -21,6 +27,7 @@ export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> 
 // Map Ergast/Jolpica constructor IDs to our internal TeamId
 const CONSTRUCTOR_MAP: Record<string, TeamId> = {
   red_bull: 'redbull',
+  cadillac: 'cadillac',
   ferrari: 'ferrari',
   mclaren: 'mclaren',
   mercedes: 'mercedes',
@@ -41,15 +48,64 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
     if (raw) {
       const parsed: Record<SeasonYear, DetailedRaceResult[]> = JSON.parse(raw);
       return {
-        2024: parsed[2024] && parsed[2024].length > 0 ? parsed[2024] : INITIAL_DETAILED_RESULTS[2024],
+        2024:
+          parsed[2024] && parsed[2024].length > 0 ? parsed[2024] : INITIAL_DETAILED_RESULTS[2024],
         2025: parsed[2025] || INITIAL_DETAILED_RESULTS[2025],
-        2026: parsed[2026] && parsed[2026].length > 0 ? parsed[2026] : INITIAL_DETAILED_RESULTS[2026],
+        2026: (() => {
+          const saved =
+            parsed[2026] && parsed[2026].length > 0 ? parsed[2026] : INITIAL_DETAILED_RESULTS[2026];
+          const officialRound15 = INITIAL_DETAILED_RESULTS[2026].find((race) => race.round === 15);
+          const merged = saved.filter(
+            (race) =>
+              race.round !== 15 &&
+              !race.id.includes('simulated') &&
+              race.id !== 'race-2026-r1-australia' &&
+              race.id !== 'race-2026-r2-china',
+          );
+          if (officialRound15) merged.push(officialRound15);
+          return merged.sort((a, b) => a.round - b.round);
+        })(),
       };
     }
   } catch {
     // ignore
   }
   return INITIAL_DETAILED_RESULTS;
+}
+
+export function loadSyncReview(): F1SyncReview | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_SYNC_REVIEW_KEY);
+    return raw ? (JSON.parse(raw) as F1SyncReview) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function loadDismissedSyncSignature(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_DISMISSED_REVIEW_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function persistDismissedSyncSignature(signature: string | null): void {
+  try {
+    if (signature) localStorage.setItem(STORAGE_DISMISSED_REVIEW_KEY, signature);
+    else localStorage.removeItem(STORAGE_DISMISSED_REVIEW_KEY);
+  } catch {
+    // Continue with in-memory reconciliation if browser storage is unavailable.
+  }
+}
+
+export function persistSyncReview(review: F1SyncReview | null): void {
+  try {
+    if (review) localStorage.setItem(STORAGE_SYNC_REVIEW_KEY, JSON.stringify(review));
+    else localStorage.removeItem(STORAGE_SYNC_REVIEW_KEY);
+  } catch {
+    // Keep the in-memory review available if browser storage is unavailable.
+  }
 }
 
 /**
@@ -74,16 +130,11 @@ export function loadSyncMetadata(): F1SyncMetadata {
     // ignore
   }
   return {
-    lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }),
+    lastSyncTimestamp: 'Chưa đồng bộ',
     syncStatus: 'idle',
-    source: 'FIA Official Archive & Jolpica Pipeline',
-    completedRoundsCount: 6,
+    source: 'Local snapshot',
+    completedRoundsCount: INITIAL_DETAILED_RESULTS[2026].length,
+    message: 'Đang chờ kiểm tra dữ liệu mới từ Jolpica.',
   };
 }
 
@@ -97,11 +148,11 @@ export function persistSyncMetadata(meta: F1SyncMetadata): void {
 
 /**
  * Sync F1 Season Data:
- * Attempts live fetch from Jolpica/Ergast API with resilient fallback to local archive
+ * Fetches race and sprint classifications from Jolpica, retaining the last saved snapshot if unavailable
  */
 export async function syncF1SeasonData(
   season: SeasonYear,
-  existingResults: DetailedRaceResult[]
+  existingResults: DetailedRaceResult[],
 ): Promise<{
   success: boolean;
   results: DetailedRaceResult[];
@@ -110,8 +161,9 @@ export async function syncF1SeasonData(
 }> {
   try {
     // Try live Ergast/Jolpica API
-    const response = await fetch(`https://api.jolpica.com/ergast/f1/${season}/results.json?limit=1000`, {
+    const response = await fetch(`${JOLPICA_API_BASE}/${season}/results.json?limit=100`, {
       headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(12000),
     });
 
     if (response.ok) {
@@ -119,6 +171,31 @@ export async function syncF1SeasonData(
       const racesApi = data?.MRData?.RaceTable?.Races;
 
       if (Array.isArray(racesApi) && racesApi.length > 0) {
+        let sprintPointsByRoundDriver = new Map<string, number>();
+        try {
+          const sprintResponse = await fetch(
+            `${JOLPICA_API_BASE}/${season}/sprint.json?limit=100`,
+            {
+              headers: { Accept: 'application/json' },
+              signal: AbortSignal.timeout(12000),
+            },
+          );
+          if (sprintResponse.ok) {
+            const sprintRaces = (await sprintResponse.json())?.MRData?.RaceTable?.Races || [];
+            sprintPointsByRoundDriver = new Map(
+              sprintRaces.flatMap((sprintRace: any) =>
+                (sprintRace.SprintResults || []).map((entry: any) => [
+                  `${parseInt(sprintRace.round, 10)}:${entry.Driver?.driverId}`,
+                  parseFloat(entry.points) || 0,
+                ]),
+              ),
+            );
+          }
+        } catch {
+          // Grand Prix classifications can still refresh if sprint data is unavailable.
+        }
+
+        const syncedAt = new Date().toISOString();
         const transformed: DetailedRaceResult[] = racesApi.map((race: any) => {
           const entries: DetailedRaceResultEntry[] = (race.Results || []).map((res: any) => {
             const teamId = CONSTRUCTOR_MAP[res.Constructor?.constructorId] || 'redbull';
@@ -135,6 +212,10 @@ export async function syncF1SeasonData(
               status: res.status || 'Finished',
               timeOrGap: res.Time?.time || res.status || '+1 Lap',
               points: parseFloat(res.points) || 0,
+              sprintPoints:
+                sprintPointsByRoundDriver.get(
+                  `${parseInt(race.round, 10)}:${res.Driver?.driverId}`,
+                ) || 0,
               fastestLap: res.FastestLap?.rank === '1',
               fastestLapTime: res.FastestLap?.Time?.time,
               gridPosition: parseInt(res.grid, 10) || undefined,
@@ -151,10 +232,16 @@ export async function syncF1SeasonData(
             location: race.Circuit?.Location?.locality,
             country: race.Circuit?.Location?.country,
             date: race.date,
+            dataSource: 'Jolpica F1 API',
+            dataUpdatedAt: syncedAt,
             status: 'completed',
             lapsTotal: entries[0]?.laps || 57,
             winner: entries[0]
-              ? { driver: entries[0].driverName, team: entries[0].teamName, time: entries[0].timeOrGap }
+              ? {
+                  driver: entries[0].driverName,
+                  team: entries[0].teamName,
+                  time: entries[0].timeOrGap,
+                }
               : undefined,
             fastestLap: entries.find((e) => e.fastestLap)
               ? {
@@ -167,11 +254,19 @@ export async function syncF1SeasonData(
           };
         });
 
+        const raceByRound = new Map(transformed.map((race) => [race.round, race]));
+        if (season === 2026) {
+          INITIAL_DETAILED_RESULTS[2026]
+            .filter((race) => race.round === 15)
+            .forEach((race) => raceByRound.set(race.round, race));
+        }
+        const syncedResults = [...raceByRound.values()].sort((a, b) => a.round - b.round);
+
         return {
           success: true,
-          results: transformed,
-          message: `Đã đồng bộ thành công ${transformed.length} chặng đua từ Jolpica Live API.`,
-          source: 'Jolpica Live F1 API',
+          results: syncedResults,
+          message: `Đã đồng bộ ${syncedResults.length} chặng, gồm cả điểm Sprint nếu có, từ Jolpica.`,
+          source: 'Jolpica F1 API',
         };
       }
     }
@@ -179,65 +274,12 @@ export async function syncF1SeasonData(
     // Network or DNS restriction occurred, fall through to high-fidelity cache
   }
 
-  // Resilient Fallback: Use verified baseline local data
-  const fallback = INITIAL_DETAILED_RESULTS[season] || existingResults;
+  // Keep the last saved snapshot visible, but report the failed refresh honestly.
+  const fallback = existingResults.length > 0 ? existingResults : INITIAL_DETAILED_RESULTS[season];
   return {
-    success: true,
+    success: false,
     results: fallback,
-    message: `Đã đồng bộ và xác minh ${fallback.length} chặng đua từ Kho Dữ Liệu FIA Archive.`,
-    source: 'FIA Official Archive (Local Sync)',
+    message: 'Không thể kết nối Jolpica lúc này; đang giữ dữ liệu đã lưu gần nhất.',
+    source: 'Local saved snapshot',
   };
-}
-
-/**
- * Simulation helper for testing automated race completion & standings recalculation:
- * Simulates the completion of the next round (e.g. Round 3 Japanese GP 2026)
- */
-export function simulateNextGrandPrixCompletion(
-  season: SeasonYear,
-  currentRaces: DetailedRaceResult[]
-): { updatedRaces: DetailedRaceResult[]; newRace: DetailedRaceResult } {
-  const nextRoundNumber = season === 2026 ? 15 : currentRaces.length + 1;
-  const newRaceId = `race-${season}-r${nextRoundNumber}-azerbaijan-simulated`;
-
-  const newRace: DetailedRaceResult = {
-    id: newRaceId,
-    season,
-    round: nextRoundNumber,
-    grandPrix: 'Azerbaijan Grand Prix',
-    officialName: `FORMULA 1 QATAR AIRWAYS AZERBAIJAN GRAND PRIX ${season}`,
-    circuit: 'Baku City Circuit, Baku',
-    location: 'Baku',
-    country: 'Azerbaijan',
-    date: '20 Sep 2026',
-    status: 'completed',
-    lapsTotal: 51,
-    winner: { driver: 'Max Verstappen', team: 'Oracle Red Bull Racing', time: '1:34:05.945' },
-    fastestLap: { driver: 'Max Verstappen', team: 'Oracle Red Bull Racing', time: '1:43.009' },
-    entries: [
-      { position: 1, driverId: 'verstappen', driverName: 'Max Verstappen', driverCode: 'VER', driverNumber: 1, teamId: 'redbull', teamName: 'Oracle Red Bull Racing', laps: 51, status: 'Finished', timeOrGap: '1:34:05.945', points: 26, fastestLap: true, fastestLapTime: '1:43.009', gridPosition: 1 },
-      { position: 2, driverId: 'norris', driverName: 'Lando Norris', driverCode: 'NOR', driverNumber: 4, teamId: 'mclaren', teamName: 'McLaren Formula 1 Team', laps: 51, status: 'Finished', timeOrGap: '+3.140s', points: 18, gridPosition: 2 },
-      { position: 3, driverId: 'hamilton', driverName: 'Lewis Hamilton', driverCode: 'HAM', driverNumber: 44, teamId: 'ferrari', teamName: 'Scuderia Ferrari HP', laps: 51, status: 'Finished', timeOrGap: '+7.890s', points: 15, gridPosition: 3 },
-      { position: 4, driverId: 'leclerc', driverName: 'Charles Leclerc', driverCode: 'LEC', driverNumber: 16, teamId: 'ferrari', teamName: 'Scuderia Ferrari HP', laps: 51, status: 'Finished', timeOrGap: '+12.450s', points: 12, gridPosition: 4 },
-      { position: 5, driverId: 'piastri', driverName: 'Oscar Piastri', driverCode: 'PIA', driverNumber: 81, teamId: 'mclaren', teamName: 'McLaren Formula 1 Team', laps: 51, status: 'Finished', timeOrGap: '+18.230s', points: 10, gridPosition: 5 },
-      { position: 6, driverId: 'russell', driverName: 'George Russell', driverCode: 'RUS', driverNumber: 63, teamId: 'mercedes', teamName: 'Mercedes-AMG PETRONAS F1', laps: 51, status: 'Finished', timeOrGap: '+24.110s', points: 8, gridPosition: 6 },
-      { position: 7, driverId: 'antonelli', driverName: 'Kimi Antonelli', driverCode: 'ANT', driverNumber: 12, teamId: 'mercedes', teamName: 'Mercedes-AMG PETRONAS F1', laps: 51, status: 'Finished', timeOrGap: '+30.450s', points: 6, gridPosition: 7 },
-      { position: 8, driverId: 'tsunoda', driverName: 'Yuki Tsunoda', driverCode: 'TSU', driverNumber: 22, teamId: 'racingbulls', teamName: 'Visa Cash App RB F1', laps: 51, status: 'Finished', timeOrGap: '+39.120s', points: 4, gridPosition: 8 },
-      { position: 9, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', driverNumber: 14, teamId: 'astonmartin', teamName: 'Aston Martin Aramco F1', laps: 51, status: 'Finished', timeOrGap: '+47.600s', points: 2, gridPosition: 9 },
-      { position: 10, driverId: 'sainz', driverName: 'Carlos Sainz', driverCode: 'SAI', driverNumber: 55, teamId: 'williams', teamName: 'Williams Racing', laps: 51, status: 'Finished', timeOrGap: '+54.320s', points: 1, gridPosition: 10 },
-      { position: 11, driverId: 'albon', driverName: 'Alexander Albon', driverCode: 'ALB', driverNumber: 23, teamId: 'williams', teamName: 'Williams Racing', laps: 51, status: 'Finished', timeOrGap: '+61.200s', points: 0, gridPosition: 11 },
-      { position: 12, driverId: 'hulkenberg', driverName: 'Nico Hülkenberg', driverCode: 'HUL', driverNumber: 27, teamId: 'audi', teamName: 'Audi Formula 1 Team', laps: 51, status: 'Finished', timeOrGap: '+68.450s', points: 0, gridPosition: 12 },
-      { position: 13, driverId: 'lawson', driverName: 'Liam Lawson', driverCode: 'LAW', driverNumber: 30, teamId: 'redbull', teamName: 'Oracle Red Bull Racing', laps: 51, status: 'Finished', timeOrGap: '+74.800s', points: 0, gridPosition: 13 },
-      { position: 14, driverId: 'bearman', driverName: 'Oliver Bearman', driverCode: 'BEA', driverNumber: 87, teamId: 'haas', teamName: 'MoneyGram Haas F1 Team', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 14 },
-      { position: 15, driverId: 'gasly', driverName: 'Pierre Gasly', driverCode: 'GAS', driverNumber: 10, teamId: 'alpine', teamName: 'BWT Alpine F1 Team', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 15 },
-      { position: 16, driverId: 'bortoleto', driverName: 'Gabriel Bortoleto', driverCode: 'BOR', driverNumber: 5, teamId: 'audi', teamName: 'Audi Formula 1 Team', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 16 },
-      { position: 17, driverId: 'stroll', driverName: 'Lance Stroll', driverCode: 'STR', driverNumber: 18, teamId: 'astonmartin', teamName: 'Aston Martin Aramco F1', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 17 },
-      { position: 18, driverId: 'ocon', driverName: 'Esteban Ocon', driverCode: 'OCO', driverNumber: 31, teamId: 'haas', teamName: 'MoneyGram Haas F1 Team', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 18 },
-      { position: 19, driverId: 'hadjar', driverName: 'Isack Hadjar', driverCode: 'HAD', driverNumber: 6, teamId: 'racingbulls', teamName: 'Visa Cash App RB F1', laps: 50, status: '+1 Lap', timeOrGap: '+1 Lap', points: 0, gridPosition: 19 },
-      { position: 20, driverId: 'doohan', driverName: 'Jack Doohan', driverCode: 'DOO', driverNumber: 7, teamId: 'alpine', teamName: 'BWT Alpine F1 Team', laps: 28, status: 'DNF (Collision)', timeOrGap: 'Lap 28', points: 0, gridPosition: 20 },
-    ],
-  };
-
-  const updatedRaces = [...currentRaces.filter(r => r.round !== 15), newRace];
-  return { updatedRaces, newRace };
 }

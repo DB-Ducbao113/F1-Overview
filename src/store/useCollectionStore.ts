@@ -72,9 +72,7 @@ const loadPendingItems = (): CollectionItem[] => {
     if (raw) {
       const parsed: unknown = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        return parsed
-          .map(sanitizeLoadedItem)
-          .filter((p): p is CollectionItem => p !== null);
+        return parsed.map(sanitizeLoadedItem).filter((p): p is CollectionItem => p !== null);
       }
     }
   } catch {
@@ -134,14 +132,15 @@ export const useCollectionStore = create<CollectionStoreState>((set, get) => ({
     try {
       const raw = localStorage.getItem('f1_collection_rejected');
       return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   })(),
 
   selectTeam: (teamId) =>
     set({ selectedTeamId: teamId, activeSeason: 'all', activeCategory: 'all' }),
 
-  clearTeam: () =>
-    set({ selectedTeamId: null, activeSeason: 'all', activeCategory: 'all' }),
+  clearTeam: () => set({ selectedTeamId: null, activeSeason: 'all', activeCategory: 'all' }),
 
   setActiveSeason: (season) => set({ activeSeason: season }),
 
@@ -233,11 +232,14 @@ export const useCollectionStore = create<CollectionStoreState>((set, get) => ({
       };
       // Persist rejected items so contributors can see notification
       const STORAGE_REJECTED_KEY = 'f1_collection_rejected';
-      let existingRejected: CollectionItem[] = [];
-      try {
-        const raw = localStorage.getItem(STORAGE_REJECTED_KEY);
-        existingRejected = raw ? JSON.parse(raw) : [];
-      } catch { existingRejected = []; }
+      const existingRejected: CollectionItem[] = (() => {
+        try {
+          const raw = localStorage.getItem(STORAGE_REJECTED_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch {
+          return [];
+        }
+      })();
       const nextRejected = [rejectedItem, ...existingRejected.filter((i) => i.id !== id)];
       try {
         localStorage.setItem(STORAGE_REJECTED_KEY, JSON.stringify(nextRejected));
@@ -249,7 +251,9 @@ export const useCollectionStore = create<CollectionStoreState>((set, get) => ({
     } else {
       try {
         localStorage.setItem(STORAGE_PENDING_KEY, JSON.stringify(nextPending));
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       set({ pendingItems: nextPending });
     }
   },
@@ -265,7 +269,7 @@ export const useCollectionStore = create<CollectionStoreState>((set, get) => ({
     const userApproved = loadUserApprovedItems();
     if (userApproved.some((i) => i.id === id)) {
       const nextUserApproved = userApproved.map((i) =>
-        i.id === id ? { ...i, likes: (i.likes || 0) + 1 } : i
+        i.id === id ? { ...i, likes: (i.likes || 0) + 1 } : i,
       );
       try {
         localStorage.setItem(STORAGE_APPROVED_KEY, JSON.stringify(nextUserApproved));

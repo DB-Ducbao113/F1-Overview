@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { getStandings } from '../../data/championship';
 import { TEAMS_DATA } from '../../data/teams';
+import { DRIVERS_DATA } from '../../data/drivers';
 import { SeasonYear } from '../../types';
 import { t } from '../../i18n/translations';
 import { useNavigationStore } from '../../store/useNavigationStore';
@@ -33,7 +35,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
   const dynamicLeaderTitle =
     isOngoing && leaderDriver && leaderConstructor
       ? `CURRENT CHAMPIONSHIP LEADER: ${leaderDriver.driverName.toUpperCase()} (${leaderDriver.points} PTS) · ${leaderConstructor.teamName.toUpperCase()} (${leaderConstructor.points} PTS)`
-      : (rawStandings.leaderTitle || `${strings.title} ${season}`);
+      : rawStandings.leaderTitle || `${strings.title} ${season}`;
 
   return (
     <div className="space-y-6">
@@ -56,36 +58,49 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-100 text-studio-700 text-xs font-black uppercase tracking-wider border border-studio-200">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{lang === 'vi' ? 'Kết quả chung cuộc chính thức' : 'Official Final Standings'}</span>
+                  <span>
+                    {lang === 'vi' ? 'Kết quả chung cuộc chính thức' : 'Official Final Standings'}
+                  </span>
                 </span>
               )}
 
               {isCalculated && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">
-                  ⚡ {lang === 'vi' ? 'Động: Tính từ Race Results' : 'Dynamic: Calculated from Race Results'}
+                  ⚡{' '}
+                  {lang === 'vi'
+                    ? 'Động: Tính từ Race Results'
+                    : 'Dynamic: Calculated from Race Results'}
                 </span>
               )}
 
               {rawStandings.lastUpdated && (
-                <span className={`inline-flex items-center gap-1 text-[11px] ${isOngoing ? 'text-studio-300' : 'text-studio-500'}`}>
+                <span
+                  className={`inline-flex items-center gap-1 text-[11px] ${isOngoing ? 'text-studio-300' : 'text-studio-500'}`}
+                >
                   <Clock className="w-3 h-3" />
-                  <span>{lang === 'vi' ? 'Cập nhật:' : 'Last updated:'} {rawStandings.lastUpdated}</span>
+                  <span>
+                    {lang === 'vi' ? 'Cập nhật:' : 'Last updated:'} {rawStandings.lastUpdated}
+                  </span>
                 </span>
               )}
             </div>
 
-            <h3 className={`font-display text-lg sm:text-xl font-black uppercase tracking-tight ${isOngoing ? 'text-white' : 'text-studio-950'}`}>
+            <h3
+              className={`font-display text-lg sm:text-xl font-black uppercase tracking-tight ${isOngoing ? 'text-white' : 'text-studio-950'}`}
+            >
               {dynamicLeaderTitle}
             </h3>
 
-            <p className={`text-xs max-w-2xl leading-relaxed ${isOngoing ? 'text-studio-300' : 'text-studio-600'}`}>
+            <p
+              className={`text-xs max-w-2xl leading-relaxed ${isOngoing ? 'text-studio-300' : 'text-studio-600'}`}
+            >
               {isOngoing
-                ? (lang === 'vi'
-                    ? 'Bảng điểm chính thức hiện tại sau 14 sự kiện theo Formula 1®. Đây là điểm số tích lũy tại thời điểm thi đấu hiện tại (Grand Prix, Sprint, Fastest Lap), không phải kết quả chung cuộc.'
-                    : 'Official live standings after 14 events per Formula 1®. Reflects cumulative current points (Grand Prix, Sprint, Fastest Lap), not final season totals.')
-                : (lang === 'vi'
-                    ? `Dữ liệu chung cuộc mùa giải ${season} đã kết thúc, được đối soát 100% chuẩn xác với cơ sở dữ liệu FIA Formula 1.`
-                    : `Official final classification for the completed ${season} FIA Formula 1 World Championship season.`)}
+                ? lang === 'vi'
+                  ? 'Bảng điểm chính thức hiện tại sau 15 sự kiện theo Formula 1®. Đây là điểm số tích lũy tại thời điểm thi đấu hiện tại (Grand Prix, Sprint, Fastest Lap), không phải kết quả chung cuộc.'
+                  : 'Official live standings after 15 events per Formula 1®. Reflects cumulative current points (Grand Prix, Sprint, Fastest Lap), not final season totals.'
+                : lang === 'vi'
+                  ? `Dữ liệu chung cuộc mùa giải ${season} đã kết thúc, được đối soát 100% chuẩn xác với cơ sở dữ liệu FIA Formula 1.`
+                  : `Official final classification for the completed ${season} FIA Formula 1 World Championship season.`}
             </p>
           </div>
 
@@ -143,7 +158,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                   <th className="py-3.5 px-4">{strings.team}</th>
                   <th className="py-3.5 px-4 text-center">{strings.wins}</th>
                   <th className="py-3.5 px-4 text-center">{strings.podiums}</th>
-                  <th className="py-3.5 px-6 text-right font-black text-studio-950">{strings.points}</th>
+                  <th className="py-3.5 px-6 text-right font-black text-studio-950">
+                    {strings.points}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-studio-100">
@@ -160,10 +177,10 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                             driver.rank === 1
                               ? 'bg-amber-400 text-black shadow-xs'
                               : driver.rank === 2
-                              ? 'bg-studio-300 text-studio-900'
-                              : driver.rank === 3
-                              ? 'bg-amber-700 text-white'
-                              : 'text-studio-700'
+                                ? 'bg-studio-300 text-studio-900'
+                                : driver.rank === 3
+                                  ? 'bg-amber-700 text-white'
+                                  : 'text-studio-700'
                           }`}
                         >
                           {driver.rank}
@@ -175,9 +192,18 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                             {driver.countryFlag}
                           </span>
                           <div>
-                            <span className="font-bold text-studio-900 block text-sm">
-                              {driver.driverName}
-                            </span>
+                            {DRIVERS_DATA[driver.driverId] ? (
+                              <Link
+                                to={`/drivers/${driver.driverId}`}
+                                className="font-bold text-studio-900 block text-sm hover:text-f1red"
+                              >
+                                {driver.driverName}
+                              </Link>
+                            ) : (
+                              <span className="font-bold text-studio-900 block text-sm">
+                                {driver.driverName}
+                              </span>
+                            )}
                             <span className="text-[10px] text-studio-400 font-mono">
                               {driver.driverCode}
                             </span>
@@ -190,7 +216,12 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: team?.primaryColor || '#999' }}
                           />
-                          <span className="font-semibold text-studio-700">{driver.teamName}</span>
+                          <Link
+                            to={`/teams/${driver.teamId}`}
+                            className="font-semibold text-studio-700 hover:text-f1red"
+                          >
+                            {driver.teamName}
+                          </Link>
                         </div>
                       </td>
                       <td className="py-3.5 px-4 text-center font-semibold text-studio-700">
@@ -223,24 +254,29 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                   <th className="py-3.5 px-4">{strings.engine}</th>
                   <th className="py-3.5 px-4 text-center">{strings.wins}</th>
                   <th className="py-3.5 px-4 text-center">{strings.podiums}</th>
-                  <th className="py-3.5 px-6 text-right font-black text-studio-950">{strings.points}</th>
+                  <th className="py-3.5 px-6 text-right font-black text-studio-950">
+                    {strings.points}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-studio-100">
                 {activeConstructors.map((c) => {
                   const team = TEAMS_DATA[c.teamId];
                   return (
-                    <tr key={`${c.teamId}-${c.rank}`} className="hover:bg-studio-50 transition-colors">
+                    <tr
+                      key={`${c.teamId}-${c.rank}`}
+                      className="hover:bg-studio-50 transition-colors"
+                    >
                       <td className="py-3.5 px-4 text-center font-display font-black text-sm">
                         <span
                           className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${
                             c.rank === 1
                               ? 'bg-amber-400 text-black shadow-xs'
                               : c.rank === 2
-                              ? 'bg-studio-300 text-studio-900'
-                              : c.rank === 3
-                              ? 'bg-amber-700 text-white'
-                              : 'text-studio-700'
+                                ? 'bg-studio-300 text-studio-900'
+                                : c.rank === 3
+                                  ? 'bg-amber-700 text-white'
+                                  : 'text-studio-700'
                           }`}
                         >
                           {c.rank}
@@ -252,7 +288,12 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
                             className="w-3 h-3 rounded-full shrink-0"
                             style={{ backgroundColor: team?.primaryColor || '#999' }}
                           />
-                          <span className="font-bold text-studio-900 text-sm">{c.teamName}</span>
+                          <Link
+                            to={`/teams/${c.teamId}`}
+                            className="font-bold text-studio-900 text-sm hover:text-f1red"
+                          >
+                            {c.teamName}
+                          </Link>
                         </div>
                       </td>
                       <td className="py-3.5 px-4 font-medium text-studio-600">{c.engine}</td>

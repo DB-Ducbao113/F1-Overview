@@ -1,4 +1,5 @@
 import { CarSpec } from '../../types';
+import { createCatalogCar } from './catalogEntry';
 
 export const CARS_2024: CarSpec[] = [
   {
@@ -25,11 +26,14 @@ export const CARS_2024: CarSpec[] = [
       frontSuspension: 'Pull-rod actuated wishbone & torsion spring',
       rearSuspension: 'Push-rod multi-link aerodynamic geometry',
       aeroPhilosophy: 'Hốc gió đảo ngược Overbite độc đáo kết hợp hai rãnh xả nhiệt lưng gù lớn.',
-      groundEffectNotes: 'Đường hầm Venturi đáy sàn tạo lực hút cực lớn với độ ổn định cao trên mọi dải tốc độ.',
+      groundEffectNotes:
+        'Đường hầm Venturi đáy sàn tạo lực hút cực lớn với độ ổn định cao trên mọi dải tốc độ.',
       chassisConstruction: 'Molded carbon fiber composite monocoque honeycomb',
     },
-    descriptionVi: 'Cỗ máy vô địch thế giới 2024 với thiết kế khí động học cách mạng Overbite inlet và kiểm soát luồng khí tinh tế của Adrian Newey.',
-    descriptionEn: 'The 2024 Constructors and Drivers World Championship machine featuring revolutionary overbite air intakes and masterful underfloor management.',
+    descriptionVi:
+      'Cỗ máy vô địch thế giới 2024 với thiết kế khí động học cách mạng Overbite inlet và kiểm soát luồng khí tinh tế của Adrian Newey.',
+    descriptionEn:
+      'The 2024 Constructors and Drivers World Championship machine featuring revolutionary overbite air intakes and masterful underfloor management.',
     heroImage: '/images/teams/rb20.jpg',
     studioImage: '/images/teams/rb20.jpg',
     has3DModel: true,
@@ -59,11 +63,14 @@ export const CARS_2024: CarSpec[] = [
       frontSuspension: 'Pull-rod front assembly',
       rearSuspension: 'Push-rod rear packaging',
       aeroPhilosophy: 'Thắt eo Coke-Bottle khí động học sâu với bề mặt carbon trần siêu nhẹ.',
-      groundEffectNotes: 'Sàn xe dải rộng mang lại độ bám đường đỉnh cao từ cua chậm đến cua tốc độ cao.',
+      groundEffectNotes:
+        'Sàn xe dải rộng mang lại độ bám đường đỉnh cao từ cua chậm đến cua tốc độ cao.',
       chassisConstruction: 'McLaren carbon-fibre composite monocoque',
     },
-    descriptionVi: 'Chiếc xe mang lại chức Vô địch Đội đua Thế giới 2024 cho McLaren với sự cân bằng hoàn hảo và tốc độ phát triển nâng cấp vượt bậc.',
-    descriptionEn: 'The car that secured the 2024 Constructors World Championship for McLaren through relentless development and aerodynamic balance.',
+    descriptionVi:
+      'Chiếc xe mang lại chức Vô địch Đội đua Thế giới 2024 cho McLaren với sự cân bằng hoàn hảo và tốc độ phát triển nâng cấp vượt bậc.',
+    descriptionEn:
+      'The car that secured the 2024 Constructors World Championship for McLaren through relentless development and aerodynamic balance.',
     heroImage: '/images/teams/mcl.jpg',
     studioImage: '/images/teams/mcl.jpg',
     has3DModel: true,
@@ -92,12 +99,16 @@ export const CARS_2024: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Push-rod wishbone',
       rearSuspension: 'Pull-rod compact configuration',
-      aeroPhilosophy: 'Máng trượt sidepod hạ thấp hướng luồng khí trực tiếp vào bộ dầm cánh sau beam wing.',
-      groundEffectNotes: 'Kênh Venturi dốc đều về bộ khuếch tán diffuser giữ lực ép ổn định khi xe phanh dốc.',
+      aeroPhilosophy:
+        'Máng trượt sidepod hạ thấp hướng luồng khí trực tiếp vào bộ dầm cánh sau beam wing.',
+      groundEffectNotes:
+        'Kênh Venturi dốc đều về bộ khuếch tán diffuser giữ lực ép ổn định khi xe phanh dốc.',
       chassisConstruction: 'Carbon-fibre and honeycomb composite structure',
     },
-    descriptionVi: 'SF-24 hồi sinh phong độ ấn tượng của Ferrari tại Monza, Monaco và Austin với khả năng giữ lốp và độ đầm chắc khi vào cua gắt.',
-    descriptionEn: 'The SF-24 delivered iconic victories at Monaco and Monza, offering exceptional ride stability and superior tire management.',
+    descriptionVi:
+      'SF-24 hồi sinh phong độ ấn tượng của Ferrari tại Monza, Monaco và Austin với khả năng giữ lốp và độ đầm chắc khi vào cua gắt.',
+    descriptionEn:
+      'The SF-24 delivered iconic victories at Monaco and Monza, offering exceptional ride stability and superior tire management.',
     heroImage: '/images/teams/sf24.jpg',
     studioImage: '/images/teams/sf24.jpg',
     has3DModel: true,
@@ -126,15 +137,43 @@ export const CARS_2024: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Push-rod with anti-dive geometry',
       rearSuspension: 'Push-rod inboard spring damper',
-      aeroPhilosophy: 'Mũi xe Arrow vuốt nhọn, loại bỏ hoàn toàn triết lý zeropod cũ để đón nhận cấu trúc sidepod truyền thống.',
-      groundEffectNotes: 'Hầm Venturi cải tiến triệt tiêu hiện tượng nảy gầm porpoising của thế hệ trước.',
+      aeroPhilosophy:
+        'Mũi xe Arrow vuốt nhọn, loại bỏ hoàn toàn triết lý zeropod cũ để đón nhận cấu trúc sidepod truyền thống.',
+      groundEffectNotes:
+        'Hầm Venturi cải tiến triệt tiêu hiện tượng nảy gầm porpoising của thế hệ trước.',
       chassisConstruction: 'Carbon-fibre and Kevlar composite monocoque',
     },
-    descriptionVi: 'Bước ngoặt kỹ thuật của Mercedes với việc tái thiết lập khung gầm và hệ thống treo, giành chiến thắng lịch sử tại Silverstone và Spa.',
-    descriptionEn: 'A pivotal technical reset for Mercedes, ditching previous experimental concepts in favor of aerodynamic predictability.',
+    descriptionVi:
+      'Bước ngoặt kỹ thuật của Mercedes với việc tái thiết lập khung gầm và hệ thống treo, giành chiến thắng lịch sử tại Silverstone và Spa.',
+    descriptionEn:
+      'A pivotal technical reset for Mercedes, ditching previous experimental concepts in favor of aerodynamic predictability.',
     heroImage: '/images/teams/w15.jpg',
     studioImage: '/images/teams/w15.jpg',
     has3DModel: true,
     model3DId: 'w15',
   },
+  createCatalogCar(2024, 'astonmartin', 'Aston Martin AMR24', 'AMR24', 'Mercedes', [
+    'Fernando Alonso #14',
+    'Lance Stroll #18',
+  ]),
+  createCatalogCar(2024, 'alpine', 'Alpine A524', 'A524', 'Renault', [
+    'Pierre Gasly #10',
+    'Jack Doohan #7',
+  ]),
+  createCatalogCar(2024, 'racingbulls', 'RB VCARB 01', 'VCARB 01', 'Honda RBPT', [
+    'Yuki Tsunoda #22',
+    'Liam Lawson #30',
+  ]),
+  createCatalogCar(2024, 'haas', 'MoneyGram Haas VF-24', 'VF-24', 'Ferrari', [
+    'Nico Hülkenberg #27',
+    'Kevin Magnussen #20',
+  ]),
+  createCatalogCar(2024, 'williams', 'Williams FW46', 'FW46', 'Mercedes', [
+    'Alexander Albon #23',
+    'Franco Colapinto #43',
+  ]),
+  createCatalogCar(2024, 'audi', 'Stake F1 Team Kick Sauber C44', 'C44', 'Ferrari', [
+    'Valtteri Bottas #77',
+    'Zhou Guanyu #24',
+  ]),
 ];

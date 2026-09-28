@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import {
-  getTopFavoriteCollectionItems,
-  FAVORITE_SELECTION_RULES,
-} from '../../data/collections';
+import { getTopFavoriteCollectionItems, FAVORITE_SELECTION_RULES } from '../../data/collections';
 import { TEAMS_DATA } from '../../data/teams';
 import { CollectionItem } from '../../types';
 import {
@@ -24,7 +22,8 @@ import {
 } from 'lucide-react';
 
 export const MostLovedShowcase: React.FC = () => {
-  const { lang, setActiveTab } = useNavigationStore();
+  const { lang } = useNavigationStore();
+  const navigate = useNavigate();
   const topItems = getTopFavoriteCollectionItems(6);
 
   // Active index for sliding
@@ -123,9 +122,7 @@ export const MostLovedShowcase: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 border border-pink-200 text-f1red text-[11px] font-bold uppercase tracking-wider mb-2">
             <Heart className="w-3.5 h-3.5 fill-current" />
-            <span>
-              {lang === 'vi' ? 'Tuyển Chọn Được Yêu Thích Nhất' : 'Most Loved Showcase'}
-            </span>
+            <span>{lang === 'vi' ? 'Tuyển Chọn Được Yêu Thích Nhất' : 'Most Loved Showcase'}</span>
           </div>
           <h2 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-studio-950">
             {lang === 'vi' ? 'Tiêu Điểm Bình Chọn Cộng Đồng' : 'Community Top Favorites'}
@@ -151,8 +148,7 @@ export const MostLovedShowcase: React.FC = () => {
           {/* View All in Collection */}
           <button
             onClick={() => {
-              setActiveTab('collection');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              navigate('/gallery');
             }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-studio-950 text-white text-xs font-bold uppercase tracking-wider hover:bg-f1red transition-colors shadow-xs"
           >
@@ -180,8 +176,7 @@ export const MostLovedShowcase: React.FC = () => {
           <div
             className="lg:col-span-7 relative overflow-hidden bg-studio-900 cursor-pointer group"
             onClick={() => {
-              setActiveTab('collection');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              navigate('/gallery');
             }}
           >
             {/* Smooth crossfading picture */}
@@ -275,9 +270,7 @@ export const MostLovedShowcase: React.FC = () => {
                   <span className="block text-[10px] uppercase font-bold text-studio-400">
                     {lang === 'vi' ? 'Đội Đua' : 'Constructor'}
                   </span>
-                  <span className="font-semibold text-white truncate block">
-                    {team?.fullName}
-                  </span>
+                  <span className="font-semibold text-white truncate block">{team?.fullName}</span>
                 </div>
 
                 {currentItem.driver && (
@@ -314,7 +307,11 @@ export const MostLovedShowcase: React.FC = () => {
                     className="p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors"
                     title={isPlaying ? 'Tạm dừng trượt' : 'Tiếp tục tự động trượt'}
                   >
-                    {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                    {isPlaying ? (
+                      <Pause className="w-3.5 h-3.5" />
+                    ) : (
+                      <Play className="w-3.5 h-3.5" />
+                    )}
                   </button>
 
                   <span className="text-xs font-mono text-studio-400">
@@ -348,9 +345,7 @@ export const MostLovedShowcase: React.FC = () => {
                     key={item.id}
                     onClick={() => setCurrentIndex(idx)}
                     className={`h-1.5 rounded-full transition-all ${
-                      idx === currentIndex
-                        ? 'w-8 bg-f1red'
-                        : 'w-2 bg-white/20 hover:bg-white/40'
+                      idx === currentIndex ? 'w-8 bg-f1red' : 'w-2 bg-white/20 hover:bg-white/40'
                     }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
@@ -379,10 +374,14 @@ export const MostLovedShowcase: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-display font-black text-lg uppercase text-studio-950">
-                      {lang === 'vi' ? 'Quy Tắc Tuyển Chọn Ảnh Tiêu Biểu' : 'Showcase Selection Rules'}
+                      {lang === 'vi'
+                        ? 'Quy Tắc Tuyển Chọn Ảnh Tiêu Biểu'
+                        : 'Showcase Selection Rules'}
                     </h3>
                     <p className="text-xs text-studio-500">
-                      {lang === 'vi' ? 'Tiêu chí xếp hạng 6 tác phẩm xuất sắc nhất' : 'Official criteria for top 6 community picks'}
+                      {lang === 'vi'
+                        ? 'Tiêu chí xếp hạng 6 tác phẩm xuất sắc nhất'
+                        : 'Official criteria for top 6 community picks'}
                     </p>
                   </div>
                 </div>
@@ -431,7 +430,7 @@ export const MostLovedShowcase: React.FC = () => {
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </section>
   );

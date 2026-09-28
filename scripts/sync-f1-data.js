@@ -29,21 +29,25 @@ console.log(`[F1 Data Pipeline] Starting synchronization for season ${TARGET_SEA
  */
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { 'User-Agent': 'F1-Web-Platform/1.0' } }, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(JSON.parse(data));
-          } else {
-            reject(new Error(`HTTP ${res.statusCode}: ${data.slice(0, 100)}`));
+    https
+      .get(url, { headers: { 'User-Agent': 'F1-Web-Platform/1.0' } }, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          try {
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              resolve(JSON.parse(data));
+            } else {
+              reject(new Error(`HTTP ${res.statusCode}: ${data.slice(0, 100)}`));
+            }
+          } catch (e) {
+            reject(e);
           }
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }).on('error', (err) => reject(err));
+        });
+      })
+      .on('error', (err) => reject(err));
   });
 }
 
@@ -61,7 +65,9 @@ async function runPipeline() {
     const raceTable = payload?.MRData?.RaceTable;
     const races = raceTable?.Races || [];
 
-    console.log(`[F1 Data Pipeline] Successfully fetched ${races.length} completed rounds for ${TARGET_SEASON}.`);
+    console.log(
+      `[F1 Data Pipeline] Successfully fetched ${races.length} completed rounds for ${TARGET_SEASON}.`,
+    );
 
     const processedRaces = races.map((r) => {
       const results = (r.Results || []).map((entry) => ({
@@ -73,7 +79,7 @@ async function runPipeline() {
         teamId: entry.Constructor?.constructorId,
         teamName: entry.Constructor?.name,
         laps: parseInt(entry.laps, 10),
-        status: entry.status === 'Finished' ? 'Finished' : (entry.status || 'Retired'),
+        status: entry.status === 'Finished' ? 'Finished' : entry.status || 'Retired',
         timeOrGap: entry.Time?.time || entry.status || '+1 Lap',
         points: parseFloat(entry.points) || 0,
         fastestLap: entry.FastestLap?.rank === '1',
@@ -137,9 +143,13 @@ async function runPipeline() {
       .sort((a, b) => b.points - a.points || b.wins - a.wins)
       .map((c, i) => ({ rank: i + 1, ...c }));
 
-    console.log(`[F1 Data Pipeline] Calculated ${driverStandings.length} drivers, ${constructorStandings.length} constructors.`);
+    console.log(
+      `[F1 Data Pipeline] Calculated ${driverStandings.length} drivers, ${constructorStandings.length} constructors.`,
+    );
     if (driverStandings.length > 0) {
-      console.log(`[F1 Data Pipeline] Driver Championship Leader: P1 ${driverStandings[0].driverName} (${driverStandings[0].points} pts)`);
+      console.log(
+        `[F1 Data Pipeline] Driver Championship Leader: P1 ${driverStandings[0].driverName} (${driverStandings[0].points} pts)`,
+      );
     }
 
     if (!IS_DRY_RUN) {

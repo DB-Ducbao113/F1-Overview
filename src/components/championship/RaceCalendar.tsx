@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { CALENDAR_2026 } from '../../data/championship';
-import { GrandPrixRound } from '../../types';
-import { t } from '../../i18n/translations';
-import { useNavigationStore } from '../../store/useNavigationStore';
-import { Calendar, Clock, MapPin, Flag, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { useChampionshipStore } from '../../store/useChampionshipStore';
 
 export const RaceCalendar: React.FC = () => {
-  const { lang } = useNavigationStore();
-  const strings = t[lang].championship;
-  const [expandedRound, setExpandedRound] = useState<number | null>(15); // Default expand Round 15 (Azerbaijan GP)
+  const { detailedResults } = useChampionshipStore();
+  const seasonResults = detailedResults[2026] || [];
+  const completedRounds = new Set([
+    ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
+    ...seasonResults.filter((race) => race.status === 'completed').map((race) => race.round),
+  ]);
+  const nextRace = CALENDAR_2026.find((gp) => !completedRounds.has(gp.round));
+  const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 1);
 
   const toggleExpand = (round: number) => {
     setExpandedRound(expandedRound === round ? null : round);
@@ -22,16 +25,20 @@ export const RaceCalendar: React.FC = () => {
             2026 FIA Formula 1 World Championship Calendar
           </h3>
           <p className="text-xs text-studio-500 font-medium">
-            22 Global Grands Prix · 6 Sprint Weekends
+            {completedRounds.size} / {CALENDAR_2026.length} rounds completed · 6 Sprint Weekends
           </p>
         </div>
-        <span className="text-xs font-bold text-f1red">Round 15 Active</span>
+        <span className="text-xs font-bold text-f1red">
+          {nextRace ? `Next: Round ${nextRace.round}` : 'Season complete'}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 gap-3">
         {CALENDAR_2026.map((gp) => {
           const isExpanded = expandedRound === gp.round;
-          const isCurrent = gp.status === 'current';
+          const isCompleted = completedRounds.has(gp.round);
+          const isCurrent = gp.status === 'current' && !isCompleted;
+          const isNext = gp.round === nextRace?.round;
 
           return (
             <div
@@ -53,9 +60,9 @@ export const RaceCalendar: React.FC = () => {
                     className={`w-10 h-10 rounded-lg flex flex-col items-center justify-center shrink-0 font-bold ${
                       isCurrent
                         ? 'bg-f1red text-white'
-                        : gp.status === 'completed'
-                        ? 'bg-studio-100 text-studio-600'
-                        : 'bg-studio-900 text-white'
+                        : isCompleted
+                          ? 'bg-studio-100 text-studio-600'
+                          : 'bg-studio-900 text-white'
                     }`}
                   >
                     <span className="text-[9px] uppercase tracking-wider">RND</span>
@@ -65,7 +72,9 @@ export const RaceCalendar: React.FC = () => {
                   {/* Flag & Name */}
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-base" title={gp.country}>{gp.flag}</span>
+                      <span className="text-base" title={gp.country}>
+                        {gp.flag}
+                      </span>
                       <span className="text-xs font-semibold uppercase tracking-wider text-studio-500">
                         {gp.country}
                       </span>
@@ -77,6 +86,16 @@ export const RaceCalendar: React.FC = () => {
                       {isCurrent && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-f1red/10 text-f1red animate-pulse">
                           Active Weekend
+                        </span>
+                      )}
+                      {!isCurrent && isNext && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800">
+                          Up Next
+                        </span>
+                      )}
+                      {isCompleted && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-studio-100 text-studio-500">
+                          Completed
                         </span>
                       )}
                     </div>
@@ -99,7 +118,11 @@ export const RaceCalendar: React.FC = () => {
                     className="p-1 rounded-full text-studio-400 hover:text-studio-900 transition-colors"
                     aria-label="Expand schedule"
                   >
-                    {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    {isExpanded ? (
+                      <ChevronUp className="w-5 h-5" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -120,6 +143,7 @@ export const RaceCalendar: React.FC = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                     {Object.entries(gp.sessions).map(([key, session]) => {
                       if (!session) return null;
+                      const sessionStatus = isCompleted ? 'finished' : session.status;
                       return (
                         <div
                           key={key}
@@ -138,11 +162,11 @@ export const RaceCalendar: React.FC = () => {
                             </span>
                             <span
                               className={`text-[9px] font-bold uppercase ${
-                                session.status === 'finished'
+                                sessionStatus === 'finished'
                                   ? 'text-studio-400'
-                                  : session.status === 'live'
-                                  ? 'text-f1red animate-pulse'
-                                  : 'text-emerald-600'
+                                  : sessionStatus === 'live'
+                                    ? 'text-f1red animate-pulse'
+                                    : 'text-emerald-600'
                               }`}
                             >
                               {session.status}

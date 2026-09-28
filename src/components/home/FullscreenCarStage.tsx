@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCollectionStore } from '../../store/useCollectionStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
@@ -6,14 +8,14 @@ import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
 
 interface PosterCar {
   id: string;
-  name: string;        // Tên xe
+  name: string; // Tên xe
   shortName: string;
-  team: string;        // Đội đua
+  team: string; // Đội đua
   teamId: TeamId;
   watermark: string;
   color: string;
   imageUrl: string;
-  drivers: string;     // Thành viên đội đua
+  drivers: string; // Thành viên đội đua
 }
 
 const POSTER_CARS: PosterCar[] = [
@@ -128,8 +130,8 @@ const POSTER_CARS: PosterCar[] = [
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
   {
-    id: 'cadillac-ct6r',
-    name: 'Cadillac CT6-R',
+    id: 'cadillac-mac26',
+    name: 'Cadillac MAC-26',
     shortName: 'CADILLAC',
     team: 'Cadillac Formula 1 Team',
     teamId: 'cadillac',
@@ -141,7 +143,8 @@ const POSTER_CARS: PosterCar[] = [
 ];
 
 export const FullscreenCarStage: React.FC = () => {
-  const { setActiveTab, navigateToTeamCollection, lang } = useNavigationStore();
+  const { lang } = useNavigationStore();
+  const navigate = useNavigate();
   const strings = t[lang].home;
 
   // Active expanded car index (default to 0: Ferrari)
@@ -154,7 +157,11 @@ export const FullscreenCarStage: React.FC = () => {
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-bold uppercase tracking-widest text-f1red">
             <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
-            <span>{lang === 'vi' ? 'F1 2026 GRID · 11 ĐỘI ĐUA CHÍNH THỨC' : 'F1 2026 GRID · 11 OFFICIAL CONSTRUCTORS'}</span>
+            <span>
+              {lang === 'vi'
+                ? 'F1 2026 GRID · 11 ĐỘI ĐUA CHÍNH THỨC'
+                : 'F1 2026 GRID · 11 OFFICIAL CONSTRUCTORS'}
+            </span>
           </div>
 
           <h1 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-white leading-tight">
@@ -166,8 +173,7 @@ export const FullscreenCarStage: React.FC = () => {
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => {
-              setActiveTab('collection');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              navigate('/gallery');
             }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-f1red/90 shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105 cursor-pointer"
           >
@@ -177,8 +183,7 @@ export const FullscreenCarStage: React.FC = () => {
 
           <button
             onClick={() => {
-              setActiveTab('championship');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              navigate('/season/2026');
             }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
           >
@@ -329,12 +334,17 @@ export const FullscreenCarStage: React.FC = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigateToTeamCollection(car.teamId);
+                        useCollectionStore.getState().selectTeam(car.teamId);
+                        navigate(`/gallery/${car.teamId}`);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-studio-950 hover:bg-white/90 text-xs font-black uppercase tracking-wider shadow-xl hover:scale-105 transition-all shrink-0 cursor-pointer"
                     >
-                      <span>{lang === 'vi' ? `Xem Bộ Sưu Tập ${car.shortName}` : `View ${car.shortName} Gallery`}</span>
+                      <span>
+                        {lang === 'vi'
+                          ? `Xem Bộ Sưu Tập ${car.shortName}`
+                          : `View ${car.shortName} Gallery`}
+                      </span>
                       <ArrowRight className="w-4 h-4 text-f1red" />
                     </button>
                   </div>

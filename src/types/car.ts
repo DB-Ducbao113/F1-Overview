@@ -22,22 +22,22 @@ export interface TechnicalHighlights {
 }
 
 export interface CarSpec {
-  id: string; // e.g. 'rb20', 'sf24', 'w15', 'cadillac-ct6r'
+  id: string; // e.g. 'rb20', 'sf24', 'w15', 'cadillac-mac26'
   season: SeasonYear;
   teamId: TeamId;
   name: string;
   shortName: string;
-  designer: string;
+  designer?: string;
   powerUnit: string;
   drivers: string[]; // Driver names / numbers
   primaryColor: string;
   accentColor: string;
   highlightColor: string;
-  officialSpecs: OfficialSpecs;
-  technicalHighlights: TechnicalHighlights;
-  descriptionVi: string;
-  descriptionEn: string;
-  heroImage: string;
+  officialSpecs?: OfficialSpecs;
+  technicalHighlights?: Partial<TechnicalHighlights>;
+  descriptionVi?: string;
+  descriptionEn?: string;
+  heroImage?: string;
   studioImage?: string;
   has3DModel: boolean;
   model3DId?: string;

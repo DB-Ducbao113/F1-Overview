@@ -1,14 +1,14 @@
 import { CarSpec } from '../../types';
+import { createCatalogCar } from './catalogEntry';
 
 export const CARS_2026: CarSpec[] = [
   {
-    id: 'cadillac-ct6r',
+    id: 'cadillac-mac26',
     season: 2026,
     teamId: 'cadillac',
-    name: 'Cadillac F1 CT6-R',
-    shortName: 'CT6-R',
-    designer: 'Pat Symonds & Michael Andretti',
-    powerUnit: 'Cadillac GM Twin-Turbo V6 Hybrid (350kW MGU-K)',
+    name: 'Cadillac MAC-26',
+    shortName: 'MAC-26',
+    powerUnit: 'Ferrari 2026 power unit (Cadillac customer team)',
     drivers: ['Sergio Pérez #11', 'Valtteri Bottas #77'],
     primaryColor: '#8a8d8f',
     accentColor: '#d4af37',
@@ -24,12 +24,15 @@ export const CARS_2026: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Active aerodynamic push-rod kinematics',
       rearSuspension: 'Integrated carbon push-rod',
-      aeroPhilosophy: 'Quy chuẩn 2026: Cánh gió chủ động Active Aero (X-Mode đường thẳng & Z-Mode vào cua).',
-      groundEffectNotes: 'Sàn xe phẳng hơn theo luật 2026 nhằm giảm tối đa luồng khí nhiễu (dirty air) cho xe bám đuổi.',
+      aeroPhilosophy:
+        'Quy chuẩn 2026: Cánh gió chủ động Active Aero (X-Mode đường thẳng & Z-Mode vào cua).',
+      groundEffectNotes:
+        'Sàn xe phẳng hơn theo luật 2026 nhằm giảm tối đa luồng khí nhiễu (dirty air) cho xe bám đuổi.',
       chassisConstruction: 'Ultra-rigid carbon honeycomb meeting 2026 FIA impact limits',
     },
-    descriptionVi: 'Đội đua thứ 11 chính thức của Formula 1 từ tập đoàn General Motors, sở hữu bộ đôi dày dạn kinh nghiệm Sergio Pérez và Valtteri Bottas.',
-    descriptionEn: 'The official 11th Formula 1 team from General Motors, driven by experienced race winners Sergio Pérez and Valtteri Bottas under the 2026 regulations.',
+    descriptionVi:
+      'Mẫu xe đầu tiên của Cadillac tại Formula 1, do Sergio Pérez và Valtteri Bottas cầm lái.',
+    descriptionEn: 'Cadillac’s debut Formula 1 car, driven by Sergio Pérez and Valtteri Bottas.',
     heroImage: '/images/teams/cadillac.jpg',
     studioImage: '/images/teams/cadillac.jpg',
     has3DModel: true,
@@ -58,12 +61,16 @@ export const CARS_2026: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Push-rod with integrated steering actuator',
       rearSuspension: 'Compact pull-rod aero packaging',
-      aeroPhilosophy: 'Hệ thống cánh trước và cánh sau chuyển đổi chủ động Z-Mode / X-Mode điều khiển điện tử.',
-      groundEffectNotes: 'Thiết kế đáy sàn thu gọn 100mm theo tiêu chuẩn FIA 2026, triệt tiêu vệt khí cuộn sau đuôi xe.',
+      aeroPhilosophy:
+        'Hệ thống cánh trước và cánh sau chuyển đổi chủ động Z-Mode / X-Mode điều khiển điện tử.',
+      groundEffectNotes:
+        'Thiết kế đáy sàn thu gọn 100mm theo tiêu chuẩn FIA 2026, triệt tiêu vệt khí cuộn sau đuôi xe.',
       chassisConstruction: 'Scuderia Ferrari lightweight modular carbon cell',
     },
-    descriptionVi: 'Siêu phẩm kỷ nguyên động cơ 2026 của Maranello, tối đa hóa sức mạnh điện 350kW và hệ thống cánh gió chủ động thích ứng.',
-    descriptionEn: 'Ferrari’s flagship for the 2026 technical reset, unleashing 350kW electric power with active aerodynamic wings.',
+    descriptionVi:
+      'Siêu phẩm kỷ nguyên động cơ 2026 của Maranello, tối đa hóa sức mạnh điện 350kW và hệ thống cánh gió chủ động thích ứng.',
+    descriptionEn:
+      'Ferrari’s flagship for the 2026 technical reset, unleashing 350kW electric power with active aerodynamic wings.',
     heroImage: '/images/teams/sf24.jpg',
     studioImage: '/images/teams/sf24.jpg',
     has3DModel: true,
@@ -92,12 +99,16 @@ export const CARS_2026: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Pull-rod next-gen front geometry',
       rearSuspension: 'Push-rod multi-link',
-      aeroPhilosophy: 'Triết lý khí động học hẹp hơn 100mm, giảm 30% lực cản tổng thể khi kích hoạt chế độ X-Mode.',
-      groundEffectNotes: 'Bộ khuếch tán gầm sau thu nhỏ theo quy chuẩn mới, gia tăng cơ hội vượt xe cận chiến.',
+      aeroPhilosophy:
+        'Triết lý khí động học hẹp hơn 100mm, giảm 30% lực cản tổng thể khi kích hoạt chế độ X-Mode.',
+      groundEffectNotes:
+        'Bộ khuếch tán gầm sau thu nhỏ theo quy chuẩn mới, gia tăng cơ hội vượt xe cận chiến.',
       chassisConstruction: 'Molded carbon fiber composite monocoque',
     },
-    descriptionVi: 'Cỗ máy kỷ niệm 40 năm dòng xe MCL lừng lẫy của McLaren, trang bị động cơ hybrid tương lai và hệ thống cánh gió chủ động.',
-    descriptionEn: 'McLaren’s 2026 milestone challenger engineered for wheel-to-wheel combat under the agile car concept.',
+    descriptionVi:
+      'Cỗ máy kỷ niệm 40 năm dòng xe MCL lừng lẫy của McLaren, trang bị động cơ hybrid tương lai và hệ thống cánh gió chủ động.',
+    descriptionEn:
+      'McLaren’s 2026 milestone challenger engineered for wheel-to-wheel combat under the agile car concept.',
     heroImage: '/images/teams/mcl.jpg',
     studioImage: '/images/teams/mcl.jpg',
     has3DModel: true,
@@ -130,8 +141,10 @@ export const CARS_2026: CarSpec[] = [
       groundEffectNotes: 'Sàn xe thế hệ mới thích ứng tức thời theo trạng thái cánh gió chủ động.',
       chassisConstruction: 'Red Bull carbon composite sandwich',
     },
-    descriptionVi: 'Khởi đầu lịch sử của liên minh Red Bull Ford Powertrains, cỗ máy tốc độ bước vào kỷ nguyên quy chuẩn 2026.',
-    descriptionEn: 'The dawn of Red Bull Ford Powertrains, uniting bespoke chassis architecture with an all-new factory power unit.',
+    descriptionVi:
+      'Khởi đầu lịch sử của liên minh Red Bull Ford Powertrains, cỗ máy tốc độ bước vào kỷ nguyên quy chuẩn 2026.',
+    descriptionEn:
+      'The dawn of Red Bull Ford Powertrains, uniting bespoke chassis architecture with an all-new factory power unit.',
     heroImage: '/images/teams/rb20.jpg',
     studioImage: '/images/teams/rb20.jpg',
     has3DModel: true,
@@ -160,12 +173,16 @@ export const CARS_2026: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Push-rod anti-dive',
       rearSuspension: 'Push-rod inboard dampers',
-      aeroPhilosophy: 'Khí động học thích ứng thông minh (Active Aero) với khả năng triệt tiêu lực cản tối đa trên đường thẳng.',
-      groundEffectNotes: 'Kiểm soát luồng khí gầm xe đồng bộ hoàn toàn với hệ thống thu hồi năng lượng điện.',
+      aeroPhilosophy:
+        'Khí động học thích ứng thông minh (Active Aero) với khả năng triệt tiêu lực cản tối đa trên đường thẳng.',
+      groundEffectNotes:
+        'Kiểm soát luồng khí gầm xe đồng bộ hoàn toàn với hệ thống thu hồi năng lượng điện.',
       chassisConstruction: 'High-strength carbon composite',
     },
-    descriptionVi: 'Cỗ máy Mũi Tên Bạc đại diện cho đỉnh cao nghiên cứu động cơ hybrid bền vững 2026 của Mercedes-AMG.',
-    descriptionEn: 'The Silver Arrow spearheading Mercedes-AMG’s 2026 power unit revolution and agile aero architecture.',
+    descriptionVi:
+      'Cỗ máy Mũi Tên Bạc đại diện cho đỉnh cao nghiên cứu động cơ hybrid bền vững 2026 của Mercedes-AMG.',
+    descriptionEn:
+      'The Silver Arrow spearheading Mercedes-AMG’s 2026 power unit revolution and agile aero architecture.',
     heroImage: '/images/teams/w15.jpg',
     studioImage: '/images/teams/w15.jpg',
     has3DModel: true,
@@ -194,15 +211,38 @@ export const CARS_2026: CarSpec[] = [
     technicalHighlights: {
       frontSuspension: 'Push-rod German precision kinematics',
       rearSuspension: 'Push-rod',
-      aeroPhilosophy: 'Vorsprung durch Technik: Thiết kế nguyên khối sắc sảo tối ưu hóa cho hệ quy chuẩn 2026.',
+      aeroPhilosophy:
+        'Vorsprung durch Technik: Thiết kế nguyên khối sắc sảo tối ưu hóa cho hệ quy chuẩn 2026.',
       groundEffectNotes: 'Đường hầm gầm khí động học phát triển tại Neuburg và Hinwil.',
       chassisConstruction: 'Audi carbon fibre composite',
     },
-    descriptionVi: 'Màn xuất trận lịch sử của Audi với tư cách đội đua xuất xưởng chính thức tại Formula 1.',
-    descriptionEn: 'Audi’s historic factory works debut in Formula 1 with bespoke chassis and German-engineered powertrain.',
+    descriptionVi:
+      'Màn xuất trận lịch sử của Audi với tư cách đội đua xuất xưởng chính thức tại Formula 1.',
+    descriptionEn:
+      'Audi’s historic factory works debut in Formula 1 with bespoke chassis and German-engineered powertrain.',
     heroImage: '/images/teams/audi.jpg',
     studioImage: '/images/teams/audi.jpg',
     has3DModel: true,
     model3DId: 'audi',
   },
+  createCatalogCar(2026, 'astonmartin', 'Aston Martin AMR26', 'AMR26', 'Honda', [
+    'Fernando Alonso #14',
+    'Lance Stroll #18',
+  ]),
+  createCatalogCar(2026, 'alpine', 'Alpine A526', 'A526', 'Mercedes', [
+    'Pierre Gasly #10',
+    'Franco Colapinto #43',
+  ]),
+  createCatalogCar(2026, 'racingbulls', 'Racing Bulls VCARB 03', 'VCARB 03', 'Red Bull Ford', [
+    'Liam Lawson #30',
+    'Arvid Lindblad #41',
+  ]),
+  createCatalogCar(2026, 'haas', 'TGR Haas VF-26', 'VF-26', 'Ferrari', [
+    'Esteban Ocon #31',
+    'Oliver Bearman #87',
+  ]),
+  createCatalogCar(2026, 'williams', 'Atlassian Williams FW48', 'FW48', 'Mercedes', [
+    'Carlos Sainz #55',
+    'Alexander Albon #23',
+  ]),
 ];

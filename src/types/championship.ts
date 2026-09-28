@@ -88,11 +88,13 @@ export interface RaceResult {
     p2: { driver: string; team: string; gap: string; points: number };
     p3: { driver: string; team: string; gap: string; points: number };
   };
-  fastestLap: {
+  fastestLap?: {
     driver: string;
     team: string;
     time: string;
   };
+  dataSource?: string;
+  dataUpdatedAt?: string;
 }
 
 // ── Raw Race Classification Models (Full 20-driver grid) ──
@@ -108,6 +110,7 @@ export interface DetailedRaceResultEntry {
   status: 'Finished' | 'DNF' | 'DNS' | 'DSQ' | string;
   timeOrGap: string;
   points: number;
+  sprintPoints?: number;
   fastestLap?: boolean;
   fastestLapTime?: string;
   gridPosition?: number;
@@ -128,13 +131,28 @@ export interface DetailedRaceResult {
   winner?: { driver: string; team: string; time: string };
   fastestLap?: { driver: string; team: string; time: string };
   entries: DetailedRaceResultEntry[];
+  dataSource?: string;
+  dataUpdatedAt?: string;
+}
+
+export interface F1ResultDifference {
+  round: number;
+  grandPrix: string;
+  previous: string;
+  incoming: string;
+}
+
+export interface F1SyncReview {
+  season: SeasonYear;
+  results: DetailedRaceResult[];
+  differences: F1ResultDifference[];
+  source: string;
 }
 
 export interface F1SyncMetadata {
   lastSyncTimestamp: string;
-  syncStatus: 'idle' | 'syncing' | 'success' | 'error';
+  syncStatus: 'idle' | 'syncing' | 'success' | 'review' | 'error';
   source: string;
   completedRoundsCount: number;
   message?: string;
 }
-

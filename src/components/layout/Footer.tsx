@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 
 export const Footer: React.FC = () => {
-  const { lang, setActiveTab } = useNavigationStore();
+  const { lang } = useNavigationStore();
   const strings = t[lang].footer;
   const navStrings = t[lang].nav;
 
@@ -36,30 +37,37 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-xs text-studio-400 font-medium">
               <li>
-                <button
-                  onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="hover:text-f1red transition-colors"
-                >
+                <Link to="/" className="hover:text-f1red transition-colors">
                   {navStrings.home}
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => { setActiveTab('championship'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="hover:text-f1red transition-colors"
-                >
+                <Link to="/season/2026" className="hover:text-f1red transition-colors">
                   {navStrings.championship}
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => { setActiveTab('collection'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="hover:text-f1red transition-colors"
-                >
+                <Link to="/gallery" className="hover:text-f1red transition-colors">
                   {navStrings.collection}
-                </button>
+                </Link>
+              </li>
+              <li>
+                <Link to="/teams" className="hover:text-f1red transition-colors">
+                  {lang === 'vi' ? 'Danh sách đội đua' : 'Teams'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/drivers" className="hover:text-f1red transition-colors">
+                  {lang === 'vi' ? 'Danh sách tay đua' : 'Drivers'}
+                </Link>
               </li>
             </ul>
+            <Link
+              to="/about"
+              className="inline-block mt-4 text-xs text-studio-400 hover:text-f1red transition-colors"
+            >
+              {lang === 'vi' ? 'Về dự án' : 'About'}
+            </Link>
           </div>
 
           {/* Legal & Provenance */}
@@ -68,8 +76,13 @@ export const Footer: React.FC = () => {
               {strings.colLegal}
             </h4>
             <div className="space-y-2 text-xs text-studio-400 leading-relaxed font-light">
-              <p>Photography: LAT Images, DPPI, Motorsport Images, Red Bull Media House, Official F1 Team Press Kits.</p>
-              <p className="text-studio-500">All rights reserved to their respective copyright holders.</p>
+              <p>
+                Photography: LAT Images, DPPI, Motorsport Images, Red Bull Media House, Official F1
+                Team Press Kits.
+              </p>
+              <p className="text-studio-500">
+                All rights reserved to their respective copyright holders.
+              </p>
             </div>
           </div>
         </div>

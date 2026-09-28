@@ -12,7 +12,8 @@ export const t = {
       heroBadge: 'Formula 1 · Modern Grand Prix Racing',
       heroTitle1: 'Đỉnh Cao Tốc Độ.',
       heroTitle2: 'Kỷ Nguyên Mới.',
-      heroDesc: 'Website tổng hợp Formula 1 hiện đại — Khám phá cỗ máy các mùa giải, theo dõi điểm số bảng xếp hạng trực tiếp và chiêm ngưỡng những góc máy đẹp nhất từ đường đua thế giới.',
+      heroDesc:
+        'Website tổng hợp Formula 1 hiện đại — Khám phá cỗ máy các mùa giải, theo dõi điểm số bảng xếp hạng trực tiếp và chiêm ngưỡng những góc máy đẹp nhất từ đường đua thế giới.',
       exploreCars: 'Khám Phá Các Cỗ Máy',
       viewStandings: 'Bảng Điểm Mùa Giải',
       nextRaceLabel: 'Chặng đua kế tiếp',
@@ -110,7 +111,8 @@ export const t = {
       colExplore: 'Khám Phá',
       colData: 'Dữ Liệu',
       colLegal: 'Bản Quyền & Ghi Nhận',
-      disclaimer: 'Trang web được xây dựng phục vụ mục đích học tập và tôn vinh thể thao. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan là tài sản của Formula One Licensing B.V.',
+      disclaimer:
+        'Trang web được xây dựng phục vụ mục đích học tập và tôn vinh thể thao. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan là tài sản của Formula One Licensing B.V.',
       copyright: '© 2026 Formula 1 Hub. Dữ liệu mùa giải và lưu trữ hình ảnh tuyển chọn.',
     },
   },
@@ -127,7 +129,8 @@ export const t = {
       heroBadge: 'Formula 1 · Modern Grand Prix Racing',
       heroTitle1: 'Pinnacle Pace.',
       heroTitle2: 'The New Era.',
-      heroDesc: 'An editorial Formula 1 hub focused on modern Grand Prix machinery, authentic championship standings, and a carefully curated visual archive from circuits across the globe.',
+      heroDesc:
+        'An editorial Formula 1 hub focused on modern Grand Prix machinery, authentic championship standings, and a carefully curated visual archive from circuits across the globe.',
       exploreCars: 'Explore F1 Machines',
       viewStandings: 'Championship Standings',
       nextRaceLabel: 'Next Grand Prix',
@@ -225,7 +228,8 @@ export const t = {
       colExplore: 'Navigation',
       colData: 'Championship',
       colLegal: 'Attribution & Provenance',
-      disclaimer: 'This website is an independent editorial project created for educational and sports appreciation purposes. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.',
+      disclaimer:
+        'This website is an independent editorial project created for educational and sports appreciation purposes. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.',
       copyright: '© 2026 Formula 1 Hub. Curated racing archive & technical reference.',
     },
   },

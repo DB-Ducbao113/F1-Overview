@@ -32,17 +32,15 @@ export interface CollectionItem {
   likes?: number;
 
   // ── Community F1 Collection & Copyright Fields ──
-  uploadedBy?: string;           // e.g. '@baobungbu', '@f1fan'
-  status?: SubmissionStatus;     // 'approved' | 'pending' | 'rejected'
-  licenseType?: string;          // 'Personal photograph' | 'CC BY 4.0' | 'Editorial Share'
-  copyrightConfirmed?: boolean;  // User confirmed ownership/permission
-  createdAt?: string;            // Timestamp of submission
-  contributorNotes?: string;     // Notes from contributor or admin
-  rejectionReason?: string;      // Reason provided by admin when rejecting
+  uploadedBy?: string; // e.g. '@baobungbu', '@f1fan'
+  status?: SubmissionStatus; // 'approved' | 'pending' | 'rejected'
+  licenseType?: string; // 'Personal photograph' | 'CC BY 4.0' | 'Editorial Share'
+  copyrightConfirmed?: boolean; // User confirmed ownership/permission
+  createdAt?: string; // Timestamp of submission
+  contributorNotes?: string; // Notes from contributor or admin
+  rejectionReason?: string; // Reason provided by admin when rejecting
 }
-
 
 // Legacy alias kept for backward compatibility (HomeView still imports CuratedImage)
 export type CuratedImage = CollectionItem;
 export type GalleryCategory = CollectionCategory;
-

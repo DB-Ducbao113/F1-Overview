@@ -1,16 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
         // Luxury White Studio Palette (Porsche / BMW clean gallery aesthetic)
         studio: {
-          50:  '#ffffff',
+          50: '#ffffff',
           100: '#fafafa',
           200: '#f4f4f5',
           300: '#e4e4e7',
@@ -31,21 +28,21 @@ export default {
       },
       fontFamily: {
         display: ['"Playfair Display"', 'Georgia', 'serif'],
-        body:    ['"Inter"', 'system-ui', 'sans-serif'],
-        mono:    ['"Inter"', 'monospace'],
+        body: ['"Inter"', 'system-ui', 'sans-serif'],
+        mono: ['"Inter"', 'monospace'],
       },
       letterSpacing: {
         widest2: '0.25em',
         widest3: '0.35em',
       },
       transitionTimingFunction: {
-        'premium': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        premium: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         'fast-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
       boxShadow: {
-        'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
-        'luxury': '0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
-        'elevated': '0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.04)',
+        subtle: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+        luxury: '0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+        elevated: '0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.04)',
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both',
@@ -69,9 +66,9 @@ export default {
         slideInRight: {
           '0%': { opacity: '0', transform: 'translateX(-16px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
-        }
-      }
+        },
+      },
     },
   },
   plugins: [],
-}
+};

@@ -2,17 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DetailedRaceResult } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
-import {
-  X,
-  Trophy,
-  Zap,
-  Flag,
-  Calendar,
-  MapPin,
-  Clock,
-  ShieldCheck,
-  Award,
-} from 'lucide-react';
+import { X, Trophy, Zap, Flag, Calendar, MapPin, Clock, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
   race: DetailedRaceResult | null;
@@ -105,9 +95,26 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               <Zap className="w-4 h-4 text-purple-400" />
               <span className="text-studio-400">Fastest Lap:</span>
               <span className="font-bold text-white">{race.fastestLap.driver}</span>
-              <span className="font-mono text-purple-300 font-bold ml-1">{race.fastestLap.time}</span>
+              <span className="font-mono text-purple-300 font-bold ml-1">
+                {race.fastestLap.time}
+              </span>
             </div>
           )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-white/10 bg-black/25 px-6 py-2 text-[10px] text-studio-400">
+          <span>Source: {race.dataSource || 'Local saved snapshot'}</span>
+          <span>
+            Updated:{' '}
+            {race.dataUpdatedAt
+              ? /^\d{4}-\d{2}-\d{2}$/.test(race.dataUpdatedAt)
+                ? race.dataUpdatedAt
+                : new Intl.DateTimeFormat('en-GB', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                  }).format(new Date(race.dataUpdatedAt))
+              : 'Not recorded'}
+          </span>
         </div>
 
         {/* 20-Driver Classification Table */}
@@ -130,7 +137,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                   const teamInfo = TEAMS_DATA[entry.teamId];
                   const isPodium = entry.position >= 1 && entry.position <= 3;
                   const isPoints = entry.points > 0;
-                  const isDNF = entry.status.toLowerCase().includes('dnf') || entry.status.toLowerCase().includes('dns');
+                  const isDNF =
+                    entry.status.toLowerCase().includes('dnf') ||
+                    entry.status.toLowerCase().includes('dns');
 
                   return (
                     <tr
@@ -178,7 +187,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                               title="Fastest Lap Point"
                             >
                               <Zap className="w-3 h-3 text-purple-400" />
-                              <span className="hidden sm:inline font-mono">{entry.fastestLapTime}</span>
+                              <span className="hidden sm:inline font-mono">
+                                {entry.fastestLapTime}
+                              </span>
                             </span>
                           )}
                         </div>
@@ -213,9 +224,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                             {entry.timeOrGap}
                           </span>
                         ) : (
-                          <span className="text-studio-300">
-                            {entry.timeOrGap}
-                          </span>
+                          <span className="text-studio-300">{entry.timeOrGap}</span>
                         )}
                       </td>
 
@@ -241,7 +250,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
         <div className="p-4 sm:p-5 border-t border-white/10 bg-white/[0.02] flex items-center justify-between text-xs text-studio-400">
           <div className="flex items-center gap-2">
             <Award className="w-4 h-4 text-f1red" />
-            <span>Điểm số được tính tự động vào bảng xếp hạng Driver và Constructor World Championship.</span>
+            <span>
+              Điểm số được tính tự động vào bảng xếp hạng Driver và Constructor World Championship.
+            </span>
           </div>
 
           <button
@@ -253,6 +264,6 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

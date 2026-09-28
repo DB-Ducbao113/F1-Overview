@@ -1,8 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useCollectionStore } from '../../store/useCollectionStore';
 import { TEAMS_DATA } from '../../data/teams';
+import { DRIVERS_DATA } from '../../data/drivers';
+import { getCarById } from '../../data/cars';
 import { CollectionItem, CollectionCategory, TeamId } from '../../types';
 import { CommunityContributorsBar } from './CommunityContributorsBar';
 import { CommunityUploadModal } from './CommunityUploadModal';
@@ -48,24 +51,20 @@ const EDITIONS: { id: EditionFilter; labelVi: string; labelEn: string }[] = [
 ];
 
 export const CollectionView: React.FC = () => {
+  const { teamId: routeTeamId } = useParams();
   const { lang } = useNavigationStore();
-  const { items: allItems, likeItem, selectedTeamId } = useCollectionStore();
+  const { items: allItems, likeItem } = useCollectionStore();
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CollectionCategory>('all');
-  const [selectedTeam, setSelectedTeam] = useState<string>(selectedTeamId || 'all');
+  const [selectedTeam, setSelectedTeam] = useState<string>(routeTeamId || 'all');
   const [selectedEdition, setSelectedEdition] = useState<EditionFilter>('all');
   const [selectedContributor, setSelectedContributor] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'featured' | 'likes' | 'newest' | 'name' | 'team'>('featured');
+  const [sortBy, setSortBy] = useState<'featured' | 'likes' | 'newest' | 'name' | 'team'>(
+    'featured',
+  );
   const [gridCols, setGridCols] = useState<3 | 4>(3);
-
-  // Sync selectedTeamId if changed externally (e.g. from HomeView or Team detail)
-  useEffect(() => {
-    if (selectedTeamId) {
-      setSelectedTeam(selectedTeamId);
-    }
-  }, [selectedTeamId]);
 
   // Modals for Community & Security
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -123,89 +122,89 @@ export const CollectionView: React.FC = () => {
 
   const toggleWishlist = (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
     likeItem(id);
   };
 
   // Filtered & Sorted items
   const filteredItems = useMemo(() => {
-    return allItems.filter((item) => {
-      // Wishlist filter
-      if (onlyWishlist && !wishlist.includes(item.id)) return false;
+    return allItems
+      .filter((item) => {
+        // Wishlist filter
+        if (onlyWishlist && !wishlist.includes(item.id)) return false;
 
-      // Category filter
-      if (selectedCategory !== 'all' && item.category !== selectedCategory) return false;
+        // Category filter
+        if (selectedCategory !== 'all' && item.category !== selectedCategory) return false;
 
-      // Team filter
-      if (selectedTeam !== 'all' && item.teamId !== selectedTeam) return false;
+        // Team filter
+        if (selectedTeam !== 'all' && item.teamId !== selectedTeam) return false;
 
-      // Contributor filter
-      if (selectedContributor && item.uploadedBy !== selectedContributor) return false;
+        // Contributor filter
+        if (selectedContributor && item.uploadedBy !== selectedContributor) return false;
 
-      // Edition filter (replacing year filter)
-      if (selectedEdition === 'pinterest' && item.source !== 'Pinterest') return false;
-      if (selectedEdition === 'portraits' && item.category !== 'driver') return false;
-      if (selectedEdition === 'cars' && item.category !== 'car') return false;
-      if (selectedEdition === 'races' && item.category !== 'race') return false;
+        // Edition filter (replacing year filter)
+        if (selectedEdition === 'pinterest' && item.source !== 'Pinterest') return false;
+        if (selectedEdition === 'portraits' && item.category !== 'driver') return false;
+        if (selectedEdition === 'cars' && item.category !== 'car') return false;
+        if (selectedEdition === 'races' && item.category !== 'race') return false;
 
-      // Search Query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
-        const team = TEAMS_DATA[item.teamId];
-        const matchTitle =
-          (item.titleVi || '').toLowerCase().includes(query) ||
-          (item.titleEn || '').toLowerCase().includes(query);
-        const matchCaption =
-          (item.captionVi || '').toLowerCase().includes(query) ||
-          (item.captionEn || '').toLowerCase().includes(query);
-        const matchTeam =
-          (team?.name || '').toLowerCase().includes(query) ||
-          (team?.fullName || '').toLowerCase().includes(query);
-        const matchDriver = (item.driver || '').toLowerCase().includes(query);
-        const matchRace = (item.race || '').toLowerCase().includes(query);
-        const matchSku = (item.sku || '').toLowerCase().includes(query);
-        const matchSource = (item.source || '').toLowerCase().includes(query);
-        const matchContributor = (item.uploadedBy || '').toLowerCase().includes(query);
+        // Search Query
+        if (searchQuery.trim()) {
+          const query = searchQuery.toLowerCase().trim();
+          const team = TEAMS_DATA[item.teamId];
+          const matchTitle =
+            (item.titleVi || '').toLowerCase().includes(query) ||
+            (item.titleEn || '').toLowerCase().includes(query);
+          const matchCaption =
+            (item.captionVi || '').toLowerCase().includes(query) ||
+            (item.captionEn || '').toLowerCase().includes(query);
+          const matchTeam =
+            (team?.name || '').toLowerCase().includes(query) ||
+            (team?.fullName || '').toLowerCase().includes(query);
+          const matchDriver = (item.driver || '').toLowerCase().includes(query);
+          const matchRace = (item.race || '').toLowerCase().includes(query);
+          const matchSku = (item.sku || '').toLowerCase().includes(query);
+          const matchSource = (item.source || '').toLowerCase().includes(query);
+          const matchContributor = (item.uploadedBy || '').toLowerCase().includes(query);
 
-        if (
-          !matchTitle &&
-          !matchCaption &&
-          !matchTeam &&
-          !matchDriver &&
-          !matchRace &&
-          !matchSku &&
-          !matchSource &&
-          !matchContributor
-        ) {
-          return false;
+          if (
+            !matchTitle &&
+            !matchCaption &&
+            !matchTeam &&
+            !matchDriver &&
+            !matchRace &&
+            !matchSku &&
+            !matchSource &&
+            !matchContributor
+          ) {
+            return false;
+          }
         }
-      }
 
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === 'featured') {
-        if (a.featured && !b.featured) return -1;
-        if (!a.featured && b.featured) return 1;
-        return (b.likes || 0) - (a.likes || 0);
-      }
-      if (sortBy === 'likes') {
-        return (b.likes || 0) - (a.likes || 0);
-      }
-      if (sortBy === 'newest') {
-        return (b.publishedAt || '').localeCompare(a.publishedAt || '');
-      }
-      if (sortBy === 'name') {
-        const nameA = (lang === 'vi' ? a.titleVi : a.titleEn) || '';
-        const nameB = (lang === 'vi' ? b.titleVi : b.titleEn) || '';
-        return nameA.localeCompare(nameB);
-      }
-      if (sortBy === 'team') {
-        return (a.teamId || '').localeCompare(b.teamId || '');
-      }
-      return 0;
-    });
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'featured') {
+          if (a.featured && !b.featured) return -1;
+          if (!a.featured && b.featured) return 1;
+          return (b.likes || 0) - (a.likes || 0);
+        }
+        if (sortBy === 'likes') {
+          return (b.likes || 0) - (a.likes || 0);
+        }
+        if (sortBy === 'newest') {
+          return (b.publishedAt || '').localeCompare(a.publishedAt || '');
+        }
+        if (sortBy === 'name') {
+          const nameA = (lang === 'vi' ? a.titleVi : a.titleEn) || '';
+          const nameB = (lang === 'vi' ? b.titleVi : b.titleEn) || '';
+          return nameA.localeCompare(nameB);
+        }
+        if (sortBy === 'team') {
+          return (a.teamId || '').localeCompare(b.teamId || '');
+        }
+        return 0;
+      });
   }, [
     allItems,
     selectedCategory,
@@ -224,6 +223,12 @@ export const CollectionView: React.FC = () => {
     if (!quickViewItem) return -1;
     return filteredItems.findIndex((i) => i.id === quickViewItem.id);
   }, [quickViewItem, filteredItems]);
+  const quickViewDriver = quickViewItem
+    ? Object.values(DRIVERS_DATA).find(
+        (driver) =>
+          driver.name === quickViewItem.driver || driver.shortName === quickViewItem.driver,
+      )
+    : undefined;
 
   const handleNextQuickView = () => {
     if (currentQuickViewIndex >= 0 && currentQuickViewIndex < filteredItems.length - 1) {
@@ -274,7 +279,11 @@ export const CollectionView: React.FC = () => {
         <div className="page-container relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold uppercase tracking-widest text-f1red">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{lang === 'vi' ? 'Community F1 Archive & Curation' : 'Community F1 Archive & Showcase'}</span>
+            <span>
+              {lang === 'vi'
+                ? 'Community F1 Archive & Curation'
+                : 'Community F1 Archive & Showcase'}
+            </span>
           </div>
 
           <div className="max-w-3xl space-y-3">
@@ -292,7 +301,9 @@ export const CollectionView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-studio-200">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{allItems.length} {lang === 'vi' ? 'Tác phẩm lưu trữ' : 'Archived Works'}</span>
+              <span>
+                {allItems.length} {lang === 'vi' ? 'Tác phẩm lưu trữ' : 'Archived Works'}
+              </span>
             </div>
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-studio-200">
               <Trophy className="w-3.5 h-3.5 text-yellow-400" />
@@ -456,7 +467,9 @@ export const CollectionView: React.FC = () => {
               <button
                 onClick={() => setGridCols(3)}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  gridCols === 3 ? 'bg-white shadow-xs text-studio-950' : 'text-studio-500 hover:text-studio-800'
+                  gridCols === 3
+                    ? 'bg-white shadow-xs text-studio-950'
+                    : 'text-studio-500 hover:text-studio-800'
                 }`}
                 title="Showroom 3-Column View"
               >
@@ -465,7 +478,9 @@ export const CollectionView: React.FC = () => {
               <button
                 onClick={() => setGridCols(4)}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  gridCols === 4 ? 'bg-white shadow-xs text-studio-950' : 'text-studio-500 hover:text-studio-800'
+                  gridCols === 4
+                    ? 'bg-white shadow-xs text-studio-950'
+                    : 'text-studio-500 hover:text-studio-800'
                 }`}
                 title="Compact 4-Column Product Grid"
               >
@@ -500,7 +515,11 @@ export const CollectionView: React.FC = () => {
 
             {selectedCategory !== 'all' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-studio-200 text-studio-800 text-[11px] font-bold">
-                {CATEGORIES.find((c) => c.id === selectedCategory)?.[lang === 'vi' ? 'labelVi' : 'labelEn']}
+                {
+                  CATEGORIES.find((c) => c.id === selectedCategory)?.[
+                    lang === 'vi' ? 'labelVi' : 'labelEn'
+                  ]
+                }
                 <button onClick={() => setSelectedCategory('all')}>
                   <X className="w-3 h-3 hover:text-f1red" />
                 </button>
@@ -518,7 +537,11 @@ export const CollectionView: React.FC = () => {
 
             {selectedEdition !== 'all' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-studio-200 text-studio-800 text-[11px] font-bold">
-                {EDITIONS.find((e) => e.id === selectedEdition)?.[lang === 'vi' ? 'labelVi' : 'labelEn']}
+                {
+                  EDITIONS.find((e) => e.id === selectedEdition)?.[
+                    lang === 'vi' ? 'labelVi' : 'labelEn'
+                  ]
+                }
                 <button onClick={() => setSelectedEdition('all')}>
                   <X className="w-3 h-3 hover:text-f1red" />
                 </button>
@@ -706,7 +729,9 @@ export const CollectionView: React.FC = () => {
                       <div className="truncate pr-2 space-y-0.5">
                         <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-studio-900">
                           <User className="w-3 h-3 text-f1red" />
-                          <span className="truncate">{item.uploadedBy || item.photographer || 'Chưa xác minh nguồn'}</span>
+                          <span className="truncate">
+                            {item.uploadedBy || item.photographer || 'Chưa xác minh nguồn'}
+                          </span>
                         </div>
                         <span className="text-[10px] text-studio-500 font-medium truncate block">
                           Chưa xác minh quyền sử dụng
@@ -789,8 +814,7 @@ export const CollectionView: React.FC = () => {
                 <div
                   className="absolute top-0 left-0 right-0 h-1.5"
                   style={{
-                    backgroundColor:
-                      TEAMS_DATA[quickViewItem.teamId]?.primaryColor || '#e80020',
+                    backgroundColor: TEAMS_DATA[quickViewItem.teamId]?.primaryColor || '#e80020',
                   }}
                 />
 
@@ -838,9 +862,22 @@ export const CollectionView: React.FC = () => {
                             TEAMS_DATA[quickViewItem.teamId]?.primaryColor || '#e80020',
                         }}
                       />
-                      <span className="text-xs font-bold uppercase tracking-widest text-studio-600">
+                      <Link
+                        to={`/teams/${quickViewItem.teamId}`}
+                        onClick={() => setQuickViewItem(null)}
+                        className="text-xs font-bold uppercase tracking-widest text-studio-600 hover:text-f1red"
+                      >
                         {TEAMS_DATA[quickViewItem.teamId]?.fullName || quickViewItem.teamId}
-                      </span>
+                      </Link>
+                      {quickViewItem.carId && getCarById(quickViewItem.carId) && (
+                        <Link
+                          to={`/cars/${quickViewItem.carId}`}
+                          onClick={() => setQuickViewItem(null)}
+                          className="text-xs font-bold text-f1red hover:underline"
+                        >
+                          {getCarById(quickViewItem.carId)?.shortName} →
+                        </Link>
+                      )}
                     </div>
                     <span className="text-xs font-mono font-bold text-studio-400">
                       {quickViewItem.sku}
@@ -877,7 +914,9 @@ export const CollectionView: React.FC = () => {
                   {/* Specifications Matrix Table (Bảng thông số chi tiết & Ngày publish) */}
                   <div className="bg-studio-50 rounded-2xl p-4 border border-studio-200/80 space-y-3">
                     <h4 className="text-[11px] font-black uppercase tracking-wider text-studio-400 flex items-center justify-between">
-                      <span>{lang === 'vi' ? 'Thông Số Lưu Trữ Kỹ Thuật' : 'Technical Specifications'}</span>
+                      <span>
+                        {lang === 'vi' ? 'Thông Số Lưu Trữ Kỹ Thuật' : 'Technical Specifications'}
+                      </span>
                       <span className="font-mono text-[10px] text-f1red">F1-ARCHIVE</span>
                     </h4>
 
@@ -900,12 +939,16 @@ export const CollectionView: React.FC = () => {
                           {lang === 'vi' ? 'Người đóng góp (Contributor):' : 'Contributor:'}
                         </span>
                         <span className="font-mono font-bold text-f1red">
-                          {quickViewItem.uploadedBy || quickViewItem.photographer || (lang === 'vi' ? 'Chưa xác minh nguồn' : 'Source unverified')}
+                          {quickViewItem.uploadedBy ||
+                            quickViewItem.photographer ||
+                            (lang === 'vi' ? 'Chưa xác minh nguồn' : 'Source unverified')}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                        <span className="text-studio-500">{lang === 'vi' ? 'Đội đua' : 'Constructor'}:</span>
+                        <span className="text-studio-500">
+                          {lang === 'vi' ? 'Đội đua' : 'Constructor'}:
+                        </span>
                         <span className="font-bold text-studio-900">
                           {TEAMS_DATA[quickViewItem.teamId]?.name}
                         </span>
@@ -913,25 +956,45 @@ export const CollectionView: React.FC = () => {
 
                       {quickViewItem.driver && (
                         <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                          <span className="text-studio-500">{lang === 'vi' ? 'Tay đua' : 'Driver'}:</span>
-                          <span className="font-bold text-f1red">{quickViewItem.driver}</span>
+                          <span className="text-studio-500">
+                            {lang === 'vi' ? 'Tay đua' : 'Driver'}:
+                          </span>
+                          {quickViewDriver ? (
+                            <Link
+                              to={`/drivers/${quickViewDriver.id}`}
+                              onClick={() => setQuickViewItem(null)}
+                              className="font-bold text-f1red hover:underline"
+                            >
+                              {quickViewItem.driver}
+                            </Link>
+                          ) : (
+                            <span className="font-bold text-f1red">{quickViewItem.driver}</span>
+                          )}
                         </div>
                       )}
 
                       {quickViewItem.race && (
                         <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                          <span className="text-studio-500">{lang === 'vi' ? 'Chặng đua' : 'Grand Prix'}:</span>
+                          <span className="text-studio-500">
+                            {lang === 'vi' ? 'Chặng đua' : 'Grand Prix'}:
+                          </span>
                           <span className="font-bold text-studio-900">{quickViewItem.race}</span>
                         </div>
                       )}
 
                       <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                        <span className="text-studio-500">{lang === 'vi' ? 'Nhiếp ảnh gia / Nguồn' : 'Photographer'}:</span>
-                        <span className="font-bold text-studio-900">{quickViewItem.photographer}</span>
+                        <span className="text-studio-500">
+                          {lang === 'vi' ? 'Nhiếp ảnh gia / Nguồn' : 'Photographer'}:
+                        </span>
+                        <span className="font-bold text-studio-900">
+                          {quickViewItem.photographer}
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                        <span className="text-studio-500">{lang === 'vi' ? 'Nguồn phát hành' : 'Source'}:</span>
+                        <span className="text-studio-500">
+                          {lang === 'vi' ? 'Nguồn phát hành' : 'Source'}:
+                        </span>
                         <span className="font-bold text-studio-900 flex items-center gap-1">
                           <span className="w-2 h-2 rounded-full bg-red-500" />
                           {quickViewItem.source}
@@ -939,7 +1002,9 @@ export const CollectionView: React.FC = () => {
                       </div>
 
                       <div className="flex items-center justify-between border-b border-studio-200/60 pb-1.5">
-                        <span className="text-studio-500">{lang === 'vi' ? 'Quyền sử dụng' : 'Usage rights'}:</span>
+                        <span className="text-studio-500">
+                          {lang === 'vi' ? 'Quyền sử dụng' : 'Usage rights'}:
+                        </span>
                         <span className="font-bold text-amber-600 text-[11px] flex items-center gap-1">
                           {lang === 'vi' ? 'Chưa xác minh' : 'Unverified'}
                         </span>
@@ -947,8 +1012,12 @@ export const CollectionView: React.FC = () => {
 
                       {quickViewItem.contributorNotes && (
                         <div className="flex items-start justify-between">
-                          <span className="text-studio-500 text-[11px] shrink-0">{lang === 'vi' ? 'Ghi chú tác giả:' : 'Notes:'}</span>
-                          <span className="text-studio-700 text-[11px] italic text-right pl-2 font-medium">{quickViewItem.contributorNotes}</span>
+                          <span className="text-studio-500 text-[11px] shrink-0">
+                            {lang === 'vi' ? 'Ghi chú tác giả:' : 'Notes:'}
+                          </span>
+                          <span className="text-studio-700 text-[11px] italic text-right pl-2 font-medium">
+                            {quickViewItem.contributorNotes}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -978,8 +1047,8 @@ export const CollectionView: React.FC = () => {
                             ? 'Đã Thêm Vào Yêu Thích'
                             : 'Saved to Wishlist'
                           : lang === 'vi'
-                          ? 'Lưu Vào Yêu Thích'
-                          : 'Add to Wishlist'}
+                            ? 'Lưu Vào Yêu Thích'
+                            : 'Add to Wishlist'}
                       </span>
                     </button>
 
@@ -989,14 +1058,18 @@ export const CollectionView: React.FC = () => {
                       className="p-3 rounded-xl border border-studio-200 text-studio-700 hover:border-f1red hover:text-f1red transition-colors"
                       title="Copy Link"
                     >
-                      {copiedLink ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+                      {copiedLink ? (
+                        <Check className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Share2 className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
 
       {/* ── 6. FULLSCREEN 4K IMAGE MODAL (VIA PORTAL) ── */}
@@ -1020,7 +1093,7 @@ export const CollectionView: React.FC = () => {
               className="max-w-[95vw] max-h-[92vh] object-contain rounded-xl shadow-2xl"
             />
           </div>,
-          document.body
+          document.body,
         )}
 
       {/* ── 7. COMMUNITY CROWDSOURCE UPLOAD MODAL ── */}
@@ -1029,7 +1102,6 @@ export const CollectionView: React.FC = () => {
         onClose={() => setIsUploadOpen(false)}
         defaultTeamId={selectedTeam !== 'all' ? (selectedTeam as TeamId) : null}
       />
-
     </div>
   );
 };

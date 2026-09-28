@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
@@ -6,6 +7,7 @@ import { TEAMS_DATA } from '../../data/teams';
 import { FullscreenCarStage } from './FullscreenCarStage';
 import { MostLovedShowcase } from './MostLovedShowcase';
 import { SeasonYear } from '../../types';
+import { useChampionshipStore } from '../../store/useChampionshipStore';
 import {
   ArrowRight,
   Trophy,
@@ -22,21 +24,28 @@ import {
 } from 'lucide-react';
 
 export const HomeView: React.FC = () => {
-  const { setActiveTab, viewCarDetail, lang } = useNavigationStore();
+  const { lang } = useNavigationStore();
+  const navigate = useNavigate();
   const strings = t[lang].home;
-  const navStrings = t[lang].nav;
 
   // Standings Season selector on Homepage (defaults to 2024 - Official Completed Season)
   const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(2024);
 
-  // Next Race: Round 15 Azerbaijan GP
-  const nextRace = CALENDAR_2026.find((gp) => gp.status === 'current') || CALENDAR_2026[14];
+  // Show the active race weekend, or the next scheduled round.
+  const detailedResults = useChampionshipStore((state) => state.detailedResults[2026]);
+  const completedRoundNumbers = new Set([
+    ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
+    ...detailedResults.filter((race) => race.status === 'completed').map((race) => race.round),
+  ]);
+  const nextRace =
+    CALENDAR_2026.find((gp) => gp.status === 'current' && !completedRoundNumbers.has(gp.round)) ||
+    CALENDAR_2026.find((gp) => !completedRoundNumbers.has(gp.round)) ||
+    CALENDAR_2026[CALENDAR_2026.length - 1];
 
   // Standings for current selected season
   const currentStandings = STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2024];
   const topDrivers = currentStandings.drivers.slice(0, 3);
   const topConstructors = currentStandings.constructors.slice(0, 3);
-
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in space-y-16">
@@ -52,7 +61,9 @@ export const HomeView: React.FC = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-f1red/10 text-f1red text-[11px] font-bold uppercase tracking-wider animate-pulse">
-                {lang === 'vi' ? `Chặng ${nextRace.round} · Tuần Lễ Thi Đấu` : `Round ${nextRace.round} · Active Race Weekend`}
+                {lang === 'vi'
+                  ? `Chặng ${nextRace.round} · Tuần Lễ Thi Đấu`
+                  : `Round ${nextRace.round} · Active Race Weekend`}
               </span>
               <span className="text-xs text-studio-500 font-semibold">{nextRace.country}</span>
             </div>
@@ -69,7 +80,9 @@ export const HomeView: React.FC = () => {
                 <Calendar className="w-4 h-4 text-f1red" /> {nextRace.dates}
               </span>
               <span className="text-studio-400">|</span>
-              <span>{nextRace.laps} {lang === 'vi' ? 'Vòng' : 'Laps'} ({nextRace.raceDistanceKm} km)</span>
+              <span>
+                {nextRace.laps} {lang === 'vi' ? 'Vòng' : 'Laps'} ({nextRace.raceDistanceKm} km)
+              </span>
             </div>
           </div>
 
@@ -81,18 +94,24 @@ export const HomeView: React.FC = () => {
               <span className="text-[10px] text-studio-500">12:30 AZT</span>
             </div>
             <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">{lang === 'vi' ? 'Phân hạng' : 'Qualifying'}</span>
+              <span className="text-[10px] uppercase font-bold text-studio-400 block">
+                {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
+              </span>
               <span className="text-xs font-bold text-studio-900 block">Fri 25 Sep</span>
               <span className="text-[10px] font-bold text-f1red">16:00 AZT</span>
             </div>
             <div className="p-3 rounded-xl bg-studio-900 text-white text-center min-w-[90px] shadow-sm">
-              <span className="text-[10px] uppercase font-bold text-amber-400 block">Grand Prix</span>
+              <span className="text-[10px] uppercase font-bold text-amber-400 block">
+                Grand Prix
+              </span>
               <span className="text-xs font-bold text-white block">Sat 26 Sep</span>
               <span className="text-[10px] text-studio-300">15:00 AZT</span>
             </div>
 
             <button
-              onClick={() => { setActiveTab('championship'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              onClick={() => {
+                navigate('/season/2026');
+              }}
               className="p-3 rounded-xl border border-studio-300 hover:border-f1red text-studio-700 hover:text-f1red transition-colors text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ml-2 cursor-pointer"
             >
               <span>{lang === 'vi' ? 'Lịch Chi Tiết' : 'Full Schedule'}</span>
@@ -111,20 +130,23 @@ export const HomeView: React.FC = () => {
                 FIA Formula 1 World Championship
               </span>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                <CheckCircle2 className="w-3 h-3" /> {lang === 'vi' ? 'Nguồn chính thức FIA' : 'Official FIA Data'}
+                <CheckCircle2 className="w-3 h-3" />{' '}
+                {lang === 'vi' ? 'Nguồn chính thức FIA' : 'Official FIA Data'}
               </span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-wide text-studio-950">
-              {lang === 'vi' ? `Bảng Xếp Hạng Điểm Số (${standingsSeason})` : `Championship Standings (${standingsSeason})`}
+              {lang === 'vi'
+                ? `Bảng Xếp Hạng Điểm Số (${standingsSeason})`
+                : `Championship Standings (${standingsSeason})`}
             </h2>
             <p className="text-xs text-studio-500 font-medium">
               {currentStandings.status === 'ongoing'
-                ? (lang === 'vi'
-                    ? `● Mùa giải đang diễn ra · Điểm số chính thức F1 hiện tại (cập nhật ${currentStandings.lastUpdated})`
-                    : `● Season in progress · Official F1 standings (updated ${currentStandings.lastUpdated})`)
-                : (lang === 'vi'
-                    ? `✓ Kết quả chung cuộc mùa giải chính thức từ FIA / Formula 1`
-                    : `✓ Official FIA / Formula 1 season final classification`)}
+                ? lang === 'vi'
+                  ? `● Mùa giải đang diễn ra · Điểm số chính thức F1 hiện tại (cập nhật ${currentStandings.lastUpdated})`
+                  : `● Season in progress · Official F1 standings (updated ${currentStandings.lastUpdated})`
+                : lang === 'vi'
+                  ? `✓ Kết quả chung cuộc mùa giải chính thức từ FIA / Formula 1`
+                  : `✓ Official FIA / Formula 1 season final classification`}
             </p>
           </div>
 
@@ -141,13 +163,22 @@ export const HomeView: React.FC = () => {
                       : 'text-studio-600 hover:text-studio-950'
                   }`}
                 >
-                  {season} {season === 2026 ? (lang === 'vi' ? '(Đang đấu)' : '(Live)') : (lang === 'vi' ? '(Chung cuộc)' : '(Final)')}
+                  {season}{' '}
+                  {season === 2026
+                    ? lang === 'vi'
+                      ? '(Đang đấu)'
+                      : '(Live)'
+                    : lang === 'vi'
+                      ? '(Chung cuộc)'
+                      : '(Final)'}
                 </button>
               ))}
             </div>
 
             <button
-              onClick={() => { setActiveTab('championship'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              onClick={() => {
+                navigate('/season/2026');
+              }}
               className="text-xs font-bold uppercase tracking-wider text-f1red hover:underline flex items-center gap-1 shrink-0"
             >
               <span>{strings.viewStandings}</span>
@@ -161,9 +192,12 @@ export const HomeView: React.FC = () => {
           <div className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-studio-100">
               <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-500" /> {lang === 'vi' ? 'Bảng Điểm Tay Đua (Top 3)' : 'Drivers Championship (Top 3)'}
+                <Trophy className="w-4 h-4 text-amber-500" />{' '}
+                {lang === 'vi' ? 'Bảng Điểm Tay Đua (Top 3)' : 'Drivers Championship (Top 3)'}
               </h3>
-              <span className="text-xs font-semibold text-studio-500">{lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}</span>
+              <span className="text-xs font-semibold text-studio-500">
+                {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
+              </span>
             </div>
 
             <div className="space-y-3">
@@ -178,8 +212,8 @@ export const HomeView: React.FC = () => {
                         driver.rank === 1
                           ? 'bg-amber-400 text-black shadow-xs'
                           : driver.rank === 2
-                          ? 'bg-studio-300 text-studio-900'
-                          : 'bg-amber-700 text-white'
+                            ? 'bg-studio-300 text-studio-900'
+                            : 'bg-amber-700 text-white'
                       }`}
                     >
                       {driver.rank}
@@ -196,7 +230,9 @@ export const HomeView: React.FC = () => {
                     <span className="font-display font-black text-base text-f1red block">
                       {driver.points} PTS
                     </span>
-                    <span className="text-[10px] text-studio-400">{driver.wins} wins · {driver.podiums} podiums</span>
+                    <span className="text-[10px] text-studio-400">
+                      {driver.wins} wins · {driver.podiums} podiums
+                    </span>
                   </div>
                 </div>
               ))}
@@ -207,9 +243,12 @@ export const HomeView: React.FC = () => {
           <div className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-studio-100">
               <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-f1red" /> {lang === 'vi' ? 'Bảng Điểm Đội Đua (Top 3)' : 'Constructors Championship (Top 3)'}
+                <ShieldCheck className="w-4 h-4 text-f1red" />{' '}
+                {lang === 'vi' ? 'Bảng Điểm Đội Đua (Top 3)' : 'Constructors Championship (Top 3)'}
               </h3>
-              <span className="text-xs font-semibold text-studio-500">{lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}</span>
+              <span className="text-xs font-semibold text-studio-500">
+                {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
+              </span>
             </div>
 
             <div className="space-y-3">
@@ -226,8 +265,8 @@ export const HomeView: React.FC = () => {
                           c.rank === 1
                             ? 'bg-amber-400 text-black shadow-xs'
                             : c.rank === 2
-                            ? 'bg-studio-300 text-studio-900'
-                            : 'bg-amber-700 text-white'
+                              ? 'bg-studio-300 text-studio-900'
+                              : 'bg-amber-700 text-white'
                         }`}
                       >
                         {c.rank}
@@ -250,7 +289,9 @@ export const HomeView: React.FC = () => {
                       <span className="font-display font-black text-base text-f1red block">
                         {c.points} PTS
                       </span>
-                      <span className="text-[10px] text-studio-400">{c.wins} wins · {c.podiums} podiums</span>
+                      <span className="text-[10px] text-studio-400">
+                        {c.wins} wins · {c.podiums} podiums
+                      </span>
                     </div>
                   </div>
                 );
