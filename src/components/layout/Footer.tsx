@@ -1,84 +1,86 @@
 import React from 'react';
-import { useCarStore } from '../../store/useCarStore';
+import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 
 export const Footer: React.FC = () => {
-  const { lang, setActiveTab } = useCarStore();
+  const { lang, setActiveTab } = useNavigationStore();
   const strings = t[lang].footer;
+  const navStrings = t[lang].nav;
 
   return (
-    <footer className="border-t border-studio-200 bg-white">
-      <div className="page-container py-12 md:py-16">
-        {/* Top row */}
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-10 mb-12">
-
-          {/* Brand */}
-          <div className="shrink-0">
+    <footer className="bg-studio-950 text-white border-t border-studio-800 pt-16 pb-12 mt-auto">
+      <div className="page-container">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+          {/* Brand Info */}
+          <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-8 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle">
-                <span className="text-[10px] font-body font-black text-studio-950">F1</span>
+              <span className="w-8 h-8 rounded-full border-2 border-f1red flex items-center justify-center bg-white">
+                <span className="text-[10px] font-black text-studio-950">F1</span>
               </span>
-              <span className="text-[12px] font-body uppercase tracking-widest2 text-studio-950 font-bold">
-                Ground Effect
+              <span className="font-display text-lg uppercase tracking-wider font-bold text-white">
+                Formula 1 Hub
               </span>
             </div>
-            <p className="text-[12px] font-body text-studio-600 max-w-xs leading-relaxed font-light">
+            <p className="text-sm text-studio-400 font-light leading-relaxed max-w-md mb-6">
               {strings.desc}
+            </p>
+            <p className="text-xs text-studio-500 font-light leading-relaxed max-w-lg">
+              {strings.disclaimer}
             </p>
           </div>
 
-          {/* Link columns */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-[11px] font-body uppercase tracking-wider">
-            <div>
-              <p className="text-studio-400 mb-4 tracking-widest2 font-semibold">{strings.colExplore}</p>
-              {[
-                { label: t[lang].nav.overview, tab: 'home' as const },
-                { label: t[lang].nav.models,   tab: 'models' as const },
-                { label: t[lang].nav.compare,  tab: 'compare' as const },
-                { label: t[lang].nav.gallery,  tab: 'gallery' as const },
-              ].map(item => (
+          {/* Navigation Links */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-studio-300 mb-4">
+              {strings.colExplore}
+            </h4>
+            <ul className="space-y-2.5 text-xs text-studio-400 font-medium">
+              <li>
                 <button
-                  key={item.label}
-                  onClick={() => {
-                    setActiveTab(item.tab);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="block text-studio-700 hover:text-f1red cursor-pointer transition-colors mb-2.5 text-left"
+                  onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className="hover:text-f1red transition-colors"
                 >
-                  {item.label}
+                  {navStrings.home}
                 </button>
-              ))}
-            </div>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('championship'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className="hover:text-f1red transition-colors"
+                >
+                  {navStrings.championship}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { setActiveTab('collection'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className="hover:text-f1red transition-colors"
+                >
+                  {navStrings.collection}
+                </button>
+              </li>
+            </ul>
+          </div>
 
-            <div>
-              <p className="text-studio-400 mb-4 tracking-widest2 font-semibold">{strings.colCars}</p>
-              {['Red Bull RB20', 'Ferrari SF-24', 'McLaren MCL38', 'Mercedes W15'].map(l => (
-                <p key={l} className="text-studio-700 hover:text-f1red cursor-pointer transition-colors mb-2.5">{l}</p>
-              ))}
-            </div>
-
-            <div>
-              <p className="text-studio-400 mb-4 tracking-widest2 font-semibold">{strings.colTech}</p>
-              {['Ground Effect', 'Venturi Floor', 'DRS Aerodynamics', '1.6L Hybrid V6', 'Active Aero 2026'].map(l => (
-                <p key={l} className="text-studio-700 hover:text-f1red cursor-pointer transition-colors mb-2.5">{l}</p>
-              ))}
+          {/* Legal & Provenance */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-widest text-studio-300 mb-4">
+              {strings.colLegal}
+            </h4>
+            <div className="space-y-2 text-xs text-studio-400 leading-relaxed font-light">
+              <p>Photography: LAT Images, DPPI, Motorsport Images, Red Bull Media House, Official F1 Team Press Kits.</p>
+              <p className="text-studio-500">All rights reserved to their respective copyright holders.</p>
             </div>
           </div>
         </div>
 
-        {/* Bottom row */}
-        <div className="border-t border-studio-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[10px] font-body text-studio-500 uppercase tracking-widest2">
-            {strings.copyright}
-          </p>
-          <a
-            href="https://github.com/DB-Ducbao113/F1-Overview"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] font-body text-studio-600 hover:text-f1red uppercase tracking-widest2 transition-colors font-medium"
-          >
-            {strings.repo}
-          </a>
+        {/* Bottom Line */}
+        <div className="border-t border-studio-800/80 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-studio-500">
+          <p>{strings.copyright}</p>
+          <div className="flex items-center gap-4">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>2026 Season Hub Active</span>
+          </div>
         </div>
       </div>
     </footer>

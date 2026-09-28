@@ -11,6 +11,15 @@
   - **Styling:** Tailwind CSS (Modern Glassmorphic Dark UI / F1 Telemetry HUD)
   - **Animation:** GSAP / Lenis Smooth Scroll
 
+## Local setup
+
+```bash
+npm ci
+npm run dev
+```
+
+The community upload and admin moderation flows are disabled while they only use browser storage. Do not enable `VITE_ENABLE_COMMUNITY` until uploads and moderation are backed by server-side authentication and authorization. The current UI has no admin login.
+
 ## 🛡️ Git Workflow & Branching Strategy
 
 - **`main`**: Protected branch. Direct pushes are disabled. All code merges must pass through Pull Requests reviewed and approved by the repository owner.

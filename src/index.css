@@ -216,12 +216,36 @@ canvas.r3f { display: block; }
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none; /* Reset transform so containing block doesn't trap fixed elements/modals! */
   }
 }
 
 .animate-page-enter {
   animation: pageEnterTransition 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-up {
+  animation: modalScaleUp 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes f1SpeedBarScan {
