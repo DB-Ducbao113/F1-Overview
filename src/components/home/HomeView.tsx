@@ -88,25 +88,67 @@ export const HomeView: React.FC = () => {
 
           {/* Sessions Preview */}
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
-              <span className="text-xs font-bold text-studio-900 block">Fri 25 Sep</span>
-              <span className="text-[10px] text-studio-500">12:30 AZT</span>
-            </div>
-            <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">
-                {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
-              </span>
-              <span className="text-xs font-bold text-studio-900 block">Fri 25 Sep</span>
-              <span className="text-[10px] font-bold text-f1red">16:00 AZT</span>
-            </div>
-            <div className="p-3 rounded-xl bg-studio-900 text-white text-center min-w-[90px] shadow-sm">
-              <span className="text-[10px] uppercase font-bold text-amber-400 block">
-                Grand Prix
-              </span>
-              <span className="text-xs font-bold text-white block">Sat 26 Sep</span>
-              <span className="text-[10px] text-studio-300">15:00 AZT</span>
-            </div>
+            {nextRace.sessions.fp3 && (
+              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
+                <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
+                <span className="text-xs font-bold text-studio-900 block">
+                  {nextRace.sessions.fp3.dateStr}
+                </span>
+                <span className="text-[10px] text-studio-500">{nextRace.sessions.fp3.timeStr}</span>
+              </div>
+            )}
+            {nextRace.sessions.sprintQualifying && (
+              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
+                <span className="text-[10px] uppercase font-bold text-amber-600 block">
+                  {lang === 'vi' ? 'Sprint Phân Hạng' : 'Sprint Shootout'}
+                </span>
+                <span className="text-xs font-bold text-studio-900 block">
+                  {nextRace.sessions.sprintQualifying.dateStr}
+                </span>
+                <span className="text-[10px] text-studio-500">
+                  {nextRace.sessions.sprintQualifying.timeStr}
+                </span>
+              </div>
+            )}
+            {nextRace.sessions.sprint && (
+              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
+                <span className="text-[10px] uppercase font-bold text-amber-600 block">
+                  Sprint Race
+                </span>
+                <span className="text-xs font-bold text-studio-900 block">
+                  {nextRace.sessions.sprint.dateStr}
+                </span>
+                <span className="text-[10px] text-studio-500">
+                  {nextRace.sessions.sprint.timeStr}
+                </span>
+              </div>
+            )}
+            {nextRace.sessions.qualifying && (
+              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
+                <span className="text-[10px] uppercase font-bold text-studio-400 block">
+                  {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
+                </span>
+                <span className="text-xs font-bold text-studio-900 block">
+                  {nextRace.sessions.qualifying.dateStr}
+                </span>
+                <span className="text-[10px] font-bold text-f1red">
+                  {nextRace.sessions.qualifying.timeStr}
+                </span>
+              </div>
+            )}
+            {nextRace.sessions.race && (
+              <div className="p-3 rounded-xl bg-studio-900 text-white text-center min-w-[90px] shadow-sm">
+                <span className="text-[10px] uppercase font-bold text-amber-400 block">
+                  Grand Prix
+                </span>
+                <span className="text-xs font-bold text-white block">
+                  {nextRace.sessions.race.dateStr}
+                </span>
+                <span className="text-[10px] text-studio-300">
+                  {nextRace.sessions.race.timeStr}
+                </span>
+              </div>
+            )}
 
             <button
               onClick={() => {

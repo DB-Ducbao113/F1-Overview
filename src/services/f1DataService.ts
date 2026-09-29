@@ -147,6 +147,50 @@ export function persistSyncMetadata(meta: F1SyncMetadata): void {
 }
 
 /**
+ * Paginated fetch helper for Jolpica API (capped at 100 entries per request)
+ */
+async function fetchAllRacesFromJolpica(
+  season: SeasonYear,
+  type: 'results' | 'sprint' = 'results',
+): Promise<any[]> {
+  const LIMIT = 100;
+  let offset = 0;
+  const raceMap = new Map<number, any>();
+
+  while (true) {
+    const url = `${JOLPICA_API_BASE}/${season}/${type}.json?limit=${LIMIT}&offset=${offset}`;
+    const res = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) break;
+    const data = await res.json();
+    const races = data?.MRData?.RaceTable?.Races || [];
+    const total = parseInt(data?.MRData?.total || '0', 10);
+
+    for (const r of races) {
+      const rnd = parseInt(r.round, 10);
+      if (!raceMap.has(rnd)) {
+        raceMap.set(rnd, {
+          ...r,
+          Results: r.Results ? [...r.Results] : [],
+          SprintResults: r.SprintResults ? [...r.SprintResults] : [],
+        });
+      } else {
+        const existing = raceMap.get(rnd)!;
+        if (r.Results) existing.Results.push(...r.Results);
+        if (r.SprintResults) existing.SprintResults.push(...r.SprintResults);
+      }
+    }
+
+    offset += LIMIT;
+    if (offset >= total || races.length === 0) break;
+  }
+
+  return [...raceMap.values()].sort((a, b) => parseInt(a.round, 10) - parseInt(b.round, 10));
+}
+
+/**
  * Sync F1 Season Data:
  * Fetches race and sprint classifications from Jolpica, retaining the last saved snapshot if unavailable
  */
@@ -160,115 +204,98 @@ export async function syncF1SeasonData(
   source: string;
 }> {
   try {
-    // Try live Ergast/Jolpica API
-    const response = await fetch(`${JOLPICA_API_BASE}/${season}/results.json?limit=100`, {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(12000),
-    });
+    // Try live Ergast/Jolpica API with full pagination
+    const racesApi = await fetchAllRacesFromJolpica(season, 'results');
 
-    if (response.ok) {
-      const data = await response.json();
-      const racesApi = data?.MRData?.RaceTable?.Races;
+    if (Array.isArray(racesApi) && racesApi.length > 0) {
+      let sprintPointsByRoundDriver = new Map<string, number>();
+      try {
+        const sprintRaces = await fetchAllRacesFromJolpica(season, 'sprint');
+        sprintPointsByRoundDriver = new Map(
+          sprintRaces.flatMap((sprintRace: any) =>
+            (sprintRace.SprintResults || []).map((entry: any) => [
+              `${parseInt(sprintRace.round, 10)}:${entry.Driver?.driverId}`,
+              parseFloat(entry.points) || 0,
+            ]),
+          ),
+        );
+      } catch {
+        // Grand Prix classifications can still refresh if sprint data is unavailable.
+      }
 
-      if (Array.isArray(racesApi) && racesApi.length > 0) {
-        let sprintPointsByRoundDriver = new Map<string, number>();
-        try {
-          const sprintResponse = await fetch(
-            `${JOLPICA_API_BASE}/${season}/sprint.json?limit=100`,
-            {
-              headers: { Accept: 'application/json' },
-              signal: AbortSignal.timeout(12000),
-            },
-          );
-          if (sprintResponse.ok) {
-            const sprintRaces = (await sprintResponse.json())?.MRData?.RaceTable?.Races || [];
-            sprintPointsByRoundDriver = new Map(
-              sprintRaces.flatMap((sprintRace: any) =>
-                (sprintRace.SprintResults || []).map((entry: any) => [
-                  `${parseInt(sprintRace.round, 10)}:${entry.Driver?.driverId}`,
-                  parseFloat(entry.points) || 0,
-                ]),
-              ),
-            );
-          }
-        } catch {
-          // Grand Prix classifications can still refresh if sprint data is unavailable.
-        }
-
-        const syncedAt = new Date().toISOString();
-        const transformed: DetailedRaceResult[] = racesApi.map((race: any) => {
-          const entries: DetailedRaceResultEntry[] = (race.Results || []).map((res: any) => {
-            const teamId = CONSTRUCTOR_MAP[res.Constructor?.constructorId] || 'redbull';
-            const pos = parseInt(res.position, 10) || 20;
-            return {
-              position: pos,
-              driverId: res.Driver?.driverId || 'unknown',
-              driverName: `${res.Driver?.givenName || ''} ${res.Driver?.familyName || ''}`.trim(),
-              driverCode: res.Driver?.code || 'F1',
-              driverNumber: parseInt(res.Driver?.permanentNumber, 10) || undefined,
-              teamId,
-              teamName: res.Constructor?.name || 'Constructor',
-              laps: parseInt(res.laps, 10) || 0,
-              status: res.status || 'Finished',
-              timeOrGap: res.Time?.time || res.status || '+1 Lap',
-              points: parseFloat(res.points) || 0,
-              sprintPoints:
-                sprintPointsByRoundDriver.get(
-                  `${parseInt(race.round, 10)}:${res.Driver?.driverId}`,
-                ) || 0,
-              fastestLap: res.FastestLap?.rank === '1',
-              fastestLapTime: res.FastestLap?.Time?.time,
-              gridPosition: parseInt(res.grid, 10) || undefined,
-            };
-          });
-
+      const syncedAt = new Date().toISOString();
+      const transformed: DetailedRaceResult[] = racesApi.map((race: any) => {
+        const entries: DetailedRaceResultEntry[] = (race.Results || []).map((res: any) => {
+          const teamId = CONSTRUCTOR_MAP[res.Constructor?.constructorId] || 'redbull';
+          const pos = parseInt(res.position, 10) || 20;
           return {
-            id: `race-${season}-r${race.round}-${race.raceName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
-            season,
-            round: parseInt(race.round, 10),
-            grandPrix: race.raceName,
-            officialName: race.raceName,
-            circuit: race.Circuit?.circuitName || 'Circuit',
-            location: race.Circuit?.Location?.locality,
-            country: race.Circuit?.Location?.country,
-            date: race.date,
-            dataSource: 'Jolpica F1 API',
-            dataUpdatedAt: syncedAt,
-            status: 'completed',
-            lapsTotal: entries[0]?.laps || 57,
-            winner: entries[0]
-              ? {
-                  driver: entries[0].driverName,
-                  team: entries[0].teamName,
-                  time: entries[0].timeOrGap,
-                }
-              : undefined,
-            fastestLap: entries.find((e) => e.fastestLap)
-              ? {
-                  driver: entries.find((e) => e.fastestLap)!.driverName,
-                  team: entries.find((e) => e.fastestLap)!.teamName,
-                  time: entries.find((e) => e.fastestLap)!.fastestLapTime || '',
-                }
-              : undefined,
-            entries,
+            position: pos,
+            driverId: res.Driver?.driverId || 'unknown',
+            driverName: `${res.Driver?.givenName || ''} ${res.Driver?.familyName || ''}`.trim(),
+            driverCode: res.Driver?.code || 'F1',
+            driverNumber: parseInt(res.Driver?.permanentNumber, 10) || undefined,
+            teamId,
+            teamName: res.Constructor?.name || 'Constructor',
+            laps: parseInt(res.laps, 10) || 0,
+            status: res.status || 'Finished',
+            timeOrGap: res.Time?.time || res.status || '+1 Lap',
+            points: parseFloat(res.points) || 0,
+            sprintPoints:
+              sprintPointsByRoundDriver.get(
+                `${parseInt(race.round, 10)}:${res.Driver?.driverId}`,
+              ) || 0,
+            fastestLap: res.FastestLap?.rank === '1',
+            fastestLapTime: res.FastestLap?.Time?.time,
+            gridPosition: parseInt(res.grid, 10) || undefined,
           };
         });
 
-        const raceByRound = new Map(transformed.map((race) => [race.round, race]));
-        if (season === 2026) {
-          INITIAL_DETAILED_RESULTS[2026]
-            .filter((race) => race.round === 15)
-            .forEach((race) => raceByRound.set(race.round, race));
-        }
-        const syncedResults = [...raceByRound.values()].sort((a, b) => a.round - b.round);
-
         return {
-          success: true,
-          results: syncedResults,
-          message: `Đã đồng bộ ${syncedResults.length} chặng, gồm cả điểm Sprint nếu có, từ Jolpica.`,
-          source: 'Jolpica F1 API',
+          id: `race-${season}-r${race.round}-${race.raceName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          season,
+          round: parseInt(race.round, 10),
+          grandPrix: race.raceName,
+          officialName: race.raceName,
+          circuit: race.Circuit?.circuitName || 'Circuit',
+          location: race.Circuit?.Location?.locality,
+          country: race.Circuit?.Location?.country,
+          date: race.date,
+          dataSource: 'Jolpica F1 API',
+          dataUpdatedAt: syncedAt,
+          status: 'completed',
+          lapsTotal: entries[0]?.laps || 57,
+          winner: entries[0]
+            ? {
+                driver: entries[0].driverName,
+                team: entries[0].teamName,
+                time: entries[0].timeOrGap,
+              }
+            : undefined,
+          fastestLap: entries.find((e) => e.fastestLap)
+            ? {
+                driver: entries.find((e) => e.fastestLap)!.driverName,
+                team: entries.find((e) => e.fastestLap)!.teamName,
+                time: entries.find((e) => e.fastestLap)!.fastestLapTime || '',
+              }
+            : undefined,
+          entries,
         };
+      });
+
+      const raceByRound = new Map(transformed.map((race) => [race.round, race]));
+      if (season === 2026) {
+        INITIAL_DETAILED_RESULTS[2026]
+          .filter((race) => race.round === 15)
+          .forEach((race) => raceByRound.set(race.round, race));
       }
+      const syncedResults = [...raceByRound.values()].sort((a, b) => a.round - b.round);
+
+      return {
+        success: true,
+        results: syncedResults,
+        message: `Đã đồng bộ ${syncedResults.length} chặng, gồm cả điểm Sprint nếu có, từ Jolpica.`,
+        source: 'Jolpica F1 API',
+      };
     }
   } catch {
     // Network or DNS restriction occurred, fall through to high-fidelity cache

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getRaceResults } from '../../data/championship';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { t } from '../../i18n/translations';
 import { Trophy, Zap, CheckCircle2, ChevronRight, ListOrdered, Database } from 'lucide-react';
 import { RaceResult } from '../../types';
 
@@ -42,6 +41,36 @@ export const RaceResults: React.FC<{ season: import('../../types').SeasonYear }>
   });
   const resultCards = [...fallbackResults, ...syncedSummaries].sort((a, b) => a.round - b.round);
   const displayRacesCount = resultCards.length;
+  const [sourceFilter, setSourceFilter] = React.useState('all');
+  const [updateFilter, setUpdateFilter] = React.useState<'all' | 'recorded' | 'missing'>('all');
+  const getRaceMetadata = (res: RaceResult) => {
+    const detailedRace = detailedRaces.find((race) => race.round === res.round);
+    const isAwaitingReview = syncMeta.syncStatus === 'review';
+    return {
+      source:
+        detailedRace?.dataSource ||
+        res.dataSource ||
+        (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
+          ? syncMeta.source
+          : lang === 'vi'
+            ? 'Bản lưu tĩnh của website'
+            : 'Bundled website snapshot'),
+      timestamp:
+        detailedRace?.dataUpdatedAt ||
+        res.dataUpdatedAt ||
+        (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
+          ? syncMeta.lastSyncTimestamp
+          : undefined),
+    };
+  };
+  const sources = [...new Set(resultCards.map((race) => getRaceMetadata(race).source))];
+  const filteredResults = resultCards.filter((race) => {
+    const { source, timestamp } = getRaceMetadata(race);
+    return (
+      (sourceFilter === 'all' || source === sourceFilter) &&
+      (updateFilter === 'all' || (updateFilter === 'recorded' ? !!timestamp : !timestamp))
+    );
+  });
   const formatUpdatedAt = (timestamp?: string) => {
     if (!timestamp) return lang === 'vi' ? 'Chưa ghi nhận' : 'Not recorded';
     if (/^\d{4}-\d{2}-\d{2}$/.test(timestamp)) return timestamp;
@@ -83,18 +112,57 @@ export const RaceResults: React.FC<{ season: import('../../types').SeasonYear }>
         <span className="text-xs font-bold text-studio-600 bg-studio-100 px-3 py-1.5 rounded-lg border border-studio-200 shrink-0">
           {lang === 'vi' ? (
             <>
-              Hiển thị <strong>{displayRacesCount}</strong> Grands Prix
+              Hiển thị <strong>{filteredResults.length}</strong> / {displayRacesCount} Grands Prix
             </>
           ) : (
             <>
-              Showing <strong>{displayRacesCount}</strong> Grands Prix
+              Showing <strong>{filteredResults.length}</strong> of {displayRacesCount} Grands Prix
             </>
           )}
         </span>
       </div>
 
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-studio-200 bg-white p-4">
+        <label className="flex min-w-48 flex-1 flex-col gap-1 text-xs font-bold text-studio-700">
+          {lang === 'vi' ? 'Nguồn dữ liệu' : 'Data source'}
+          <select
+            value={sourceFilter}
+            onChange={(event) => setSourceFilter(event.target.value)}
+            className="rounded-lg border border-studio-200 bg-white px-3 py-2 text-sm font-medium"
+          >
+            <option value="all">{lang === 'vi' ? 'Tất cả nguồn' : 'All sources'}</option>
+            {sources.map((source) => (
+              <option key={source} value={source}>
+                {source}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex min-w-48 flex-1 flex-col gap-1 text-xs font-bold text-studio-700">
+          {lang === 'vi' ? 'Trạng thái cập nhật' : 'Update status'}
+          <select
+            value={updateFilter}
+            onChange={(event) => setUpdateFilter(event.target.value as typeof updateFilter)}
+            className="rounded-lg border border-studio-200 bg-white px-3 py-2 text-sm font-medium"
+          >
+            <option value="all">{lang === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
+            <option value="recorded">
+              {lang === 'vi' ? 'Có thời điểm cập nhật' : 'Update recorded'}
+            </option>
+            <option value="missing">
+              {lang === 'vi' ? 'Chưa ghi nhận thời điểm' : 'No update recorded'}
+            </option>
+          </select>
+        </label>
+        <span className="text-xs text-studio-500" aria-live="polite">
+          {lang === 'vi'
+            ? `Hiển thị ${filteredResults.length}/${displayRacesCount} chặng`
+            : `Showing ${filteredResults.length}/${displayRacesCount} rounds`}
+        </span>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {resultCards.map((res) => (
+        {filteredResults.map((res) => (
           <div
             key={res.round}
             className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4 hover:border-studio-300 hover:shadow-md transition-all flex flex-col"
@@ -108,22 +176,7 @@ export const RaceResults: React.FC<{ season: import('../../types').SeasonYear }>
                 <h4 className="font-display text-xl font-bold text-studio-950">{res.grandPrix}</h4>
                 <span className="text-xs text-studio-500">{res.circuit}</span>
                 {(() => {
-                  const detailedRace = detailedRaces.find((race) => race.round === res.round);
-                  const isAwaitingReview = syncMeta.syncStatus === 'review';
-                  const source =
-                    detailedRace?.dataSource ||
-                    res.dataSource ||
-                    (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
-                      ? syncMeta.source
-                      : lang === 'vi'
-                        ? 'Bản lưu tĩnh của website'
-                        : 'Bundled website snapshot');
-                  const timestamp =
-                    detailedRace?.dataUpdatedAt ||
-                    res.dataUpdatedAt ||
-                    (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
-                      ? syncMeta.lastSyncTimestamp
-                      : undefined);
+                  const { source, timestamp } = getRaceMetadata(res);
                   return (
                     <span className="mt-1 flex flex-wrap items-center gap-x-2 text-[10px] text-studio-500">
                       <span className="inline-flex items-center gap-1">

@@ -1,0 +1,47 @@
+name: Auto Update F1 2026 Data
+
+on:
+  schedule:
+    # Run every 4 hours daily, capturing Qualifying on Saturdays and Race results on Sundays
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-f1-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync 2026 Season Data from Jolpica API
+        run: node scripts/update-2026-data.js
+
+      - name: Verify build with updated data
+        run: npm run build
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/championship/ src/services/ src/store/
+          if git diff --staged --quiet; then
+            echo "No new F1 data changes detected."
+          else
+            echo "New F1 data detected! Committing and pushing..."
+            git commit -m "chore(data): auto-update 2026 F1 race & standings [skip ci]"
+            git push
+          fi

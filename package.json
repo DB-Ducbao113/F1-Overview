@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:2026": "node scripts/update-2026-data.js"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",
