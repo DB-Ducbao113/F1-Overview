@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, LayoutGrid, Home, Users, UserRound } from 'lucide-react';
+import { Menu, X, Trophy, Home, Users, UserRound, Box } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang } = useNavigationStore();
@@ -22,9 +22,9 @@ export const Navbar: React.FC = () => {
     },
     {
       id: 'collection',
-      path: '/gallery',
+      path: '/showroom',
       label: strings.collection,
-      icon: <LayoutGrid className="w-4 h-4" />,
+      icon: <Box className="w-4 h-4" />,
     },
     {
       id: 'teams',

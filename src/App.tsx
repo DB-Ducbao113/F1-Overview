@@ -21,6 +21,9 @@ const ChampionshipView = lazy(() =>
 const CollectionView = lazy(() =>
   import('./components/collection/CollectionView').then((m) => ({ default: m.CollectionView })),
 );
+const ShowroomView = lazy(() =>
+  import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
+);
 const TeamDetailPage = lazy(() =>
   import('./components/pages/TeamDetailPage').then((m) => ({ default: m.TeamDetailPage })),
 );
@@ -208,7 +211,8 @@ export const App: React.FC = () => {
               <Route path="/" element={<HomeView />} />
               <Route path="/season/:year" element={<SeasonRoute />} />
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
-              <Route path="/gallery" element={<GalleryRoute />} />
+              <Route path="/showroom" element={<ShowroomView />} />
+              <Route path="/gallery" element={<ShowroomView />} />
               <Route path="/gallery/:teamId" element={<GalleryRoute />} />
               <Route path="/teams/:teamId" element={<TeamDetailPage />} />
               <Route path="/drivers/:driverId" element={<DriverDetailPage />} />
