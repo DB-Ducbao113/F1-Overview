@@ -197,8 +197,10 @@ export const App: React.FC = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname]);
+  const isShowroom = location.pathname === '/showroom';
+
   return (
-    <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white">
+    <div className={`min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white ${isShowroom ? 'h-screen overflow-hidden' : ''}`}>
       <Navbar />
       <div
         key={`${location.pathname}-speedbar`}
@@ -206,8 +208,8 @@ export const App: React.FC = () => {
       >
         <div className="w-full h-full bg-gradient-to-r from-transparent via-f1red to-yellow-400 animate-f1-speed-scan" />
       </div>
-      <main className="flex-1 pt-16">
-        <div key={location.pathname} className="animate-page-enter">
+      <main className={`flex-1 pt-16 ${isShowroom ? 'h-[calc(100vh-64px)] overflow-hidden flex flex-col' : ''}`}>
+        <div key={location.pathname} className={isShowroom ? 'h-full flex-1 flex flex-col' : 'animate-page-enter'}>
           <Suspense fallback={<div className="min-h-[50vh]" />}>
             <Routes>
               <Route path="/" element={<HomeView />} />
@@ -227,9 +229,10 @@ export const App: React.FC = () => {
           </Suspense>
         </div>
       </main>
-      <Footer />
+      {!isShowroom && <Footer />}
     </div>
   );
 };
+
 
 export default App;

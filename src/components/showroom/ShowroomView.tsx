@@ -1,6 +1,8 @@
-import React, { useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useState, useEffect, Suspense } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -11,6 +13,25 @@ import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { CollectionView } from '../collection/CollectionView';
+
+// ── Photorealistic Studio Environment (100% Offline, Zero Network Delay) ──
+const StudioEnvironment: React.FC = () => {
+  const { gl, scene } = useThree();
+  useEffect(() => {
+    const pmremGenerator = new THREE.PMREMGenerator(gl);
+    pmremGenerator.compileEquirectangularShader();
+    const envScene = new RoomEnvironment();
+    const envMap = pmremGenerator.fromScene(envScene, 0.04).texture;
+    scene.environment = envMap;
+    return () => {
+      pmremGenerator.dispose();
+      envMap.dispose();
+      scene.environment = null;
+    };
+  }, [gl, scene]);
+  return null;
+};
+
 import {
   RotateCcw,
   Wind,
@@ -225,15 +246,18 @@ export const ShowroomView: React.FC = () => {
           {/* ── Three.js WebGL 3D Canvas ── */}
           <Canvas
             shadows
-            camera={{ position: [3.4, 1.7, 3.8], fov: 45 }}
-            gl={{ antialias: true, alpha: true, toneMappingExposure: 1.1 }}
+            camera={{ position: [3.2, 1.6, 3.6], fov: 42 }}
+            gl={{ antialias: true, alpha: true, toneMappingExposure: 1.25 }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
-            {/* Cinematic 4-Point Studio Lighting */}
-            <ambientLight intensity={1.3} />
+            {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
+            <StudioEnvironment />
+
+            {/* Cinematic Studio Lighting */}
+            <ambientLight intensity={1.5} />
             <directionalLight
               position={[6, 9, 5]}
-              intensity={2.2}
+              intensity={2.4}
               castShadow
               shadow-mapSize-width={2048}
               shadow-mapSize-height={2048}
