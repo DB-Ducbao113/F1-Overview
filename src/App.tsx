@@ -194,7 +194,9 @@ export const App: React.FC = () => {
     };
   }, [syncSeasonData]);
 
-  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [location.pathname]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
   return (
     <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white">
       <Navbar />

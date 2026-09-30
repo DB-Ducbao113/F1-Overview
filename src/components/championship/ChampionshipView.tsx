@@ -32,7 +32,9 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const SEASONS: SeasonYear[] = [2026, 2025, 2024];
-  useEffect(() => setSelectedSeason(season), [season, setSelectedSeason]);
+  useEffect(() => {
+    setSelectedSeason(season);
+  }, [season, setSelectedSeason]);
 
   const completedRaces =
     season === 2026
