@@ -2,8 +2,8 @@ import React from 'react';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { Palette, Check } from 'lucide-react';
-
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 interface LiverySelectorProps {
   selectedTeamId: TeamId;
@@ -12,16 +12,16 @@ interface LiverySelectorProps {
 }
 
 const TEAMS_LIST: { id: TeamId; name: string }[] = [
-  { id: 'ferrari', name: 'Ferrari' },
-  { id: 'mercedes', name: 'Mercedes' },
   { id: 'mclaren', name: 'McLaren' },
+  { id: 'ferrari', name: 'Ferrari' },
   { id: 'redbull', name: 'Red Bull' },
+  { id: 'mercedes', name: 'Mercedes' },
   { id: 'astonmartin', name: 'Aston Martin' },
   { id: 'alpine', name: 'Alpine' },
   { id: 'racingbulls', name: 'Racing Bulls' },
-  { id: 'audi', name: 'Audi' },
-  { id: 'williams', name: 'Williams' },
   { id: 'haas', name: 'Haas' },
+  { id: 'williams', name: 'Williams' },
+  { id: 'audi', name: 'Audi' },
   { id: 'cadillac', name: 'Cadillac' },
 ];
 
@@ -37,14 +37,20 @@ export const LiverySelector: React.FC<LiverySelectorProps> = ({
       <div className="flex items-center justify-between text-xs text-studio-400 font-bold uppercase tracking-wider px-1">
         <span className="flex items-center gap-1.5 text-white">
           <Palette className="w-3.5 h-3.5 text-f1red" />
-          {lang === 'vi' ? 'Bộ Tem Xe (11 Đội Đua 2026)' : 'Team Livery Theme'}
+          {lang === 'vi' ? 'Chọn Đội Đua (11 Mẫu Tem 2026)' : 'Constructor Liveries'}
         </span>
-        <span className="text-[11px] text-studio-300 font-semibold truncate max-w-[200px] sm:max-w-xs">
-          {currentLivery.fullName} · {currentLivery.shortCarName}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            className="w-2.5 h-2.5 rounded-full shadow-xs"
+            style={{ backgroundColor: currentLivery.bodyColor }}
+          />
+          <span className="text-[11px] text-white font-bold truncate max-w-[200px] sm:max-w-xs font-mono">
+            {currentLivery.fullName} · {currentLivery.carModelName}
+          </span>
+        </div>
       </div>
 
-      {/* Horizontal Scrollable Swatches */}
+      {/* Horizontal Scrollable Constructor Cards */}
       <div className="flex items-center gap-2 overflow-x-auto py-1 px-1 custom-scrollbar">
         {TEAMS_LIST.map(({ id, name }) => {
           const team = TEAMS_DATA[id];
@@ -55,15 +61,18 @@ export const LiverySelector: React.FC<LiverySelectorProps> = ({
               key={id}
               type="button"
               onClick={() => onSelectTeam(id)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer ${
                 isSelected
-                  ? 'bg-studio-900 text-white border-white/80 ring-2 ring-f1red/50 shadow-lg scale-105'
-                  : 'bg-studio-950/70 text-studio-400 border-studio-800/80 hover:bg-studio-900 hover:text-white hover:border-studio-600'
+                  ? 'bg-studio-900 text-white border-white/80 ring-2 ring-f1red shadow-xl scale-105'
+                  : 'bg-studio-950/80 text-studio-300 border-studio-800/80 hover:bg-studio-900 hover:text-white hover:border-studio-700'
               }`}
             >
+              {/* Official Team Logo Emblem */}
+              <ConstructorLogo teamId={id} size="sm" className="w-5 h-5 shrink-0" />
+
               {/* Color swatch circle with split accent */}
               <span
-                className="w-4 h-4 rounded-full border border-black/30 shrink-0 shadow-xs relative overflow-hidden"
+                className="w-3.5 h-3.5 rounded-full border border-black/40 shrink-0 relative overflow-hidden"
                 style={{ backgroundColor: team.primaryColor }}
               >
                 <span

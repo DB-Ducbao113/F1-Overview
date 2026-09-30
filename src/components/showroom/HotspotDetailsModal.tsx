@@ -71,7 +71,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
         aria-label="F1 Technical Hotspot Visualizer"
       >
         {/* ── Top Bar Header: Synced with Active Team & Obvious Close Button ── */}
-        <div className="p-4 sm:p-5 border-b border-studio-800/80 flex items-center justify-between gap-3 bg-studio-900/90 sticky top-0 z-10 shadow-sm">
+        <div className="p-3.5 sm:p-4 border-b border-studio-800/80 flex items-center justify-between gap-3 bg-studio-900/90 sticky top-0 z-10 shadow-sm">
           <div className="flex items-center gap-3 min-w-0">
             {/* Team Livery Number Badge */}
             <span
@@ -107,6 +107,33 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
             </span>
             <X className="w-4 h-4 text-studio-300 hover:text-white" />
           </button>
+        </div>
+
+        {/* ── Direct 1-6 Component Quick-Jump Strip Inside Modal ── */}
+        <div className="flex items-center gap-1.5 px-3 sm:px-4 py-2 bg-studio-900/50 border-b border-studio-800/80 overflow-x-auto custom-scrollbar shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-studio-400 shrink-0 mr-1 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            Linh kiện:
+          </span>
+          {F1_HOTSPOTS.map((h, i) => {
+            const isSelected = h.id === hotspot.id;
+            return (
+              <button
+                key={h.id}
+                type="button"
+                onClick={() => onSelectHotspot(h)}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shrink-0 cursor-pointer border ${
+                  isSelected
+                    ? 'bg-f1red text-white border-f1red shadow-sm'
+                    : 'bg-studio-950/60 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
+                }`}
+                title={lang === 'vi' ? h.nameVi : h.nameEn}
+              >
+                <span className="font-mono text-[10px] opacity-80">{i + 1}.</span>
+                <span>{lang === 'vi' ? h.nameVi.split(' ')[0] : h.nameEn.split(' ')[0]}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* ── Scrollable Technical Body ── */}
