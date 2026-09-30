@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
-import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
+import { Sparkles, Trophy, ArrowRight, Box } from 'lucide-react';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 interface PosterCar {
   id: string;
@@ -37,7 +38,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mclaren',
     watermark: 'MCLAREN',
     color: '#ff8000',
-    imageUrl: '/images/teams/mcl.jpg',
+    imageUrl: '/images/teams/mcl38.jpg',
     drivers: 'Lando Norris #4 · Oscar Piastri #81',
   },
   {
@@ -172,12 +173,12 @@ export const FullscreenCarStage: React.FC = () => {
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => {
-              navigate('/gallery');
+              navigate('/showroom');
             }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-f1red/90 shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{lang === 'vi' ? 'Xem Toàn Bộ Sưu Tập' : 'Explore Showcase'}</span>
+            <span>{lang === 'vi' ? 'Khám Phá Showroom 3D' : 'Explore 3D Showroom'}</span>
           </button>
 
           <button
@@ -236,11 +237,14 @@ export const FullscreenCarStage: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors" />
 
-                  {/* Accent Line Indicator */}
-                  <div
-                    className="w-1.5 h-12 rounded-full z-10 shadow-sm transition-all duration-300 group-hover:h-16"
-                    style={{ backgroundColor: car.color }}
-                  />
+                  {/* Accent Line Indicator & Constructor Logo */}
+                  <div className="z-10 flex flex-col items-center gap-1.5">
+                    <div
+                      className="w-1.5 h-10 rounded-full shadow-sm transition-all duration-300 group-hover:h-14"
+                      style={{ backgroundColor: car.color }}
+                    />
+                    <ConstructorLogo teamId={car.teamId} size="sm" className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                  </div>
 
                   {/* Vertical Stylized Typography */}
                   <div className="z-10 flex flex-col items-center justify-center flex-1 my-auto">
@@ -309,11 +313,8 @@ export const FullscreenCarStage: React.FC = () => {
                     <div className="space-y-1">
                       {/* Đội đua */}
                       <div className="flex items-center gap-2">
-                        <span
-                          className="w-2.5 h-2.5 rounded-full"
-                          style={{ backgroundColor: car.color }}
-                        />
-                        <span className="text-xs font-bold uppercase tracking-widest text-white/80">
+                        <ConstructorLogo teamId={car.teamId} size="sm" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-white/90">
                           {car.team}
                         </span>
                       </div>

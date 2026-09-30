@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Gauge, Ruler, Settings2, Weight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Gauge, Ruler, Settings2, Weight, Box } from 'lucide-react';
 import { getCarById } from '../../data/cars';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 export const CarDetailPage: React.FC = () => {
   const { carId } = useParams();
@@ -78,12 +79,15 @@ export const CarDetailPage: React.FC = () => {
             style={{ backgroundColor: car.primaryColor }}
           />
           <div className="relative flex min-h-[360px] flex-col justify-end p-7 sm:p-12">
-            <span
-              className="text-xs font-black uppercase tracking-[0.25em]"
-              style={{ color: car.primaryColor }}
-            >
-              {car.season} · {seasonProfile?.fullName || team.fullName}
-            </span>
+            <div className="flex items-center gap-2.5">
+              <ConstructorLogo teamId={car.teamId} size="sm" />
+              <span
+                className="text-xs font-black uppercase tracking-[0.25em]"
+                style={{ color: car.primaryColor }}
+              >
+                {car.season} · {seasonProfile?.fullName || team.fullName}
+              </span>
+            </div>
             <h1 className="mt-3 max-w-3xl font-display text-4xl font-black uppercase tracking-tight sm:text-6xl">
               {car.name}
             </h1>
@@ -101,10 +105,11 @@ export const CarDetailPage: React.FC = () => {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to={`/gallery/${car.teamId}`}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:bg-white/20"
+                to={`/showroom?team=${car.teamId}`}
+                className="inline-flex items-center gap-2 rounded-lg bg-f1red hover:bg-red-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105"
               >
-                {lang === 'vi' ? 'Gallery đội' : 'Team gallery'}
+                <Box className="w-4 h-4" />
+                <span>{lang === 'vi' ? 'Xem trong Showroom 3D' : 'View in 3D Showroom'}</span>
               </Link>
             </div>
           </div>

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Users, Wrench, Trophy, Car } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MapPin, Users, Wrench, Trophy, Car, Box } from 'lucide-react';
 import { TEAMS_DATA } from '../../data/teams';
 import { getCarsBySeason } from '../../data/cars';
 import { STANDINGS_DATA } from '../../data/championship';
 import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear, TeamId } from '../../types';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 export const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams();
@@ -87,12 +88,15 @@ export const TeamDetailPage: React.FC = () => {
                 style={{ backgroundColor: team.primaryColor }}
               />
               <div className="relative max-w-3xl space-y-4">
-                <span
-                  className="text-xs font-black uppercase tracking-[0.25em]"
-                  style={{ color: team.primaryColor }}
-                >
-                  {team.name} · {season}
-                </span>
+                <div className="flex items-center gap-3">
+                  <ConstructorLogo teamId={team.id} size="md" />
+                  <span
+                    className="text-xs font-black uppercase tracking-[0.25em]"
+                    style={{ color: team.primaryColor }}
+                  >
+                    {team.name} · {season}
+                  </span>
+                </div>
                 <h1 className="font-display text-4xl sm:text-6xl font-black uppercase tracking-tight">
                   {seasonProfile.fullName}
                 </h1>
@@ -101,18 +105,28 @@ export const TeamDetailPage: React.FC = () => {
                     ? `Đội hình, thứ hạng và xe đua theo dữ liệu mùa giải ${season}.`
                     : `Driver line-up, standings, and car data for the ${season} season.`}
                 </p>
-                {standings ? (
-                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold">
-                    <Trophy className="w-4 h-4 text-amber-400" />P{standings.rank} ·{' '}
-                    {standings.points} PTS
-                  </div>
-                ) : (
-                  <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-studio-300">
-                    {lang === 'vi'
-                      ? 'Không có thứ hạng đội trong dữ liệu mùa này'
-                      : 'No constructor standings for this season'}
-                  </span>
-                )}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  {standings ? (
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold">
+                      <Trophy className="w-4 h-4 text-amber-400" />P{standings.rank} ·{' '}
+                      {standings.points} PTS
+                    </div>
+                  ) : (
+                    <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-studio-300">
+                      {lang === 'vi'
+                        ? 'Không có thứ hạng đội trong dữ liệu mùa này'
+                        : 'No constructor standings for this season'}
+                    </span>
+                  )}
+
+                  <Link
+                    to={`/showroom?team=${team.id}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-f1red hover:bg-red-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105"
+                  >
+                    <Box className="w-4 h-4" />
+                    <span>{lang === 'vi' ? 'Xem Xe Trong Showroom 3D' : 'View in 3D Showroom'}</span>
+                  </Link>
+                </div>
               </div>
             </header>
 
@@ -157,11 +171,12 @@ export const TeamDetailPage: React.FC = () => {
                   </h2>
                 </div>
                 <Link
-                  to={`/gallery/${team.id}`}
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-f1red hover:underline"
+                  to={`/showroom?team=${team.id}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-f1red hover:underline"
                 >
-                  {lang === 'vi' ? 'Xem gallery đội' : 'View team gallery'}
-                  <ArrowRight className="w-4 h-4" />
+                  <Box className="w-3.5 h-3.5" />
+                  <span>{lang === 'vi' ? 'Xem xe 3D trong Showroom' : 'View in 3D Showroom'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">

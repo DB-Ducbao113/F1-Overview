@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Flag, Trophy } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Flag, Trophy, Box } from 'lucide-react';
 import { DRIVERS_DATA } from '../../data/drivers';
 import { TEAMS_DATA } from '../../data/teams';
 import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear } from '../../types';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -96,13 +97,24 @@ export const DriverDetailPage: React.FC = () => {
               <h1 className="font-display text-4xl font-black uppercase tracking-tight sm:text-6xl">
                 {name}
               </h1>
-              <Link
-                to={`/teams/${teamId}?season=${season}`}
-                className="inline-flex items-center gap-2 text-sm font-bold text-studio-300 hover:text-white"
-              >
-                {team.fullName}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <Link
+                  to={`/teams/${teamId}?season=${season}`}
+                  className="inline-flex items-center gap-2 text-sm font-bold text-studio-300 hover:text-white"
+                >
+                  <ConstructorLogo teamId={teamId} size="sm" />
+                  <span>{team.fullName}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to={`/showroom?team=${teamId}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md transition-all border border-white/10"
+                  title={lang === 'vi' ? 'Xem cỗ máy trong Showroom 3D' : 'View car in 3D Showroom'}
+                >
+                  <Box className="w-3.5 h-3.5 text-f1red group-hover:text-white" />
+                  <span>{lang === 'vi' ? 'Xem Xe 3D' : '3D Showroom'}</span>
+                </Link>
+              </div>
             </div>
             {driver && (
               <span className="font-display text-8xl font-black leading-none text-white/10 sm:text-9xl">
@@ -147,10 +159,11 @@ export const DriverDetailPage: React.FC = () => {
             : 'Rank, points, and results use the selected season. Car number and nationality come from the available driver profile dataset.'}
         </p>
         <Link
-          to={`/gallery/${teamId}`}
+          to={`/showroom?team=${teamId}`}
           className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-xs font-black uppercase tracking-wider text-studio-800 shadow-subtle hover:text-f1red"
         >
-          {lang === 'vi' ? `Khám phá gallery ${team.name}` : `Explore ${team.name} gallery`}
+          <Box className="h-4 w-4 text-f1red" />
+          <span>{lang === 'vi' ? `Khám phá Showroom 3D xe ${team.name}` : `Explore ${team.name} in 3D Showroom`}</span>
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

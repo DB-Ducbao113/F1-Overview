@@ -7,7 +7,7 @@ import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
-import { ShowroomControlDock } from './ShowroomControlDock';
+import { ShowroomControlDock, StudioLightingMode } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -16,6 +16,7 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
+import { f1AudioEngine } from '../../utils/f1AudioEngine';
 
 import {
   ArrowRight,
@@ -54,6 +55,29 @@ export const ShowroomView: React.FC = () => {
   // 3D Visualizer settings
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [showWindTunnel, setShowWindTunnel] = useState<boolean>(false);
+
+  // Studio Lighting Mode (Direction 3): 'cyber' | 'night_gp' | 'daylight'
+  const [lightingMode, setLightingMode] = useState<StudioLightingMode>('cyber');
+
+  // Audio Engine State (Direction 2): Web Audio API V6 Turbo Hybrid
+  const [isAudioActive, setIsAudioActive] = useState<boolean>(false);
+
+  // Stop audio when unmounting
+  useEffect(() => {
+    return () => {
+      f1AudioEngine.stop();
+    };
+  }, []);
+
+  const handleToggleAudio = () => {
+    const isNowMuted = f1AudioEngine.toggleMute();
+    setIsAudioActive(!isNowMuted);
+  };
+
+  const handleRevEngine = () => {
+    f1AudioEngine.revUp(3.2);
+    setIsAudioActive(true);
+  };
 
   // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
   const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
@@ -99,6 +123,11 @@ export const ShowroomView: React.FC = () => {
     setActiveHotspot(hotspot);
     setCameraPreset(null);
     setAutoRotate(false);
+    // When inspecting Power Unit (Hotspot 3), trigger authentic engine rev
+    if (hotspot.id === 'power_unit') {
+      f1AudioEngine.revUp(3.0);
+      setIsAudioActive(true);
+    }
   };
 
   const team = TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari;
@@ -173,7 +202,7 @@ export const ShowroomView: React.FC = () => {
           </div>
         </div>
 
-        {/* Top Right Unified Control Dock (Camera Presets, Toggles, Wheel Mode, Zoom) */}
+        {/* Top Right Unified Control Dock (Camera Presets, Lighting, Audio, Toggles, Wheel Mode, Zoom) */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
           <ShowroomControlDock
             cameraPreset={cameraPreset}
@@ -187,6 +216,11 @@ export const ShowroomView: React.FC = () => {
             onZoom={handleZoom}
             onResetView={handleResetView}
             lang={lang}
+            isAudioActive={isAudioActive}
+            onToggleAudio={handleToggleAudio}
+            onRevEngine={handleRevEngine}
+            lightingMode={lightingMode}
+            onChangeLightingMode={setLightingMode}
           />
         </div>
 
@@ -194,46 +228,112 @@ export const ShowroomView: React.FC = () => {
         <Canvas
           shadows
           camera={{ position: [3.2, 1.6, -3.4], fov: 42 }}
-          gl={{ antialias: true, alpha: true, toneMappingExposure: 1.25 }}
+          gl={{ antialias: true, alpha: true, toneMappingExposure: lightingMode === 'night_gp' ? 1.4 : lightingMode === 'daylight' ? 1.35 : 1.25 }}
           className="w-full h-full cursor-grab active:cursor-grabbing"
         >
           {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-          <Environment preset="city" />
+          <Environment preset={lightingMode === 'night_gp' ? 'night' : lightingMode === 'daylight' ? 'sunset' : 'city'} />
 
-          {/* Cinematic Studio Lighting */}
-          <ambientLight intensity={1.5} />
-          <directionalLight
-            position={[6, 9, -5]}
-            intensity={2.4}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
-            shadow-bias={-0.0001}
-          />
-          {/* Rim backlights */}
-          <directionalLight position={[-6, 4, 5]} intensity={1.3} color="#60a5fa" />
-          <directionalLight position={[0, -2, 0]} intensity={0.5} color="#ffffff" />
-          <pointLight position={[0, 4.5, 0]} intensity={1.5} color="#ffffff" />
-          <spotLight
-            position={[0, 7, -2]}
-            angle={0.65}
-            penumbra={0.8}
-            intensity={2.2}
-            color={team.primaryColor}
-          />
+          {/* ── Cinematic Studio Lighting according to lightingMode (Direction 3) ── */}
+          {lightingMode === 'cyber' && (
+            <>
+              <ambientLight intensity={1.5} />
+              <directionalLight
+                position={[6, 9, -5]}
+                intensity={2.4}
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+                shadow-bias={-0.0001}
+              />
+              <directionalLight position={[-6, 4, 5]} intensity={1.3} color="#60a5fa" />
+              <directionalLight position={[0, -2, 0]} intensity={0.5} color="#ffffff" />
+              <pointLight position={[0, 4.5, 0]} intensity={1.5} color="#ffffff" />
+              <spotLight
+                position={[0, 7, -2]}
+                angle={0.65}
+                penumbra={0.8}
+                intensity={2.2}
+                color={team.primaryColor}
+              />
+              {/* Floor: Dark High-Tech Neon Grid */}
+              <group position={[0, -0.01, 0]}>
+                <gridHelper args={[16, 32, team.primaryColor, '#1e293b']} position={[0, 0, 0]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[3.0, 3.05, 64]} />
+                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[4.5, 4.53, 64]} />
+                  <meshBasicMaterial color="#38bdf8" transparent opacity={0.25} />
+                </mesh>
+              </group>
+            </>
+          )}
 
-          {/* High-Tech Showroom Floor Grid & Telemetry Rings */}
-          <group position={[0, -0.01, 0]}>
-            <gridHelper args={[16, 32, team.primaryColor, '#1e293b']} position={[0, 0, 0]} />
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[3.0, 3.05, 64]} />
-              <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
-            </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[4.5, 4.53, 64]} />
-              <meshBasicMaterial color="#38bdf8" transparent opacity={0.25} />
-            </mesh>
-          </group>
+          {lightingMode === 'night_gp' && (
+            <>
+              {/* Singapore GP Stadium Floodlights */}
+              <ambientLight intensity={0.9} color="#94a3b8" />
+              <spotLight
+                position={[6, 12, 6]}
+                angle={0.55}
+                penumbra={0.5}
+                intensity={3.8}
+                color="#ffffff"
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+              />
+              <spotLight position={[-6, 12, -6]} angle={0.55} penumbra={0.5} intensity={3.8} color="#e0f2fe" />
+              <spotLight position={[-6, 12, 6]} angle={0.55} penumbra={0.5} intensity={3.5} color="#ffffff" />
+              <spotLight position={[6, 12, -6]} angle={0.55} penumbra={0.5} intensity={3.5} color="#e0f2fe" />
+              <pointLight position={[0, 5, 0]} intensity={2.0} color="#ffffff" />
+              {/* Floor: Asphalt Track with High-Contrast White Grid & Yellow Curbs */}
+              <group position={[0, -0.01, 0]}>
+                <gridHelper args={[16, 32, '#ffffff', '#0f172a']} position={[0, 0, 0]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[3.0, 3.06, 64]} />
+                  <meshBasicMaterial color="#eab308" transparent opacity={0.6} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[4.5, 4.54, 64]} />
+                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.5} />
+                </mesh>
+              </group>
+            </>
+          )}
+
+          {lightingMode === 'daylight' && (
+            <>
+              {/* Monaco Daylight: Mediterranean Sun */}
+              <ambientLight intensity={1.8} color="#fffbeb" />
+              <directionalLight
+                position={[8, 14, -6]}
+                intensity={3.4}
+                color="#fffbeb"
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+                shadow-bias={-0.0001}
+              />
+              <directionalLight position={[-8, 6, 8]} intensity={1.6} color="#bae6fd" />
+              <directionalLight position={[0, -2, 0]} intensity={0.7} color="#fef08a" />
+              <spotLight position={[0, 8, 0]} angle={0.7} penumbra={0.9} intensity={1.8} color="#fef08a" />
+              {/* Floor: Sunlit Pavement Grid */}
+              <group position={[0, -0.01, 0]}>
+                <gridHelper args={[16, 32, team.primaryColor, '#334155']} position={[0, 0, 0]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[3.0, 3.05, 64]} />
+                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[4.5, 4.53, 64]} />
+                  <meshBasicMaterial color="#0284c7" transparent opacity={0.3} />
+                </mesh>
+              </group>
+            </>
+          )}
 
           {/* F1 3D Car Model with Suspense Loading HUD */}
           <Suspense fallback={<Showroom3DLoader />}>

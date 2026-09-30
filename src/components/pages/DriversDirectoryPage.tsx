@@ -5,6 +5,7 @@ import { STANDINGS_DATA } from '../../data/championship';
 import { TEAMS_DATA } from '../../data/teams';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -121,9 +122,10 @@ export const DriversDirectoryPage: React.FC = () => {
                       <h2 className="mt-2 font-display text-xl font-black text-studio-950 group-hover:text-f1red">
                         {driver.driverName}
                       </h2>
-                      <p className="mt-1 text-xs font-semibold text-studio-500">
-                        {driver.teamName} · {season}
-                      </p>
+                      <div className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-studio-500">
+                        <ConstructorLogo teamId={driver.teamId} size="sm" />
+                        <span>{driver.teamName} · {season}</span>
+                      </div>
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-full bg-studio-100 px-2.5 py-1 text-[11px] font-black text-studio-700">
                       <Trophy className="h-3 w-3 text-amber-500" />P{driver.rank}

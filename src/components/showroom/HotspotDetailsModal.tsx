@@ -14,7 +14,10 @@ import {
   Maximize2,
   ZoomIn,
   Camera,
+  Volume2,
+  Flame,
 } from 'lucide-react';
+import { f1AudioEngine } from '../../utils/f1AudioEngine';
 
 interface HotspotDetailsModalProps {
   hotspot: HotspotItem | null;
@@ -243,6 +246,31 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
             <p className="text-xs text-studio-300 leading-relaxed font-normal">
               {lang === 'vi' ? closeUpData.conceptVi : closeUpData.conceptEn}
             </p>
+
+            {/* Interactive F1 Engine Sound Trigger for Hotspot 3 (Power Unit) */}
+            {hotspot.id === 'power_unit' && (
+              <div className="pt-2">
+                <div className="p-3 rounded-xl bg-gradient-to-r from-red-950/70 via-studio-900 to-amber-950/50 border border-red-800/60 flex items-center justify-between gap-3 shadow-inner">
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
+                      <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                      <span>{lang === 'vi' ? 'Mô Phỏng Âm Thanh V6 Turbo' : 'V6 Turbo Sound Engine'}</span>
+                    </div>
+                    <p className="text-[11px] text-studio-400 truncate">
+                      {lang === 'vi' ? 'Tiếng rít MGU-H & gầm 12,000 RPM' : 'MGU-H turbo spool & 12,000 RPM rev'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => f1AudioEngine.revUp(3.2)}
+                    className="px-3 py-1.5 rounded-lg bg-f1red hover:bg-red-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-f1red/30 cursor-pointer active:scale-95 transition-all shrink-0"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>{lang === 'vi' ? 'Rồ Ga Nẹt Pô' : 'Rev Engine'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Key Highlights Bullet Points for this Team's Component */}

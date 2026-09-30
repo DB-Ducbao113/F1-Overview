@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Search, Trophy, Users } from 'lucide-react';
+import { ArrowRight, MapPin, Search, Trophy, Users, Box } from 'lucide-react';
 import { TEAMS_DATA } from '../../data/teams';
 import { STANDINGS_DATA } from '../../data/championship';
 import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -115,13 +116,16 @@ export const TeamsDirectoryPage: React.FC = () => {
                   <div className="h-2" style={{ backgroundColor: team.primaryColor }} />
                   <div className="space-y-5 p-5 sm:p-6">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                          {team.name}
-                        </p>
-                        <h2 className="mt-1 font-display text-xl font-black uppercase text-studio-950">
-                          {profile.fullName}
-                        </h2>
+                      <div className="flex items-center gap-3 min-w-0">
+                        <ConstructorLogo teamId={team.id} size="md" />
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-studio-400">
+                            {team.name}
+                          </p>
+                          <h2 className="mt-0.5 font-display text-lg sm:text-xl font-black uppercase text-studio-950 truncate">
+                            {profile.fullName}
+                          </h2>
+                        </div>
                       </div>
                       {result && (
                         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-studio-100 px-2.5 py-1 text-[11px] font-black text-studio-700">
@@ -153,13 +157,23 @@ export const TeamsDirectoryPage: React.FC = () => {
                         <span className="mx-1 text-studio-300">·</span> {season}
                       </p>
                     )}
-                    <Link
-                      to={`/teams/${team.id}?season=${season}`}
-                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-f1red hover:underline"
-                    >
-                      {lang === 'vi' ? 'Xem hồ sơ đội' : 'Team profile'}
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+                    <div className="flex items-center justify-between pt-3 border-t border-studio-100">
+                      <Link
+                        to={`/teams/${team.id}?season=${season}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-studio-700 hover:text-f1red transition-colors"
+                      >
+                        <span>{lang === 'vi' ? 'Hồ sơ đội' : 'Team profile'}</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-f1red" />
+                      </Link>
+                      <Link
+                        to={`/showroom?team=${team.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-950 hover:bg-f1red text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-sm hover:scale-105 active:scale-95"
+                        title={lang === 'vi' ? 'Xem cỗ máy F1 trong Showroom 3D' : 'Inspect 3D machine in Showroom'}
+                      >
+                        <Box className="w-3.5 h-3.5 text-f1red" />
+                        <span>{lang === 'vi' ? 'Xem Xe 3D' : '3D Showroom'}</span>
+                      </Link>
+                    </div>
                   </div>
                 </article>
               );
