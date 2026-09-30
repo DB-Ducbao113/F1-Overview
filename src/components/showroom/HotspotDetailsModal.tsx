@@ -3,17 +3,14 @@ import { HotspotItem, F1_HOTSPOTS } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
+import { ConstructorLogo } from '../common/ConstructorLogo';
 import {
   X,
   ChevronLeft,
   ChevronRight,
-  Gauge,
   Sparkles,
   ShieldCheck,
   CheckCircle2,
-  Layers,
-  Zap,
-  Users,
   Maximize2,
   ZoomIn,
   Camera,
@@ -34,8 +31,6 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
   teamId = 'ferrari',
   lang,
 }) => {
-  // 'closeup' is the primary and default view: authentic bespoke macro close-up of that car's component
-  const [viewMode, setViewMode] = useState<'closeup' | 'schematic'>('closeup');
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
   // Global Escape key listener to close modal or lightbox
@@ -61,9 +56,6 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
   const prevHotspot = F1_HOTSPOTS[(currentIndex - 1 + F1_HOTSPOTS.length) % F1_HOTSPOTS.length];
   const nextHotspot = F1_HOTSPOTS[(currentIndex + 1) % F1_HOTSPOTS.length];
 
-  const currentDisplayImage =
-    viewMode === 'closeup' ? closeUpData.imageUrl : livery.schematicImage;
-
   return (
     <>
       {/* ── 1. Interactive Dark Backdrop Overlay: Click outside to dismiss ── */}
@@ -88,12 +80,11 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
             >
               {currentIndex + 1}
             </span>
+
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span
-                  className="w-2 h-2 rounded-full shadow-xs shrink-0"
-                  style={{ backgroundColor: livery.accentColor || livery.bodyColor }}
-                />
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Official Vector Logo */}
+                <ConstructorLogo teamId={teamId} size="sm" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-studio-400 truncate">
                   {livery.fullName}
                 </span>
@@ -120,56 +111,43 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
 
         {/* ── Scrollable Technical Body ── */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
-          {/* Visual Mode Selector: Bespoke Macro Close-up vs CAD Blueprint */}
+          {/* Authentic Constructor Component Image Display */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 px-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-studio-400 flex items-center gap-1.5">
                 <Camera className="w-3.5 h-3.5 text-f1red" />
-                {lang === 'vi' ? 'Chế độ quan sát:' : 'Inspection View:'}
+                {lang === 'vi' ? `Chi Tiết Linh Kiện ${livery.teamName}` : `${livery.teamName} Component View`}
               </span>
-              <div className="inline-flex rounded-lg bg-studio-900 border border-studio-800 p-0.5 text-xs font-bold">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('closeup')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
-                    viewMode === 'closeup'
-                      ? 'bg-f1red text-white shadow-sm'
-                      : 'text-studio-400 hover:text-white'
-                  }`}
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>{lang === 'vi' ? `Ảnh Cận Cảnh ${livery.teamName}` : `Close-Up`}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('schematic')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
-                    viewMode === 'schematic'
-                      ? 'bg-f1red text-white shadow-sm'
-                      : 'text-studio-400 hover:text-white'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>{lang === 'vi' ? 'Sơ Đồ CAD' : 'CAD Diagram'}</span>
-                </button>
-              </div>
+              <span className="font-mono text-[10px] text-studio-400 uppercase tracking-widest bg-studio-900 border border-studio-800 px-2 py-0.5 rounded">
+                {livery.carModelName}
+              </span>
             </div>
 
-            {/* Main Visual Display: Dedicated Team Component Close-up */}
+            {/* Main Visual Display: Dedicated Team Component Close-up with Constructor Logo Badge */}
             <div className="relative rounded-2xl overflow-hidden border border-studio-700/60 shadow-xl group bg-black/90 aspect-video flex items-center justify-center">
               <img
-                src={currentDisplayImage}
+                src={closeUpData.imageUrl}
                 alt={lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
                 onClick={() => setIsLightboxOpen(true)}
                 loading="lazy"
               />
 
-              {/* Ambient Blueprint Grid Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-transparent to-black/30 opacity-80 pointer-events-none" />
+              {/* Ambient Grid Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-transparent to-black/40 opacity-80 pointer-events-none" />
+
+              {/* Top Left: Official Constructor Logo Badge (e.g. McLaren Speedmark) */}
+              <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+                <ConstructorLogo
+                  teamId={teamId}
+                  badgeMode={true}
+                  size="sm"
+                  lang={lang}
+                />
+              </div>
 
               {/* Top Right HUD: Part Code Tag + Expand Lightbox Button */}
-              <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+              <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold text-amber-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   {closeUpData.partCode}
@@ -185,22 +163,20 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               </div>
 
               {/* Bottom Info HUD: Team Component Title */}
-              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-studio-300 font-medium">
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-studio-300 font-medium z-10">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-studio-950/90 backdrop-blur-md border border-studio-700/70 text-[11px] font-bold text-white max-w-[70%]">
                   <span
                     className="w-2 h-2 rounded-full shrink-0"
                     style={{ backgroundColor: livery.bodyColor }}
                   />
                   <span className="truncate">
-                    {viewMode === 'closeup'
-                      ? closeUpData.partCode
-                      : livery.schematicCode}
+                    {closeUpData.partCode} · {livery.shortCarName}
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsLightboxOpen(true)}
-                  className="text-[11px] text-studio-400 hover:text-white font-mono flex items-center gap-1 bg-studio-900/80 px-2 py-0.5 rounded border border-studio-700/50 cursor-pointer"
+                  className="text-[11px] text-studio-300 hover:text-white font-mono flex items-center gap-1 bg-studio-900/80 px-2.5 py-1 rounded border border-studio-700/50 cursor-pointer shadow-sm"
                 >
                   <ZoomIn className="w-3 h-3 text-f1red" />
                   <span>{lang === 'vi' ? 'Phóng to' : 'Zoom In'}</span>
@@ -315,7 +291,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
         </div>
       </aside>
 
-      {/* ── 3. High-Definition Fullscreen Lightbox Modal with Backdrop Dismiss & ESC ── */}
+      {/* ── 3. High-Definition Fullscreen Lightbox Modal with Official Team Logo ── */}
       {isLightboxOpen && (
         <div
           role="dialog"
@@ -323,22 +299,19 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
           className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6 animate-fade-in"
           onClick={() => setIsLightboxOpen(false)}
         >
-          {/* Lightbox Header Bar */}
+          {/* Lightbox Header Bar with Official Constructor Logo */}
           <div
             className="flex items-center justify-between gap-4 pb-4 border-b border-studio-800"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3">
-              <span
-                className="w-3.5 h-3.5 rounded-full shadow-md"
-                style={{ backgroundColor: livery.bodyColor }}
-              />
+              <ConstructorLogo teamId={teamId} size="md" />
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold text-amber-300 bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 rounded">
                     {closeUpData.partCode}
                   </span>
-                  <span className="text-xs text-studio-400 font-mono">
+                  <span className="text-xs text-studio-300 font-mono">
                     {livery.fullName}
                   </span>
                 </div>
@@ -371,10 +344,15 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={currentDisplayImage}
+                src={closeUpData.imageUrl}
                 alt={lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 className="max-h-[75vh] w-auto object-contain mx-auto select-none"
               />
+
+              {/* Watermark badge on image */}
+              <div className="absolute top-4 left-4 pointer-events-none">
+                <ConstructorLogo teamId={teamId} badgeMode={true} size="sm" lang={lang} />
+              </div>
             </div>
           </div>
 

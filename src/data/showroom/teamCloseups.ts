@@ -98,7 +98,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Cánh Gió Sau & Cơ Cấu Mở DRS · Ferrari SF-26',
       titleEn: 'Ferrari SF-26 Rear Wing & DRS Actuator Close-up',
       partCode: 'FER-AERO-RW-DRS',
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: '/images/showroom/closeups/ferrari_drs.jpg',
       conceptVi:
         'Cận cảnh cánh gió sau Ferrari với pít-tông thủy lực kích hoạt nâng cánh phụ DRS lên 85 mm. Khi mở, toàn bộ lực cản không khí phần đuôi giảm 30%, tăng ngay 20 km/h trên đoạn thẳng.',
       conceptEn:
@@ -124,7 +124,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Hốc Gió Sườn & Rãnh Khí Động Bathtub · Ferrari SF-26',
       titleEn: 'Ferrari SF-26 Bathtub Sidepod & Undercut Close-up',
       partCode: 'FER-AERO-SP-BATHTUB',
-      imageUrl: '/images/showroom/sidepods_cooling.jpg',
+      imageUrl: '/images/showroom/closeups/ferrari_sidepods.jpg',
       conceptVi:
         'Cận cảnh thiết kế sườn xe dạng bồn tắm (Bathtub downwash sidepods) độc quyền của Ferrari. Hốc gió dẫn luồng khí làm mát động cơ và ép dòng khí áp suất cao đi sát eo xe về sàn sau.',
       conceptEn:
@@ -150,7 +150,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Lốp Pirelli 18-Inch & Phanh Đĩa Carbon Brembo Cận Cảnh',
       titleEn: 'Pirelli 18-inch Tire & Brembo Carbon Brake Close-up',
       partCode: 'FER-CHASSIS-BRK-BREMBO',
-      imageUrl: '/images/showroom/pirelli_tires.jpg',
+      imageUrl: '/images/showroom/closeups/ferrari_tires.jpg',
       conceptVi:
         'Cận cảnh mâm hợp kim Magiê 18 inch kết hợp cùm phanh Brembo và đĩa phanh carbon-carbon. Hơn 1,000 lỗ thông gió li ti giúp đĩa phanh giải nhiệt khi đạt nhiệt độ trên 1,000°C sau cú phanh 5G.',
       conceptEn:
@@ -174,12 +174,171 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
     },
   },
 
+  mclaren: {
+    wings: {
+      titleVi: 'Cánh Gió Trước Cận Cảnh · McLaren MCL38',
+      titleEn: 'McLaren MCL38 Front Wing Macro Close-up',
+      partCode: 'MCL-AERO-FW-38',
+      imageUrl: '/images/showroom/closeups/mclaren_wings.jpg',
+      conceptVi:
+        'Cận cảnh cánh gió trước McLaren MCL38 trong sắc cam Papaya huyền thoại kết hợp sợi carbon dệt đen bóng. Cụm cánh đa tầng với các rãnh Outwash dẫn luồng xoáy bọc quanh bánh trước, tối ưu hóa lực nén 465 kg tại 250 km/h.',
+      conceptEn:
+        'Macro close-up of the McLaren MCL38 front wing assembly finished in iconic Papaya Orange and raw carbon fiber weave. Multi-tier cascades generate 465 kg downforce with extreme outwash endplates.',
+      highlightsVi: [
+        'Sợi carbon Toray T1100 siêu nhẹ sơn phủ cam Papaya thủ công tại Trung tâm Công nghệ Woking.',
+        'Bộ 4 tầng cánh Flaps điều chỉnh góc mở chính xác đến từng phần mười độ.',
+        'Cụm Endplate dốc tạo luồng gió bọc quanh lốp trước giảm thiểu lực cản cuộn xoáy.',
+      ],
+      highlightsEn: [
+        'Ultra-lightweight Toray T1100 carbon finished in iconic Woking Papaya.',
+        'Precision 4-element adjustable cascade for surgical downforce tuning.',
+        'Aggressive outwash endplates routing tire wake far away from floor tunnels.',
+      ],
+      specs: [
+        { labelVi: 'Vật liệu', labelEn: 'Material', value: 'Pre-preg Carbon T1100 & Titanium' },
+        { labelVi: 'Lực nén cực đại', labelEn: 'Peak Downforce', value: '465 kg @ 250 km/h' },
+        { labelVi: 'Khối lượng cụm', labelEn: 'Assembly Weight', value: '9.6 kg' },
+        { labelVi: 'Màu tem', labelEn: 'Livery', value: 'McLaren Papaya & Anthracite' },
+      ],
+    },
+    power_unit: {
+      titleVi: 'Bộ Động Cơ Mercedes-AMG M15 Hybrid · McLaren MCL38',
+      titleEn: 'McLaren MCL38 Mercedes-AMG M15 Power Unit Close-up',
+      partCode: 'MCL-PU-M15-HYBRID',
+      imageUrl: '/images/showroom/closeups/mclaren_power_unit.jpg',
+      conceptVi:
+        'Cận cảnh khu vực động cơ McLaren MCL38 với cửa hút gió Airbox bọc tem Android/Google. Bên trong là cỗ máy Mercedes-AMG M15 1.6L V6 Turbo Hybrid công suất hơn 1,050 mã lực, tối ưu khí động học thân xe cực mỏng.',
+      conceptEn:
+        'Close-up of the McLaren MCL38 engine compartment and overhead airbox featuring Android/Google branding. Houses the Mercedes-AMG M15 1.6L V6 Turbo Hybrid delivering over 1,050 combined horsepower.',
+      highlightsVi: [
+        'Cấu trúc tách rời Turbo nén và xả (Split-Turbo) đặt gọn trong khoang máy hẹp của McLaren.',
+        'Hệ thống thu hồi động năng MGU-K và pin lưu trữ ERS phóng thêm 160 mã lực tức thì.',
+        'Thân vỏ carbon ôm sát động cơ giảm tối đa lực cản không khí ở tốc độ cao.',
+      ],
+      highlightsEn: [
+        'Pioneering split-turbo layout tightly integrated into McLaren’s ultra-compact chassis.',
+        'MGU-K motor and battery energy store deploying 160 instantaneous electric BHP.',
+        'Shrink-wrapped carbon engine cover minimizing aerodynamic drag profile.',
+      ],
+      specs: [
+        { labelVi: 'Khối động cơ', labelEn: 'Engine Type', value: 'Mercedes-AMG M15 1.6L V6 Turbo' },
+        { labelVi: 'Tổng công suất', labelEn: 'Total Output', value: '1,050+ HP' },
+        { labelVi: 'Hiệu suất nhiệt', labelEn: 'Thermal Efficiency', value: '> 51%' },
+        { labelVi: 'Đối tác động cơ', labelEn: 'Engine Partner', value: 'Mercedes-AMG High Performance' },
+      ],
+    },
+    halo: {
+      titleVi: 'Khung Bảo Vệ Titan Halo Cam Papaya · McLaren MCL38',
+      titleEn: 'McLaren MCL38 Papaya Titanium Halo Close-up',
+      partCode: 'MCL-SAFE-HALO-PAPAYA',
+      imageUrl: '/images/showroom/closeups/mclaren_halo.jpg',
+      conceptVi:
+        'Cận cảnh vòm an toàn Halo titan trên xe McLaren MCL38 phủ sơn cam Papaya rực rỡ. Bảo vệ tối đa khoang lái của Lando Norris và Oscar Piastri trước mọi lực va chạm cực hạn lên tới 12.3 tấn.',
+      conceptEn:
+        'Macro close-up of the McLaren MCL38 Grade 5 Titanium Halo in vibrant Papaya Orange, shielding drivers Lando Norris and Oscar Piastri against catastrophic 12.3-tonne static impacts.',
+      highlightsVi: [
+        'Lõi hợp kim Titan Grade 5 chịu tải trọng tĩnh 121 kN đạt chuẩn kiểm định an toàn FIA.',
+        'Lớp ốp khí động học bọc ngoài hướng luồng gió trực diện vào cửa hút Airbox phía sau.',
+        'Góc quan sát buồng lái tích hợp gương chiếu hậu khí động và camera hành trình HD.',
+      ],
+      highlightsEn: [
+        'Grade 5 Titanium core withstanding 121 kN (12.3 tonnes) static FIA proof load.',
+        'Sculpted carbon aerodynamic fairing laminating airflow into the overhead engine intake.',
+        'Optimized cockpit aperture with integrated aerodynamic mirrors and HD onboard cameras.',
+      ],
+      specs: [
+        { labelVi: 'Vật liệu cốt', labelEn: 'Core Material', value: 'Titanium Grade 5 (Ti6Al4V)' },
+        { labelVi: 'Trọng lượng khung', labelEn: 'Weight', value: '7.0 kg' },
+        { labelVi: 'Khả năng chịu tải', labelEn: 'Load Capacity', value: '121 kN (12.3 Tấn)' },
+        { labelVi: 'Màu sơn', labelEn: 'Finish', value: 'McLaren Papaya Gloss' },
+      ],
+    },
+    drs: {
+      titleVi: 'Cánh Gió Sau DRS Thương Hiệu OKX · McLaren MCL38',
+      titleEn: 'McLaren MCL38 Rear Wing & OKX DRS Mechanism Close-up',
+      partCode: 'MCL-AERO-DRS-OKX',
+      imageUrl: '/images/showroom/closeups/mclaren_drs.jpg',
+      conceptVi:
+        'Cận cảnh cánh gió đuôi McLaren MCL38 với nhận diện OKX và cơ cấu mở cánh DRS điều khiển thủy lực. Mở góc 85 mm giúp xe đạt vận tốc tức thời trên 345 km/h trên những đoạn thẳng dài.',
+      conceptEn:
+        'Close-up of the McLaren MCL38 rear wing displaying OKX livery and rapid hydraulic DRS flap actuator. Opening 85 mm delivers a top speed surge beyond 345 km/h.',
+      highlightsVi: [
+        'Thời gian bung mở cánh lướt gió dưới 200 mili-giây qua pít-tông thủy lực 200 bar.',
+        'Tự động đóng cánh an toàn chỉ trong 1 phần trăm giây ngay khi phát hiện đạp phanh.',
+        'Cánh Beam Wing phía dưới khuếch đại dòng hút của bộ khuếch tán sàn sau.',
+      ],
+      highlightsEn: [
+        'Sub-200ms rapid hydraulic actuation driven by 200+ bar pressure lines.',
+        'Instant fail-safe closure triggered the millisecond braking pressure begins.',
+        'Lower beam wing elements amplifying ground-effect underfloor suction.',
+      ],
+      specs: [
+        { labelVi: 'Độ mở cánh DRS', labelEn: 'DRS Slot Gap', value: '85 mm (FIA Spec)' },
+        { labelVi: 'Tốc độ tăng thêm', labelEn: 'Top Speed Gain', value: '+20 – 24 km/h' },
+        { labelVi: 'Vật liệu', labelEn: 'Composite', value: 'High-Modulus Pre-preg Carbon' },
+        { labelVi: 'Tài trợ chính', labelEn: 'Livery Sponsor', value: 'OKX & Android' },
+      ],
+    },
+    sidepods: {
+      titleVi: 'Hốc Gió Sườn Undercut & Rãnh Downwash · McLaren MCL38',
+      titleEn: 'McLaren MCL38 Downwash Sidepod & Undercut Close-up',
+      partCode: 'MCL-AERO-SP-DOWNWASH',
+      imageUrl: '/images/showroom/closeups/mclaren_sidepods.jpg',
+      conceptVi:
+        'Cận cảnh thiết kế sườn xe khí động học của McLaren MCL38 với hốc gió thuôn dài, rãnh khoét sâu Undercut và máng trượt Downwash ép dòng khí áp suất cao xuống sàn xe và cánh sau.',
+      conceptEn:
+        'Macro close-up of the McLaren MCL38 sidepod architecture showcasing aggressive undercuts and smooth downwash gulleys directing high-energy airflow toward the rear diffuser.',
+      highlightsVi: [
+        'Rãnh khoét sườn Undercut cực sâu tối đa hóa luồng khí chảy vào sàn gầm Venturi.',
+        'Vỏ carbon chịu nhiệt phủ logo Vuse và Tezos bảo vệ dàn tản nhiệt kép bên trong.',
+        'Khe tản nhiệt mang cá mở rộng tùy biến theo nhiệt độ từng chặng đua.',
+      ],
+      highlightsEn: [
+        'Deep waist undercut feeding massive laminar airflow into underfloor Venturi tunnels.',
+        'Thermal-insulated carbon body panels carrying Vuse and Tezos sponsor decals.',
+        'Modular cooling gills optimized for track temperature demands.',
+      ],
+      specs: [
+        { labelVi: 'Triết lý khí động', labelEn: 'Aero Concept', value: 'Extreme Downwash Undercut' },
+        { labelVi: 'Giải nhiệt động cơ', labelEn: 'Cooling Capacity', value: '> 145 kW' },
+        { labelVi: 'Vật liệu thân vỏ', labelEn: 'Body Composite', value: 'Carbon-Nomex Honeycomb' },
+        { labelVi: 'Màu hoàn thiện', labelEn: 'Finish', value: 'Papaya Orange & Matte Carbon' },
+      ],
+    },
+    tires: {
+      titleVi: 'Lốp Pirelli & Ốp Mâm Google Chrome Cận Cảnh · McLaren',
+      titleEn: 'McLaren MCL38 Pirelli Tires & Google Chrome Wheel Covers',
+      partCode: 'MCL-CHASSIS-BRK-CHROME',
+      imageUrl: '/images/showroom/closeups/mclaren_tires.jpg',
+      conceptVi:
+        'Cận cảnh mâm hợp kim ma-giê 18 inch trên xe McLaren MCL38 trang bị ốp mâm khí động học đa sắc màu Google Chrome đặc trưng, kết hợp cùm phanh Brembo carbon chịu nhiệt trên 1,000°C.',
+      conceptEn:
+        'Close-up of the 18-inch forged magnesium rim on the McLaren MCL38 featuring signature Google Chrome rainbow aero wheel covers and Brembo carbon-carbon brake discs enduring 1,000°C+ stops.',
+      highlightsVi: [
+        'Ốp mâm khí động học Google Chrome triệt tiêu luồng xoáy hỗn loạn của vành bánh xoay.',
+        'Đĩa phanh carbon Brembo tản nhiệt qua hơn 1,000 lỗ khoan chéo chịu lực phanh 5.5G.',
+        'Hợp chất lốp Pirelli P Zero tối ưu hóa độ bám đường trên từng mét cua.',
+      ],
+      highlightsEn: [
+        'Signature Google Chrome aerodynamic wheel covers smoothing wheel rim turbulence.',
+        'Brembo carbon-carbon brake rotor with 1,000+ cooling vents absorbing 5.5G deceleration.',
+        'Pirelli P Zero compound delivering pinpoint mechanical grip.',
+      ],
+      specs: [
+        { labelVi: 'Kích cỡ mâm', labelEn: 'Rim Size', value: '18 inches (Forged Magnesium)' },
+        { labelVi: 'Nhiệt độ phanh tối đa', labelEn: 'Max Brake Temp', value: '1,050°C' },
+        { labelVi: 'Lực hãm phanh', labelEn: 'Deceleration', value: '> 5.5 G' },
+        { labelVi: 'Đối tác bánh xe', labelEn: 'Partners', value: 'Pirelli & Google Chrome' },
+      ],
+    },
+  },
+
   mercedes: {
     wings: {
       titleVi: 'Cánh Gió Trước Cận Cảnh · Mercedes-AMG W15',
       titleEn: 'Mercedes-AMG W15 Front Wing Macro Close-up',
       partCode: 'MB-AERO-FW-W15',
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_wings.jpg',
       conceptVi:
         'Cận cảnh cánh gió trước Mercedes W15 phối màu Bạc Mũi Tên Bạc (Silver Arrows) kết hợp dải xanh ngọc lục bảo Petronas. Thiết kế mũi xe thanh mảnh với các rãnh chia gió triệt tiêu nhiễu động bánh xe.',
       conceptEn:
@@ -205,7 +364,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Động Cơ Mercedes-AMG M15 E Performance Cận Cảnh',
       titleEn: 'Mercedes-AMG M15 E Performance Power Unit Close-up',
       partCode: 'MB-PU-M15-BRIXWORTH',
-      imageUrl: '/images/showroom/power_unit.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_power_unit.jpg',
       conceptVi:
         'Cận cảnh cỗ máy Mercedes-AMG M15 chế tác tại Brixworth, vương quốc Anh. Động cơ tăng áp Turbo Hybrid dẫn đầu về độ tin cậy và hiệu suất thu hồi nhiệt năng khí xả MGU-H.',
       conceptEn:
@@ -231,7 +390,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Khung Bảo Vệ Halo Xanh Ngọc Petronas · Mercedes W15',
       titleEn: 'Mercedes W15 Petronas Turquoise Halo Close-up',
       partCode: 'MB-SAFE-HALO-PETRONAS',
-      imageUrl: '/images/showroom/halo_safety.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_halo.jpg',
       conceptVi:
         'Cận cảnh khung Halo titan phủ sơn xanh ngọc lục bảo Petronas nổi bật trên nền xe bạc W15. Khung bảo vệ đạt chuẩn FIA bảo vệ buồng lái tay đua khỏi các va chạm tốc độ cao.',
       conceptEn:
@@ -257,7 +416,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Cánh Gió Sau DRS Mercedes-AMG W15 Cận Cảnh',
       titleEn: 'Mercedes-AMG W15 Rear Wing DRS Close-up',
       partCode: 'MB-AERO-RW-DRS-15',
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_drs.jpg',
       conceptVi:
         'Cận cảnh cánh đuôi Mercedes W15 với cơ cấu DRS thủy lực siêu nhạy, mở góc lướt gió giải phóng tốc độ tối đa trên 340 km/h.',
       conceptEn:
@@ -283,7 +442,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Hốc Gió Undercut Khí Động · Mercedes W15 Cận Cảnh',
       titleEn: 'Mercedes W15 Undercut Sidepod Channel Close-up',
       partCode: 'MB-AERO-SP-UNDERCUT',
-      imageUrl: '/images/showroom/sidepods_cooling.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_sidepods.jpg',
       conceptVi:
         'Cận cảnh hốc hút gió sườn dốc (Undercut Channel) Mercedes W15. Luồng không khí áp suất cao được gia tốc qua sườn xe, cấp năng lượng trực tiếp cho sàn gầm Venturi.',
       conceptEn:
@@ -309,7 +468,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Lốp Pirelli 18-Inch Mercedes W15 Cận Cảnh',
       titleEn: 'Mercedes W15 Pirelli Tire & Carbon Brakes Close-up',
       partCode: 'MB-CHASSIS-WHEEL-18',
-      imageUrl: '/images/showroom/pirelli_tires.jpg',
+      imageUrl: '/images/showroom/closeups/mercedes_tires.jpg',
       conceptVi:
         'Cận cảnh vành mâm hợp kim ma-giê 18-inch với ốp mâm khí động học và đĩa phanh carbon chịu lực hãm trên 5G.',
       conceptEn:
@@ -338,7 +497,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Cánh Gió Trước Cận Cảnh · Red Bull RB20',
       titleEn: 'Red Bull Racing RB20 Front Wing Close-up',
       partCode: 'RBR-AERO-FW-RB20',
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_wings.jpg',
       conceptVi:
         'Cận cảnh cánh gió trước Red Bull RB20 trong lớp sơn xanh mờ Midnight Navy kết hợp dải vàng và biểu tượng bò tót đỏ. Góc cánh được tối ưu để tạo lực nén cực mạnh cho mũi xe khi vào cua tốc độ cao.',
       conceptEn:
@@ -364,7 +523,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Động Cơ Honda RBPTH002 Cận Cảnh · Red Bull',
       titleEn: 'Honda RBPTH002 Power Unit Cutaway · Red Bull',
       partCode: 'RBR-PU-HONDA-HRC',
-      imageUrl: '/images/showroom/power_unit.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_power_unit.jpg',
       conceptVi:
         'Cận cảnh khối động cơ Honda RBPTH002 do Honda HRC phát triển cho Red Bull Racing. Cỗ máy vô địch thế giới nổi tiếng với độ tin cậy cơ học và khả năng phân bổ mô-men xoắn tức thời.',
       conceptEn:
@@ -390,7 +549,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Khung Halo Sơn Mờ Cận Cảnh · Red Bull RB20',
       titleEn: 'Red Bull RB20 Matte Navy Halo Close-up',
       partCode: 'RBR-SAFE-HALO-MATTE',
-      imageUrl: '/images/showroom/halo_safety.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_halo.jpg',
       conceptVi:
         'Cận cảnh khung Halo titan trong sắc xanh bóng đêm mờ của Red Bull, bảo vệ khoang lái của Max Verstappen trước mọi hiểm nguy trên đường đua.',
       conceptEn:
@@ -416,7 +575,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Cánh Gió Sau DRS Red Bull RB20 Cận Cảnh',
       titleEn: 'Red Bull RB20 Rear Wing DRS Close-up',
       partCode: 'RBR-AERO-RW-DRS',
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_drs.jpg',
       conceptVi:
         'Cận cảnh cánh sau Red Bull RB20 kết hợp hệ thống mở DRS thủy lực giúp xe đạt vận tốc kinh ngạc tại Monza và Spa-Francorchamps.',
       conceptEn:
@@ -442,7 +601,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Hốc Gió Sườn Overbite Độc Quyền · Red Bull RB20',
       titleEn: 'Red Bull RB20 Revolutionary Overbite Sidepod Close-up',
       partCode: 'RBR-AERO-SP-OVERBITE',
-      imageUrl: '/images/showroom/sidepods_cooling.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_sidepods.jpg',
       conceptVi:
         'Cận cảnh thiết kế hốc hút gió sườn đảo ngược (Overbite Inlet) đột phá của Red Bull. Cửa hút khí nhô ra phía trên tạo khe hút gió hẹp nằm ngang giải phóng luồng khí khổng lồ xuống sàn xe.',
       conceptEn:
@@ -468,7 +627,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       titleVi: 'Lốp Pirelli & Phanh Đĩa Carbon Red Bull RB20 Cận Cảnh',
       titleEn: 'Red Bull RB20 18-inch Wheel & Carbon Brake Close-up',
       partCode: 'RBR-CHASSIS-BRK-18',
-      imageUrl: '/images/showroom/pirelli_tires.jpg',
+      imageUrl: '/images/showroom/closeups/redbull_tires.jpg',
       conceptVi:
         'Cận cảnh hệ thống phanh carbon và lốp Pirelli 18-inch trên cỗ máy RB20, hỗ trợ những pha phanh muộn thần sầu của các tay đua Red Bull.',
       conceptEn:
@@ -492,8 +651,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
     },
   },
 
-  // Fallback builder for remaining teams ensuring 100% type safety and distinct team assets
-  mclaren: createGenericTeamCloseups('mclaren', 'McLaren Racing', 'MCL38', '#ff8000', 'Papaya Orange & Anthracite Carbon'),
+  // Dedicated builder for remaining teams with 100% authentic team-specific images & liveries
   astonmartin: createGenericTeamCloseups('astonmartin', 'Aston Martin Aramco', 'AMR25', '#00594f', 'British Racing Metallic Green & Lime'),
   alpine: createGenericTeamCloseups('alpine', 'BWT Alpine F1', 'A525', '#0090ff', 'Alpine Royal Blue & Bubblegum Pink'),
   racingbulls: createGenericTeamCloseups('racingbulls', 'Visa Cash App RB', 'VCARB 02', '#1634cb', 'Gloss Royal Racing Blue & White'),
@@ -515,7 +673,7 @@ function createGenericTeamCloseups(
       titleVi: `Cánh Gió Trước Cận Cảnh · ${teamName} ${carModel}`,
       titleEn: `${teamName} ${carModel} Front Wing Macro Close-up`,
       partCode: `${teamId.toUpperCase()}-AERO-FW-26`,
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_wings.jpg`,
       conceptVi: `Cận cảnh cánh gió trước ${teamName} phối màu sắc đặc trưng (${liveryNotes}). Cấu trúc sợi carbon đa lớp tối ưu hóa lực nén bánh trước và phân tách luồng khí sạch vào họng sàn gầm.`,
       conceptEn: `Macro close-up of ${teamName} ${carModel} front wing assembly finished in authentic team livery (${liveryNotes}), guiding clean laminar airflow to the ground-effect tunnels.`,
       highlightsVi: [
@@ -539,7 +697,7 @@ function createGenericTeamCloseups(
       titleVi: `Bộ Động Cơ Hybrid Cận Cảnh · ${teamName}`,
       titleEn: `${teamName} V6 Turbo Hybrid Power Unit Cutaway`,
       partCode: `${teamId.toUpperCase()}-PU-HYBRID`,
-      imageUrl: '/images/showroom/power_unit.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_power_unit.jpg`,
       conceptVi: `Cận cảnh khối động cơ đốt trong 1.6L V6 Turbo kết hợp mô-tơ điện thu hồi động năng MGU-K cung cấp hơn 1,000 mã lực cho cỗ máy ${carModel}.`,
       conceptEn: `Engineering cutaway of the 1.6L V6 Turbo Hybrid power unit delivering over 1,000 combined horsepower to the ${teamName} ${carModel}.`,
       highlightsVi: [
@@ -563,7 +721,7 @@ function createGenericTeamCloseups(
       titleVi: `Khung Bảo Vệ Titan Halo Cận Cảnh · ${teamName}`,
       titleEn: `${teamName} Titanium Halo Safety Cell Close-up`,
       partCode: `${teamId.toUpperCase()}-SAFE-HALO`,
-      imageUrl: '/images/showroom/halo_safety.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_halo.jpg`,
       conceptVi: `Cận cảnh khung bảo vệ buồng lái Halo bằng hợp kim Titan Grade 5 sơn phối màu sắc thương hiệu ${teamName}, chịu lực va đập tĩnh 12.3 tấn.`,
       conceptEn: `Close-up of the Grade 5 Titanium Halo cockpit protection structure finished in ${teamName} colors, rated to survive a 12.3-tonne static impact.`,
       highlightsVi: [
@@ -587,7 +745,7 @@ function createGenericTeamCloseups(
       titleVi: `Cánh Gió Sau DRS Cận Cảnh · ${teamName}`,
       titleEn: `${teamName} Rear Wing DRS Mechanism Close-up`,
       partCode: `${teamId.toUpperCase()}-AERO-DRS`,
-      imageUrl: '/images/showroom/wings_drs.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_drs.jpg`,
       conceptVi: `Cận cảnh cánh gió đuôi xe ${teamName} với cơ cấu mở cánh lướt gió DRS điều khiển thủy lực giảm 30% lực cản khi vượt xe.`,
       conceptEn: `Close-up of the ${teamName} rear wing showing the hydraulic DRS actuator shedding 30% drag for high-speed overtaking maneuvers.`,
       highlightsVi: [
@@ -611,7 +769,7 @@ function createGenericTeamCloseups(
       titleVi: `Hốc Gió Sườn & Tản Nhiệt Cận Cảnh · ${teamName}`,
       titleEn: `${teamName} Sidepod & Cooling Architecture Close-up`,
       partCode: `${teamId.toUpperCase()}-AERO-SP`,
-      imageUrl: '/images/showroom/sidepods_cooling.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_sidepods.jpg`,
       conceptVi: `Cận cảnh hốc hút gió sườn và bề mặt uốn lượn khí động của ${carModel}. Định hình luồng khí ôm sát eo thân xe chảy thẳng xuống bộ khuếch tán sàn sau.`,
       conceptEn: `Close-up of the ${teamName} ${carModel} sidepod intakes and cooling louvers, accelerating high-pressure ambient air toward the rear diffuser.`,
       highlightsVi: [
@@ -635,7 +793,7 @@ function createGenericTeamCloseups(
       titleVi: `Lốp Pirelli 18-Inch & Phanh Đĩa Carbon · ${teamName}`,
       titleEn: `${teamName} 18-inch Pirelli Tires & Carbon Brakes Close-up`,
       partCode: `${teamId.toUpperCase()}-CHASSIS-BRK`,
-      imageUrl: '/images/showroom/pirelli_tires.jpg',
+      imageUrl: `/images/showroom/closeups/${teamId}_tires.jpg`,
       conceptVi: `Cận cảnh mâm hợp kim ma-giê 18 inch và đĩa phanh carbon-carbon với hơn 1,000 lỗ thông gió giải nhiệt khi hãm tốc 5G.`,
       conceptEn: `Close-up of the 18-inch magnesium wheels and carbon-carbon brake discs with over 1,000 cooling holes absorbing brutal 5G deceleration.`,
       highlightsVi: [
