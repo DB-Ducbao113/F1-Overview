@@ -25,6 +25,8 @@ import {
   Shield,
   Zap,
   ArrowRight,
+  Layers,
+  Maximize2,
 } from 'lucide-react';
 
 export const ShowroomView: React.FC = () => {
@@ -173,6 +175,23 @@ export const ShowroomView: React.FC = () => {
 
             {/* Top Right Quick Canvas Controls */}
             <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+              {/* 8K Technical Blueprint Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveHotspot(F1_HOTSPOTS[0]);
+                  setCameraPreset(null);
+                  setAutoRotate(false);
+                }}
+                className="p-2 sm:p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg bg-studio-950/85 text-studio-200 border-studio-800 hover:text-white hover:bg-studio-900 cursor-pointer"
+                title={lang === 'vi' ? 'Xem Sơ Đồ Kỹ Thuật 8K Đội Đua' : 'View Team 8K Technical Blueprint'}
+              >
+                <Layers className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">
+                  {lang === 'vi' ? 'Sơ Đồ 8K' : '8K Blueprint'}
+                </span>
+              </button>
+
               {/* Wind Tunnel FX Toggle */}
               <button
                 type="button"
@@ -406,9 +425,9 @@ export const ShowroomView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Showcase Banner: Official Car Photo + Core Specs */}
+              {/* Showcase Banner: Dedicated 8K Engineering Schematic + Core Pillars */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-                {/* Left: Official Car Photo Card */}
+                {/* Left: Dedicated 8K Engineering Schematic Card */}
                 <div className="relative rounded-2xl overflow-hidden bg-studio-900/80 border border-studio-800 shadow-xl flex flex-col justify-between p-6 group">
                   {/* Subtle Team Ambient Radial Glow */}
                   <div
@@ -419,25 +438,45 @@ export const ShowroomView: React.FC = () => {
                   />
 
                   <div className="relative z-10 space-y-1">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest block"
-                      style={{ color: livery.accentColor || '#ffffff' }}
-                    >
-                      {livery.shortCarName} · 2026 Specification
-                    </span>
-                    <h4 className="font-display text-xl font-black uppercase text-white">
-                      {livery.fullName}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300 bg-amber-950/70 border border-amber-800/80 px-2 py-0.5 rounded">
+                        8K UHD CAD VECTOR
+                      </span>
+                      <span className="text-[10px] font-mono text-studio-400">
+                        {livery.schematicCode}
+                      </span>
+                    </div>
+                    <h4 className="font-display text-lg font-black uppercase text-white pt-1">
+                      {lang === 'vi' ? livery.schematicTitleVi : livery.schematicTitleEn}
                     </h4>
                     <p className="text-xs text-studio-400">{livery.base}</p>
                   </div>
 
-                  {/* High-res Car Image */}
-                  <div className="relative z-10 my-4 flex items-center justify-center h-48 sm:h-52">
+                  {/* 8K Schematic Image Container */}
+                  <div
+                    onClick={() => {
+                      setActiveHotspot(F1_HOTSPOTS[0]);
+                      setCameraPreset(null);
+                      setAutoRotate(false);
+                    }}
+                    className="relative z-10 my-4 rounded-xl overflow-hidden border border-studio-700/60 bg-black/80 aspect-video flex items-center justify-center cursor-pointer group/img shadow-lg"
+                  >
                     <img
-                      src={livery.carImage}
-                      alt={livery.carModelName}
-                      className="max-h-full max-w-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500"
+                      src={livery.schematicImage}
+                      alt={livery.schematicTitleEn}
+                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-studio-950/90 via-transparent to-black/20 opacity-80 group-hover/img:opacity-60 transition-opacity" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-xs">
+                      <span className="text-[11px] font-bold text-white bg-studio-950/80 px-2 py-1 rounded backdrop-blur-md border border-studio-700/60 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: livery.bodyColor }} />
+                        {livery.teamName} CAD Spec
+                      </span>
+                      <span className="text-[11px] font-mono text-amber-300 font-bold bg-black/70 px-2 py-1 rounded border border-amber-900/60 flex items-center gap-1">
+                        <Layers className="w-3 h-3 text-amber-400" />
+                        {lang === 'vi' ? 'Xem Chi Tiết' : 'Inspect'}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Drivers & Leadership */}

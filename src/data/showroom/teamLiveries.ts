@@ -33,6 +33,11 @@ export interface Team3DLivery {
   aeroPhilosophyEn: string;
   powertrainNoteVi: string;
   powertrainNoteEn: string;
+  // Dedicated 8K Engineering Schematic
+  schematicImage: string;
+  schematicCode: string;
+  schematicTitleVi: string;
+  schematicTitleEn: string;
 }
 
 export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
@@ -41,7 +46,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamName: 'Ferrari',
     fullName: 'Scuderia Ferrari HP',
     carModelName: 'Ferrari SF-24 / SF-26',
-    shortCarName: 'SF-24',
+    shortCarName: 'SF-26',
     carImage: '/images/teams/sf24.jpg',
     powerUnit: 'Ferrari 066/12 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Scuderia Ferrari (Maranello, Italy)',
@@ -71,6 +76,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Ferrari 066/12 nổi danh với công nghệ buồng đốt phụ TJI, giải phóng công suất vượt 1050 mã lực kết hợp mô-tơ MGU-K thế hệ mới.',
     powertrainNoteEn:
       'The Ferrari 066/12 power unit excels with Turbulent Jet Ignition (TJI) combustion delivering 1050+ combined horsepower with responsive MGU-K hybrid recovery.',
+    schematicImage: '/images/showroom/schematics/ferrari.jpg',
+    schematicCode: 'FER-SF26-AERO-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Scuderia Ferrari (Project 674)',
+    schematicTitleEn: 'Scuderia Ferrari SF-26 8K Aerodynamic CAD Schematic',
   },
 
   mercedes: {
@@ -108,6 +117,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Mercedes-AMG M15 huyền thoại về độ ổn định và hiệu suất thu hồi nhiệt năng MGU-H, thống trị kỷ nguyên động cơ Turbo Hybrid.',
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit setting the benchmark in thermodynamic efficiency and sustained hybrid energy harvesting across full race distances.',
+    schematicImage: '/images/showroom/schematics/mercedes.jpg',
+    schematicCode: 'MB-W15-AERO-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Mercedes-AMG F1 W15',
+    schematicTitleEn: 'Mercedes-AMG F1 W15 8K Aerodynamic CAD Schematic',
   },
 
   mclaren: {
@@ -145,6 +158,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Tích hợp hoàn hảo khối động cơ Mercedes-AMG M15 với bộ làm mát nội bộ siêu gọn do đội ngũ kỹ sư tại Woking tự phát triển.',
     powertrainNoteEn:
       'Seamlessly packaged Mercedes-AMG M15 power unit paired with bespoke Woking-engineered compact cooling architecture.',
+    schematicImage: '/images/showroom/schematics/mclaren.jpg',
+    schematicCode: 'MCL-38-CFD-8K',
+    schematicTitleVi: 'Sơ đồ CFD & Khí động học 8K McLaren Racing MCL38',
+    schematicTitleEn: 'McLaren Racing MCL38 8K CFD Aerodynamics Schematic',
   },
 
   redbull: {
@@ -182,6 +199,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Honda RBPTH002 mang lại khả năng phân bổ mô-men xoắn tức thời và độ bền cơ học đã giành nhiều danh hiệu vô địch thế giới liên tiếp.',
     powertrainNoteEn:
       'Honda RBPTH002 power unit delivers instantaneous torque deployment, surgical driveability and proven championship-winning endurance.',
+    schematicImage: '/images/showroom/schematics/redbull.jpg',
+    schematicCode: 'RBR-RB20-01-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Oracle Red Bull Racing RB20',
+    schematicTitleEn: 'Oracle Red Bull Racing RB20-01 8K CAD Schematic',
   },
 
   astonmartin: {
@@ -219,6 +240,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Sử dụng động cơ và hộp số Mercedes-AMG đặt trong khung gầm do đội ngũ kỹ sư tại đại bản doanh công nghệ cao Silverstone thiết kế.',
     powertrainNoteEn:
       'Mercedes-AMG powerplant housed within an ultra-stiff carbon cell developed inside the new state-of-the-art Silverstone AMR campus.',
+    schematicImage: '/images/showroom/schematics/astonmartin.jpg',
+    schematicCode: 'AMR-24-SILVERSTONE-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Aston Martin AMR24 / AMR25',
+    schematicTitleEn: 'Aston Martin Aramco AMR24 / AMR25 8K CAD Blueprint',
   },
 
   alpine: {
@@ -256,6 +281,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Renault E-Tech phát triển tại Viry-Châtillon kết hợp bộ phận pin hồi lưu năng lượng điện phục vụ tăng tốc tức thì.',
     powertrainNoteEn:
       'Renault E-Tech hybrid unit engineered at Viry-Châtillon tuned for punchy corner-exit electrical deployment.',
+    schematicImage: '/images/showroom/schematics/alpine.jpg',
+    schematicCode: 'ALP-A525-TECH-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K BWT Alpine A525 Renault E-Tech',
+    schematicTitleEn: 'BWT Alpine F1 Team A525 8K CAD Aero Blueprint',
   },
 
   racingbulls: {
@@ -293,6 +322,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Trang bị khối động cơ Honda RBPTH002 cùng hệ thống thu hồi năng lượng hybrid đồng nhất với Oracle Red Bull Racing.',
     powertrainNoteEn:
       'Powered by the championship-winning Honda RBPTH002 hybrid unit alongside matched Red Bull transmission components.',
+    schematicImage: '/images/showroom/schematics/racingbulls.jpg',
+    schematicCode: 'VCARB-01-FAENZA-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Visa Cash App RB VCARB 01',
+    schematicTitleEn: 'Visa Cash App RB 01 8K Chassis & Aero Schematic',
   },
 
   haas: {
@@ -330,6 +363,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Sử dụng toàn bộ cụm động cơ đốt trong, mô-tơ MGU-K và hộp số 8 cấp được cung cấp trực tiếp từ đại bản doanh Maranello của Ferrari.',
     powertrainNoteEn:
       'Propelled by Ferrari’s works 066/12 hybrid powertrain and rear-end mechanical assembly straight from Maranello.',
+    schematicImage: '/images/showroom/schematics/haas.jpg',
+    schematicCode: 'HAAS-VF24-SPEC-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K MoneyGram Haas VF-24 / VF-25',
+    schematicTitleEn: 'MoneyGram Haas F1 Team VF-24 8K Chassis Schematic',
   },
 
   williams: {
@@ -367,6 +404,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Mercedes-AMG M15 cung cấp sức kéo uy mãnh và độ tin cậy cơ học cao giúp đội đua Grove cạnh tranh vị trí top đầu.',
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit delivering relentless torque delivery and unmatched mechanical reliability for the Grove team.',
+    schematicImage: '/images/showroom/schematics/williams.jpg',
+    schematicCode: 'WIL-FW46-GROVE-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Williams Racing FW46 / FW47',
+    schematicTitleEn: 'Williams Racing FW46 8K CAD Chassis & Aero Flow Blueprint',
   },
 
   audi: {
@@ -404,6 +445,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Cột mốc lịch sử khi Audi tự nghiên cứu và chế tạo toàn bộ khối động cơ Turbo Hybrid tại Neuburg phục vụ kỷ nguyên F1.',
     powertrainNoteEn:
       'Audi’s historic all-new factory power unit engineered from the ground up at the Competence Center Motorsport in Neuburg.',
+    schematicImage: '/images/showroom/schematics/audi.jpg',
+    schematicCode: 'AUDI-R26-NEUBURG-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Audi F1 Team (Neuburg Spec)',
+    schematicTitleEn: 'Audi Sport F1 Power Unit & Aero 8K Schematic (RS F1-01)',
   },
 
   cadillac: {
@@ -441,6 +486,10 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Khởi đầu với sự kết hợp động cơ Ferrari và dần chuyển giao công nghệ sang động cơ GM F1 Twin-Turbo tự phát triển.',
     powertrainNoteEn:
       'Debuting with proven Maranello hybrid power while developing GM’s dedicated American factory F1 power unit.',
+    schematicImage: '/images/showroom/schematics/cadillac.jpg',
+    schematicCode: 'CAD-MAC26-USA-8K',
+    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Cadillac F1 Team MAC-26',
+    schematicTitleEn: 'Cadillac F1 Chassis & Aerodynamic 8K Schematic (MAC-26)',
   },
 };
 
