@@ -6,6 +6,8 @@ import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 
+import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+
 interface F1Car3DModelProps {
   teamId: TeamId;
   activeHotspot: HotspotItem | null;
@@ -22,67 +24,123 @@ const RealF1CarMesh: React.FC<{
   teamId: TeamId;
 }> = ({ teamId }) => {
   const { scene } = useGLTF('/models/c42.glb');
-  const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
-  const primaryColor = team.primaryColor;
-  const accentColor = team.accentColor || '#ffffff';
+  const livery = getTeam3DLivery(teamId);
 
-  // Clone scene once
+  // Clone scene hierarchy once
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
 
+  // Keep references to original pristine GLTF materials so we don't lose texture maps (e.g. for Pirelli tires)
+  const originalMaterialsRef = useRef<Map<string, any>>(new Map());
+  // Track dynamically created materials for clean disposal on team switch
+  const activeMaterialsRef = useRef<THREE.Material[]>([]);
+
+  // Capture original materials on initial scene load
+  useEffect(() => {
+    if (!scene) return;
+    scene.traverse((child: any) => {
+      if (child.isMesh && child.material) {
+        const mat = child.material;
+        const matName = (mat.name || child.name || '').toLowerCase();
+        if (!originalMaterialsRef.current.has(matName)) {
+          originalMaterialsRef.current.set(matName, mat);
+        }
+      }
+    });
+  }, [scene]);
+
+  // Apply clean, authentic team livery with zero color bleeding
   useEffect(() => {
     if (!clonedScene) return;
 
-    const primaryThreeColor = new THREE.Color(primaryColor);
-    const accentThreeColor = new THREE.Color(accentColor);
+    // Dispose old dynamic materials to prevent WebGL memory leaks
+    activeMaterialsRef.current.forEach((m) => m.dispose());
+    activeMaterialsRef.current = [];
 
     clonedScene.traverse((child: any) => {
-      if (child.isMesh && child.material) {
+      if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
 
-        const originalMat = child.material;
-        const mat = originalMat.clone();
-        const matName = (mat.name || '').toLowerCase();
+        const currentMat = child.material;
+        const matName = (currentMat?.name || child.name || '').toLowerCase();
+        let newMat: THREE.Material;
 
-        // 1. Tires & Wheel Rims (006 = Front Wheels, 011 = Rear L, 013 = Rear R)
+        // 1. Pirelli Tires & BBS Wheel Rims (006 = Front, 011 = Rear L, 013 = Rear R)
         if (matName.includes('006') || matName.includes('011') || matName.includes('013')) {
-          mat.roughness = 0.82;
-          mat.metalness = 0.08;
-          mat.color = new THREE.Color('#ffffff'); // Keep authentic Pirelli tire markings
+          const orig = originalMaterialsRef.current.get(matName) || currentMat;
+          newMat = new THREE.MeshStandardMaterial({
+            map: orig?.map || null, // Keep original authentic Pirelli markings
+            color: new THREE.Color('#ffffff'),
+            roughness: 0.85,
+            metalness: 0.1,
+            envMapIntensity: 1.0,
+          });
         }
-        // 2. Main Aerodynamic Bodywork & Chassis Panels
-        else if (
-          matName.includes('001') || // Nose & Front Wing
-          matName.includes('003') || // Engine Cover
-          matName.includes('004') || // Front Chassis
-          matName.includes('009')    // Sidepods
-        ) {
-          mat.color = primaryThreeColor;
-          mat.roughness = 0.18;
-          mat.metalness = 0.22;
-          if ('clearcoat' in mat) {
-            mat.clearcoat = 0.95;
-            mat.clearcoatRoughness = 0.1;
-          }
+        // 2. Cockpit Interior & Steering Wheel (002)
+        else if (matName.includes('002')) {
+          const orig = originalMaterialsRef.current.get(matName) || currentMat;
+          newMat = new THREE.MeshStandardMaterial({
+            map: orig?.map || null,
+            color: new THREE.Color('#1c1e22'),
+            roughness: 0.8,
+            metalness: 0.2,
+          });
         }
-        // 3. Rear Wing, DRS & Wings Detailing
+        // 3. Aerodynamic Floor, Venturi Tunnels & Diffuser (005)
         else if (matName.includes('005')) {
-          mat.color = accentThreeColor;
-          mat.roughness = 0.28;
-          mat.metalness = 0.3;
+          newMat = new THREE.MeshStandardMaterial({
+            map: null, // Clear baked decals for clean aerodynamic woven carbon
+            color: new THREE.Color(livery.floorColor),
+            roughness: 0.28,
+            metalness: 0.35,
+            envMapIntensity: 1.3,
+          });
         }
-        // 4. Cockpit Interior, Seat & Floor
+        // 4. Titanium Halo Safety Cell (008)
+        else if (matName.includes('008')) {
+          newMat = new THREE.MeshStandardMaterial({
+            map: null,
+            color: new THREE.Color(livery.haloColor),
+            roughness: livery.haloRoughness,
+            metalness: livery.haloMetalness,
+            envMapIntensity: 1.6,
+          });
+        }
+        // 5. Aerodynamic Wings, DRS Flap & Shark Fin (001 = Front Wing/Nose tip, 007 = Shark Fin/Rear Wing)
+        else if (matName.includes('001') || matName.includes('007')) {
+          newMat = new THREE.MeshStandardMaterial({
+            map: null,
+            color: new THREE.Color(livery.wingColor),
+            roughness: livery.wingRoughness,
+            metalness: livery.wingMetalness,
+            envMapIntensity: 1.5,
+          });
+        }
+        // 6. Main Bodywork, Monocoque Chassis & Sidepods (003 = Engine Cover, 004 = Forward Chassis, 009 = Sidepods)
         else {
-          mat.roughness = 0.55;
-          mat.metalness = 0.2;
+          newMat = new THREE.MeshPhysicalMaterial({
+            map: null, // Crucial: Remove baked red Alfa Romeo texture so Mercedes/Red Bull etc. never get tainted!
+            color: new THREE.Color(livery.bodyColor),
+            roughness: livery.bodyRoughness,
+            metalness: livery.bodyMetalness,
+            clearcoat: livery.bodyClearcoat ?? 1.0,
+            clearcoatRoughness: 0.08,
+            envMapIntensity: 1.8,
+          });
         }
 
-        mat.envMapIntensity = 1.35;
-        mat.needsUpdate = true;
-        child.material = mat;
+        newMat.name = matName;
+        newMat.needsUpdate = true;
+        child.material = newMat;
+        activeMaterialsRef.current.push(newMat);
       }
     });
-  }, [clonedScene, primaryColor, accentColor]);
+
+    return () => {
+      activeMaterialsRef.current.forEach((m) => m.dispose());
+      activeMaterialsRef.current = [];
+    };
+  }, [clonedScene, teamId, livery]);
 
   return (
     <primitive
@@ -219,4 +277,3 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
 
 // Preload the model asset to ensure instant caching
 useGLTF.preload('/models/c42.glb');
-

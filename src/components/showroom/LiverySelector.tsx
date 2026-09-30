@@ -3,6 +3,8 @@ import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { Palette, Check } from 'lucide-react';
 
+import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+
 interface LiverySelectorProps {
   selectedTeamId: TeamId;
   onSelectTeam: (teamId: TeamId) => void;
@@ -28,6 +30,8 @@ export const LiverySelector: React.FC<LiverySelectorProps> = ({
   onSelectTeam,
   lang,
 }) => {
+  const currentLivery = getTeam3DLivery(selectedTeamId);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between text-xs text-studio-400 font-bold uppercase tracking-wider px-1">
@@ -35,8 +39,8 @@ export const LiverySelector: React.FC<LiverySelectorProps> = ({
           <Palette className="w-3.5 h-3.5 text-f1red" />
           {lang === 'vi' ? 'Bộ Tem Xe (11 Đội Đua 2026)' : 'Team Livery Theme'}
         </span>
-        <span className="text-[11px] text-studio-400 font-semibold">
-          {TEAMS_DATA[selectedTeamId]?.fullName || 'Formula 1 Team'}
+        <span className="text-[11px] text-studio-300 font-semibold truncate max-w-[200px] sm:max-w-xs">
+          {currentLivery.fullName} · {currentLivery.shortCarName}
         </span>
       </div>
 

@@ -77,7 +77,9 @@ function describePodium(race: DetailedRaceResult): string {
   return [1, 2, 3]
     .map((position) => {
       const entry = entries.find((candidate) => candidate && candidate.position === position);
-      return entry ? `${position}. ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts)` : null;
+      return entry
+        ? `${position}. ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts)`
+        : null;
     })
     .filter(Boolean)
     .join(' · ');
@@ -193,7 +195,9 @@ function findSyncDifferences(
 ): F1ResultDifference[] {
   if (!Array.isArray(savedResults) || !Array.isArray(incomingResults)) return [];
   const savedByRound = new Map(savedResults.filter(Boolean).map((race) => [race.round, race]));
-  const summaryByRound = new Map((getRaceResults(season) || []).filter(Boolean).map((race) => [race.round, race]));
+  const summaryByRound = new Map(
+    (getRaceResults(season) || []).filter(Boolean).map((race) => [race.round, race]),
+  );
   const differences: F1ResultDifference[] = [];
 
   for (const incoming of incomingResults) {
@@ -254,7 +258,10 @@ function computeInitialStandings(resultsMap: Record<SeasonYear, DetailedRaceResu
 
   try {
     const races2026 = resultsMap?.[2026];
-    if (Array.isArray(races2026) && races2026.some((r) => r && r.round > 15 && r.status === 'completed')) {
+    if (
+      Array.isArray(races2026) &&
+      races2026.some((r) => r && r.round > 15 && r.status === 'completed')
+    ) {
       out[2026] = recalculateStandingsFromRaces(
         2026,
         races2026,

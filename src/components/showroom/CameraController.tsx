@@ -13,7 +13,10 @@ interface CameraControllerProps {
   autoRotate: boolean;
 }
 
-const PRESET_VIEWS: Record<CameraPreset, { pos: [number, number, number]; target: [number, number, number] }> = {
+const PRESET_VIEWS: Record<
+  CameraPreset,
+  { pos: [number, number, number]; target: [number, number, number] }
+> = {
   overview: { pos: [3.2, 1.6, -3.4], target: [0, 0.42, 0] },
   front: { pos: [0, 0.8, -3.7], target: [0, 0.3, -1.8] },
   cockpit: { pos: [0.8, 1.1, -0.6], target: [0, 0.55, -0.2] },
@@ -78,7 +81,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       maxPolarAngle={Math.PI / 2 + 0.02} // Prevent camera going below floor
       minDistance={0.8}
       maxDistance={8.5}
-      autoRotate={autoRotate && !activeHotspot && !isTransitioning.current}
+      autoRotate={autoRotate && !activeHotspot}
       autoRotateSpeed={0.8}
       onStart={() => {
         // User manually dragged the mouse: pause programmatic transition
@@ -87,4 +90,3 @@ export const CameraController: React.FC<CameraControllerProps> = ({
     />
   );
 };
-

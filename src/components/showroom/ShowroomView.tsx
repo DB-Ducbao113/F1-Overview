@@ -1,8 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
-import * as THREE from 'three';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Canvas } from '@react-three/fiber';
+import { ContactShadows, Environment } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -11,26 +10,8 @@ import { LiverySelector } from './LiverySelector';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
+import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { CollectionView } from '../collection/CollectionView';
-
-// ── Photorealistic Studio Environment (100% Offline, Zero Network Delay) ──
-const StudioEnvironment: React.FC = () => {
-  const { gl, scene } = useThree();
-  useEffect(() => {
-    const pmremGenerator = new THREE.PMREMGenerator(gl);
-    pmremGenerator.compileEquirectangularShader();
-    const envScene = new RoomEnvironment();
-    const envMap = pmremGenerator.fromScene(envScene, 0.04).texture;
-    scene.environment = envMap;
-    return () => {
-      pmremGenerator.dispose();
-      envMap.dispose();
-      scene.environment = null;
-    };
-  }, [gl, scene]);
-  return null;
-};
 
 import {
   RotateCcw,
@@ -38,22 +19,34 @@ import {
   Play,
   Pause,
   Box,
-  Image as ImageIcon,
   Sparkles,
   Eye,
   Crosshair,
   Shield,
   Zap,
+  ArrowRight,
 } from 'lucide-react';
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Active top tab: 'showroom' (3D) or 'gallery' (Community Photo Collection)
-  const [activeTab, setActiveTab] = useState<'showroom' | 'gallery'>('showroom');
+  // Selected Team for 3D Livery synced with query param ?team=...
+  const teamParam = searchParams.get('team') as TeamId | null;
+  const initialTeamId = teamParam && TEAMS_DATA[teamParam] ? teamParam : 'ferrari';
+  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(initialTeamId);
 
-  // Selected Team for 3D Livery
-  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>('ferrari');
+  // Sync state if URL query param changes from external navigation
+  useEffect(() => {
+    if (teamParam && TEAMS_DATA[teamParam] && teamParam !== selectedTeamId) {
+      setSelectedTeamId(teamParam);
+    }
+  }, [teamParam]);
+
+  const handleSelectTeam = (newTeamId: TeamId) => {
+    setSelectedTeamId(newTeamId);
+    setSearchParams({ team: newTeamId }, { replace: true });
+  };
 
   // Active Hotspot item
   const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
@@ -66,12 +59,38 @@ export const ShowroomView: React.FC = () => {
   const [showWindTunnel, setShowWindTunnel] = useState<boolean>(false);
 
   const team = TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari;
+  const livery = getTeam3DLivery(selectedTeamId);
 
-  const CAMERA_PRESETS: { id: CameraPreset; labelVi: string; labelEn: string; icon: React.ReactNode }[] = [
-    { id: 'overview', labelVi: 'Toàn Cảnh', labelEn: '360° View', icon: <Eye className="w-3.5 h-3.5" /> },
-    { id: 'front', labelVi: 'Cánh Trước', labelEn: 'Front Aero', icon: <Crosshair className="w-3.5 h-3.5" /> },
-    { id: 'cockpit', labelVi: 'Buồng Lái', labelEn: 'Cockpit', icon: <Shield className="w-3.5 h-3.5" /> },
-    { id: 'rear', labelVi: 'Cánh Đuôi', labelEn: 'Rear & DRS', icon: <Zap className="w-3.5 h-3.5" /> },
+  const CAMERA_PRESETS: {
+    id: CameraPreset;
+    labelVi: string;
+    labelEn: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      id: 'overview',
+      labelVi: 'Toàn Cảnh',
+      labelEn: '360° View',
+      icon: <Eye className="w-3.5 h-3.5" />,
+    },
+    {
+      id: 'front',
+      labelVi: 'Cánh Trước',
+      labelEn: 'Front Aero',
+      icon: <Crosshair className="w-3.5 h-3.5" />,
+    },
+    {
+      id: 'cockpit',
+      labelVi: 'Buồng Lái',
+      labelEn: 'Cockpit',
+      icon: <Shield className="w-3.5 h-3.5" />,
+    },
+    {
+      id: 'rear',
+      labelVi: 'Cánh Đuôi',
+      labelEn: 'Rear & DRS',
+      icon: <Zap className="w-3.5 h-3.5" />,
+    },
     { id: 'top', labelVi: 'Từ Trên', labelEn: 'Top Down', icon: <Box className="w-3.5 h-3.5" /> },
   ];
 
@@ -98,46 +117,11 @@ export const ShowroomView: React.FC = () => {
               </p>
             </div>
           </div>
-
-          {/* Mode Switcher Pills: Showroom 3D vs Community Gallery */}
-          <div className="flex items-center p-1 rounded-xl bg-studio-950 border border-studio-800 self-stretch sm:self-auto shadow-inner">
-            <button
-              type="button"
-              onClick={() => setActiveTab('showroom')}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'showroom'
-                  ? 'bg-f1red text-white shadow-md shadow-f1red/30'
-                  : 'text-studio-400 hover:text-white'
-              }`}
-            >
-              <Box className="w-3.5 h-3.5" />
-              <span>{lang === 'vi' ? 'Mô Hình 3D & Kỹ Thuật' : '3D Car & Tech'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('gallery')}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'gallery'
-                  ? 'bg-studio-800 text-white shadow-md'
-                  : 'text-studio-400 hover:text-white'
-              }`}
-            >
-              <ImageIcon className="w-3.5 h-3.5" />
-              <span>{lang === 'vi' ? 'Bộ Sưu Tập Ảnh' : 'Photo Gallery'}</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* ── Content View ── */}
-      {activeTab === 'gallery' ? (
-        // Preserve Existing Community Gallery Intact
-        <div className="bg-studio-100 text-studio-900 flex-1">
-          <CollectionView />
-        </div>
-      ) : (
-        // ── 3D Interactive Showroom & Visualizer ──
-        <div className="flex flex-col w-full">
+      {/* ── 3D Interactive Showroom & Visualizer ── */}
+      <div className="flex flex-col w-full">
           <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[740px] overflow-hidden bg-radial from-[#12121a] via-[#09090e] to-[#040407] select-none border-b border-studio-800/80">
             {/* Top Left Floating Team & Engine Info Badge */}
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
@@ -225,7 +209,9 @@ export const ShowroomView: React.FC = () => {
                 title={lang === 'vi' ? 'Bật/Tắt xoay tự động' : 'Toggle Auto-Rotation'}
               >
                 {autoRotate ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                <span className="hidden sm:inline">{lang === 'vi' ? 'Tự Xoay' : 'Auto Rotate'}</span>
+                <span className="hidden sm:inline">
+                  {lang === 'vi' ? 'Tự Xoay' : 'Auto Rotate'}
+                </span>
               </button>
 
               {/* Reset Camera Button */}
@@ -252,7 +238,7 @@ export const ShowroomView: React.FC = () => {
               className="w-full h-full cursor-grab active:cursor-grabbing"
             >
               {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-              <StudioEnvironment />
+              <Environment preset="city" />
 
               {/* Cinematic Studio Lighting */}
               <ambientLight intensity={1.5} />
@@ -364,15 +350,16 @@ export const ShowroomView: React.FC = () => {
               <div className="p-2.5 sm:p-3 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl">
                 <LiverySelector
                   selectedTeamId={selectedTeamId}
-                  onSelectTeam={(newTeamId) => setSelectedTeamId(newTeamId)}
+                  onSelectTeam={handleSelectTeam}
                   lang={lang}
                 />
               </div>
             </div>
 
-            {/* ── Slide-Over Technical Details Modal Drawer ── */}
+            {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
             <HotspotDetailsModal
               hotspot={activeHotspot}
+              teamId={selectedTeamId}
               onClose={() => {
                 setActiveHotspot(null);
                 setCameraPreset('overview');
@@ -386,90 +373,178 @@ export const ShowroomView: React.FC = () => {
             />
           </div>
 
-          {/* ── Scrollable Technical Overview & Regulations Section Below Canvas ── */}
+          {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
           <div className="bg-studio-950 text-white border-t border-studio-800 py-12">
             <div className="page-container space-y-10">
-              {/* Section Header */}
+              {/* Section Header: Dynamically reflects active team */}
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
                 <div>
-                  <span className="text-xs font-black uppercase tracking-widest text-f1red">
-                    {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đua Xe F1' : 'F1 Technical Specification'}
-                  </span>
-                  <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1">
-                    {lang === 'vi'
-                      ? 'Kiến Trúc Khí Động Học & Động Cơ C42'
-                      : 'C42 Ground-Effect Architecture & Hybrid Powertrain'}
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shadow-xs"
+                      style={{ backgroundColor: livery.bodyColor }}
+                    />
+                    <span className="text-xs font-black uppercase tracking-widest text-f1red">
+                      {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đội Đua' : 'Technical Dossier & Machine'}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1 flex items-center gap-3 flex-wrap">
+                    <span>{livery.fullName}</span>
+                    <span className="text-sm font-bold tracking-wider text-studio-400 font-mono bg-studio-900 border border-studio-800 px-3 py-1 rounded-full">
+                      {livery.carModelName}
+                    </span>
                   </h3>
                 </div>
-                <p className="text-xs text-studio-400 max-w-md">
-                  {lang === 'vi'
-                    ? 'Mô hình nguyên bản chuẩn quy chuẩn hiệu ứng mặt đất (Ground-Effect Venturi Tunnels) kết hợp động cơ 1.6L V6 Turbo Hybrid vượt 1000 mã lực.'
-                    : 'Authentic regulation ground-effect Venturi tunnel architecture paired with a 1.6L V6 Turbo Hybrid power unit exceeding 1000 horsepower.'}
-                </p>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={`/teams/${selectedTeamId}?season=2026`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
+                  >
+                    <span>{lang === 'vi' ? 'Xem Hồ Sơ Đội' : 'Team Profile'}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-f1red" />
+                  </Link>
+                </div>
               </div>
 
-              {/* 4 Feature Columns */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
-                  <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
-                    01
+              {/* Showcase Banner: Official Car Photo + Core Specs */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                {/* Left: Official Car Photo Card */}
+                <div className="relative rounded-2xl overflow-hidden bg-studio-900/80 border border-studio-800 shadow-xl flex flex-col justify-between p-6 group">
+                  {/* Subtle Team Ambient Radial Glow */}
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-20 transition-all duration-700"
+                    style={{
+                      background: `radial-gradient(circle at 50% 40%, ${livery.bodyColor} 0%, transparent 70%)`,
+                    }}
+                  />
+
+                  <div className="relative z-10 space-y-1">
+                    <span
+                      className="text-[10px] font-black uppercase tracking-widest block"
+                      style={{ color: livery.accentColor || '#ffffff' }}
+                    >
+                      {livery.shortCarName} · 2026 Specification
+                    </span>
+                    <h4 className="font-display text-xl font-black uppercase text-white">
+                      {livery.fullName}
+                    </h4>
+                    <p className="text-xs text-studio-400">{livery.base}</p>
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Khí Động Ground-Effect' : 'Ground Effect Aero'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Hai rãnh Venturi dưới sàn xe hút không khí với vận tốc cao, tạo lực hút khổng lồ dán chặt xe xuống mặt đường mà không gây nhiễu động phía sau.'
-                      : 'Dual underfloor Venturi tunnels generate immense suction downforce sealing the car to asphalt while dramatically reducing dirty wake.'}
-                  </p>
+
+                  {/* High-res Car Image */}
+                  <div className="relative z-10 my-4 flex items-center justify-center h-48 sm:h-52">
+                    <img
+                      src={livery.carImage}
+                      alt={livery.carModelName}
+                      className="max-h-full max-w-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+
+                  {/* Drivers & Leadership */}
+                  <div className="relative z-10 pt-3 border-t border-studio-800/80 text-xs text-studio-300 space-y-1">
+                    <div className="flex items-center gap-1.5 font-mono text-[11px] text-white">
+                      <span className="text-studio-500 font-sans">Tay đua:</span>
+                      <span>{lang === 'vi' ? livery.driversVi : livery.driversEn}</span>
+                    </div>
+                    <div className="text-[11px] text-studio-400">
+                      Lãnh đội: <span className="text-studio-200">{livery.teamPrincipal}</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
-                  <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
-                    02
+                {/* Right: 4 Technical Pillars tailored to active team */}
+                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* 1. Aero */}
+                  <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
+                          01
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                          Aerodynamics
+                        </span>
+                      </div>
+                      <h4 className="font-display text-base font-bold text-white uppercase">
+                        {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
+                      </h4>
+                      <p className="text-xs text-studio-400 leading-relaxed">
+                        {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Hồi Lưu Năng Lượng ERS' : 'Hybrid ERS System'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Hệ thống MGU-K và MGU-H thu hồi nhiệt khí xả và lực phanh, cung cấp 160 mã lực điện tức thì cho các pha tăng tốc vượt xe.'
-                      : 'MGU-K and MGU-H recover thermal and kinetic energy under braking, delivering 160 electric BHP instantly for overtaking maneuvers.'}
-                  </p>
-                </div>
 
-                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                    03
+                  {/* 2. Powertrain */}
+                  <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
+                          02
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                          Power Unit
+                        </span>
+                      </div>
+                      <h4 className="font-display text-base font-bold text-white uppercase truncate">
+                        {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
+                      </h4>
+                      <p className="text-xs text-studio-300 font-mono">
+                        {livery.powerUnit}
+                      </p>
+                      <p className="text-xs text-studio-400 leading-relaxed">
+                        {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Khung hợp kim Titan Grade 5 chỉ nặng 7kg nhưng chịu được lực va chạm tĩnh lên tới 12 tấn, bảo vệ trọn vẹn buồng lái tay đua.'
-                      : 'Grade 5 Titanium loop weighing just 7kg yet engineered to withstand 12.3 tonnes of impact force shielding the cockpit.'}
-                  </p>
-                </div>
 
-                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
-                  <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
-                    04
+                  {/* 3. Halo Safety */}
+                  <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                          03
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                          Safety Cell
+                        </span>
+                      </div>
+                      <h4 className="font-display text-base font-bold text-white uppercase">
+                        {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
+                      </h4>
+                      <p className="text-xs text-studio-400 leading-relaxed">
+                        {lang === 'vi'
+                          ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
+                          : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Lốp Pirelli 18-Inch' : '18-Inch Pirelli Tires'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Thành lốp mỏng giảm biến dạng lốp, kết hợp mâm hợp kim Magiê và đĩa phanh Carbon-Carbon đạt 1,000°C khi hãm tốc từ 340 km/h.'
-                      : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
-                  </p>
+
+                  {/* 4. Pirelli & Brakes */}
+                  <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
+                          04
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                          Pirelli & Brakes
+                        </span>
+                      </div>
+                      <h4 className="font-display text-base font-bold text-white uppercase">
+                        {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
+                      </h4>
+                      <p className="text-xs text-studio-400 leading-relaxed">
+                        {lang === 'vi'
+                          ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
+                          : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

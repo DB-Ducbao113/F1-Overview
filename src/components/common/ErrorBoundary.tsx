@@ -67,7 +67,9 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
 
             <p className="text-sm text-zinc-300 leading-relaxed">
-              Ứng dụng vừa gặp một lỗi xử lý dữ liệu giao diện không mong muốn. Để tránh gián đoạn trải nghiệm, bạn có thể thử tải lại hoặc xóa bộ nhớ tạm để hệ thống đồng bộ lại từ đầu.
+              Ứng dụng vừa gặp một lỗi xử lý dữ liệu giao diện không mong muốn. Để tránh gián đoạn
+              trải nghiệm, bạn có thể thử tải lại hoặc xóa bộ nhớ tạm để hệ thống đồng bộ lại từ
+              đầu.
             </p>
 
             {this.state.error && (

@@ -3,11 +3,9 @@ import { Link, Route, Routes, useLocation, useNavigate, useParams } from 'react-
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { useChampionshipStore } from './store/useChampionshipStore';
-import { useCollectionStore } from './store/useCollectionStore';
 import { useNavigationStore } from './store/useNavigationStore';
 import { getRaceResults } from './data/championship';
-import { TEAMS_DATA } from './data/teams';
-import { SeasonYear, TeamId } from './types';
+import { SeasonYear } from './types';
 import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
 
 const HomeView = lazy(() =>
@@ -18,9 +16,7 @@ const ChampionshipView = lazy(() =>
     default: m.ChampionshipView,
   })),
 );
-const CollectionView = lazy(() =>
-  import('./components/collection/CollectionView').then((m) => ({ default: m.CollectionView })),
-);
+
 const ShowroomView = lazy(() =>
   import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
 );
@@ -125,18 +121,7 @@ function RaceRoute() {
   );
 }
 
-function GalleryRoute() {
-  const { teamId } = useParams();
-  const selectTeam = useCollectionStore((state) => state.selectTeam);
-  const clearTeam = useCollectionStore((state) => state.clearTeam);
-  const isValidTeam = !!teamId && Object.keys(TEAMS_DATA).includes(teamId);
-  useEffect(() => {
-    if (isValidTeam) selectTeam(teamId as TeamId);
-    else clearTeam();
-  }, [teamId, isValidTeam, selectTeam, clearTeam]);
-  if (teamId && !isValidTeam) return <NotFound />;
-  return <CollectionView />;
-}
+
 
 function About() {
   const lang = useNavigationStore((state) => state.lang);
@@ -215,7 +200,6 @@ export const App: React.FC = () => {
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
               <Route path="/showroom" element={<ShowroomView />} />
               <Route path="/gallery" element={<ShowroomView />} />
-              <Route path="/gallery/:teamId" element={<GalleryRoute />} />
               <Route path="/teams/:teamId" element={<TeamDetailPage />} />
               <Route path="/drivers/:driverId" element={<DriverDetailPage />} />
               <Route path="/cars/:carId" element={<CarDetailPage />} />
@@ -231,6 +215,5 @@ export const App: React.FC = () => {
     </div>
   );
 };
-
 
 export default App;

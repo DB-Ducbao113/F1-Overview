@@ -5,7 +5,6 @@ import { t } from '../../i18n/translations';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
 import { TEAMS_DATA } from '../../data/teams';
 import { FullscreenCarStage } from './FullscreenCarStage';
-import { MostLovedShowcase } from './MostLovedShowcase';
 import { SeasonYear } from '../../types';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import {
@@ -40,7 +39,9 @@ export const HomeView: React.FC = () => {
       .map((race) => race.round),
   ]);
   const nextRace =
-    CALENDAR_2026.find((gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round)) ||
+    CALENDAR_2026.find(
+      (gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round),
+    ) ||
     CALENDAR_2026.find((gp) => gp && !completedRoundNumbers.has(gp.round)) ||
     CALENDAR_2026[CALENDAR_2026.length - 1] ||
     CALENDAR_2026[0];
@@ -345,9 +346,6 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* ── 4. Community Most Loved Showcase (Auto-sliding Carousel) ── */}
-      <MostLovedShowcase />
     </div>
   );
 };

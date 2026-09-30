@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCollectionStore } from '../../store/useCollectionStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
@@ -26,7 +25,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Scuderia Ferrari HP',
     teamId: 'ferrari',
     watermark: 'FERRARI',
-    color: '#e80020',
+    color: '#dc0000',
     imageUrl: '/images/teams/sf24.jpg',
     drivers: 'Charles Leclerc #16 · Lewis Hamilton #44',
   },
@@ -48,7 +47,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Oracle Red Bull Racing',
     teamId: 'redbull',
     watermark: 'RED BULL',
-    color: '#0600ef',
+    color: '#050f26',
     imageUrl: '/images/teams/rb20.jpg',
     drivers: 'Max Verstappen #1 · Isack Hadjar #6',
   },
@@ -59,7 +58,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Mercedes-AMG Petronas F1 Team',
     teamId: 'mercedes',
     watermark: 'MERCEDES',
-    color: '#00a19c',
+    color: '#c8ccce',
     imageUrl: '/images/teams/w15.jpg',
     drivers: 'George Russell #63 · Kimi Antonelli #12',
   },
@@ -70,7 +69,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Aston Martin Aramco F1 Team',
     teamId: 'astonmartin',
     watermark: 'ASTON MARTIN',
-    color: '#229971',
+    color: '#00594f',
     imageUrl: '/images/teams/astonmartin.jpg',
     drivers: 'Fernando Alonso #14 · Lance Stroll #18',
   },
@@ -92,7 +91,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Visa Cash App RB F1 Team',
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
-    color: '#6692ff',
+    color: '#1634cb',
     imageUrl: '/images/teams/racingbulls.jpg',
     drivers: 'Liam Lawson #30 · Arvid Lindblad #3',
   },
@@ -103,7 +102,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'MoneyGram Haas F1 Team',
     teamId: 'haas',
     watermark: 'HAAS',
-    color: '#b6babd',
+    color: '#e5e7eb',
     imageUrl: '/images/teams/haas.jpg',
     drivers: 'Esteban Ocon #31 · Oliver Bearman #87',
   },
@@ -114,7 +113,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Williams Racing',
     teamId: 'williams',
     watermark: 'WILLIAMS',
-    color: '#00a0de',
+    color: '#002447',
     imageUrl: '/images/teams/williams.jpg',
     drivers: 'Carlos Sainz #55 · Alex Albon #23',
   },
@@ -125,7 +124,7 @@ const POSTER_CARS: PosterCar[] = [
     team: 'Audi Formula 1 Team',
     teamId: 'audi',
     watermark: 'AUDI F1',
-    color: '#f50537',
+    color: '#c4c8cc',
     imageUrl: '/images/teams/audi.jpg',
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
@@ -330,20 +329,19 @@ export const FullscreenCarStage: React.FC = () => {
                       </p>
                     </div>
 
-                    {/* Nút vào bộ sưu tập */}
+                    {/* Nút vào Showroom 3D */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        useCollectionStore.getState().selectTeam(car.teamId);
-                        navigate(`/gallery/${car.teamId}`);
+                        navigate(`/showroom?team=${car.teamId}`);
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-studio-950 hover:bg-white/90 text-xs font-black uppercase tracking-wider shadow-xl hover:scale-105 transition-all shrink-0 cursor-pointer"
                     >
                       <span>
                         {lang === 'vi'
-                          ? `Xem Bộ Sưu Tập ${car.shortName}`
-                          : `View ${car.shortName} Gallery`}
+                          ? `Xem Showroom 3D`
+                          : `View 3D Showroom`}
                       </span>
                       <ArrowRight className="w-4 h-4 text-f1red" />
                     </button>
