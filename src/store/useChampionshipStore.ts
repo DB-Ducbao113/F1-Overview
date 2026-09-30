@@ -73,17 +73,20 @@ interface ChampionshipStoreState {
 const initialDetailedResults = loadSavedDetailedResults();
 
 function describePodium(race: DetailedRaceResult): string {
+  const entries = Array.isArray(race?.entries) ? race.entries : [];
   return [1, 2, 3]
     .map((position) => {
-      const entry = race.entries.find((candidate) => candidate.position === position);
-      return entry ? `${position}. ${entry.driverName} (${entry.points} pts)` : null;
+      const entry = entries.find((candidate) => candidate && candidate.position === position);
+      return entry ? `${position}. ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts)` : null;
     })
     .filter(Boolean)
     .join(' · ');
 }
 
 function describeSavedPodium(result: RaceResult): string {
+  if (!result || !result.podium) return '';
   return [result.podium.p1, result.podium.p2, result.podium.p3]
+    .filter(Boolean)
     .map((entry, index) => `${index + 1}. ${entry.driver} (${entry.points} pts)`)
     .join(' · ');
 }
@@ -92,8 +95,10 @@ function describeClassificationDifferences(
   saved: DetailedRaceResult,
   incoming: DetailedRaceResult,
 ): { previous: string; incoming: string } {
-  const savedByPosition = new Map(saved.entries.map((entry) => [entry.position, entry]));
-  const incomingByPosition = new Map(incoming.entries.map((entry) => [entry.position, entry]));
+  const savedEntries = Array.isArray(saved?.entries) ? saved.entries : [];
+  const incomingEntries = Array.isArray(incoming?.entries) ? incoming.entries : [];
+  const savedByPosition = new Map(savedEntries.map((entry) => [entry.position, entry]));
+  const incomingByPosition = new Map(incomingEntries.map((entry) => [entry.position, entry]));
   const positions = [...new Set([...savedByPosition.keys(), ...incomingByPosition.keys()])].sort(
     (a, b) => a - b,
   );
@@ -125,7 +130,7 @@ function describeClassificationDifferences(
   });
   const describe = (entry: DetailedRaceResult['entries'][number] | undefined, position: number) =>
     entry
-      ? `P${position} ${entry.driverName} (${entry.points} pts, ${entry.timeOrGap})`
+      ? `P${position} ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts, ${entry.timeOrGap || ''})`
       : `P${position} —`;
   return {
     previous: changed
@@ -140,25 +145,29 @@ function describeClassificationDifferences(
 }
 
 function sameRaceClassification(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
-  const fingerprint = (race: DetailedRaceResult) =>
-    race.entries
+  const fingerprint = (race: DetailedRaceResult) => {
+    const entries = Array.isArray(race?.entries) ? race.entries : [];
+    return entries
       .slice()
       .sort((left, right) => left.position - right.position)
       .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
         [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime].join('|'),
       )
       .join('\n');
+  };
   return fingerprint(a) === fingerprint(b);
 }
 
 function getSyncSignature(results: DetailedRaceResult[]): string {
+  if (!Array.isArray(results)) return '';
   return JSON.stringify(
     results
+      .filter(Boolean)
       .slice()
-      .sort((left, right) => left.round - right.round)
+      .sort((left, right) => (left.round || 0) - (right.round || 0))
       .map((race) => ({
         round: race.round,
-        entries: race.entries
+        entries: (Array.isArray(race.entries) ? race.entries : [])
           .slice()
           .sort((left, right) => left.position - right.position)
           .map(
@@ -182,11 +191,13 @@ function findSyncDifferences(
   savedResults: DetailedRaceResult[],
   incomingResults: DetailedRaceResult[],
 ): F1ResultDifference[] {
-  const savedByRound = new Map(savedResults.map((race) => [race.round, race]));
-  const summaryByRound = new Map(getRaceResults(season).map((race) => [race.round, race]));
+  if (!Array.isArray(savedResults) || !Array.isArray(incomingResults)) return [];
+  const savedByRound = new Map(savedResults.filter(Boolean).map((race) => [race.round, race]));
+  const summaryByRound = new Map((getRaceResults(season) || []).filter(Boolean).map((race) => [race.round, race]));
   const differences: F1ResultDifference[] = [];
 
   for (const incoming of incomingResults) {
+    if (!incoming) continue;
     const saved = savedByRound.get(incoming.round);
     if (saved) {
       if (!sameRaceClassification(saved, incoming)) {
@@ -201,10 +212,11 @@ function findSyncDifferences(
     }
 
     const summary = summaryByRound.get(incoming.round);
+    const incomingEntries = Array.isArray(incoming.entries) ? incoming.entries : [];
     const podium = [1, 2, 3].map((position) =>
-      incoming.entries.find((entry) => entry.position === position),
+      incomingEntries.find((entry) => entry && entry.position === position),
     );
-    if (!summary || podium.some((entry) => !entry)) continue;
+    if (!summary || !summary.podium || podium.some((entry) => !entry)) continue;
     const [p1, p2, p3] = podium;
     const matchesSnapshot =
       p1!.driverName === summary.podium.p1.driver &&
@@ -240,15 +252,18 @@ function computeInitialStandings(resultsMap: Record<SeasonYear, DetailedRaceResu
     2026: { drivers: DRIVER_STANDINGS_2026, constructors: CONSTRUCTOR_STANDINGS_2026 },
   };
 
-  // Only recalculate for ongoing season (2026) if there are rounds completed beyond round 15
-  const races2026 = resultsMap[2026];
-  if (races2026 && races2026.some((r) => r.round > 15 && r.status === 'completed')) {
-    out[2026] = recalculateStandingsFromRaces(
-      2026,
-      races2026,
-      BASE_DRIVER_STANDINGS[2026],
-      BASE_CONSTRUCTOR_STANDINGS[2026],
-    );
+  try {
+    const races2026 = resultsMap?.[2026];
+    if (Array.isArray(races2026) && races2026.some((r) => r && r.round > 15 && r.status === 'completed')) {
+      out[2026] = recalculateStandingsFromRaces(
+        2026,
+        races2026,
+        BASE_DRIVER_STANDINGS[2026],
+        BASE_CONSTRUCTOR_STANDINGS[2026],
+      );
+    }
+  } catch (err) {
+    console.warn('Initial standings compute error, using base standings:', err);
   }
 
   return out;
@@ -271,99 +286,109 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
 
   syncSeasonData: async (season) => {
     if (get().pendingSyncReview) return;
-    set({
-      syncMeta: {
-        ...get().syncMeta,
-        syncStatus: 'syncing',
-        message: `Đang kết nối và đối chiếu dữ liệu mùa giải ${season}...`,
-      },
-    });
+    try {
+      set({
+        syncMeta: {
+          ...get().syncMeta,
+          syncStatus: 'syncing',
+          message: `Đang kết nối và đối chiếu dữ liệu mùa giải ${season}...`,
+        },
+      });
 
-    const currentRaces = get().detailedResults[season] || [];
-    const syncRes = await syncF1SeasonData(season, currentRaces);
+      const currentRaces = get().detailedResults[season] || [];
+      const syncRes = await syncF1SeasonData(season, currentRaces);
 
-    if (syncRes.success) {
-      const differences = findSyncDifferences(season, currentRaces, syncRes.results);
-      if (differences.length > 0) {
-        const signature = getSyncSignature(syncRes.results);
-        if (signature === get().dismissedSyncSignature) {
-          const keptMeta: F1SyncMetadata = {
-            ...get().syncMeta,
-            syncStatus: 'success',
+      if (syncRes.success) {
+        const differences = findSyncDifferences(season, currentRaces, syncRes.results);
+        if (differences.length > 0) {
+          const signature = getSyncSignature(syncRes.results);
+          if (signature === get().dismissedSyncSignature) {
+            const keptMeta: F1SyncMetadata = {
+              ...get().syncMeta,
+              syncStatus: 'success',
+              source: syncRes.source,
+              message: 'Đã giữ bản lưu đã chọn; nguồn chưa có thay đổi mới.',
+            };
+            persistSyncMetadata(keptMeta);
+            set({ syncMeta: keptMeta });
+            return;
+          }
+          const review: F1SyncReview = {
+            season,
+            results: syncRes.results,
+            differences,
             source: syncRes.source,
-            message: 'Đã giữ bản lưu đã chọn; nguồn chưa có thay đổi mới.',
           };
-          persistSyncMetadata(keptMeta);
-          set({ syncMeta: keptMeta });
+          persistSyncReview(review);
+          const reviewMeta: F1SyncMetadata = {
+            lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              day: '2-digit',
+              month: '2-digit',
+            }),
+            syncStatus: 'review',
+            source: syncRes.source,
+            completedRoundsCount: syncRes.results.length,
+            message: `${differences.length} chặng có dữ liệu khác bản lưu; cần xem xét trước khi áp dụng.`,
+          };
+          persistSyncMetadata(reviewMeta);
+          set({ pendingSyncReview: review, syncMeta: reviewMeta });
           return;
         }
-        const review: F1SyncReview = {
-          season,
-          results: syncRes.results,
-          differences,
-          source: syncRes.source,
-        };
-        persistSyncReview(review);
-        const reviewMeta: F1SyncMetadata = {
-          lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            day: '2-digit',
-            month: '2-digit',
-          }),
-          syncStatus: 'review',
-          source: syncRes.source,
-          completedRoundsCount: syncRes.results.length,
-          message: `${differences.length} chặng có dữ liệu khác bản lưu; cần xem xét trước khi áp dụng.`,
-        };
-        persistSyncMetadata(reviewMeta);
-        set({ pendingSyncReview: review, syncMeta: reviewMeta });
-        return;
       }
+
+      const nextDetailedResults = {
+        ...get().detailedResults,
+        [season]: syncRes.results,
+      };
+
+      // Recalculate standings live
+      const nextStandingsForSeason = recalculateStandingsFromRaces(
+        season,
+        syncRes.results,
+        BASE_DRIVER_STANDINGS[season],
+        BASE_CONSTRUCTOR_STANDINGS[season],
+      );
+
+      const nextCalculated = {
+        ...get().calculatedStandings,
+        [season]: nextStandingsForSeason,
+      };
+
+      const nextMeta: F1SyncMetadata = {
+        lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          day: '2-digit',
+          month: '2-digit',
+        }),
+        syncStatus: syncRes.success ? 'success' : 'error',
+        source: syncRes.source,
+        completedRoundsCount: syncRes.results.length,
+        message: syncRes.message,
+      };
+
+      // Persist to storage
+      persistDetailedResults(nextDetailedResults);
+      persistSyncMetadata(nextMeta);
+
+      set({
+        detailedResults: nextDetailedResults,
+        calculatedStandings: nextCalculated,
+        syncMeta: nextMeta,
+      });
+    } catch (err: any) {
+      console.error('syncSeasonData safe catch:', err);
+      const fallbackMeta: F1SyncMetadata = {
+        ...get().syncMeta,
+        syncStatus: 'error',
+        message: 'Đồng bộ tạm gián đoạn; đang sử dụng dữ liệu nội bộ sẵn có.',
+      };
+      set({ syncMeta: fallbackMeta });
     }
-
-    const nextDetailedResults = {
-      ...get().detailedResults,
-      [season]: syncRes.results,
-    };
-
-    // Recalculate standings live
-    const nextStandingsForSeason = recalculateStandingsFromRaces(
-      season,
-      syncRes.results,
-      BASE_DRIVER_STANDINGS[season],
-      BASE_CONSTRUCTOR_STANDINGS[season],
-    );
-
-    const nextCalculated = {
-      ...get().calculatedStandings,
-      [season]: nextStandingsForSeason,
-    };
-
-    const nextMeta: F1SyncMetadata = {
-      lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        day: '2-digit',
-        month: '2-digit',
-      }),
-      syncStatus: syncRes.success ? 'success' : 'error',
-      source: syncRes.source,
-      completedRoundsCount: syncRes.results.length,
-      message: syncRes.message,
-    };
-
-    // Persist to storage
-    persistDetailedResults(nextDetailedResults);
-    persistSyncMetadata(nextMeta);
-
-    set({
-      detailedResults: nextDetailedResults,
-      calculatedStandings: nextCalculated,
-      syncMeta: nextMeta,
-    });
   },
 
   acceptSyncReview: () => {

@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF, Html } from '@react-three/drei';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -276,45 +276,6 @@ const ProceduralF1Car: React.FC<{
   );
 };
 
-// ── Loaded GLB Model Component with Fallback ──
-const LoadedGLBCar: React.FC<{
-  primaryColor: string;
-  accentColor: string;
-}> = ({ primaryColor, accentColor }) => {
-  const { scene } = useGLTF('/models/c42.glb');
-  const clonedScene = useMemo(() => scene.clone(), [scene]);
-
-  useEffect(() => {
-    if (!clonedScene) return;
-    clonedScene.traverse((child: any) => {
-      if (child.isMesh && child.material) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        // Customize livery paint color if material matches bodywork
-        const matName = child.material.name?.toLowerCase() || '';
-        if (
-          matName.includes('001') ||
-          matName.includes('003') ||
-          matName.includes('paint') ||
-          matName.includes('body')
-        ) {
-          const mat = child.material.clone();
-          mat.color = new THREE.Color(primaryColor);
-          mat.roughness = 0.25;
-          mat.metalness = 0.65;
-          child.material = mat;
-        } else if (matName.includes('accent') || matName.includes('004')) {
-          const mat = child.material.clone();
-          mat.color = new THREE.Color(accentColor);
-          child.material = mat;
-        }
-      }
-    });
-  }, [clonedScene, primaryColor, accentColor]);
-
-  return <primitive object={clonedScene} scale={[0.9, 0.9, 0.9]} position={[0, 0, 0]} />;
-};
-
 // Deterministic streamlines for aerodynamic wind tunnel visualization
 const STREAMLINES = Array.from({ length: 18 }, (_, i) => {
   const rnd1 = ((i * 9301 + 49297) % 233280) / 233280;
@@ -374,12 +335,8 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
 
   return (
     <group position={[0, 0, 0]}>
-      {/* 3D Car Model (GLB or Engineered Procedural Mesh) */}
-      <React.Suspense
-        fallback={<ProceduralF1Car primaryColor={primaryColor} accentColor={accentColor} />}
-      >
-        <LoadedGLBCar primaryColor={primaryColor} accentColor={accentColor} />
-      </React.Suspense>
+      {/* 3D Car Model: Engineered Procedural Mesh with dynamic team livery & aerodynamic bodywork */}
+      <ProceduralF1Car primaryColor={primaryColor} accentColor={accentColor} />
 
       {/* Wind Tunnel Streamlines FX */}
       {showWindTunnel && <WindTunnelEffect />}

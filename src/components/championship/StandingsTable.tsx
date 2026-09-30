@@ -34,7 +34,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
 
   const dynamicLeaderTitle =
     isOngoing && leaderDriver && leaderConstructor
-      ? `CURRENT CHAMPIONSHIP LEADER: ${leaderDriver.driverName.toUpperCase()} (${leaderDriver.points} PTS) · ${leaderConstructor.teamName.toUpperCase()} (${leaderConstructor.points} PTS)`
+      ? `CURRENT CHAMPIONSHIP LEADER: ${(leaderDriver.driverName || '').toUpperCase()} (${leaderDriver.points || 0} PTS) · ${(leaderConstructor.teamName || '').toUpperCase()} (${leaderConstructor.points || 0} PTS)`
       : rawStandings.leaderTitle || `${strings.title} ${season}`;
 
   return (

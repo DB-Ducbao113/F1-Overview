@@ -101,7 +101,9 @@ export const MostLovedShowcase: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + topItems.length) % topItems.length);
   };
 
-  const currentItem = topItems[currentIndex];
+  const currentItem = topItems[currentIndex] || topItems[0];
+  if (!currentItem) return null;
+
   const team = TEAMS_DATA[currentItem.teamId];
   const isCurrentLiked = !!userLikedMap[currentItem.id];
   const currentLikes = (currentItem.likes || 0) + (likeCountDelta[currentItem.id] || 0);

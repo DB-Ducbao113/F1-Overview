@@ -117,10 +117,14 @@ export function recalculateStandingsFromRaces(
 
   // Only races beyond round 15 that are not in the official baseline will contribute additional points
   // (Rounds 1-15 are already included in the official base points above)
-  const additionalRaces = races.filter((r) => r.status === 'completed' && r.round > 15);
+  const additionalRaces = (Array.isArray(races) ? races : []).filter(
+    (r) => r && r.status === 'completed' && r.round > 15,
+  );
 
   additionalRaces.forEach((race) => {
-    race.entries.forEach((entry) => {
+    const entries = Array.isArray(race.entries) ? race.entries : [];
+    entries.forEach((entry) => {
+      if (!entry) return;
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
       if (existingDriver) {

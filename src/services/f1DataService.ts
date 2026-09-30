@@ -13,9 +13,10 @@ const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v2';
 const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
 const STORAGE_SYNC_REVIEW_KEY = 'f1_sync_review_v1';
 const STORAGE_DISMISSED_REVIEW_KEY = 'f1_sync_review_dismissed_v1';
-const JOLPICA_API_BASE = import.meta.env.DEV
-  ? '/api/jolpica/ergast/f1'
-  : 'https://api.jolpi.ca/ergast/f1';
+const JOLPICA_API_BASE =
+  typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
+    ? '/api/jolpica/ergast/f1'
+    : 'https://api.jolpi.ca/ergast/f1';
 
 // Initial baseline data mapped by season
 export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> = {
@@ -53,12 +54,15 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
         2025: parsed[2025] || INITIAL_DETAILED_RESULTS[2025],
         2026: (() => {
           const saved =
-            parsed[2026] && parsed[2026].length > 0 ? parsed[2026] : INITIAL_DETAILED_RESULTS[2026];
-          const officialRound15 = INITIAL_DETAILED_RESULTS[2026].find((race) => race.round === 15);
+            parsed[2026] && Array.isArray(parsed[2026]) && parsed[2026].length > 0
+              ? parsed[2026]
+              : INITIAL_DETAILED_RESULTS[2026];
+          const officialRound15 = INITIAL_DETAILED_RESULTS[2026]?.find((race) => race.round === 15);
           const merged = saved.filter(
             (race) =>
+              race &&
               race.round !== 15 &&
-              !race.id.includes('simulated') &&
+              !(race.id && race.id.includes('simulated')) &&
               race.id !== 'race-2026-r1-australia' &&
               race.id !== 'race-2026-r2-china',
           );

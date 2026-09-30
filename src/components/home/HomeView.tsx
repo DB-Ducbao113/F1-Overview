@@ -32,20 +32,23 @@ export const HomeView: React.FC = () => {
   const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(2024);
 
   // Show the active race weekend, or the next scheduled round.
-  const detailedResults = useChampionshipStore((state) => state.detailedResults[2026]);
+  const detailedResults = useChampionshipStore((state) => state.detailedResults?.[2026]) || [];
   const completedRoundNumbers = new Set([
-    ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
-    ...detailedResults.filter((race) => race.status === 'completed').map((race) => race.round),
+    ...CALENDAR_2026.filter((gp) => gp && gp.status === 'completed').map((gp) => gp.round),
+    ...(Array.isArray(detailedResults) ? detailedResults : [])
+      .filter((race) => race && race.status === 'completed')
+      .map((race) => race.round),
   ]);
   const nextRace =
-    CALENDAR_2026.find((gp) => gp.status === 'current' && !completedRoundNumbers.has(gp.round)) ||
-    CALENDAR_2026.find((gp) => !completedRoundNumbers.has(gp.round)) ||
-    CALENDAR_2026[CALENDAR_2026.length - 1];
+    CALENDAR_2026.find((gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round)) ||
+    CALENDAR_2026.find((gp) => gp && !completedRoundNumbers.has(gp.round)) ||
+    CALENDAR_2026[CALENDAR_2026.length - 1] ||
+    CALENDAR_2026[0];
 
   // Standings for current selected season
   const currentStandings = STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2024];
-  const topDrivers = currentStandings.drivers.slice(0, 3);
-  const topConstructors = currentStandings.constructors.slice(0, 3);
+  const topDrivers = (currentStandings?.drivers || []).slice(0, 3);
+  const topConstructors = (currentStandings?.constructors || []).slice(0, 3);
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in space-y-16">
@@ -88,7 +91,7 @@ export const HomeView: React.FC = () => {
 
           {/* Sessions Preview */}
           <div className="flex items-center gap-3 flex-wrap">
-            {nextRace.sessions.fp3 && (
+            {nextRace?.sessions?.fp3 && (
               <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
                 <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
                 <span className="text-xs font-bold text-studio-900 block">
@@ -97,7 +100,7 @@ export const HomeView: React.FC = () => {
                 <span className="text-[10px] text-studio-500">{nextRace.sessions.fp3.timeStr}</span>
               </div>
             )}
-            {nextRace.sessions.sprintQualifying && (
+            {nextRace?.sessions?.sprintQualifying && (
               <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
                 <span className="text-[10px] uppercase font-bold text-amber-600 block">
                   {lang === 'vi' ? 'Sprint Phân Hạng' : 'Sprint Shootout'}
@@ -110,7 +113,7 @@ export const HomeView: React.FC = () => {
                 </span>
               </div>
             )}
-            {nextRace.sessions.sprint && (
+            {nextRace?.sessions?.sprint && (
               <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
                 <span className="text-[10px] uppercase font-bold text-amber-600 block">
                   Sprint Race
@@ -123,7 +126,7 @@ export const HomeView: React.FC = () => {
                 </span>
               </div>
             )}
-            {nextRace.sessions.qualifying && (
+            {nextRace?.sessions?.qualifying && (
               <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
                 <span className="text-[10px] uppercase font-bold text-studio-400 block">
                   {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
@@ -136,7 +139,7 @@ export const HomeView: React.FC = () => {
                 </span>
               </div>
             )}
-            {nextRace.sessions.race && (
+            {nextRace?.sessions?.race && (
               <div className="p-3 rounded-xl bg-studio-900 text-white text-center min-w-[90px] shadow-sm">
                 <span className="text-[10px] uppercase font-bold text-amber-400 block">
                   Grand Prix
