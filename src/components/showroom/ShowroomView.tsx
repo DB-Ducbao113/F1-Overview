@@ -137,252 +137,337 @@ export const ShowroomView: React.FC = () => {
         </div>
       ) : (
         // ── 3D Interactive Showroom & Visualizer ──
-        <div className="relative flex-1 h-[calc(100vh-130px)] min-h-[640px] w-full overflow-hidden bg-radial from-[#12121a] via-[#09090e] to-[#040407] select-none">
-          {/* Top Left Floating Team & Engine Info Badge */}
-          <div className="absolute top-4 left-4 z-20 pointer-events-none">
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-xs">
-              <div className="flex items-center gap-2">
-                <span
-                  className="w-3 h-3 rounded-full shrink-0 shadow-md ring-2 ring-white/20"
-                  style={{ backgroundColor: team.primaryColor }}
-                />
-                <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                  {team.name} · 2026 Livery
-                </span>
-              </div>
-              <h2 className="font-display text-base sm:text-lg font-black uppercase text-white leading-tight">
-                {team.fullName}
-              </h2>
-              <div className="text-[11px] text-studio-300 space-y-0.5 pt-1 border-t border-studio-800/60 font-medium">
-                <p className="truncate">⚡ {team.powerUnit}</p>
-                <p className="text-studio-400">Trụ sở: {team.base}</p>
+        <div className="flex flex-col w-full">
+          <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[740px] overflow-hidden bg-radial from-[#12121a] via-[#09090e] to-[#040407] select-none border-b border-studio-800/80">
+            {/* Top Left Floating Team & Engine Info Badge */}
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1 max-w-[280px] sm:max-w-xs">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0 shadow-md ring-2 ring-white/20"
+                    style={{ backgroundColor: team.primaryColor }}
+                  />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
+                    {team.name} · 2026 Livery
+                  </span>
+                </div>
+                <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
+                  {team.fullName}
+                </h2>
+                <div className="text-[11px] text-studio-300 space-y-0.5 pt-1 border-t border-studio-800/60 font-medium">
+                  <p className="truncate">⚡ {team.powerUnit}</p>
+                  <p className="text-studio-400">Trụ sở: {team.base}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Top Center Camera Preset Quick Switcher */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 hidden md:flex items-center gap-1.5 p-1 rounded-xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl">
-            {CAMERA_PRESETS.map((p) => {
-              const isActive = cameraPreset === p.id && !activeHotspot;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    setCameraPreset(p.id);
-                    setActiveHotspot(null);
-                    setAutoRotate(false);
-                  }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-f1red text-white shadow-md shadow-f1red/30'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/50'
-                  }`}
-                >
-                  {p.icon}
-                  <span>{lang === 'vi' ? p.labelVi : p.labelEn}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Top Right Quick Canvas Controls */}
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-            {/* Wind Tunnel FX Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowWindTunnel(!showWindTunnel)}
-              className={`p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg cursor-pointer ${
-                showWindTunnel
-                  ? 'bg-emerald-500 text-black border-emerald-400 shadow-emerald-500/30'
-                  : 'bg-studio-950/85 text-studio-300 border-studio-800 hover:text-white hover:bg-studio-900'
-              }`}
-              title={
-                lang === 'vi'
-                  ? 'Bật/Tắt dòng khí động học đường hầm gió'
-                  : 'Toggle Wind Tunnel Aerodynamic Streamlines'
-              }
-            >
-              <Wind className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {lang === 'vi' ? 'Khí Động Học' : 'Wind Tunnel'}
-              </span>
-            </button>
-
-            {/* Auto-rotate Toggle */}
-            <button
-              type="button"
-              onClick={() => {
-                setAutoRotate(!autoRotate);
-                setCameraPreset(null);
-              }}
-              className={`p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg cursor-pointer ${
-                autoRotate
-                  ? 'bg-studio-800 text-white border-studio-700'
-                  : 'bg-studio-950/85 text-studio-400 border-studio-800 hover:text-white'
-              }`}
-              title={lang === 'vi' ? 'Bật/Tắt xoay tự động' : 'Toggle Auto-Rotation'}
-            >
-              {autoRotate ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              <span className="hidden sm:inline">{lang === 'vi' ? 'Tự Xoay' : 'Auto Rotate'}</span>
-            </button>
-
-            {/* Reset Camera Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setActiveHotspot(null);
-                setCameraPreset('overview');
-                setAutoRotate(true);
-              }}
-              className="p-2.5 rounded-xl bg-studio-950/85 hover:bg-studio-900 border border-studio-800 hover:border-studio-700 backdrop-blur-xl text-xs font-bold text-studio-300 hover:text-white transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
-              title={lang === 'vi' ? 'Góc nhìn toàn cảnh' : 'Reset Full View'}
-            >
-              <RotateCcw className="w-4 h-4 text-f1red" />
-              <span className="hidden sm:inline">{lang === 'vi' ? 'Toàn Cảnh' : 'Reset'}</span>
-            </button>
-          </div>
-
-          {/* ── Three.js WebGL 3D Canvas ── */}
-          <Canvas
-            shadows
-            camera={{ position: [3.2, 1.6, 3.6], fov: 42 }}
-            gl={{ antialias: true, alpha: true, toneMappingExposure: 1.25 }}
-            className="w-full h-full cursor-grab active:cursor-grabbing"
-          >
-            {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-            <StudioEnvironment />
-
-            {/* Cinematic Studio Lighting */}
-            <ambientLight intensity={1.5} />
-            <directionalLight
-              position={[6, 9, 5]}
-              intensity={2.4}
-              castShadow
-              shadow-mapSize-width={2048}
-              shadow-mapSize-height={2048}
-              shadow-bias={-0.0001}
-            />
-            {/* Rim backlights */}
-            <directionalLight position={[-6, 4, -5]} intensity={1.2} color="#60a5fa" />
-            <directionalLight position={[0, -2, 0]} intensity={0.4} color="#ffffff" />
-            <pointLight position={[0, 4.5, 0]} intensity={1.5} color="#ffffff" />
-            <spotLight
-              position={[0, 7, 2]}
-              angle={0.65}
-              penumbra={0.8}
-              intensity={2.2}
-              color={team.primaryColor}
-            />
-
-            {/* High-Tech Showroom Floor Grid & Telemetry Rings */}
-            <group position={[0, -0.01, 0]}>
-              <gridHelper args={[16, 32, team.primaryColor, '#1e293b']} position={[0, 0, 0]} />
-              <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                <ringGeometry args={[3.0, 3.05, 64]} />
-                <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
-              </mesh>
-              <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                <ringGeometry args={[4.5, 4.53, 64]} />
-                <meshBasicMaterial color="#38bdf8" transparent opacity={0.25} />
-              </mesh>
-            </group>
-
-            {/* F1 3D Car Model with Suspense Loading HUD */}
-            <Suspense fallback={<Showroom3DLoader />}>
-              <F1Car3DModel
-                teamId={selectedTeamId}
-                activeHotspot={activeHotspot}
-                onSelectHotspot={(hotspot) => {
-                  setActiveHotspot(hotspot);
-                  setCameraPreset(null);
-                  setAutoRotate(false);
-                }}
-                showWindTunnel={showWindTunnel}
-                lang={lang}
-              />
-            </Suspense>
-
-            {/* Dynamic Ground Contact Shadows */}
-            <ContactShadows
-              position={[0, 0, 0]}
-              opacity={0.9}
-              scale={10}
-              blur={2.0}
-              far={4.5}
-              color="#000000"
-            />
-
-            {/* Smooth Camera Controller & OrbitControls */}
-            <CameraController
-              activeHotspot={activeHotspot}
-              cameraPreset={cameraPreset}
-              autoRotate={autoRotate}
-            />
-          </Canvas>
-
-          {/* ── Bottom Overlay Panel (Hotspot Quick Jump + Livery Selector) ── */}
-          <div className="absolute bottom-4 left-4 right-4 z-20 space-y-3 pointer-events-auto">
-            {/* Hotspots Quick Pills Selector */}
-            <div className="flex items-center gap-1.5 overflow-x-auto py-1 px-1 custom-scrollbar">
-              <span className="text-[10px] font-black uppercase tracking-wider text-studio-400 bg-studio-950/90 border border-studio-800 px-2.5 py-1.5 rounded-lg shrink-0 flex items-center gap-1 shadow-md">
-                <Sparkles className="w-3 h-3 text-f1red" />
-                Hotspots:
-              </span>
-              {F1_HOTSPOTS.map((h, i) => {
-                const isSelected = activeHotspot?.id === h.id;
+            {/* Top Center Camera Preset Quick Switcher */}
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 hidden md:flex items-center gap-1.5 p-1 rounded-xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl">
+              {CAMERA_PRESETS.map((p) => {
+                const isActive = cameraPreset === p.id && !activeHotspot;
                 return (
                   <button
-                    key={h.id}
+                    key={p.id}
                     type="button"
                     onClick={() => {
-                      setActiveHotspot(h);
-                      setCameraPreset(null);
+                      setCameraPreset(p.id);
+                      setActiveHotspot(null);
                       setAutoRotate(false);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 shrink-0 border flex items-center gap-1.5 cursor-pointer ${
-                      isSelected
-                        ? 'bg-f1red text-white border-white/80 shadow-md shadow-f1red/40 scale-105'
-                        : 'bg-studio-950/85 text-studio-300 border-studio-800 hover:bg-studio-900 hover:text-white'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-f1red text-white shadow-md shadow-f1red/30'
+                        : 'text-studio-400 hover:text-white hover:bg-studio-800/50'
                     }`}
                   >
-                    <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-black">
-                      {i + 1}
-                    </span>
-                    <span>
-                      {lang === 'vi'
-                        ? h.nameVi.split(' ')[0] + ' ' + (h.nameVi.split(' ')[1] || '')
-                        : h.nameEn.split('&')[0].trim()}
-                    </span>
+                    {p.icon}
+                    <span>{lang === 'vi' ? p.labelVi : p.labelEn}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* 11 Team Livery Selector */}
-            <div className="p-3 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl">
-              <LiverySelector
-                selectedTeamId={selectedTeamId}
-                onSelectTeam={(newTeamId) => setSelectedTeamId(newTeamId)}
-                lang={lang}
-              />
+            {/* Top Right Quick Canvas Controls */}
+            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+              {/* Wind Tunnel FX Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowWindTunnel(!showWindTunnel)}
+                className={`p-2 sm:p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg cursor-pointer ${
+                  showWindTunnel
+                    ? 'bg-emerald-500 text-black border-emerald-400 shadow-emerald-500/30'
+                    : 'bg-studio-950/85 text-studio-300 border-studio-800 hover:text-white hover:bg-studio-900'
+                }`}
+                title={
+                  lang === 'vi'
+                    ? 'Bật/Tắt dòng khí động học đường hầm gió'
+                    : 'Toggle Wind Tunnel Aerodynamic Streamlines'
+                }
+              >
+                <Wind className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {lang === 'vi' ? 'Khí Động Học' : 'Wind Tunnel'}
+                </span>
+              </button>
+
+              {/* Auto-rotate Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAutoRotate(!autoRotate);
+                  setCameraPreset(null);
+                }}
+                className={`p-2 sm:p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg cursor-pointer ${
+                  autoRotate
+                    ? 'bg-studio-800 text-white border-studio-700'
+                    : 'bg-studio-950/85 text-studio-400 border-studio-800 hover:text-white'
+                }`}
+                title={lang === 'vi' ? 'Bật/Tắt xoay tự động' : 'Toggle Auto-Rotation'}
+              >
+                {autoRotate ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                <span className="hidden sm:inline">{lang === 'vi' ? 'Tự Xoay' : 'Auto Rotate'}</span>
+              </button>
+
+              {/* Reset Camera Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveHotspot(null);
+                  setCameraPreset('overview');
+                  setAutoRotate(true);
+                }}
+                className="p-2 sm:p-2.5 rounded-xl bg-studio-950/85 hover:bg-studio-900 border border-studio-800 hover:border-studio-700 backdrop-blur-xl text-xs font-bold text-studio-300 hover:text-white transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
+                title={lang === 'vi' ? 'Góc nhìn toàn cảnh' : 'Reset Full View'}
+              >
+                <RotateCcw className="w-4 h-4 text-f1red" />
+                <span className="hidden sm:inline">{lang === 'vi' ? 'Toàn Cảnh' : 'Reset'}</span>
+              </button>
             </div>
+
+            {/* ── Three.js WebGL 3D Canvas ── */}
+            <Canvas
+              shadows
+              camera={{ position: [3.2, 1.6, -3.4], fov: 42 }}
+              gl={{ antialias: true, alpha: true, toneMappingExposure: 1.25 }}
+              className="w-full h-full cursor-grab active:cursor-grabbing"
+            >
+              {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
+              <StudioEnvironment />
+
+              {/* Cinematic Studio Lighting */}
+              <ambientLight intensity={1.5} />
+              <directionalLight
+                position={[6, 9, -5]}
+                intensity={2.4}
+                castShadow
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
+                shadow-bias={-0.0001}
+              />
+              {/* Rim backlights */}
+              <directionalLight position={[-6, 4, 5]} intensity={1.3} color="#60a5fa" />
+              <directionalLight position={[0, -2, 0]} intensity={0.5} color="#ffffff" />
+              <pointLight position={[0, 4.5, 0]} intensity={1.5} color="#ffffff" />
+              <spotLight
+                position={[0, 7, -2]}
+                angle={0.65}
+                penumbra={0.8}
+                intensity={2.2}
+                color={team.primaryColor}
+              />
+
+              {/* High-Tech Showroom Floor Grid & Telemetry Rings */}
+              <group position={[0, -0.01, 0]}>
+                <gridHelper args={[16, 32, team.primaryColor, '#1e293b']} position={[0, 0, 0]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[3.0, 3.05, 64]} />
+                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                  <ringGeometry args={[4.5, 4.53, 64]} />
+                  <meshBasicMaterial color="#38bdf8" transparent opacity={0.25} />
+                </mesh>
+              </group>
+
+              {/* F1 3D Car Model with Suspense Loading HUD */}
+              <Suspense fallback={<Showroom3DLoader />}>
+                <F1Car3DModel
+                  teamId={selectedTeamId}
+                  activeHotspot={activeHotspot}
+                  onSelectHotspot={(hotspot) => {
+                    setActiveHotspot(hotspot);
+                    setCameraPreset(null);
+                    setAutoRotate(false);
+                  }}
+                  showWindTunnel={showWindTunnel}
+                  lang={lang}
+                />
+              </Suspense>
+
+              {/* Dynamic Ground Contact Shadows */}
+              <ContactShadows
+                position={[0, 0, 0]}
+                opacity={0.9}
+                scale={10}
+                blur={2.0}
+                far={4.5}
+                color="#000000"
+              />
+
+              {/* Smooth Camera Controller & OrbitControls */}
+              <CameraController
+                activeHotspot={activeHotspot}
+                cameraPreset={cameraPreset}
+                autoRotate={autoRotate}
+              />
+            </Canvas>
+
+            {/* ── Bottom Overlay Panel (Hotspot Quick Jump + Livery Selector) ── */}
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 space-y-2 pointer-events-auto">
+              {/* Hotspots Quick Pills Selector */}
+              <div className="flex items-center gap-1.5 overflow-x-auto py-1 px-1 custom-scrollbar">
+                <span className="text-[10px] font-black uppercase tracking-wider text-studio-400 bg-studio-950/90 border border-studio-800 px-2.5 py-1.5 rounded-lg shrink-0 flex items-center gap-1 shadow-md">
+                  <Sparkles className="w-3 h-3 text-f1red" />
+                  Hotspots:
+                </span>
+                {F1_HOTSPOTS.map((h, i) => {
+                  const isSelected = activeHotspot?.id === h.id;
+                  return (
+                    <button
+                      key={h.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveHotspot(h);
+                        setCameraPreset(null);
+                        setAutoRotate(false);
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 shrink-0 border flex items-center gap-1.5 cursor-pointer ${
+                        isSelected
+                          ? 'bg-f1red text-white border-white/80 shadow-md shadow-f1red/40 scale-105'
+                          : 'bg-studio-950/85 text-studio-300 border-studio-800 hover:bg-studio-900 hover:text-white'
+                      }`}
+                    >
+                      <span className="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center font-black">
+                        {i + 1}
+                      </span>
+                      <span>
+                        {lang === 'vi'
+                          ? h.nameVi.split(' ')[0] + ' ' + (h.nameVi.split(' ')[1] || '')
+                          : h.nameEn.split('&')[0].trim()}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 11 Team Livery Selector */}
+              <div className="p-2.5 sm:p-3 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl">
+                <LiverySelector
+                  selectedTeamId={selectedTeamId}
+                  onSelectTeam={(newTeamId) => setSelectedTeamId(newTeamId)}
+                  lang={lang}
+                />
+              </div>
+            </div>
+
+            {/* ── Slide-Over Technical Details Modal Drawer ── */}
+            <HotspotDetailsModal
+              hotspot={activeHotspot}
+              onClose={() => {
+                setActiveHotspot(null);
+                setCameraPreset('overview');
+              }}
+              onSelectHotspot={(hotspot) => {
+                setActiveHotspot(hotspot);
+                setCameraPreset(null);
+                setAutoRotate(false);
+              }}
+              lang={lang}
+            />
           </div>
 
-          {/* ── Slide-Over Technical Details Modal Drawer ── */}
-          <HotspotDetailsModal
-            hotspot={activeHotspot}
-            onClose={() => {
-              setActiveHotspot(null);
-              setCameraPreset('overview');
-            }}
-            onSelectHotspot={(hotspot) => {
-              setActiveHotspot(hotspot);
-              setCameraPreset(null);
-              setAutoRotate(false);
-            }}
-            lang={lang}
-          />
+          {/* ── Scrollable Technical Overview & Regulations Section Below Canvas ── */}
+          <div className="bg-studio-950 text-white border-t border-studio-800 py-12">
+            <div className="page-container space-y-10">
+              {/* Section Header */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-widest text-f1red">
+                    {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đua Xe F1' : 'F1 Technical Specification'}
+                  </span>
+                  <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1">
+                    {lang === 'vi'
+                      ? 'Kiến Trúc Khí Động Học & Động Cơ C42'
+                      : 'C42 Ground-Effect Architecture & Hybrid Powertrain'}
+                  </h3>
+                </div>
+                <p className="text-xs text-studio-400 max-w-md">
+                  {lang === 'vi'
+                    ? 'Mô hình nguyên bản chuẩn quy chuẩn hiệu ứng mặt đất (Ground-Effect Venturi Tunnels) kết hợp động cơ 1.6L V6 Turbo Hybrid vượt 1000 mã lực.'
+                    : 'Authentic regulation ground-effect Venturi tunnel architecture paired with a 1.6L V6 Turbo Hybrid power unit exceeding 1000 horsepower.'}
+                </p>
+              </div>
+
+              {/* 4 Feature Columns */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
+                    01
+                  </div>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'Khí Động Ground-Effect' : 'Ground Effect Aero'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? 'Hai rãnh Venturi dưới sàn xe hút không khí với vận tốc cao, tạo lực hút khổng lồ dán chặt xe xuống mặt đường mà không gây nhiễu động phía sau.'
+                      : 'Dual underfloor Venturi tunnels generate immense suction downforce sealing the car to asphalt while dramatically reducing dirty wake.'}
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
+                    02
+                  </div>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'Hồi Lưu Năng Lượng ERS' : 'Hybrid ERS System'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? 'Hệ thống MGU-K và MGU-H thu hồi nhiệt khí xả và lực phanh, cung cấp 160 mã lực điện tức thì cho các pha tăng tốc vượt xe.'
+                      : 'MGU-K and MGU-H recover thermal and kinetic energy under braking, delivering 160 electric BHP instantly for overtaking maneuvers.'}
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                    03
+                  </div>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? 'Khung hợp kim Titan Grade 5 chỉ nặng 7kg nhưng chịu được lực va chạm tĩnh lên tới 12 tấn, bảo vệ trọn vẹn buồng lái tay đua.'
+                      : 'Grade 5 Titanium loop weighing just 7kg yet engineered to withstand 12.3 tonnes of impact force shielding the cockpit.'}
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
+                    04
+                  </div>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'Lốp Pirelli 18-Inch' : '18-Inch Pirelli Tires'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? 'Thành lốp mỏng giảm biến dạng lốp, kết hợp mâm hợp kim Magiê và đĩa phanh Carbon-Carbon đạt 1,000°C khi hãm tốc từ 340 km/h.'
+                      : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

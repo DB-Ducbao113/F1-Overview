@@ -14,10 +14,10 @@ interface CameraControllerProps {
 }
 
 const PRESET_VIEWS: Record<CameraPreset, { pos: [number, number, number]; target: [number, number, number] }> = {
-  overview: { pos: [3.2, 1.6, 3.6], target: [0, 0.42, 0] },
-  front: { pos: [0, 0.75, 3.6], target: [0, 0.3, 1.8] },
-  cockpit: { pos: [0.8, 1.1, 0.9], target: [0, 0.55, 0.2] },
-  rear: { pos: [0, 1.25, -3.9], target: [0, 0.65, -1.8] },
+  overview: { pos: [3.2, 1.6, -3.4], target: [0, 0.42, 0] },
+  front: { pos: [0, 0.8, -3.7], target: [0, 0.3, -1.8] },
+  cockpit: { pos: [0.8, 1.1, -0.6], target: [0, 0.55, -0.2] },
+  rear: { pos: [0, 1.25, 3.9], target: [0, 0.65, 1.8] },
   top: { pos: [0.01, 5.8, 0], target: [0, 0.2, 0] },
 };
 

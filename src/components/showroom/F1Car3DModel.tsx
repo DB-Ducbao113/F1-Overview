@@ -114,9 +114,9 @@ const WindTunnelEffect: React.FC = () => {
     if (!linesRef.current) return;
     linesRef.current.children.forEach((child: any, i) => {
       const s = STREAMLINES[i];
-      child.position.z -= delta * s.speed;
-      if (child.position.z < -4) {
-        child.position.z = 4;
+      child.position.z += delta * s.speed;
+      if (child.position.z > 4) {
+        child.position.z = -4;
       }
     });
   });

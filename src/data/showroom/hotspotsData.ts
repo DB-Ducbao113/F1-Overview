@@ -37,9 +37,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'The front wing is the primary aerodynamic surface encountering undisturbed air. Fabricated from over 40 plies of aerospace-grade carbon fiber, it generates critical front-axle downforce and channels high-energy vortices around the front wheel wake, sealing the ground-effect underfloor tunnels.',
     imageUrl: '/images/showroom/wings_drs.jpg',
-    position: [0, 0.28, 2.25],
-    cameraPos: [1.2, 0.9, 3.2],
-    cameraTarget: [0, 0.25, 2.2],
+    position: [0, 0.28, -2.25],
+    cameraPos: [1.2, 0.9, -3.2],
+    cameraTarget: [0, 0.25, -2.2],
     specs: [
       { labelVi: 'Vật liệu chế tạo', labelEn: 'Construction', value: 'Carbon Fiber Pre-preg T1000' },
       { labelVi: 'Lực nén tối đa', labelEn: 'Peak Downforce', value: '~450 kg @ 250 km/h' },
@@ -70,9 +70,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'The Drag Reduction System utilizes an ultra-fast hydraulic actuator to pivot the upper rear wing flap open by up to 85 mm. When trailing within 1 second through FIA designated zones, DRS sheds 30% of total aerodynamic drag, unleashing up to 25 km/h top-speed advantage.',
     imageUrl: '/images/showroom/wings_drs.jpg',
-    position: [0, 0.95, -2.15],
-    cameraPos: [-1.4, 1.4, -3.1],
-    cameraTarget: [0, 0.85, -2.1],
+    position: [0, 0.95, 2.15],
+    cameraPos: [-1.4, 1.4, 3.1],
+    cameraTarget: [0, 0.85, 2.1],
     specs: [
       { labelVi: 'Độ mở cánh gió (Slot Gap)', labelEn: 'Flap Opening Gap', value: '85 mm (Max FIA)' },
       { labelVi: 'Tốc độ tăng thêm', labelEn: 'Top Speed Delta', value: '+15 to +25 km/h' },
@@ -103,9 +103,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'The modern Formula 1 Power Unit achieves world-record thermal efficiency beyond 50%. It comprises six integrated elements: 1.6L Internal Combustion Engine (15,000 RPM), Turbocharger, MGU-K kinetic recuperation motor, MGU-H exhaust heat recovery unit, 4 MJ Lithium Energy Store battery, and Control Electronics.',
     imageUrl: '/images/showroom/power_unit.jpg',
-    position: [0, 0.58, -0.65],
-    cameraPos: [1.8, 1.3, -0.4],
-    cameraTarget: [0, 0.45, -0.65],
+    position: [0, 0.62, 0.65],
+    cameraPos: [1.8, 1.3, 0.5],
+    cameraTarget: [0, 0.48, 0.65],
     specs: [
       { labelVi: 'Dung tích & cấu hình', labelEn: 'Displacement', value: '1.6 L, 90° V6 Single Turbo' },
       { labelVi: 'Tổng công suất', labelEn: 'Combined Output', value: '1,050+ Horsepower (BHP)' },
@@ -137,9 +137,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'Mandated by the FIA in 2018, the Halo has proven life-saving in multiple severe impacts. Fabricated from high-tensile Grade 5 Titanium, the structure weighs just 7 kg yet survives a 121 kN (12.3 tonne) static load. Teams wrap the bare titanium in custom aerodynamic carbon fairings with micro vortex-generators.',
     imageUrl: '/images/showroom/halo_safety.jpg',
-    position: [0, 0.82, 0.35],
-    cameraPos: [0.9, 1.25, 1.2],
-    cameraTarget: [0, 0.65, 0.35],
+    position: [0, 0.82, -0.35],
+    cameraPos: [0.9, 1.25, -1.2],
+    cameraTarget: [0, 0.65, -0.35],
     specs: [
       { labelVi: 'Vật liệu chính', labelEn: 'Primary Material', value: 'Grade 5 Titanium (Ti6Al4V)' },
       { labelVi: 'Trọng lượng khung', labelEn: 'Weight', value: '7.0 kg (Unfaired)' },
@@ -170,9 +170,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'Sidepods fulfill a vital dual role: thermal management for the 1000+ HP powertrain via radiator intercoolers, and macro airflow conditioning. Aggressive undercut channels accelerate high-pressure ambient air along the waistline, feeding downwash currents directly to the rear diffuser.',
     imageUrl: '/images/showroom/sidepods_cooling.jpg',
-    position: [0.85, 0.36, -0.05],
-    cameraPos: [2.5, 1.2, 0.2],
-    cameraTarget: [0.4, 0.35, -0.05],
+    position: [0.85, 0.38, 0.05],
+    cameraPos: [2.5, 1.2, -0.2],
+    cameraTarget: [0.4, 0.35, 0.05],
     specs: [
       { labelVi: 'Kiến trúc khí động', labelEn: 'Aero Philosophy', value: 'Deep Undercut Downwash' },
       { labelVi: 'Nhiệt độ giải tỏa', labelEn: 'Heat Dissipation', value: '> 140 kW nhiệt lượng thải' },
@@ -203,9 +203,9 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     descriptionEn:
       'Pirelli 18-inch low-profile tires deliver immediate steering response and rigid lateral compliance. Behind the forged magnesium wheels reside Brembo carbon-carbon brake discs drilled with over 1,000 cooling holes, generating brutal 5G deceleration from 340 km/h while glowing white-hot above 1,000°C.',
     imageUrl: '/images/showroom/pirelli_tires.jpg',
-    position: [0.96, 0.35, 1.45],
-    cameraPos: [1.9, 0.65, 1.8],
-    cameraTarget: [0.85, 0.35, 1.45],
+    position: [0.96, 0.35, -1.45],
+    cameraPos: [1.9, 0.65, -1.8],
+    cameraTarget: [0.85, 0.35, -1.45],
     specs: [
       { labelVi: 'Đường kính mâm', labelEn: 'Wheel Diameter', value: '18 inches (Magnesium Forged)' },
       { labelVi: 'Hợp chất lốp khô', labelEn: 'Slick Compounds', value: 'C1 to C5 (Hard / Medium / Soft)' },
