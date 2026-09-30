@@ -11,6 +11,9 @@ interface CameraControllerProps {
   activeHotspot: HotspotItem | null;
   cameraPreset?: CameraPreset | null;
   autoRotate: boolean;
+  enableWheelZoom?: boolean;
+  zoomTrigger?: number; // Increment to trigger programmatic zoom
+  zoomDirection?: 'in' | 'out' | null;
 }
 
 const PRESET_VIEWS: Record<
@@ -31,6 +34,9 @@ export const CameraController: React.FC<CameraControllerProps> = ({
   activeHotspot,
   cameraPreset,
   autoRotate,
+  enableWheelZoom = false, // Default false: mouse wheel scrolls webpage, doesn't trap user
+  zoomTrigger = 0,
+  zoomDirection = null,
 }) => {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
@@ -39,6 +45,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({
   const desiredTarget = useRef(DEFAULT_TARGET.clone());
   const isTransitioning = useRef<boolean>(true);
 
+  // Handle Hotspot and Preset transitions
   useEffect(() => {
     if (activeHotspot) {
       desiredPos.current.set(...activeHotspot.cameraPos);
@@ -51,6 +58,22 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       isTransitioning.current = true;
     }
   }, [activeHotspot, cameraPreset]);
+
+  // Handle programmatic Zoom In / Zoom Out triggered from UI HUD buttons
+  useEffect(() => {
+    if (!zoomTrigger || !zoomDirection || !controlsRef.current) return;
+
+    const target = controlsRef.current.target;
+    const direction = camera.position.clone().sub(target);
+    const currentDist = direction.length();
+
+    const factor = zoomDirection === 'in' ? 0.75 : 1.35;
+    const newDist = Math.max(1.0, Math.min(8.0, currentDist * factor));
+
+    direction.normalize().multiplyScalar(newDist);
+    camera.position.copy(target.clone().add(direction));
+    controlsRef.current.update();
+  }, [zoomTrigger, zoomDirection, camera]);
 
   useFrame((_, delta) => {
     if (!controlsRef.current) return;
@@ -81,6 +104,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({
       maxPolarAngle={Math.PI / 2 + 0.02} // Prevent camera going below floor
       minDistance={0.8}
       maxDistance={8.5}
+      enableZoom={enableWheelZoom} // If false, mouse wheel scrolls web page naturally
       autoRotate={autoRotate && !activeHotspot}
       autoRotateSpeed={0.8}
       onStart={() => {

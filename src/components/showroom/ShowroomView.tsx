@@ -27,7 +27,13 @@ import {
   ArrowRight,
   Layers,
   Maximize2,
+  ChevronDown,
+  ChevronUp,
+  ZoomIn,
+  ZoomOut,
+  Camera,
 } from 'lucide-react';
+import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -59,6 +65,34 @@ export const ShowroomView: React.FC = () => {
   // 3D Visualizer settings
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [showWindTunnel, setShowWindTunnel] = useState<boolean>(false);
+
+  // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
+  const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
+  const [zoomTrigger, setZoomTrigger] = useState<number>(0);
+  const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  // Listen to window scroll to show Back to Top floating button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 450);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToDossier = () => {
+    document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleZoom = (dir: 'in' | 'out') => {
+    setZoomDirection(dir);
+    setZoomTrigger((prev) => prev + 1);
+  };
 
   const team = TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari;
   const livery = getTeam3DLivery(selectedTeamId);
@@ -174,8 +208,8 @@ export const ShowroomView: React.FC = () => {
             </div>
 
             {/* Top Right Quick Canvas Controls */}
-            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
-              {/* 8K Technical Blueprint Button */}
+            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex items-center gap-2 flex-wrap justify-end">
+              {/* Bespoke Close-Up Inspection Button */}
               <button
                 type="button"
                 onClick={() => {
@@ -184,11 +218,51 @@ export const ShowroomView: React.FC = () => {
                   setAutoRotate(false);
                 }}
                 className="p-2 sm:p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg bg-studio-950/85 text-studio-200 border-studio-800 hover:text-white hover:bg-studio-900 cursor-pointer"
-                title={lang === 'vi' ? 'Xem Sơ Đồ Kỹ Thuật 8K Đội Đua' : 'View Team 8K Technical Blueprint'}
+                title={lang === 'vi' ? 'Soi cận cảnh linh kiện của mẫu xe này' : 'Inspect bespoke component close-ups'}
               >
-                <Layers className="w-4 h-4 text-amber-400" />
+                <Camera className="w-4 h-4 text-f1red" />
                 <span className="hidden sm:inline">
-                  {lang === 'vi' ? 'Sơ Đồ 8K' : '8K Blueprint'}
+                  {lang === 'vi' ? 'Soi Cận Cảnh' : 'Close-Ups'}
+                </span>
+              </button>
+
+              {/* Zoom In & Zoom Out HUD Controls */}
+              <div className="flex items-center rounded-xl bg-studio-950/85 border border-studio-800 p-0.5 shadow-lg backdrop-blur-xl">
+                <button
+                  type="button"
+                  onClick={() => handleZoom('in')}
+                  className="p-2 text-studio-300 hover:text-white hover:bg-studio-800/80 rounded-lg transition-colors cursor-pointer"
+                  title={lang === 'vi' ? 'Phóng to góc nhìn xe (+)' : 'Zoom In (+)'}
+                >
+                  <ZoomIn className="w-4 h-4 text-studio-200" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleZoom('out')}
+                  className="p-2 text-studio-300 hover:text-white hover:bg-studio-800/80 rounded-lg transition-colors cursor-pointer"
+                  title={lang === 'vi' ? 'Thu nhỏ góc nhìn xe (-)' : 'Zoom Out (-)'}
+                >
+                  <ZoomOut className="w-4 h-4 text-studio-200" />
+                </button>
+              </div>
+
+              {/* Wheel Zoom Toggle (Default Off so mouse wheel scrolls page smoothly) */}
+              <button
+                type="button"
+                onClick={() => setEnableWheelZoom(!enableWheelZoom)}
+                className={`p-2 sm:p-2.5 rounded-xl border backdrop-blur-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg cursor-pointer ${
+                  enableWheelZoom
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-amber-500/20'
+                    : 'bg-studio-950/85 text-studio-400 border-studio-800 hover:text-white'
+                }`}
+                title={
+                  enableWheelZoom
+                    ? (lang === 'vi' ? 'Lăn chuột đang Zoom 3D (Bấm để chuyển sang cuộn trang web)' : 'Wheel is Zooming 3D (Click to scroll webpage)')
+                    : (lang === 'vi' ? 'Lăn chuột đang Cuộn Trang Web (Bấm nếu muốn lăn chuột Zoom 3D)' : 'Wheel is Scrolling Page (Click to zoom 3D)')
+                }
+              >
+                <span className="text-[10px] font-mono font-bold">
+                  {enableWheelZoom ? 'Zoom: BẬT' : 'Cuộn Trang'}
                 </span>
               </button>
 
@@ -324,8 +398,24 @@ export const ShowroomView: React.FC = () => {
                 activeHotspot={activeHotspot}
                 cameraPreset={cameraPreset}
                 autoRotate={autoRotate}
+                enableWheelZoom={enableWheelZoom}
+                zoomTrigger={zoomTrigger}
+                zoomDirection={zoomDirection}
               />
             </Canvas>
+
+            {/* Quick Scroll Down Indicator Button */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+              <button
+                type="button"
+                onClick={scrollToDossier}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-studio-900/95 hover:bg-studio-800 border border-studio-700/80 text-xs font-bold text-studio-200 hover:text-white shadow-2xl backdrop-blur-md transition-all hover:scale-105 cursor-pointer group"
+                title={lang === 'vi' ? 'Cuộn nhanh xuống xem hồ sơ kỹ thuật xe' : 'Scroll down to technical dossier'}
+              >
+                <span>{lang === 'vi' ? 'Cuộn xem hồ sơ xe' : 'Technical Dossier'}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-f1red animate-bounce" />
+              </button>
+            </div>
 
             {/* ── Bottom Overlay Panel (Hotspot Quick Jump + Livery Selector) ── */}
             <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 space-y-2 pointer-events-auto">
@@ -393,7 +483,7 @@ export const ShowroomView: React.FC = () => {
           </div>
 
           {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
-          <div className="bg-studio-950 text-white border-t border-studio-800 py-12">
+          <div id="technical-dossier" className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14">
             <div className="page-container space-y-10">
               {/* Section Header: Dynamically reflects active team */}
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
@@ -425,71 +515,77 @@ export const ShowroomView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Showcase Banner: Dedicated 8K Engineering Schematic + Core Pillars */}
+              {/* Showcase Banner: Bespoke Macro Close-Up + Core Pillars */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-                {/* Left: Dedicated 8K Engineering Schematic Card */}
-                <div className="relative rounded-2xl overflow-hidden bg-studio-900/80 border border-studio-800 shadow-xl flex flex-col justify-between p-6 group">
-                  {/* Subtle Team Ambient Radial Glow */}
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-20 transition-all duration-700"
-                    style={{
-                      background: `radial-gradient(circle at 50% 40%, ${livery.bodyColor} 0%, transparent 70%)`,
-                    }}
-                  />
+                {/* Left: Dedicated Macro Close-Up Card */}
+                {(() => {
+                  const heroCloseup = getTeamComponentCloseUp(selectedTeamId, 'wings');
+                  return (
+                    <div className="relative rounded-2xl overflow-hidden bg-studio-900/80 border border-studio-800 shadow-xl flex flex-col justify-between p-6 group">
+                      {/* Subtle Team Ambient Radial Glow */}
+                      <div
+                        className="absolute inset-0 pointer-events-none opacity-20 transition-all duration-700"
+                        style={{
+                          background: `radial-gradient(circle at 50% 40%, ${livery.bodyColor} 0%, transparent 70%)`,
+                        }}
+                      />
 
-                  <div className="relative z-10 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300 bg-amber-950/70 border border-amber-800/80 px-2 py-0.5 rounded">
-                        8K UHD CAD VECTOR
-                      </span>
-                      <span className="text-[10px] font-mono text-studio-400">
-                        {livery.schematicCode}
-                      </span>
-                    </div>
-                    <h4 className="font-display text-lg font-black uppercase text-white pt-1">
-                      {lang === 'vi' ? livery.schematicTitleVi : livery.schematicTitleEn}
-                    </h4>
-                    <p className="text-xs text-studio-400">{livery.base}</p>
-                  </div>
+                      <div className="relative z-10 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300 bg-amber-950/70 border border-amber-800/80 px-2 py-0.5 rounded flex items-center gap-1">
+                            <Camera className="w-3 h-3 text-amber-400" />
+                            CẬN CẢNH KỸ THUẬT
+                          </span>
+                          <span className="text-[10px] font-mono text-studio-400">
+                            {heroCloseup.partCode}
+                          </span>
+                        </div>
+                        <h4 className="font-display text-lg font-black uppercase text-white pt-1">
+                          {lang === 'vi' ? heroCloseup.titleVi : heroCloseup.titleEn}
+                        </h4>
+                        <p className="text-xs text-studio-400">{livery.base}</p>
+                      </div>
 
-                  {/* 8K Schematic Image Container */}
-                  <div
-                    onClick={() => {
-                      setActiveHotspot(F1_HOTSPOTS[0]);
-                      setCameraPreset(null);
-                      setAutoRotate(false);
-                    }}
-                    className="relative z-10 my-4 rounded-xl overflow-hidden border border-studio-700/60 bg-black/80 aspect-video flex items-center justify-center cursor-pointer group/img shadow-lg"
-                  >
-                    <img
-                      src={livery.schematicImage}
-                      alt={livery.schematicTitleEn}
-                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-studio-950/90 via-transparent to-black/20 opacity-80 group-hover/img:opacity-60 transition-opacity" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-xs">
-                      <span className="text-[11px] font-bold text-white bg-studio-950/80 px-2 py-1 rounded backdrop-blur-md border border-studio-700/60 flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: livery.bodyColor }} />
-                        {livery.teamName} CAD Spec
-                      </span>
-                      <span className="text-[11px] font-mono text-amber-300 font-bold bg-black/70 px-2 py-1 rounded border border-amber-900/60 flex items-center gap-1">
-                        <Layers className="w-3 h-3 text-amber-400" />
-                        {lang === 'vi' ? 'Xem Chi Tiết' : 'Inspect'}
-                      </span>
-                    </div>
-                  </div>
+                      {/* Bespoke Close-up Image Container */}
+                      <div
+                        onClick={() => {
+                          setActiveHotspot(F1_HOTSPOTS[0]);
+                          setCameraPreset(null);
+                          setAutoRotate(false);
+                        }}
+                        className="relative z-10 my-4 rounded-xl overflow-hidden border border-studio-700/60 bg-black/80 aspect-video flex items-center justify-center cursor-pointer group/img shadow-lg"
+                      >
+                        <img
+                          src={heroCloseup.imageUrl}
+                          alt={heroCloseup.titleEn}
+                          className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-studio-950/90 via-transparent to-black/20 opacity-80 group-hover/img:opacity-60 transition-opacity" />
+                        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-xs">
+                          <span className="text-[11px] font-bold text-white bg-studio-950/80 px-2 py-1 rounded backdrop-blur-md border border-studio-700/60 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: livery.bodyColor }} />
+                            {livery.teamName} {livery.shortCarName}
+                          </span>
+                          <span className="text-[11px] font-mono text-amber-300 font-bold bg-black/70 px-2 py-1 rounded border border-amber-900/60 flex items-center gap-1">
+                            <Camera className="w-3 h-3 text-amber-400" />
+                            {lang === 'vi' ? 'Soi Cận Cảnh' : 'Inspect'}
+                          </span>
+                        </div>
+                      </div>
 
-                  {/* Drivers & Leadership */}
-                  <div className="relative z-10 pt-3 border-t border-studio-800/80 text-xs text-studio-300 space-y-1">
-                    <div className="flex items-center gap-1.5 font-mono text-[11px] text-white">
-                      <span className="text-studio-500 font-sans">Tay đua:</span>
-                      <span>{lang === 'vi' ? livery.driversVi : livery.driversEn}</span>
+                      {/* Drivers & Leadership */}
+                      <div className="relative z-10 pt-3 border-t border-studio-800/80 text-xs text-studio-300 space-y-1">
+                        <div className="flex items-center gap-1.5 font-mono text-[11px] text-white">
+                          <span className="text-studio-500 font-sans">Tay đua:</span>
+                          <span>{lang === 'vi' ? livery.driversVi : livery.driversEn}</span>
+                        </div>
+                        <div className="text-[11px] text-studio-400">
+                          Lãnh đội: <span className="text-studio-200">{livery.teamPrincipal}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-studio-400">
-                      Lãnh đội: <span className="text-studio-200">{livery.teamPrincipal}</span>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 {/* Right: 4 Technical Pillars tailored to active team */}
                 <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -584,6 +680,21 @@ export const ShowroomView: React.FC = () => {
             </div>
           </div>
       </div>
+
+      {/* Floating Back to Top 3D Stage Button */}
+      {showBackToTop && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-2xl bg-f1red/95 hover:bg-f1red text-white shadow-2xl backdrop-blur-md border border-white/20 transition-all hover:scale-110 cursor-pointer animate-fade-in flex items-center gap-2 text-xs font-bold shadow-f1red/30 active:scale-95"
+          title={lang === 'vi' ? 'Lên đầu trang xem xe 3D' : 'Back to 3D Stage'}
+        >
+          <ChevronUp className="w-4 h-4" />
+          <span className="hidden sm:inline">
+            {lang === 'vi' ? 'Lên Đầu Trang 3D' : 'Back to 3D'}
+          </span>
+        </button>
+      )}
     </div>
   );
 };

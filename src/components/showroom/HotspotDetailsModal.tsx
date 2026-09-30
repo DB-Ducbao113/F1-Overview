@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HotspotItem, F1_HOTSPOTS } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
 import {
   X,
   ChevronLeft,
@@ -15,7 +16,7 @@ import {
   Users,
   Maximize2,
   ZoomIn,
-  Cpu,
+  Camera,
 } from 'lucide-react';
 
 interface HotspotDetailsModalProps {
@@ -33,32 +34,56 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
   teamId = 'ferrari',
   lang,
 }) => {
-  // 'schematic' is the default and primary view: 8K CAD Blueprint unique to this racing team
-  const [viewMode, setViewMode] = useState<'schematic' | 'component'>('schematic');
+  // 'closeup' is the primary and default view: authentic bespoke macro close-up of that car's component
+  const [viewMode, setViewMode] = useState<'closeup' | 'schematic'>('closeup');
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+
+  // Global Escape key listener to close modal or lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isLightboxOpen) {
+          setIsLightboxOpen(false);
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, onClose]);
 
   if (!hotspot) return null;
 
   const livery = getTeam3DLivery(teamId);
+  const closeUpData = getTeamComponentCloseUp(teamId, hotspot.id);
   const currentIndex = F1_HOTSPOTS.findIndex((h) => h.id === hotspot.id);
   const prevHotspot = F1_HOTSPOTS[(currentIndex - 1 + F1_HOTSPOTS.length) % F1_HOTSPOTS.length];
   const nextHotspot = F1_HOTSPOTS[(currentIndex + 1) % F1_HOTSPOTS.length];
 
   const currentDisplayImage =
-    viewMode === 'schematic' ? livery.schematicImage : hotspot.imageUrl;
+    viewMode === 'closeup' ? closeUpData.imageUrl : livery.schematicImage;
 
   return (
     <>
+      {/* ── 1. Interactive Dark Backdrop Overlay: Click outside to dismiss ── */}
+      <div
+        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity animate-fade-in cursor-pointer"
+        onClick={onClose}
+        aria-label={lang === 'vi' ? 'Nhấn để đóng bảng chi tiết' : 'Click to close drawer'}
+      />
+
+      {/* ── 2. Slide-Over Technical Details Modal Drawer ── */}
       <aside
-        className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-studio-950/95 text-white backdrop-blur-xl border-l border-studio-800 shadow-2xl flex flex-col transition-all duration-300 animate-slide-left overflow-hidden"
+        className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-studio-950/95 text-white backdrop-blur-2xl border-l border-studio-800 shadow-2xl flex flex-col transition-all duration-300 animate-slide-left overflow-hidden"
         aria-label="F1 Technical Hotspot Visualizer"
       >
-        {/* ── Top Bar Header: Synced with Active Team ── */}
-        <div className="p-4 sm:p-5 border-b border-studio-800/80 flex items-center justify-between gap-3 bg-studio-900/80">
-          <div className="flex items-center gap-3">
+        {/* ── Top Bar Header: Synced with Active Team & Obvious Close Button ── */}
+        <div className="p-4 sm:p-5 border-b border-studio-800/80 flex items-center justify-between gap-3 bg-studio-900/90 sticky top-0 z-10 shadow-sm">
+          <div className="flex items-center gap-3 min-w-0">
             {/* Team Livery Number Badge */}
             <span
-              className="w-8 h-8 rounded-xl flex items-center justify-center font-display text-xs font-black text-white shadow-md ring-2 ring-white/20"
+              className="w-8 h-8 rounded-xl flex items-center justify-center font-display text-xs font-black text-white shadow-md ring-2 ring-white/20 shrink-0"
               style={{ backgroundColor: livery.bodyColor }}
             >
               {currentIndex + 1}
@@ -66,7 +91,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span
-                  className="w-2 h-2 rounded-full shadow-xs"
+                  className="w-2 h-2 rounded-full shadow-xs shrink-0"
                   style={{ backgroundColor: livery.accentColor || livery.bodyColor }}
                 />
                 <span className="text-[10px] font-black uppercase tracking-widest text-studio-400 truncate">
@@ -74,31 +99,47 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
                 </span>
               </div>
               <h3 className="font-display text-base sm:text-lg font-bold uppercase tracking-wide text-white leading-tight truncate">
-                {lang === 'vi' ? hotspot.nameVi : hotspot.nameEn}
+                {lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
               </h3>
             </div>
           </div>
 
+          {/* High-visibility Close Button with explicit ESC label */}
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-studio-800/60 hover:bg-studio-700/80 text-studio-400 hover:text-white transition-colors shrink-0 cursor-pointer"
-            title={lang === 'vi' ? 'Đóng & Reset Camera' : 'Close & Reset Camera'}
+            className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-studio-800 hover:bg-studio-700 text-studio-300 hover:text-white transition-all border border-studio-700/80 shadow-md shrink-0 cursor-pointer active:scale-95"
+            title={lang === 'vi' ? 'Đóng bảng chi tiết (hoặc bấm phím ESC)' : 'Close drawer (or press ESC)'}
           >
-            <X className="w-5 h-5" />
+            <span className="text-xs font-bold hidden sm:inline">
+              {lang === 'vi' ? 'Đóng' : 'Close'}
+            </span>
+            <X className="w-4 h-4 text-studio-300 hover:text-white" />
           </button>
         </div>
 
         {/* ── Scrollable Technical Body ── */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
-          {/* Visual Mode Selector: 8K Team Schematic vs Component Focus */}
+          {/* Visual Mode Selector: Bespoke Macro Close-up vs CAD Blueprint */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-studio-400 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                {lang === 'vi' ? 'Bản vẽ kỹ thuật:' : 'Technical Blueprint:'}
+                <Camera className="w-3.5 h-3.5 text-f1red" />
+                {lang === 'vi' ? 'Chế độ quan sát:' : 'Inspection View:'}
               </span>
               <div className="inline-flex rounded-lg bg-studio-900 border border-studio-800 p-0.5 text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('closeup')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
+                    viewMode === 'closeup'
+                      ? 'bg-f1red text-white shadow-sm'
+                      : 'text-studio-400 hover:text-white'
+                  }`}
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>{lang === 'vi' ? `Ảnh Cận Cảnh ${livery.teamName}` : `Close-Up`}</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('schematic')}
@@ -109,59 +150,41 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5" />
-                  <span>{lang === 'vi' ? `Sơ Đồ 8K ${livery.teamName}` : `8K ${livery.teamName}`}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('component')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all cursor-pointer ${
-                    viewMode === 'component'
-                      ? 'bg-f1red text-white shadow-sm'
-                      : 'text-studio-400 hover:text-white'
-                  }`}
-                >
-                  <Cpu className="w-3.5 h-3.5" />
-                  <span>{lang === 'vi' ? 'Linh Kiện Cận Cảnh' : 'Component Focus'}</span>
+                  <span>{lang === 'vi' ? 'Sơ Đồ CAD' : 'CAD Diagram'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Main Visual Display: Dedicated Team 8K Schematic or Component Cutaway */}
-            <div className="relative rounded-2xl overflow-hidden border border-studio-700/60 shadow-xl group bg-black/80 aspect-video flex items-center justify-center">
+            {/* Main Visual Display: Dedicated Team Component Close-up */}
+            <div className="relative rounded-2xl overflow-hidden border border-studio-700/60 shadow-xl group bg-black/90 aspect-video flex items-center justify-center">
               <img
                 src={currentDisplayImage}
-                alt={
-                  viewMode === 'schematic'
-                    ? `${livery.fullName} ${livery.schematicTitleEn}`
-                    : lang === 'vi'
-                      ? hotspot.nameVi
-                      : hotspot.nameEn
-                }
+                alt={lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
                 onClick={() => setIsLightboxOpen(true)}
                 loading="lazy"
               />
 
               {/* Ambient Blueprint Grid Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-transparent to-black/30 opacity-90 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-transparent to-black/30 opacity-80 pointer-events-none" />
 
-              {/* Top Right HUD: 8K UHD Tag + Expand Lightbox Button */}
+              {/* Top Right HUD: Part Code Tag + Expand Lightbox Button */}
               <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold text-amber-300">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold text-amber-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  8K UHD CAD
+                  {closeUpData.partCode}
                 </span>
                 <button
                   type="button"
                   onClick={() => setIsLightboxOpen(true)}
                   className="p-1.5 rounded-md bg-studio-900/85 hover:bg-studio-800 text-studio-200 hover:text-white border border-white/15 backdrop-blur-md transition-colors cursor-pointer"
-                  title={lang === 'vi' ? 'Phóng to xem 8K siêu nét' : 'Expand full 8K inspection'}
+                  title={lang === 'vi' ? 'Phóng to xem cận cảnh sắc nét' : 'Expand full macro view'}
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
                 </button>
               </div>
 
-              {/* Bottom Info HUD: Team Blueprint Code & Active Hotspot Component */}
+              {/* Bottom Info HUD: Team Component Title */}
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-studio-300 font-medium">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-studio-950/90 backdrop-blur-md border border-studio-700/70 text-[11px] font-bold text-white max-w-[70%]">
                   <span
@@ -169,11 +192,9 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
                     style={{ backgroundColor: livery.bodyColor }}
                   />
                   <span className="truncate">
-                    {viewMode === 'schematic'
-                      ? livery.schematicCode
-                      : lang === 'vi'
-                        ? hotspot.nameVi
-                        : hotspot.nameEn}
+                    {viewMode === 'closeup'
+                      ? closeUpData.partCode
+                      : livery.schematicCode}
                   </span>
                 </div>
                 <button
@@ -182,29 +203,23 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
                   className="text-[11px] text-studio-400 hover:text-white font-mono flex items-center gap-1 bg-studio-900/80 px-2 py-0.5 rounded border border-studio-700/50 cursor-pointer"
                 >
                   <ZoomIn className="w-3 h-3 text-f1red" />
-                  <span>{lang === 'vi' ? 'Soi 8K' : 'Zoom 8K'}</span>
+                  <span>{lang === 'vi' ? 'Phóng to' : 'Zoom In'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Schematic Label & Team Code Tag */}
+            {/* Label & Active Model Tag */}
             <div className="flex items-center justify-between text-[11px] px-1 text-studio-400">
-              <span className="font-medium text-studio-300">
-                {viewMode === 'schematic'
-                  ? lang === 'vi'
-                    ? livery.schematicTitleVi
-                    : livery.schematicTitleEn
-                  : lang === 'vi'
-                    ? `Chi tiết kết cấu: ${hotspot.nameVi}`
-                    : `Component Structural Focus: ${hotspot.nameEn}`}
+              <span className="font-medium text-studio-300 truncate max-w-[75%]">
+                {lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
               </span>
-              <span className="font-mono text-[10px] text-f1red font-bold">
+              <span className="font-mono text-[10px] text-f1red font-bold shrink-0">
                 {livery.shortCarName} · 2026 SPEC
               </span>
             </div>
           </div>
 
-          {/* ── Team Synchronized Technical Dossier Card ── */}
+          {/* ── Bespoke Engineering Analysis for Active Team ── */}
           <div className="p-4 rounded-2xl bg-gradient-to-br from-studio-900/90 to-studio-950 border border-studio-800 shadow-md space-y-3">
             <div className="flex items-center justify-between border-b border-studio-800/80 pb-2.5">
               <div className="flex items-center gap-2">
@@ -213,82 +228,34 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
                   style={{ backgroundColor: livery.bodyColor }}
                 />
                 <span className="text-xs font-black uppercase tracking-wider text-white">
-                  {livery.teamName} · {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Riêng Biệt' : 'Bespoke Team Dossier'}
+                  {livery.teamName} · {lang === 'vi' ? 'Phân Tích Cận Cảnh' : 'Macro Analysis'}
                 </span>
               </div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-2 py-0.5 rounded-md">
-                2026 Spec
+                {closeUpData.partCode}
               </span>
             </div>
 
-            {/* Dynamic Technical Insight tailored to this specific hotspot & selected team */}
-            {hotspot.id === 'power_unit' ? (
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <Zap className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                  <div className="text-xs space-y-1">
-                    <p className="font-bold text-white">{livery.powerUnit}</p>
-                    <p className="text-studio-400">{livery.powerUnitSupplier}</p>
-                    <p className="text-[11px] text-amber-300/90 font-mono">{livery.engineOutput}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-studio-300 leading-relaxed pt-1.5 border-t border-studio-800/60">
-                  {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
-                </p>
-              </div>
-            ) : hotspot.id === 'wings' || hotspot.id === 'drs' || hotspot.id === 'sidepods' ? (
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <Gauge className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-                  <div className="text-xs space-y-0.5">
-                    <p className="font-bold text-white">
-                      {lang === 'vi'
-                        ? `Triết lý khí động học ${livery.teamName}`
-                        : `${livery.teamName} Aerodynamic Philosophy`}
-                    </p>
-                    <p className="text-studio-400">{livery.base}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-studio-300 leading-relaxed pt-1.5 border-t border-studio-800/60">
-                  {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <Users className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs space-y-0.5">
-                    <p className="font-bold text-white">
-                      {lang === 'vi' ? 'Tay đua điều khiển' : 'Official Drivers'}
-                    </p>
-                    <p className="text-studio-300 font-mono">
-                      {lang === 'vi' ? livery.driversVi : livery.driversEn}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-[11px] text-studio-400 pt-1 border-t border-studio-800/60">
-                  Lãnh đội: {livery.teamPrincipal} · Trụ sở: {livery.base}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Executive Summary */}
-          <div className="p-3.5 rounded-xl bg-studio-900/80 border border-studio-800">
-            <p className="text-xs sm:text-sm text-studio-300 leading-relaxed font-medium">
-              {lang === 'vi' ? hotspot.summaryVi : hotspot.summaryEn}
+            {/* Bespoke Concept Explanation */}
+            <p className="text-xs text-studio-300 leading-relaxed font-normal">
+              {lang === 'vi' ? closeUpData.conceptVi : closeUpData.conceptEn}
             </p>
           </div>
 
-          {/* Detailed Engineering Explanation */}
-          <div className="space-y-2">
+          {/* Key Highlights Bullet Points for this Team's Component */}
+          <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-studio-400 flex items-center gap-1.5">
-              <Gauge className="w-3.5 h-3.5 text-f1red" />
-              {lang === 'vi' ? 'Nguyên Lý Khí Động & Hoạt Động' : 'Engineering Principle & Aero'}
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              {lang === 'vi' ? 'Đặc Tính Nổi Bật Của Mẫu Xe Này' : 'Constructor Design Features'}
             </h4>
-            <p className="text-xs sm:text-sm text-studio-300 leading-relaxed font-normal">
-              {lang === 'vi' ? hotspot.descriptionVi : hotspot.descriptionEn}
-            </p>
+            <ul className="space-y-2">
+              {(lang === 'vi' ? closeUpData.highlightsVi : closeUpData.highlightsEn).map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-studio-300">
+                  <CheckCircle2 className="w-4 h-4 text-f1red shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Key Technical Specifications Table */}
@@ -298,7 +265,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               {lang === 'vi' ? 'Thông Số Kỹ Thuật (FIA Regulation)' : 'Technical Specifications'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {hotspot.specs.map((spec, i) => (
+              {closeUpData.specs.map((spec, i) => (
                 <div
                   key={i}
                   className="p-3 rounded-xl bg-studio-900/60 border border-studio-800/80 space-y-1"
@@ -311,54 +278,56 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               ))}
             </div>
           </div>
-
-          {/* Key Highlights Bullet Points */}
-          <div className="space-y-2.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-studio-400">
-              {lang === 'vi' ? 'Điểm Nhấn Công Nghệ' : 'Engineering Highlights'}
-            </h4>
-            <ul className="space-y-2">
-              {(lang === 'vi' ? hotspot.highlightsVi : hotspot.highlightsEn).map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-studio-300">
-                  <CheckCircle2 className="w-4 h-4 text-f1red shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
-        {/* ── Bottom Navigation Controls ── */}
-        <div className="p-4 border-t border-studio-800/80 bg-studio-900/80 flex items-center justify-between gap-3">
+        {/* ── Bottom Navigation Controls with Integrated CLOSE Button ── */}
+        <div className="p-3.5 sm:p-4 border-t border-studio-800/80 bg-studio-900/90 flex items-center justify-between gap-2 sm:gap-3 sticky bottom-0 z-10 shadow-lg">
           <button
             type="button"
             onClick={() => onSelectHotspot(prevHotspot)}
-            className="flex-1 py-2.5 px-3 rounded-xl bg-studio-800 hover:bg-studio-700 text-xs font-bold text-studio-200 hover:text-white transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            className="flex-1 py-2.5 px-2.5 rounded-xl bg-studio-800 hover:bg-studio-700 text-xs font-bold text-studio-200 hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            title={lang === 'vi' ? 'Xem linh kiện trước' : 'Previous component'}
           >
-            <ChevronLeft className="w-4 h-4" />
-            <span>{lang === 'vi' ? 'Linh kiện trước' : 'Previous'}</span>
+            <ChevronLeft className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">{lang === 'vi' ? 'Trước' : 'Prev'}</span>
+          </button>
+
+          {/* Direct Close Button in Bottom Bar */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="py-2.5 px-4 rounded-xl bg-studio-800 hover:bg-studio-700 text-xs font-bold text-studio-300 hover:text-white border border-studio-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+            title={lang === 'vi' ? 'Đóng cửa sổ này (ESC)' : 'Close this panel (ESC)'}
+          >
+            <X className="w-4 h-4 text-studio-400" />
+            <span>{lang === 'vi' ? 'Đóng' : 'Close'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => onSelectHotspot(nextHotspot)}
-            className="flex-1 py-2.5 px-3 rounded-xl bg-f1red hover:bg-f1red/90 text-xs font-bold text-white transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-f1red/20 cursor-pointer"
+            className="flex-1 py-2.5 px-2.5 rounded-xl bg-f1red hover:bg-f1red/90 text-xs font-bold text-white transition-colors flex items-center justify-center gap-1 shadow-md shadow-f1red/20 cursor-pointer"
+            title={lang === 'vi' ? 'Xem linh kiện tiếp' : 'Next component'}
           >
-            <span>{lang === 'vi' ? 'Linh kiện tiếp' : 'Next'}</span>
-            <ChevronRight className="w-4 h-4" />
+            <span className="hidden sm:inline">{lang === 'vi' ? 'Tiếp' : 'Next'}</span>
+            <ChevronRight className="w-4 h-4 shrink-0" />
           </button>
         </div>
       </aside>
 
-      {/* ── 8K Fullscreen Lightbox Modal ── */}
+      {/* ── 3. High-Definition Fullscreen Lightbox Modal with Backdrop Dismiss & ESC ── */}
       {isLightboxOpen && (
         <div
           role="dialog"
           aria-modal="true"
           className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6 animate-fade-in"
+          onClick={() => setIsLightboxOpen(false)}
         >
           {/* Lightbox Header Bar */}
-          <div className="flex items-center justify-between gap-4 pb-4 border-b border-studio-800">
+          <div
+            className="flex items-center justify-between gap-4 pb-4 border-b border-studio-800"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-3">
               <span
                 className="w-3.5 h-3.5 rounded-full shadow-md"
@@ -367,14 +336,14 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold text-amber-300 bg-amber-950/80 border border-amber-800/80 px-2 py-0.5 rounded">
-                    8K UHD CAD VECTOR
+                    {closeUpData.partCode}
                   </span>
                   <span className="text-xs text-studio-400 font-mono">
-                    {livery.schematicCode}
+                    {livery.fullName}
                   </span>
                 </div>
                 <h2 className="text-base sm:text-xl font-display font-black uppercase text-white mt-0.5">
-                  {lang === 'vi' ? livery.schematicTitleVi : livery.schematicTitleEn}
+                  {lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 </h2>
               </div>
             </div>
@@ -383,34 +352,44 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = ({
               <button
                 type="button"
                 onClick={() => setIsLightboxOpen(false)}
-                className="p-2.5 rounded-xl bg-studio-800/80 hover:bg-studio-700 text-studio-300 hover:text-white transition-colors cursor-pointer"
-                title={lang === 'vi' ? 'Đóng chế độ phóng to' : 'Close full inspection'}
+                className="flex items-center gap-2 py-2 px-3.5 rounded-xl bg-studio-800/90 hover:bg-studio-700 text-white transition-colors cursor-pointer border border-studio-700 shadow-md font-bold text-xs"
+                title={lang === 'vi' ? 'Đóng chế độ phóng to (ESC)' : 'Close full view (ESC)'}
               >
-                <X className="w-6 h-6" />
+                <span>{lang === 'vi' ? 'Đóng (ESC)' : 'Close (ESC)'}</span>
+                <X className="w-5 h-5 text-studio-400" />
               </button>
             </div>
           </div>
 
           {/* Lightbox Center Image Viewport */}
-          <div className="flex-1 flex items-center justify-center p-2 sm:p-6 overflow-hidden">
-            <div className="relative max-w-6xl max-h-full rounded-2xl overflow-hidden border border-studio-700/60 shadow-2xl bg-studio-950">
+          <div
+            className="flex-1 flex items-center justify-center p-2 sm:p-6 overflow-hidden cursor-zoom-out"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <div
+              className="relative max-w-6xl max-h-full rounded-2xl overflow-hidden border border-studio-700/60 shadow-2xl bg-studio-950"
+              onClick={(e) => e.stopPropagation()}
+            >
               <img
                 src={currentDisplayImage}
-                alt={lang === 'vi' ? livery.schematicTitleVi : livery.schematicTitleEn}
+                alt={lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 className="max-h-[75vh] w-auto object-contain mx-auto select-none"
               />
             </div>
           </div>
 
           {/* Lightbox Footer Bar: Telemetry specs & team details */}
-          <div className="pt-3 border-t border-studio-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-studio-400">
+          <div
+            className="pt-3 border-t border-studio-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-studio-400"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-4 flex-wrap">
               <span>Đội đua: <strong className="text-white">{livery.fullName}</strong></span>
-              <span>Động cơ: <strong className="text-white">{livery.powerUnit}</strong></span>
-              <span>Lãnh đội: <strong className="text-white">{livery.teamPrincipal}</strong></span>
+              <span>Linh kiện: <strong className="text-white">{closeUpData.partCode}</strong></span>
+              <span>Mẫu xe: <strong className="text-white">{livery.carModelName}</strong></span>
             </div>
             <div className="text-[11px] font-mono text-studio-500">
-              FIA 2026 FORMULA ONE TECHNICAL BLUEPRINT · {livery.teamName.toUpperCase()}
+              NHẤN PHÍM ESC HOẶC CLICK VÙNG NGOÀI ĐỂ ĐÓNG
             </div>
           </div>
         </div>
