@@ -127,8 +127,10 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors"
-              aria-label="Toggle navigation menu"
+              className="lg:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors focus:ring-2 focus:ring-f1red rounded-lg"
+              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>

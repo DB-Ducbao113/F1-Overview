@@ -20,6 +20,54 @@ import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 import { f1AudioEngine } from '../../utils/f1AudioEngine';
 
 import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ErrorBoundary } from '../common/ErrorBoundary';
+
+interface WebGLFallbackProps {
+  teamName: string;
+  carModelName: string;
+  primaryColor: string;
+  lang: 'vi' | 'en';
+}
+
+const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
+  teamName,
+  carModelName,
+  primaryColor,
+  lang,
+}) => (
+  <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#09090e] text-white">
+    <div
+      className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-black mb-4 shadow-xl"
+      style={{ backgroundColor: primaryColor }}
+    >
+      F1
+    </div>
+    <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2 text-white">
+      {teamName} — {carModelName}
+    </h3>
+    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-4">
+      <span>⚠️</span>
+      <span>
+        {lang === 'vi'
+          ? 'Chế độ 2D (Thiết bị chưa bật tăng tốc đồ họa WebGL)'
+          : '2D Mode (WebGL hardware acceleration unavailable)'}
+      </span>
+    </div>
+    <p className="text-xs text-studio-400 max-w-md leading-relaxed mb-6">
+      {lang === 'vi'
+        ? 'Bạn có thể kích hoạt tăng tốc phần cứng trong cài đặt trình duyệt để xem mô hình 3D xoay 360°, hoặc cuộn xuống dưới để khám phá trọn bộ hồ sơ kỹ thuật chi tiết của xe.'
+        : 'Enable hardware acceleration in your browser settings for full 360° 3D interaction, or scroll down to explore the complete technical dossier.'}
+    </p>
+    <button
+      onClick={() => {
+        document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
+      }}
+      className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer shadow-lg shadow-f1red/20"
+    >
+      {lang === 'vi' ? 'Xem Hồ Sơ Kỹ Thuật Chi Tiết ↓' : 'View Technical Dossier ↓'}
+    </button>
+  </div>
+);
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -251,202 +299,213 @@ export const ShowroomView: React.FC = () => {
         </div>
 
         {/* ── Three.js WebGL 3D Canvas ── */}
-        <Canvas
-          shadows
-          camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-          gl={useMemo(
-            () => ({
-              antialias: true,
-              alpha: true,
-              toneMappingExposure:
-                lightingMode === 'night_gp' ? 1.2 : lightingMode === 'daylight' ? 1.1 : 1.0,
-            }),
-            [lightingMode],
-          )}
-          className="w-full h-full cursor-grab active:cursor-grabbing"
+        <ErrorBoundary
+          fallback={
+            <ShowroomWebGLFallback
+              teamName={team.name}
+              carModelName={livery.carModelName}
+              primaryColor={team.primaryColor}
+              lang={lang}
+            />
+          }
         >
-          {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-          <Environment
-            preset={
-              lightingMode === 'night_gp'
-                ? 'night'
-                : lightingMode === 'daylight'
-                  ? 'sunset'
-                  : 'city'
-            }
-          />
+          <Canvas
+            shadows
+            camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
+            gl={useMemo(
+              () => ({
+                antialias: true,
+                alpha: true,
+                toneMappingExposure:
+                  lightingMode === 'night_gp' ? 1.2 : lightingMode === 'daylight' ? 1.1 : 1.0,
+              }),
+              [lightingMode],
+            )}
+            className="w-full h-full cursor-grab active:cursor-grabbing"
+          >
+            {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
+            <Environment
+              preset={
+                lightingMode === 'night_gp'
+                  ? 'night'
+                  : lightingMode === 'daylight'
+                    ? 'sunset'
+                    : 'city'
+              }
+            />
 
-          {/* ── Cinematic Studio Lighting according to lightingMode (Direction 3) ── */}
-          {lightingMode === 'studio' && (
-            <>
-              {/* High-End Automotive Studio Key, Fill & Rim Lights (Calibrated for rich, authentic paint colors) */}
-              <ambientLight intensity={0.5} color="#f8fafc" />
-              <directionalLight
-                position={[5, 8, -4]}
-                intensity={1.8}
-                color="#ffffff"
-                castShadow
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
-                shadow-bias={-0.0001}
-              />
-              <directionalLight position={[-6, 5, 4]} intensity={1.1} color="#e0f2fe" />
-              <directionalLight position={[0, -2, 0]} intensity={0.3} color="#ffffff" />
-
-              {/* Overhead Softbox Ceiling Light Panel (visible in Hình 2 above the car) */}
-              <group position={[0, 4.2, -0.2]}>
-                <mesh rotation={[Math.PI / 2, 0, 0]}>
-                  <planeGeometry args={[3.6, 7.5]} />
-                  <meshBasicMaterial color="#ffffff" toneMapped={false} />
-                </mesh>
-                <spotLight
-                  position={[0, 0, 0]}
-                  angle={0.8}
-                  penumbra={0.7}
+            {/* ── Cinematic Studio Lighting according to lightingMode (Direction 3) ── */}
+            {lightingMode === 'studio' && (
+              <>
+                {/* High-End Automotive Studio Key, Fill & Rim Lights (Calibrated for rich, authentic paint colors) */}
+                <ambientLight intensity={0.5} color="#f8fafc" />
+                <directionalLight
+                  position={[5, 8, -4]}
                   intensity={1.8}
                   color="#ffffff"
+                  castShadow
+                  shadow-mapSize-width={2048}
+                  shadow-mapSize-height={2048}
+                  shadow-bias={-0.0001}
                 />
-              </group>
+                <directionalLight position={[-6, 5, 4]} intensity={1.1} color="#e0f2fe" />
+                <directionalLight position={[0, -2, 0]} intensity={0.3} color="#ffffff" />
 
-              {/* Polished Luxury Dark Mirror Floor (Reflecting the F1 car like Hình 2) */}
-              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
-                <planeGeometry args={[30, 30]} />
-                <MeshReflectorMaterial
-                  blur={[300, 100]}
-                  resolution={1024}
-                  mirror={0.7}
-                  mixBlur={0.6}
-                  mixStrength={2.2}
-                  roughness={0.15}
-                  depthScale={1.2}
-                  minDepthThreshold={0.4}
-                  maxDepthThreshold={1.4}
-                  color="#090a0d"
-                  metalness={0.7}
+                {/* Overhead Softbox Ceiling Light Panel (visible in Hình 2 above the car) */}
+                <group position={[0, 4.2, -0.2]}>
+                  <mesh rotation={[Math.PI / 2, 0, 0]}>
+                    <planeGeometry args={[3.6, 7.5]} />
+                    <meshBasicMaterial color="#ffffff" toneMapped={false} />
+                  </mesh>
+                  <spotLight
+                    position={[0, 0, 0]}
+                    angle={0.8}
+                    penumbra={0.7}
+                    intensity={1.8}
+                    color="#ffffff"
+                  />
+                </group>
+
+                {/* Polished Luxury Dark Mirror Floor (Reflecting the F1 car like Hình 2) */}
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
+                  <planeGeometry args={[30, 30]} />
+                  <MeshReflectorMaterial
+                    blur={[300, 100]}
+                    resolution={1024}
+                    mirror={0.7}
+                    mixBlur={0.6}
+                    mixStrength={2.2}
+                    roughness={0.15}
+                    depthScale={1.2}
+                    minDepthThreshold={0.4}
+                    maxDepthThreshold={1.4}
+                    color="#090a0d"
+                    metalness={0.7}
+                  />
+                </mesh>
+              </>
+            )}
+
+            {lightingMode === 'night_gp' && (
+              <>
+                {/* Singapore GP Stadium Floodlights */}
+                <ambientLight intensity={0.9} color="#94a3b8" />
+                <spotLight
+                  position={[6, 12, 6]}
+                  angle={0.55}
+                  penumbra={0.5}
+                  intensity={3.8}
+                  color="#ffffff"
+                  castShadow
+                  shadow-mapSize-width={2048}
+                  shadow-mapSize-height={2048}
                 />
-              </mesh>
-            </>
-          )}
+                <spotLight
+                  position={[-6, 12, -6]}
+                  angle={0.55}
+                  penumbra={0.5}
+                  intensity={3.8}
+                  color="#e0f2fe"
+                />
+                <spotLight
+                  position={[-6, 12, 6]}
+                  angle={0.55}
+                  penumbra={0.5}
+                  intensity={3.5}
+                  color="#ffffff"
+                />
+                <spotLight
+                  position={[6, 12, -6]}
+                  angle={0.55}
+                  penumbra={0.5}
+                  intensity={3.5}
+                  color="#e0f2fe"
+                />
+                <pointLight position={[0, 5, 0]} intensity={2.0} color="#ffffff" />
+                {/* Floor: Asphalt Track with High-Contrast White Grid & Yellow Curbs */}
+                <group position={[0, -0.01, 0]}>
+                  <gridHelper args={[16, 32, '#ffffff', '#0f172a']} position={[0, 0, 0]} />
+                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[3.0, 3.06, 64]} />
+                    <meshBasicMaterial color="#eab308" transparent opacity={0.6} />
+                  </mesh>
+                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[4.5, 4.54, 64]} />
+                    <meshBasicMaterial color={team.primaryColor} transparent opacity={0.5} />
+                  </mesh>
+                </group>
+              </>
+            )}
 
-          {lightingMode === 'night_gp' && (
-            <>
-              {/* Singapore GP Stadium Floodlights */}
-              <ambientLight intensity={0.9} color="#94a3b8" />
-              <spotLight
-                position={[6, 12, 6]}
-                angle={0.55}
-                penumbra={0.5}
-                intensity={3.8}
-                color="#ffffff"
-                castShadow
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
-              />
-              <spotLight
-                position={[-6, 12, -6]}
-                angle={0.55}
-                penumbra={0.5}
-                intensity={3.8}
-                color="#e0f2fe"
-              />
-              <spotLight
-                position={[-6, 12, 6]}
-                angle={0.55}
-                penumbra={0.5}
-                intensity={3.5}
-                color="#ffffff"
-              />
-              <spotLight
-                position={[6, 12, -6]}
-                angle={0.55}
-                penumbra={0.5}
-                intensity={3.5}
-                color="#e0f2fe"
-              />
-              <pointLight position={[0, 5, 0]} intensity={2.0} color="#ffffff" />
-              {/* Floor: Asphalt Track with High-Contrast White Grid & Yellow Curbs */}
-              <group position={[0, -0.01, 0]}>
-                <gridHelper args={[16, 32, '#ffffff', '#0f172a']} position={[0, 0, 0]} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[3.0, 3.06, 64]} />
-                  <meshBasicMaterial color="#eab308" transparent opacity={0.6} />
-                </mesh>
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[4.5, 4.54, 64]} />
-                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.5} />
-                </mesh>
-              </group>
-            </>
-          )}
+            {lightingMode === 'daylight' && (
+              <>
+                {/* Monaco Daylight: Mediterranean Sun */}
+                <ambientLight intensity={1.8} color="#fffbeb" />
+                <directionalLight
+                  position={[8, 14, -6]}
+                  intensity={3.4}
+                  color="#fffbeb"
+                  castShadow
+                  shadow-mapSize-width={2048}
+                  shadow-mapSize-height={2048}
+                  shadow-bias={-0.0001}
+                />
+                <directionalLight position={[-8, 6, 8]} intensity={1.6} color="#bae6fd" />
+                <directionalLight position={[0, -2, 0]} intensity={0.7} color="#fef08a" />
+                <spotLight
+                  position={[0, 8, 0]}
+                  angle={0.7}
+                  penumbra={0.9}
+                  intensity={1.8}
+                  color="#fef08a"
+                />
+                {/* Floor: Sunlit Pavement Grid */}
+                <group position={[0, -0.01, 0]}>
+                  <gridHelper args={[16, 32, team.primaryColor, '#334155']} position={[0, 0, 0]} />
+                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[3.0, 3.05, 64]} />
+                    <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
+                  </mesh>
+                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                    <ringGeometry args={[4.5, 4.53, 64]} />
+                    <meshBasicMaterial color="#0284c7" transparent opacity={0.3} />
+                  </mesh>
+                </group>
+              </>
+            )}
 
-          {lightingMode === 'daylight' && (
-            <>
-              {/* Monaco Daylight: Mediterranean Sun */}
-              <ambientLight intensity={1.8} color="#fffbeb" />
-              <directionalLight
-                position={[8, 14, -6]}
-                intensity={3.4}
-                color="#fffbeb"
-                castShadow
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
-                shadow-bias={-0.0001}
+            {/* F1 3D Car Model with Suspense Loading HUD */}
+            <Suspense fallback={<Showroom3DLoader />}>
+              <F1Car3DModel
+                teamId={selectedTeamId}
+                activeHotspot={activeHotspot}
+                onSelectHotspot={handleSelectHotspot}
+                lang={lang}
+                showHotspots={showHotspots}
               />
-              <directionalLight position={[-8, 6, 8]} intensity={1.6} color="#bae6fd" />
-              <directionalLight position={[0, -2, 0]} intensity={0.7} color="#fef08a" />
-              <spotLight
-                position={[0, 8, 0]}
-                angle={0.7}
-                penumbra={0.9}
-                intensity={1.8}
-                color="#fef08a"
-              />
-              {/* Floor: Sunlit Pavement Grid */}
-              <group position={[0, -0.01, 0]}>
-                <gridHelper args={[16, 32, team.primaryColor, '#334155']} position={[0, 0, 0]} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[3.0, 3.05, 64]} />
-                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
-                </mesh>
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[4.5, 4.53, 64]} />
-                  <meshBasicMaterial color="#0284c7" transparent opacity={0.3} />
-                </mesh>
-              </group>
-            </>
-          )}
+            </Suspense>
 
-          {/* F1 3D Car Model with Suspense Loading HUD */}
-          <Suspense fallback={<Showroom3DLoader />}>
-            <F1Car3DModel
-              teamId={selectedTeamId}
-              activeHotspot={activeHotspot}
-              onSelectHotspot={handleSelectHotspot}
-              lang={lang}
-              showHotspots={showHotspots}
+            {/* Dynamic Ground Contact Shadows */}
+            <ContactShadows
+              position={[0, 0, 0]}
+              opacity={0.9}
+              scale={10}
+              blur={2.0}
+              far={4.5}
+              color="#000000"
             />
-          </Suspense>
 
-          {/* Dynamic Ground Contact Shadows */}
-          <ContactShadows
-            position={[0, 0, 0]}
-            opacity={0.9}
-            scale={10}
-            blur={2.0}
-            far={4.5}
-            color="#000000"
-          />
-
-          {/* Smooth Camera Controller & OrbitControls */}
-          <CameraController
-            activeHotspot={activeHotspot}
-            cameraPreset={cameraPreset}
-            autoRotate={autoRotate}
-            enableWheelZoom={enableWheelZoom}
-            zoomTrigger={zoomTrigger}
-            zoomDirection={zoomDirection}
-          />
-        </Canvas>
+            {/* Smooth Camera Controller & OrbitControls */}
+            <CameraController
+              activeHotspot={activeHotspot}
+              cameraPreset={cameraPreset}
+              autoRotate={autoRotate}
+              enableWheelZoom={enableWheelZoom}
+              zoomTrigger={zoomTrigger}
+              zoomDirection={zoomDirection}
+            />
+          </Canvas>
+        </ErrorBoundary>
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
         <HotspotDetailsModal
