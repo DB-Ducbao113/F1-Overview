@@ -7,7 +7,7 @@ import { SeasonYear } from '../../types';
 import { t } from '../../i18n/translations';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
-import { Trophy, Award, ExternalLink, ShieldCheck, Clock, AlertCircle } from 'lucide-react';
+import { Trophy, Award, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
 
 interface StandingsTableProps {
   season: SeasonYear;

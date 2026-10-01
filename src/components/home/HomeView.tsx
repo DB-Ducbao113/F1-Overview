@@ -3,25 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
-import { TEAMS_DATA } from '../../data/teams';
 import { FullscreenCarStage } from './FullscreenCarStage';
 import { SeasonYear } from '../../types';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
-import {
-  ArrowRight,
-  Trophy,
-  Calendar,
-  Image,
-  Car,
-  Flag,
-  MapPin,
-  Clock,
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
-  CheckCircle2,
-  Box,
-} from 'lucide-react';
+import { ArrowRight, Trophy, Calendar, MapPin, ShieldCheck, Box } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 
 export const HomeView: React.FC = () => {
@@ -33,9 +18,10 @@ export const HomeView: React.FC = () => {
   const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(2024);
 
   // Show the active race weekend, or the next scheduled round.
-  const detailedResults = useChampionshipStore((state) => state.detailedResults?.[2026]) || [];
+  const detailedResultsRaw = useChampionshipStore((state) => state.detailedResults?.[2026]);
 
   const nextRace = useMemo(() => {
+    const detailedResults = detailedResultsRaw || [];
     const completedRoundNumbers = new Set([
       ...CALENDAR_2026.filter((gp) => gp && gp.status === 'completed').map((gp) => gp.round),
       ...(Array.isArray(detailedResults) ? detailedResults : [])
@@ -50,7 +36,7 @@ export const HomeView: React.FC = () => {
       CALENDAR_2026[CALENDAR_2026.length - 1] ||
       CALENDAR_2026[0]
     );
-  }, [detailedResults]);
+  }, [detailedResultsRaw]);
 
   // Standings for current selected season
   const currentStandings = useMemo(

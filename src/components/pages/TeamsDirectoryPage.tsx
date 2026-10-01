@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin, Search, Trophy, Users, Box } from 'lucide-react';
 import { TEAMS_DATA } from '../../data/teams';
@@ -18,11 +18,13 @@ interface TeamsDirectoryPageProps {
 export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
   ({ initialSeason = 2026, hideHeader = false }) => {
     const lang = useNavigationStore((state) => state.lang);
+    const [prevInitialSeason, setPrevInitialSeason] = useState(initialSeason);
     const [season, setSeason] = useState<SeasonYear>(initialSeason);
-    const [query, setQuery] = useState('');
-    useEffect(() => {
+    if (prevInitialSeason !== initialSeason) {
+      setPrevInitialSeason(initialSeason);
       setSeason(initialSeason);
-    }, [initialSeason]);
+    }
+    const [query, setQuery] = useState('');
     const standings = STANDINGS_DATA[season].constructors;
     const teams = useMemo(() => {
       const normalized = query.trim().toLowerCase();

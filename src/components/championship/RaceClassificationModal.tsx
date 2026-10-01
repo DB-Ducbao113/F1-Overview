@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DetailedRaceResult } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
-import { X, Trophy, Zap, Flag, Calendar, MapPin, Clock, ShieldCheck, Award } from 'lucide-react';
+import { X, Trophy, Zap, Flag, Calendar, MapPin, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
   race: DetailedRaceResult | null;
@@ -121,7 +121,6 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                 {race.entries.map((entry) => {
                   const teamInfo = TEAMS_DATA[entry.teamId];
                   const isPodium = entry.position >= 1 && entry.position <= 3;
-                  const isPoints = entry.points > 0;
                   const isDNF =
                     entry.status.toLowerCase().includes('dnf') ||
                     entry.status.toLowerCase().includes('dns');

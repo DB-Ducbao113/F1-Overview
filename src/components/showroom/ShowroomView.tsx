@@ -27,15 +27,14 @@ export const ShowroomView: React.FC = () => {
 
   // Selected Team for 3D Livery synced with query param ?team=...
   const teamParam = searchParams.get('team') as TeamId | null;
-  const initialTeamId = teamParam && TEAMS_DATA[teamParam] ? teamParam : 'mercedes';
-  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(initialTeamId);
+  const validTeamParam = teamParam && TEAMS_DATA[teamParam] ? teamParam : null;
+  const [prevTeamParam, setPrevTeamParam] = useState<TeamId | null>(validTeamParam);
+  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(validTeamParam || 'mercedes');
 
-  // Sync state if URL query param changes from external navigation
-  useEffect(() => {
-    if (teamParam && TEAMS_DATA[teamParam] && teamParam !== selectedTeamId) {
-      setSelectedTeamId(teamParam);
-    }
-  }, [teamParam, selectedTeamId]);
+  if (validTeamParam && validTeamParam !== prevTeamParam) {
+    setPrevTeamParam(validTeamParam);
+    setSelectedTeamId(validTeamParam);
+  }
 
   const handleSelectTeam = useCallback(
     (newTeamId: TeamId) => {

@@ -13,7 +13,6 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { useChampionshipStore } from './store/useChampionshipStore';
 import { useNavigationStore } from './store/useNavigationStore';
-import { getRaceResults } from './data/championship';
 import { SeasonYear } from './types';
 import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
 import { getCompleteRaceClassification } from './data/championship/raceClassificationHelper';

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
-import { Sparkles, Trophy, ArrowRight, Box } from 'lucide-react';
+import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 
 interface PosterCar {

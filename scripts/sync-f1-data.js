@@ -54,7 +54,7 @@ function fetchJson(url) {
 /**
  * Standard Points Allocation for Formula 1 Grands Prix
  */
-const POINTS_TABLE = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+const _POINTS_TABLE = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 
 async function runPipeline() {
   const apiUrl = `https://api.jolpica.com/ergast/f1/${TARGET_SEASON}/results.json?limit=1000`;

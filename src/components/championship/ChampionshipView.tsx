@@ -8,7 +8,6 @@ import { RaceCalendar } from './RaceCalendar';
 import { RaceResults } from './RaceResults';
 import { TeamsDirectoryPage } from '../pages/TeamsDirectoryPage';
 import { DriversDirectoryPage } from '../pages/DriversDirectoryPage';
-import { CALENDAR_2026 } from '../../data/championship';
 import {
   Trophy,
   Calendar,
@@ -30,7 +29,6 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
     setSelectedSeason,
     activeSubTab,
     setActiveSubTab,
-    detailedResults,
     syncMeta,
     syncSeasonData,
     pendingSyncReview,
@@ -45,16 +43,6 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
   useEffect(() => {
     setSelectedSeason(season);
   }, [season, setSelectedSeason]);
-
-  const completedRaces =
-    season === 2026
-      ? new Set([
-          ...CALENDAR_2026.filter((race) => race.status === 'completed').map((race) => race.round),
-          ...(detailedResults[2026] || [])
-            .filter((race) => race.status === 'completed')
-            .map((race) => race.round),
-        ]).size
-      : detailedResults[season]?.length || 0;
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
