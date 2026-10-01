@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, Home, Users, UserRound, Box } from 'lucide-react';
+import { Menu, X, Trophy, Home, Box } from 'lucide-react';
 
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC = React.memo(() => {
   const { lang, setLang } = useNavigationStore();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -12,33 +12,24 @@ export const Navbar: React.FC = () => {
 
   const strings = t[lang].nav;
 
-  const NAV_ITEMS = [
-    { id: 'home', path: '/', label: strings.home, icon: <Home className="w-4 h-4" /> },
-    {
-      id: 'championship',
-      path: '/season/2026',
-      label: strings.championship,
-      icon: <Trophy className="w-4 h-4" />,
-    },
-    {
-      id: 'collection',
-      path: '/showroom',
-      label: strings.collection,
-      icon: <Box className="w-4 h-4" />,
-    },
-    {
-      id: 'teams',
-      path: '/teams',
-      label: lang === 'vi' ? 'Đội đua' : 'Teams',
-      icon: <Users className="w-4 h-4" />,
-    },
-    {
-      id: 'drivers',
-      path: '/drivers',
-      label: lang === 'vi' ? 'Tay đua' : 'Drivers',
-      icon: <UserRound className="w-4 h-4" />,
-    },
-  ];
+  const NAV_ITEMS = useMemo(
+    () => [
+      { id: 'home', path: '/', label: strings.home, icon: <Home className="w-4 h-4" /> },
+      {
+        id: 'championship',
+        path: '/season/2026',
+        label: strings.championship,
+        icon: <Trophy className="w-4 h-4" />,
+      },
+      {
+        id: 'collection',
+        path: '/showroom',
+        label: strings.collection,
+        icon: <Box className="w-4 h-4" />,
+      },
+    ],
+    [strings],
+  );
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -77,17 +68,22 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Center Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-5" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
-                  : location.pathname.startsWith(item.path);
+                  : item.id === 'championship'
+                    ? location.pathname.startsWith('/season') ||
+                      location.pathname.startsWith('/teams') ||
+                      location.pathname.startsWith('/drivers')
+                    : location.pathname.startsWith('/showroom') ||
+                      location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}
                   to={item.path}
-                  className={`flex items-center gap-2 py-1 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
+                  className={`flex items-center gap-2 py-1 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
                     isActive
                       ? 'border-f1red text-f1red'
                       : 'border-transparent text-studio-600 hover:text-studio-950 hover:border-studio-300'
@@ -150,28 +146,35 @@ export const Navbar: React.FC = () => {
             className="fixed top-16 left-0 right-0 bg-white border-b border-studio-300 shadow-xl p-6 flex flex-col gap-4 animate-slide-down"
             onClick={(e) => e.stopPropagation()}
           >
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.id}
-                to={item.path}
-                onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
-                  (
-                    item.id === 'home'
-                      ? location.pathname === '/'
-                      : location.pathname.startsWith(item.path)
-                  )
-                    ? 'bg-f1red/10 text-f1red'
-                    : 'text-studio-700 hover:bg-studio-100'
-                }`}
-              >
-                {item.icon}
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                item.id === 'home'
+                  ? location.pathname === '/'
+                  : item.id === 'championship'
+                    ? location.pathname.startsWith('/season') ||
+                      location.pathname.startsWith('/teams') ||
+                      location.pathname.startsWith('/drivers')
+                    : location.pathname.startsWith('/showroom') ||
+                      location.pathname.startsWith('/gallery');
+              return (
+                <Link
+                  key={item.id}
+                  to={item.path}
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
+                    isActive
+                      ? 'bg-f1red/10 text-f1red font-black'
+                      : 'text-studio-700 hover:bg-studio-100'
+                  }`}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
     </>
   );
-};
+});

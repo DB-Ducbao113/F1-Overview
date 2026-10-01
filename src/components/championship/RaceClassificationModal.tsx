@@ -45,7 +45,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                 Round {race.round} · {race.season}
               </span>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <ShieldCheck className="w-3 h-3" /> Kết Quả Chính Thức (Official FIA Classification)
+                <ShieldCheck className="w-3 h-3" /> Kết Quả Chính Thức
               </span>
             </div>
 
@@ -100,21 +100,6 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               </span>
             </div>
           )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-white/10 bg-black/25 px-6 py-2 text-[10px] text-studio-400">
-          <span>Source: {race.dataSource || 'Local saved snapshot'}</span>
-          <span>
-            Updated:{' '}
-            {race.dataUpdatedAt
-              ? /^\d{4}-\d{2}-\d{2}$/.test(race.dataUpdatedAt)
-                ? race.dataUpdatedAt
-                : new Intl.DateTimeFormat('en-GB', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                  }).format(new Date(race.dataUpdatedAt))
-              : 'Not recorded'}
-          </span>
         </div>
 
         {/* 20-Driver Classification Table */}
@@ -182,10 +167,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                             {entry.driverCode}
                           </span>
                           {entry.fastestLap && (
-                            <span
-                              className="p-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-0.5"
-                              title="Fastest Lap Point"
-                            >
+                            <span className="p-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-0.5">
                               <Zap className="w-3 h-3 text-purple-400" />
                               <span className="hidden sm:inline font-mono">
                                 {entry.fastestLapTime}
@@ -250,9 +232,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
         <div className="p-4 sm:p-5 border-t border-white/10 bg-white/[0.02] flex items-center justify-between text-xs text-studio-400">
           <div className="flex items-center gap-2">
             <Award className="w-4 h-4 text-f1red" />
-            <span>
-              Điểm số được tính tự động vào bảng xếp hạng Driver và Constructor World Championship.
-            </span>
+            <span>FIA Formula 1 World Championship</span>
           </div>
 
           <button

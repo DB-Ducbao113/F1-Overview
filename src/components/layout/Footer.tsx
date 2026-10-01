@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 
-export const Footer: React.FC = () => {
+export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const strings = t[lang].footer;
   const navStrings = t[lang].nav;
@@ -98,4 +98,4 @@ export const Footer: React.FC = () => {
       </div>
     </footer>
   );
-};
+});

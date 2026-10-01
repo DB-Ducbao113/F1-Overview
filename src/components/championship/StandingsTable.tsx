@@ -13,7 +13,7 @@ interface StandingsTableProps {
   season: SeasonYear;
 }
 
-export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
+export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ season }) => {
   const { lang } = useNavigationStore();
   const { standingsCategory, setStandingsCategory, calculatedStandings } = useChampionshipStore();
   const strings = t[lang].championship;
@@ -90,18 +90,6 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
             >
               {dynamicLeaderTitle}
             </h3>
-
-            <p
-              className={`text-xs max-w-2xl leading-relaxed ${isOngoing ? 'text-studio-300' : 'text-studio-600'}`}
-            >
-              {isOngoing
-                ? lang === 'vi'
-                  ? 'Bảng điểm chính thức hiện tại sau 15 sự kiện theo Formula 1®. Đây là điểm số tích lũy tại thời điểm thi đấu hiện tại (Grand Prix, Sprint, Fastest Lap), không phải kết quả chung cuộc.'
-                  : 'Official live standings after 15 events per Formula 1®. Reflects cumulative current points (Grand Prix, Sprint, Fastest Lap), not final season totals.'
-                : lang === 'vi'
-                  ? `Dữ liệu chung cuộc mùa giải ${season} đã kết thúc, được đối soát 100% chuẩn xác với cơ sở dữ liệu FIA Formula 1.`
-                  : `Official final classification for the completed ${season} FIA Formula 1 World Championship season.`}
-            </p>
           </div>
 
           <a
@@ -316,4 +304,4 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ season }) => {
       )}
     </div>
   );
-};
+});

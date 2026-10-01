@@ -3,7 +3,7 @@ import { CALENDAR_2026 } from '../../data/championship';
 import { Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 
-export const RaceCalendar: React.FC = () => {
+export const RaceCalendar: React.FC = React.memo(() => {
   const { detailedResults } = useChampionshipStore();
   const seasonResults = detailedResults[2026] || [];
   const completedRounds = new Set([
@@ -184,4 +184,4 @@ export const RaceCalendar: React.FC = () => {
       </div>
     </div>
   );
-};
+});

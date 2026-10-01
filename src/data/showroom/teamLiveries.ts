@@ -19,6 +19,17 @@ export interface Team3DLivery {
   bodyRoughness: number;
   bodyMetalness: number;
   bodyClearcoat?: number;
+  noseColor?: string;
+  engineCoverColor?: string;
+  sidepodColor?: string;
+  airboxColor?: string;
+  endplateColor?: string;
+  noseRoughness?: number;
+  noseMetalness?: number;
+  sidepodRoughness?: number;
+  sidepodMetalness?: number;
+  engineCoverRoughness?: number;
+  engineCoverMetalness?: number;
   wingColor: string;
   wingRoughness: number;
   wingMetalness: number;
@@ -55,19 +66,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Frédéric Vasseur',
     driversVi: 'Charles Leclerc #16 · Lewis Hamilton #44',
     driversEn: 'Charles Leclerc #16 · Lewis Hamilton #44',
-    bodyColor: '#dc0000', // Authentic Ferrari Rosso Corsa
-    bodyRoughness: 0.14,
-    bodyMetalness: 0.28,
+    bodyColor: '#e8002d', // Official Ferrari Rosso Corsa (Pantone 186 C)
+    noseColor: '#e8002d',
+    engineCoverColor: '#e8002d',
+    sidepodColor: '#e8002d',
+    airboxColor: '#e8002d',
+    endplateColor: '#ffdf00', // Modena Racing Yellow
+    bodyRoughness: 0.12,
+    bodyMetalness: 0.3,
     bodyClearcoat: 1.0,
-    wingColor: '#1a1a1a', // Carbon black wing with yellow & red aero tips
+    wingColor: '#121417', // Carbon black wing with Modena yellow aero tips
     wingRoughness: 0.22,
     wingMetalness: 0.35,
-    haloColor: '#dc0000',
-    haloRoughness: 0.18,
+    haloColor: '#e8002d',
+    haloRoughness: 0.16,
     haloMetalness: 0.4,
-    floorColor: '#0f1012',
-    accentColor: '#ffe500', // Modena Yellow
-    highlightColor: '#ffffff',
+    floorColor: '#0a0b0d',
+    accentColor: '#ffdf00', // Modena Yellow
+    highlightColor: '#0096d6', // HP Title Sponsor Blue accent
     aeroPhilosophyVi:
       'Hốc gió dạng bồn tắm (Bathtub downwash sidepods) dẫn luồng khí áp suất cao ép sát eo xe xuống thẳng sàn sau và bộ khuếch tán.',
     aeroPhilosophyEn:
@@ -96,19 +112,30 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Toto Wolff',
     driversVi: 'George Russell #63 · Kimi Antonelli #12',
     driversEn: 'George Russell #63 · Kimi Antonelli #12',
-    bodyColor: '#c8ccce', // Iconic Silver Arrows metallic body
+    bodyColor: '#c8ccd0', // Iconic Silver Arrow metallic nose cone
+    noseColor: '#c8ccd0', // Silver nose cone tapering into black
+    engineCoverColor: '#0a0b0d', // Deep obsidian metallic black engine cover
+    sidepodColor: '#0a0b0d', // Deep obsidian metallic black sidepods with green swoosh
+    airboxColor: '#e10600', // INEOS vibrant red roll-hoop intake cowl
+    endplateColor: '#e10600', // INEOS vibrant red front wing endplates
     bodyRoughness: 0.16,
-    bodyMetalness: 0.65, // High metallic sheen for classic Silver Arrow look
+    bodyMetalness: 0.65,
     bodyClearcoat: 1.0,
-    wingColor: '#00a19c', // Iconic Petronas Emerald Turquoise on wings & aero
-    wingRoughness: 0.2,
-    wingMetalness: 0.35,
-    haloColor: '#00a19c', // Petronas Turquoise Halo
-    haloRoughness: 0.2,
-    haloMetalness: 0.4,
-    floorColor: '#0e1012',
-    accentColor: '#00a19c',
-    highlightColor: '#eb142b',
+    noseRoughness: 0.14,
+    noseMetalness: 0.82, // High metallic sheen for classic Silver Arrow look
+    sidepodRoughness: 0.18,
+    sidepodMetalness: 0.20, // Deep obsidian black - preserves deep contrast without gamma washing
+    engineCoverRoughness: 0.18,
+    engineCoverMetalness: 0.20, // Deep obsidian black - preserves deep contrast
+    wingColor: '#0e1014', // Deep glossy woven carbon fiber black (Identical to W15)
+    wingRoughness: 0.20,
+    wingMetalness: 0.25,
+    haloColor: '#121418', // Deep carbon titanium black (Identical to W15)
+    haloRoughness: 0.25,
+    haloMetalness: 0.40,
+    floorColor: '#08090b',
+    accentColor: '#00a19c', // Iconic Petronas Emerald Turquoise speedline
+    highlightColor: '#00f5d4', // Bright neon mint/cyan highlight accent
     aeroPhilosophyVi:
       'Triết lý khí động học tinh gọn với rãnh dẫn khí sườn dốc (Undercut Channel) và cánh gió trước đa tầng triệt tiêu nhiễu động bánh xe.',
     aeroPhilosophyEn:
@@ -118,9 +145,9 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit setting the benchmark in thermodynamic efficiency and sustained hybrid energy harvesting across full race distances.',
     schematicImage: '/images/showroom/schematics/mercedes.jpg',
-    schematicCode: 'MB-W15-AERO-8K',
-    schematicTitleVi: 'Sơ đồ CAD khí động học 8K Mercedes-AMG F1 W15',
-    schematicTitleEn: 'Mercedes-AMG F1 W15 8K Aerodynamic CAD Schematic',
+    schematicCode: 'MERC-W15-AERO-8K',
+    schematicTitleVi: 'Bản vẽ kỹ thuật khí động học 8K Mercedes-AMG F1 W15',
+    schematicTitleEn: 'Mercedes-AMG F1 W15 8K Aerodynamic Blueprint',
   },
 
   mclaren: {
@@ -137,19 +164,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Andrea Stella',
     driversVi: 'Lando Norris #4 · Oscar Piastri #81',
     driversEn: 'Lando Norris #4 · Oscar Piastri #81',
-    bodyColor: '#ff8000', // Authentic Papaya Orange
-    bodyRoughness: 0.15,
-    bodyMetalness: 0.22,
-    bodyClearcoat: 0.95,
-    wingColor: '#14171a', // Anthracite Carbon with Papaya & Stealth Blue accents
-    wingRoughness: 0.25,
+    bodyColor: '#ff8000', // Signature Papaya Orange
+    noseColor: '#ff8000',
+    engineCoverColor: '#121417', // Anthracite Raw Carbon Black
+    sidepodColor: '#ff8000',
+    airboxColor: '#121417',
+    endplateColor: '#121417',
+    bodyRoughness: 0.16,
+    bodyMetalness: 0.25,
+    bodyClearcoat: 1.0,
+    wingColor: '#121417', // Anthracite Carbon with Papaya DRS Flap
+    wingRoughness: 0.22,
     wingMetalness: 0.3,
     haloColor: '#ff8000',
     haloRoughness: 0.18,
     haloMetalness: 0.3,
-    floorColor: '#0e1012',
-    accentColor: '#47c7fc', // Stealth Blue
-    highlightColor: '#141416',
+    floorColor: '#0c0d10',
+    accentColor: '#ff8000', // Papaya
+    highlightColor: '#47c7fc', // Stealth Blue
     aeroPhilosophyVi:
       'Hệ thống hốc gió hớt gầm sâu nhất đoàn đua (Extreme Undercut) và sàn xe Venturi tối ưu lực ép khi vào các góc cua tốc độ cao.',
     aeroPhilosophyEn:
@@ -178,19 +210,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Christian Horner',
     driversVi: 'Max Verstappen #1 · Isack Hadjar #6',
     driversEn: 'Max Verstappen #1 · Isack Hadjar #6',
-    bodyColor: '#050f26', // Red Bull Matte Midnight Navy
-    bodyRoughness: 0.46, // Distinctive Matte Satin Finish
-    bodyMetalness: 0.18,
-    bodyClearcoat: 0.0, // Zero clearcoat for matte velvet feel
-    wingColor: '#e10600', // Red Bull Racing Red / Yellow
-    wingRoughness: 0.32,
-    wingMetalness: 0.25,
-    haloColor: '#050f26',
-    haloRoughness: 0.46,
-    haloMetalness: 0.2,
-    floorColor: '#0c0e10',
-    accentColor: '#fcd700', // Sunburst Yellow
-    highlightColor: '#e10600',
+    bodyColor: '#0c192c', // Authentic Red Bull Matte Midnight Navy
+    noseColor: '#0c192c',
+    engineCoverColor: '#0c192c',
+    sidepodColor: '#0c192c',
+    airboxColor: '#ffce00', // Racing Sunburst Yellow airbox scoop
+    endplateColor: '#0c192c',
+    bodyRoughness: 0.7, // Signature Velvet Matte Finish
+    bodyMetalness: 0.1,
+    bodyClearcoat: 0.0, // Zero clearcoat for true velvet matte feel
+    wingColor: '#0c0f16', // Matte dark carbon wing
+    wingRoughness: 0.35,
+    wingMetalness: 0.2,
+    haloColor: '#0c192c',
+    haloRoughness: 0.65,
+    haloMetalness: 0.12,
+    floorColor: '#080a0e',
+    accentColor: '#ffce00', // Sunburst Yellow
+    highlightColor: '#ed1a3b', // Red Bull Racing Red
     aeroPhilosophyVi:
       'Tuyệt tác khí động học với các hốc hút gió sườn đảo ngược (Overbite Inlet) và hệ thống treo trước Pull-rod chống chúi đầu khi phanh gấp.',
     aeroPhilosophyEn:
@@ -219,19 +256,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Mike Krack',
     driversVi: 'Fernando Alonso #14 · Lance Stroll #18',
     driversEn: 'Fernando Alonso #14 · Lance Stroll #18',
-    bodyColor: '#00594f', // British Racing Metallic Emerald Green
-    bodyRoughness: 0.17,
-    bodyMetalness: 0.48, // Metallic flake
+    bodyColor: '#006f62', // British Racing Metallic Emerald Green
+    noseColor: '#006f62',
+    engineCoverColor: '#006f62',
+    sidepodColor: '#006f62',
+    airboxColor: '#006f62',
+    endplateColor: '#006f62',
+    bodyRoughness: 0.15,
+    bodyMetalness: 0.65, // High metallic sheen
     bodyClearcoat: 1.0,
-    wingColor: '#cedc00', // Fluorescent Lime Essence
+    wingColor: '#0e1214', // Carbon black wing with lime pinstripes
     wingRoughness: 0.22,
-    wingMetalness: 0.25,
-    haloColor: '#00594f',
-    haloRoughness: 0.2,
-    haloMetalness: 0.45,
-    floorColor: '#0e1110',
-    accentColor: '#cedc00',
-    highlightColor: '#0b1311',
+    wingMetalness: 0.35,
+    haloColor: '#006f62',
+    haloRoughness: 0.18,
+    haloMetalness: 0.5,
+    floorColor: '#080b0a',
+    accentColor: '#cedc00', // Fluorescent Lime Essence
+    highlightColor: '#006f62',
     aeroPhilosophyVi:
       'Máng trượt khí động học sườn xe sâu hút không khí dồn về phía sau kết hợp cánh sau DRS tối ưu lực cản tại đường thẳng.',
     aeroPhilosophyEn:
@@ -260,19 +302,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Oliver Oakes',
     driversVi: 'Pierre Gasly #10 · Franco Colapinto #43',
     driversEn: 'Pierre Gasly #10 · Franco Colapinto #43',
-    bodyColor: '#0090ff', // Alpine Royal Blue
+    bodyColor: '#0090ff', // Alpine Metallic Blue
+    noseColor: '#0090ff',
+    engineCoverColor: '#0090ff',
+    sidepodColor: '#fd4bc7', // BWT Vibrant Flamingo Pink
+    airboxColor: '#0090ff',
+    endplateColor: '#121417',
     bodyRoughness: 0.15,
-    bodyMetalness: 0.32,
+    bodyMetalness: 0.42,
     bodyClearcoat: 1.0,
-    wingColor: '#ff87bc', // BWT Bubblegum Pink
+    wingColor: '#121417', // Carbon black wing with BWT Pink DRS flap
     wingRoughness: 0.22,
-    wingMetalness: 0.25,
+    wingMetalness: 0.3,
     haloColor: '#0090ff',
-    haloRoughness: 0.2,
-    haloMetalness: 0.35,
-    floorColor: '#0e1014',
-    accentColor: '#ff87bc',
-    highlightColor: '#111827',
+    haloRoughness: 0.18,
+    haloMetalness: 0.4,
+    floorColor: '#0c0e12',
+    accentColor: '#fd4bc7', // BWT Pink
+    highlightColor: '#0090ff', // Alpine Blue
     aeroPhilosophyVi:
       'Cấu trúc thân xe gọn gàng với triết lý tối giản hóa bề mặt ướt khí động và mũi xe dẹt hạ thấp trọng tâm quán tính.',
     aeroPhilosophyEn:
@@ -301,19 +348,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Laurent Mekies',
     driversVi: 'Liam Lawson #30 · Arvid Lindblad #3',
     driversEn: 'Liam Lawson #30 · Arvid Lindblad #3',
-    bodyColor: '#1634cb', // Gloss Royal Racing Blue
+    bodyColor: '#1434cb', // Royal Electric Metallic Blue
+    noseColor: '#1434cb',
+    engineCoverColor: '#1434cb',
+    sidepodColor: '#1434cb',
+    airboxColor: '#1434cb',
+    endplateColor: '#121417',
     bodyRoughness: 0.14,
-    bodyMetalness: 0.38,
+    bodyMetalness: 0.55, // Rich metallic flake
     bodyClearcoat: 1.0,
-    wingColor: '#e2e8f0', // Clean Silver-White
+    wingColor: '#121417', // Carbon black wing with white CashApp DRS flap
     wingRoughness: 0.2,
     wingMetalness: 0.3,
-    haloColor: '#1634cb',
+    haloColor: '#1434cb',
     haloRoughness: 0.18,
-    haloMetalness: 0.4,
-    floorColor: '#0e1012',
+    haloMetalness: 0.45,
+    floorColor: '#0a0c10',
     accentColor: '#ffffff',
-    highlightColor: '#d90429',
+    highlightColor: '#d90429', // Orlen Red
     aeroPhilosophyVi:
       'Thừa hưởng cấu trúc hình học hệ thống treo và khí động học tương đồng với cỗ máy vô địch RB20 của đội mẹ Red Bull Racing.',
     aeroPhilosophyEn:
@@ -342,19 +394,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Ayao Komatsu',
     driversVi: 'Esteban Ocon #31 · Oliver Bearman #87',
     driversEn: 'Esteban Ocon #31 · Oliver Bearman #87',
-    bodyColor: '#e5e7eb', // Storm Pearl White
-    bodyRoughness: 0.2,
-    bodyMetalness: 0.22,
-    bodyClearcoat: 0.95,
-    wingColor: '#e6002b', // Haas Racing Red
+    bodyColor: '#ffffff', // Crisp Racing White
+    noseColor: '#ffffff',
+    engineCoverColor: '#121417', // Carbon black
+    sidepodColor: '#121417', // Carbon black with huge red MoneyGram logo
+    airboxColor: '#121417',
+    endplateColor: '#121417',
+    bodyRoughness: 0.18,
+    bodyMetalness: 0.25,
+    bodyClearcoat: 1.0,
+    wingColor: '#121417', // Carbon black with red/white Haas DRS flap
     wingRoughness: 0.22,
     wingMetalness: 0.3,
-    haloColor: '#27272a', // Matte Graphite Carbon
-    haloRoughness: 0.35,
-    haloMetalness: 0.35,
-    floorColor: '#0e1012',
-    accentColor: '#e6002b',
-    highlightColor: '#18181b',
+    haloColor: '#ffffff', // Clean White Halo
+    haloRoughness: 0.2,
+    haloMetalness: 0.25,
+    floorColor: '#0a0c0e',
+    accentColor: '#e10600', // Haas Red
+    highlightColor: '#ffffff',
     aeroPhilosophyVi:
       'Triết lý khí động học theo trường phái Downwash của Ferrari, tối ưu hóa việc dẫn gió làm mát và giải quyết hiện tượng thoái hóa lốp.',
     aeroPhilosophyEn:
@@ -383,19 +440,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'James Vowles',
     driversVi: 'Carlos Sainz #55 · Alex Albon #23',
     driversEn: 'Carlos Sainz #55 · Alex Albon #23',
-    bodyColor: '#002447', // Deep Williams Heritage Navy
+    bodyColor: '#001f54', // Official Williams Deep Royal Navy Blue
+    noseColor: '#001f54',
+    engineCoverColor: '#001f54',
+    sidepodColor: '#001f54',
+    airboxColor: '#b87333', // Iconic Metallic Copper Duracell Battery Scoop
+    endplateColor: '#001f54',
     bodyRoughness: 0.16,
-    bodyMetalness: 0.36,
+    bodyMetalness: 0.45,
     bodyClearcoat: 1.0,
-    wingColor: '#00e5ff', // Electrifying Cyan / Bright Blue
+    wingColor: '#0a111a', // Carbon black with cyan Williams Racing DRS flap
     wingRoughness: 0.2,
     wingMetalness: 0.3,
-    haloColor: '#002447',
+    haloColor: '#001f54',
     haloRoughness: 0.2,
     haloMetalness: 0.4,
-    floorColor: '#0e1012',
-    accentColor: '#00e5ff',
-    highlightColor: '#00a0de',
+    floorColor: '#080b0f',
+    accentColor: '#00a3e0', // Cyan Blue
+    highlightColor: '#b87333', // Duracell Metallic Copper
     aeroPhilosophyVi:
       'Thân xe thiết kế cho tốc độ đường thẳng vượt trội, kết hợp sàn xe thế hệ mới giảm độ nhạy cảm trước gió tạt ngang góc cua.',
     aeroPhilosophyEn:
@@ -413,30 +475,35 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
   audi: {
     teamId: 'audi',
     teamName: 'Audi',
-    fullName: 'Audi Formula One Team',
-    carModelName: 'Audi F1 R26 (Sauber C45)',
-    shortCarName: 'C45',
+    fullName: 'Audi Formula One Team (Stake Sauber)',
+    carModelName: 'Audi F1 R26 / Sauber C44',
+    shortCarName: 'C44',
     carImage: '/images/teams/audi.jpg',
-    powerUnit: 'Audi Sport F1 Power Unit',
-    powerUnitSupplier: 'Audi Motorsport (Neuburg an der Donau, Germany)',
-    engineOutput: '1,050+ HP · Động cơ xuất xưởng Neuburg Đức',
+    powerUnit: 'Ferrari 066/12 / Audi Sport F1 Power Unit',
+    powerUnitSupplier: 'Audi Motorsport / Sauber Motorsport',
+    engineOutput: '1,050+ HP · Khung gầm Carbon Hinwil',
     base: 'Hinwil, Switzerland / Neuburg, Germany',
     teamPrincipal: 'Mattia Binotto',
     driversVi: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
     driversEn: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
-    bodyColor: '#c4c8cc', // Matte Titanium Silver
-    bodyRoughness: 0.18,
-    bodyMetalness: 0.58,
-    bodyClearcoat: 0.95,
-    wingColor: '#f50537', // Audi Sport High-Voltage Red
+    bodyColor: '#52ff00', // Fluo Racing Green (BASF R-M AGILIS spec)
+    noseColor: '#0d0e11', // Carbon black with Fluo Green center wedge
+    engineCoverColor: '#0d0e11', // Carbon black with Audi rings
+    sidepodColor: '#0d0e11', // Carbon black with Fluo Green sweep & Stake logo
+    airboxColor: '#0d0e11',
+    endplateColor: '#52ff00', // Fluo Green endplates
+    bodyRoughness: 0.16,
+    bodyMetalness: 0.35,
+    bodyClearcoat: 1.0,
+    wingColor: '#52ff00', // Fluo Green wings
     wingRoughness: 0.2,
     wingMetalness: 0.3,
-    haloColor: '#c4c8cc',
-    haloRoughness: 0.18,
-    haloMetalness: 0.5,
-    floorColor: '#101114',
-    accentColor: '#f50537',
-    highlightColor: '#18181b',
+    haloColor: '#0d0e11', // Carbon black
+    haloRoughness: 0.22,
+    haloMetalness: 0.3,
+    floorColor: '#080a0c',
+    accentColor: '#52ff00', // Fluo Racing Green
+    highlightColor: '#ffffff',
     aeroPhilosophyVi:
       'Triết lý "Vorsprung durch Technik": Thiết kế khí động học sắc bén nguyên khối phát triển song song tại Hinwil và Neuburg.',
     aeroPhilosophyEn:
@@ -465,19 +532,24 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamPrincipal: 'Michael Andretti',
     driversVi: 'Sergio Pérez #11 · Valtteri Bottas #77',
     driversEn: 'Sergio Pérez #11 · Valtteri Bottas #77',
-    bodyColor: '#141518', // Stealth Matte Velvet Black
-    bodyRoughness: 0.42,
-    bodyMetalness: 0.25,
-    bodyClearcoat: 0.15,
-    wingColor: '#d4af37', // Cadillac Racing Satin Gold
+    bodyColor: '#0a0b0d', // Satin Velvet Carbon Black
+    noseColor: '#0a0b0d',
+    engineCoverColor: '#0a0b0d',
+    sidepodColor: '#0a0b0d',
+    airboxColor: '#0a0b0d',
+    endplateColor: '#0a0b0d',
+    bodyRoughness: 0.38,
+    bodyMetalness: 0.3,
+    bodyClearcoat: 0.3,
+    wingColor: '#0a0b0d', // Carbon black wing with Cadillac gold crests
     wingRoughness: 0.22,
-    wingMetalness: 0.65,
-    haloColor: '#d4af37',
-    haloRoughness: 0.22,
-    haloMetalness: 0.65,
-    floorColor: '#0c0d0e',
-    accentColor: '#d4af37',
-    highlightColor: '#3a3d45',
+    wingMetalness: 0.45,
+    haloColor: '#0a0b0d',
+    haloRoughness: 0.25,
+    haloMetalness: 0.4,
+    floorColor: '#08090a',
+    accentColor: '#cda851', // Metallic Olympic Gold
+    highlightColor: '#cda851',
     aeroPhilosophyVi:
       'Thiết kế khí động học mang đậm phong cách cơ bắp Mỹ với cánh gió trước hình khiên và hốc gió tản nhiệt cỡ lớn.',
     aeroPhilosophyEn:

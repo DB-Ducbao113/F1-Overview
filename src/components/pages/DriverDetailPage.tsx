@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Flag, Trophy, Box } from 'lucide-react';
 import { DRIVERS_DATA } from '../../data/drivers';
 import { TEAMS_DATA } from '../../data/teams';
@@ -12,6 +12,7 @@ const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
 export const DriverDetailPage: React.FC = () => {
   const { driverId } = useParams();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const lang = useNavigationStore((state) => state.lang);
   const driver = driverId ? DRIVERS_DATA[driverId] : undefined;
@@ -51,13 +52,31 @@ export const DriverDetailPage: React.FC = () => {
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
       <div className="page-container space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link
-            to={`/teams/${teamId}?season=${season}`}
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-500 hover:text-f1red"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {team.name} · {season}
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if (window.history.length > 2) {
+                  navigate(-1);
+                } else {
+                  navigate(`/season/${season}?tab=drivers`);
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-studio-200 text-xs font-bold uppercase tracking-wider text-studio-700 hover:text-f1red hover:border-f1red transition-all shadow-xs cursor-pointer active:scale-95"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>{lang === 'vi' ? 'Quay lại' : 'Back'}</span>
+            </button>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-400">
+              <Link
+                to={`/season/${season}?tab=drivers`}
+                className="hover:text-f1red transition-colors text-studio-500"
+              >
+                {lang === 'vi' ? `Tay đua (${season})` : `Drivers (${season})`}
+              </Link>
+              <span>/</span>
+              <span className="text-studio-900">{name}</span>
+            </div>
+          </div>
           {seasonEntries.length > 0 && (
             <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-500">
               {lang === 'vi' ? 'Mùa giải' : 'Season'}
@@ -85,7 +104,17 @@ export const DriverDetailPage: React.FC = () => {
             className="absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-20 blur-3xl"
             style={{ backgroundColor: team.primaryColor }}
           />
-          <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          {driver?.imageUrl && (
+            <div className="absolute right-0 top-0 bottom-0 w-64 sm:w-80 md:w-96 pointer-events-none flex items-end justify-end overflow-hidden">
+              <img
+                src={driver.imageUrl}
+                alt={name}
+                className="h-full w-auto max-w-full object-contain object-bottom-right opacity-40 sm:opacity-55 filter grayscale(20%) contrast-110 mix-blend-screen"
+              />
+              <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-studio-950 to-transparent pointer-events-none" />
+            </div>
+          )}
+          <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-4">
               <span
                 className="text-xs font-black uppercase tracking-[0.25em]"
@@ -163,7 +192,11 @@ export const DriverDetailPage: React.FC = () => {
           className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-xs font-black uppercase tracking-wider text-studio-800 shadow-subtle hover:text-f1red"
         >
           <Box className="h-4 w-4 text-f1red" />
-          <span>{lang === 'vi' ? `Khám phá Showroom 3D xe ${team.name}` : `Explore ${team.name} in 3D Showroom`}</span>
+          <span>
+            {lang === 'vi'
+              ? `Khám phá Showroom 3D xe ${team.name}`
+              : `Explore ${team.name} in 3D Showroom`}
+          </span>
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

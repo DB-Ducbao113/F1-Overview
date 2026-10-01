@@ -142,13 +142,14 @@ const POSTER_CARS: PosterCar[] = [
   },
 ];
 
-export const FullscreenCarStage: React.FC = () => {
+export const FullscreenCarStage: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
   const strings = t[lang].home;
 
-  // Active expanded car index (default to 0: Ferrari)
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  // Active expanded car index (default to null: show all 11 teams evenly)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const isAnyActive = activeIndex !== null;
 
   return (
     <div className="relative w-full bg-[#050508] text-white pt-6 pb-10 overflow-hidden select-none border-b border-studio-800">
@@ -169,8 +170,14 @@ export const FullscreenCarStage: React.FC = () => {
           </h1>
         </div>
 
-        {/* Action CTAs */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Action CTAs & Hint */}
+        <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          <span className="hidden xl:inline-block text-[11px] font-mono uppercase tracking-wider text-studio-400 mr-2">
+            {lang === 'vi'
+              ? '✦ Rê chuột để xem cận cảnh cỗ máy'
+              : '✦ Hover a team to inspect machine'}
+          </span>
+
           <button
             onClick={() => {
               navigate('/showroom');
@@ -195,7 +202,10 @@ export const FullscreenCarStage: React.FC = () => {
 
       {/* ── 11-Car Interactive Multi-Slice Poster Canvas ── */}
       <div className="page-container">
-        <div className="relative w-full h-[560px] sm:h-[640px] lg:h-[700px] rounded-3xl overflow-hidden bg-[#07070b] border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-row">
+        <div
+          onMouseLeave={() => setActiveIndex(null)}
+          className="relative w-full h-[560px] sm:h-[640px] lg:h-[700px] rounded-3xl overflow-hidden bg-[#07070b] border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-row"
+        >
           {POSTER_CARS.map((car, idx) => {
             const isExpanded = idx === activeIndex;
 
@@ -204,10 +214,10 @@ export const FullscreenCarStage: React.FC = () => {
                 key={car.id}
                 onMouseEnter={() => setActiveIndex(idx)}
                 onClick={() => {
-                  setActiveIndex(idx);
+                  setActiveIndex(activeIndex === idx ? null : idx);
                 }}
                 style={{
-                  flex: isExpanded ? 16 : 1,
+                  flex: isExpanded ? 12 : 1,
                   transition: 'flex 450ms cubic-bezier(0.25, 1, 0.5, 1)',
                 }}
                 className={`relative h-full overflow-hidden cursor-pointer select-none group border-r border-white/10 last:border-r-0 min-w-[28px] sm:min-w-[32px] ${
@@ -224,44 +234,71 @@ export const FullscreenCarStage: React.FC = () => {
                   <img
                     src={car.imageUrl}
                     alt={car.name}
-                    className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.35] contrast-125 group-hover:scale-110 transition-transform duration-700"
+                    className={`absolute inset-0 w-full h-full object-cover object-center filter contrast-125 group-hover:scale-110 transition-all duration-700 ${
+                      !isAnyActive
+                        ? 'brightness-[0.45] group-hover:brightness-[0.7]'
+                        : 'brightness-[0.35]'
+                    }`}
                     loading="lazy"
                   />
 
                   {/* Gradient Overlay & Ambient Tint */}
                   <div
-                    className="absolute inset-0 opacity-40 mix-blend-screen transition-opacity duration-300 group-hover:opacity-70"
+                    className="absolute inset-0 opacity-40 mix-blend-screen transition-opacity duration-300 group-hover:opacity-75"
                     style={{
                       background: `linear-gradient(to bottom, transparent 20%, ${car.color} 100%)`,
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors" />
+                  <div
+                    className={`absolute inset-0 transition-colors ${
+                      !isAnyActive
+                        ? 'bg-black/35 group-hover:bg-black/10'
+                        : 'bg-black/40 group-hover:bg-black/10'
+                    }`}
+                  />
 
                   {/* Accent Line Indicator & Constructor Logo */}
-                  <div className="z-10 flex flex-col items-center gap-1.5">
+                  <div className="z-10 flex flex-col items-center gap-2">
                     <div
-                      className="w-1.5 h-10 rounded-full shadow-sm transition-all duration-300 group-hover:h-14"
+                      className={`rounded-full shadow-sm transition-all duration-300 ${
+                        !isAnyActive ? 'w-2 h-7 group-hover:h-10' : 'w-1.5 h-8 group-hover:h-12'
+                      }`}
                       style={{ backgroundColor: car.color }}
                     />
-                    <ConstructorLogo teamId={car.teamId} size="sm" className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <ConstructorLogo
+                      teamId={car.teamId}
+                      size="sm"
+                      className={`transition-all ${
+                        !isAnyActive
+                          ? 'w-6 h-6 opacity-95 group-hover:scale-110'
+                          : 'w-4 h-4 opacity-75 group-hover:opacity-100'
+                      }`}
+                    />
                   </div>
 
-                  {/* Vertical Stylized Typography */}
+                  {/* Typography: When all 11 teams are showing evenly vs when squeezed */}
                   <div className="z-10 flex flex-col items-center justify-center flex-1 my-auto">
                     <span
-                      className="font-display text-[12px] lg:text-[14px] font-black uppercase text-white/80 group-hover:text-white tracking-[0.25em] whitespace-nowrap [writing-mode:vertical-rl] rotate-180 transition-all duration-300"
+                      className={`font-display font-black uppercase text-white/90 group-hover:text-white tracking-[0.2em] whitespace-nowrap [writing-mode:vertical-rl] rotate-180 transition-all duration-300 ${
+                        !isAnyActive ? 'text-[14px] lg:text-[16px]' : 'text-[12px] lg:text-[13px]'
+                      }`}
                       style={{
-                        textShadow: '0 2px 10px rgba(0,0,0,0.8)',
+                        textShadow: '0 2px 10px rgba(0,0,0,0.85)',
                       }}
                     >
                       {car.shortName}
                     </span>
                   </div>
 
-                  {/* Bottom Dot Indicator */}
+                  {/* Bottom Indicator & Driver badge when wide */}
                   <div className="z-10 flex flex-col items-center gap-1.5 pb-2">
+                    {!isAnyActive && (
+                      <span className="text-[10px] font-mono font-bold text-white/70 group-hover:text-white transition-colors">
+                        {car.teamId.slice(0, 3).toUpperCase()}
+                      </span>
+                    )}
                     <span
-                      className="w-2.5 h-2.5 rounded-full shadow-xs ring-2 ring-white/20"
+                      className="w-2.5 h-2.5 rounded-full shadow-xs ring-2 ring-white/20 transition-transform group-hover:scale-125"
                       style={{ backgroundColor: car.color }}
                     />
                   </div>
@@ -339,11 +376,7 @@ export const FullscreenCarStage: React.FC = () => {
                       }}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-studio-950 hover:bg-white/90 text-xs font-black uppercase tracking-wider shadow-xl hover:scale-105 transition-all shrink-0 cursor-pointer"
                     >
-                      <span>
-                        {lang === 'vi'
-                          ? `Xem Showroom 3D`
-                          : `View 3D Showroom`}
-                      </span>
+                      <span>{lang === 'vi' ? `Xem Showroom 3D` : `View 3D Showroom`}</span>
                       <ArrowRight className="w-4 h-4 text-f1red" />
                     </button>
                   </div>
@@ -355,4 +388,4 @@ export const FullscreenCarStage: React.FC = () => {
       </div>
     </div>
   );
-};
+});

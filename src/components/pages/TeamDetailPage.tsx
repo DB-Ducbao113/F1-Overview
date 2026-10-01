@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MapPin, Users, Wrench, Trophy, Car, Box } from 'lucide-react';
 import { TEAMS_DATA } from '../../data/teams';
 import { getCarsBySeason } from '../../data/cars';
@@ -11,6 +11,7 @@ import { ConstructorLogo } from '../common/ConstructorLogo';
 
 export const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const lang = useNavigationStore((state) => state.lang);
   const seasonValue = Number(searchParams.get('season'));
@@ -42,13 +43,31 @@ export const TeamDetailPage: React.FC = () => {
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
       <div className="page-container space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link
-            to={`/season/${season}`}
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-500 hover:text-f1red"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {lang === 'vi' ? `Mùa giải ${season}` : `${season} season`}
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if (window.history.length > 2) {
+                  navigate(-1);
+                } else {
+                  navigate(`/season/${season}?tab=teams`);
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-studio-200 text-xs font-bold uppercase tracking-wider text-studio-700 hover:text-f1red hover:border-f1red transition-all shadow-xs cursor-pointer active:scale-95"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>{lang === 'vi' ? 'Quay lại' : 'Back'}</span>
+            </button>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-400">
+              <Link
+                to={`/season/${season}?tab=teams`}
+                className="hover:text-f1red transition-colors text-studio-500"
+              >
+                {lang === 'vi' ? `Đội đua (${season})` : `Teams (${season})`}
+              </Link>
+              <span>/</span>
+              <span className="text-studio-900">{team.name}</span>
+            </div>
+          </div>
           <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-500">
             {lang === 'vi' ? 'Mùa giải' : 'Season'}
             <select
@@ -124,7 +143,9 @@ export const TeamDetailPage: React.FC = () => {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-f1red hover:bg-red-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105"
                   >
                     <Box className="w-4 h-4" />
-                    <span>{lang === 'vi' ? 'Xem Xe Trong Showroom 3D' : 'View in 3D Showroom'}</span>
+                    <span>
+                      {lang === 'vi' ? 'Xem Xe Trong Showroom 3D' : 'View in 3D Showroom'}
+                    </span>
                   </Link>
                 </div>
               </div>

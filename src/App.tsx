@@ -1,5 +1,14 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Link, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { useChampionshipStore } from './store/useChampionshipStore';
@@ -7,6 +16,7 @@ import { useNavigationStore } from './store/useNavigationStore';
 import { getRaceResults } from './data/championship';
 import { SeasonYear } from './types';
 import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
+import { getCompleteRaceClassification } from './data/championship/raceClassificationHelper';
 
 const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
@@ -45,12 +55,20 @@ const validSeason = (value?: string): value is `${SeasonYear}` =>
 
 function SeasonRoute() {
   const { year } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const setSelectedSeason = useChampionshipStore((state) => state.setSelectedSeason);
+  const setActiveSubTab = useChampionshipStore((state) => state.setActiveSubTab);
   const season = (validSeason(year) ? Number(year) : 2026) as SeasonYear;
+
   useEffect(() => {
     if (validSeason(year)) setSelectedSeason(season);
-  }, [year, season, setSelectedSeason]);
+    const tab = searchParams.get('tab');
+    if (tab && ['standings', 'calendar', 'results', 'teams', 'drivers'].includes(tab)) {
+      setActiveSubTab(tab as 'standings' | 'calendar' | 'results' | 'teams' | 'drivers');
+    }
+  }, [year, season, setSelectedSeason, searchParams, setActiveSubTab]);
+
   if (!validSeason(year)) return <NotFound />;
   return (
     <ChampionshipView season={season} onSeasonChange={(next) => navigate(`/season/${next}`)} />
@@ -63,65 +81,31 @@ function RaceRoute() {
   const detailedResults = useChampionshipStore((state) => state.detailedResults);
   const setSelectedSeason = useChampionshipStore((state) => state.setSelectedSeason);
   const setActiveSubTab = useChampionshipStore((state) => state.setActiveSubTab);
-  const lang = useNavigationStore((state) => state.lang);
   const validRoute = validSeason(year) && /^\d+$/.test(round || '');
   const season = (validSeason(year) ? Number(year) : 2026) as SeasonYear;
   const raceRound = Number(round);
+
   useEffect(() => {
     if (validRoute) {
       setSelectedSeason(season);
       setActiveSubTab('results');
     }
   }, [validRoute, season, setSelectedSeason, setActiveSubTab]);
+
   if (!validRoute) return <NotFound />;
-  const race = detailedResults[season]?.find((item) => item.round === raceRound);
-  const summary = getRaceResults(season).find((item) => item.round === raceRound);
-  if (!race && !summary) return <NotFound />;
+  const race = getCompleteRaceClassification(season, raceRound, detailedResults[season]);
+  if (!race) return <NotFound />;
+
   return (
     <>
       <ChampionshipView season={season} onSeasonChange={(next) => navigate(`/season/${next}`)} />
-      {race ? (
-        <RaceClassificationModal race={race} onClose={() => navigate(`/season/${season}`)} />
-      ) : summary ? (
-        <div
-          className="fixed inset-0 z-[9998] bg-black/80 flex items-center justify-center p-4"
-          onClick={() => navigate(`/season/${season}`)}
-        >
-          <section
-            className="bg-white rounded-2xl p-8 max-w-lg w-full"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <p className="text-xs text-f1red font-bold uppercase">
-              {season} · Round {summary.round}
-            </p>
-            <h1 className="text-2xl font-black mt-2">{summary.grandPrix}</h1>
-            <p className="text-sm text-studio-600 mt-2">
-              {summary.circuit} · {summary.date}
-            </p>
-            <p className="mt-2 text-xs text-studio-500">
-              Source: {summary.dataSource || 'Bundled website snapshot'} · Updated:{' '}
-              {summary.dataUpdatedAt || 'Not recorded'}
-            </p>
-            <h2 className="font-bold mt-6 mb-2">Podium</h2>
-            {[summary.podium.p1, summary.podium.p2, summary.podium.p3].map((driver, index) => (
-              <p className="py-2 border-b" key={driver.driver}>
-                {index + 1}. {driver.driver} · {driver.team} · {driver.points} pts
-              </p>
-            ))}
-            <button
-              className="mt-6 px-4 py-2 bg-studio-900 text-white rounded-lg"
-              onClick={() => navigate(`/season/${season}`)}
-            >
-              {lang === 'vi' ? 'Đóng' : 'Close'}
-            </button>
-          </section>
-        </div>
-      ) : null}
+      <RaceClassificationModal
+        race={race}
+        onClose={() => navigate(`/season/${season}?tab=results`)}
+      />
     </>
   );
 }
-
-
 
 function About() {
   const lang = useNavigationStore((state) => state.lang);
@@ -196,6 +180,8 @@ export const App: React.FC = () => {
           <Suspense fallback={<div className="min-h-[50vh]" />}>
             <Routes>
               <Route path="/" element={<HomeView />} />
+              <Route path="/season" element={<Navigate to="/season/2026" replace />} />
+              <Route path="/championship" element={<Navigate to="/season/2026" replace />} />
               <Route path="/season/:year" element={<SeasonRoute />} />
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
               <Route path="/showroom" element={<ShowroomView />} />

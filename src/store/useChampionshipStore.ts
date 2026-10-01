@@ -46,7 +46,7 @@ const BASE_CONSTRUCTOR_STANDINGS: Record<SeasonYear, ConstructorStanding[]> = {
 
 interface ChampionshipStoreState {
   selectedSeason: SeasonYear;
-  activeSubTab: 'standings' | 'calendar' | 'results';
+  activeSubTab: 'standings' | 'calendar' | 'results' | 'drivers' | 'teams';
   standingsCategory: 'drivers' | 'constructors';
 
   // Live and Raw Data
@@ -61,7 +61,7 @@ interface ChampionshipStoreState {
 
   // Actions
   setSelectedSeason: (season: SeasonYear) => void;
-  setActiveSubTab: (tab: 'standings' | 'calendar' | 'results') => void;
+  setActiveSubTab: (tab: 'standings' | 'calendar' | 'results' | 'drivers' | 'teams') => void;
   setStandingsCategory: (category: 'drivers' | 'constructors') => void;
 
   // Data Pipeline Synchronization Actions

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Gauge, Ruler, Settings2, Weight, Box } from 'lucide-react';
 import { getCarById } from '../../data/cars';
 import { TEAMS_DATA } from '../../data/teams';
@@ -9,6 +9,7 @@ import { ConstructorLogo } from '../common/ConstructorLogo';
 
 export const CarDetailPage: React.FC = () => {
   const { carId } = useParams();
+  const navigate = useNavigate();
   const lang = useNavigationStore((state) => state.lang);
   const car = carId ? getCarById(carId) : undefined;
 
@@ -55,13 +56,31 @@ export const CarDetailPage: React.FC = () => {
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
       <div className="page-container space-y-8">
-        <Link
-          to={`/teams/${car.teamId}?season=${car.season}`}
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-500 hover:text-f1red"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {team.name}
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (window.history.length > 2) {
+                navigate(-1);
+              } else {
+                navigate(`/teams/${car.teamId}?season=${car.season}`);
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-studio-200 text-xs font-bold uppercase tracking-wider text-studio-700 hover:text-f1red hover:border-f1red transition-all shadow-xs cursor-pointer active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>{lang === 'vi' ? 'Quay lại' : 'Back'}</span>
+          </button>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-studio-400">
+            <Link
+              to={`/teams/${car.teamId}?season=${car.season}`}
+              className="hover:text-f1red transition-colors text-studio-500"
+            >
+              {team.name} ({car.season})
+            </Link>
+            <span>/</span>
+            <span className="text-studio-900">{car.name}</span>
+          </div>
+        </div>
         <header className="relative min-h-[360px] overflow-hidden rounded-3xl bg-studio-950 text-white">
           {car.heroImage && (
             <img

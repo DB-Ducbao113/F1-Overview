@@ -44,7 +44,9 @@ class F1AudioEngine {
 
   private initContext() {
     if (this.ctx) return;
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AudioContextClass) return;
 
     this.ctx = new AudioContextClass();
@@ -187,7 +189,14 @@ class F1AudioEngine {
       this.startIdle();
     }
 
-    if (!this.ctx || !this.oscBase || !this.oscHarmonic1 || !this.oscHarmonic2 || !this.oscTurbo || !this.masterGain) {
+    if (
+      !this.ctx ||
+      !this.oscBase ||
+      !this.oscHarmonic1 ||
+      !this.oscHarmonic2 ||
+      !this.oscTurbo ||
+      !this.masterGain
+    ) {
       return;
     }
 

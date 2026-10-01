@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
@@ -34,24 +34,37 @@ export const HomeView: React.FC = () => {
 
   // Show the active race weekend, or the next scheduled round.
   const detailedResults = useChampionshipStore((state) => state.detailedResults?.[2026]) || [];
-  const completedRoundNumbers = new Set([
-    ...CALENDAR_2026.filter((gp) => gp && gp.status === 'completed').map((gp) => gp.round),
-    ...(Array.isArray(detailedResults) ? detailedResults : [])
-      .filter((race) => race && race.status === 'completed')
-      .map((race) => race.round),
-  ]);
-  const nextRace =
-    CALENDAR_2026.find(
-      (gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round),
-    ) ||
-    CALENDAR_2026.find((gp) => gp && !completedRoundNumbers.has(gp.round)) ||
-    CALENDAR_2026[CALENDAR_2026.length - 1] ||
-    CALENDAR_2026[0];
+
+  const nextRace = useMemo(() => {
+    const completedRoundNumbers = new Set([
+      ...CALENDAR_2026.filter((gp) => gp && gp.status === 'completed').map((gp) => gp.round),
+      ...(Array.isArray(detailedResults) ? detailedResults : [])
+        .filter((race) => race && race.status === 'completed')
+        .map((race) => race.round),
+    ]);
+    return (
+      CALENDAR_2026.find(
+        (gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round),
+      ) ||
+      CALENDAR_2026.find((gp) => gp && !completedRoundNumbers.has(gp.round)) ||
+      CALENDAR_2026[CALENDAR_2026.length - 1] ||
+      CALENDAR_2026[0]
+    );
+  }, [detailedResults]);
 
   // Standings for current selected season
-  const currentStandings = STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2024];
-  const topDrivers = (currentStandings?.drivers || []).slice(0, 3);
-  const topConstructors = (currentStandings?.constructors || []).slice(0, 3);
+  const currentStandings = useMemo(
+    () => STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2024],
+    [standingsSeason],
+  );
+  const topDrivers = useMemo(
+    () => (currentStandings?.drivers || []).slice(0, 3),
+    [currentStandings],
+  );
+  const topConstructors = useMemo(
+    () => (currentStandings?.constructors || []).slice(0, 3),
+    [currentStandings],
+  );
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in space-y-16">
@@ -173,29 +186,14 @@ export const HomeView: React.FC = () => {
       <section className="page-container space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-f1red">
-                FIA Formula 1 World Championship
-              </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                <CheckCircle2 className="w-3 h-3" />{' '}
-                {lang === 'vi' ? 'Nguồn chính thức FIA' : 'Official FIA Data'}
-              </span>
-            </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-wide text-studio-950">
+            <span className="text-xs font-bold uppercase tracking-widest text-f1red block mb-1">
+              FIA Formula 1 World Championship
+            </span>
+            <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-wide text-studio-950">
               {lang === 'vi'
                 ? `Bảng Xếp Hạng Điểm Số (${standingsSeason})`
                 : `Championship Standings (${standingsSeason})`}
             </h2>
-            <p className="text-xs text-studio-500 font-medium">
-              {currentStandings.status === 'ongoing'
-                ? lang === 'vi'
-                  ? `● Mùa giải đang diễn ra · Điểm số chính thức F1 hiện tại (cập nhật ${currentStandings.lastUpdated})`
-                  : `● Season in progress · Official F1 standings (updated ${currentStandings.lastUpdated})`
-                : lang === 'vi'
-                  ? `✓ Kết quả chung cuộc mùa giải chính thức từ FIA / Formula 1`
-                  : `✓ Official FIA / Formula 1 season final classification`}
-            </p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -205,27 +203,23 @@ export const HomeView: React.FC = () => {
                 <button
                   key={season}
                   onClick={() => setStandingsSeason(season)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                     standingsSeason === season
-                      ? 'bg-f1red text-white shadow-xs'
+                      ? 'bg-f1red text-white shadow-xs font-black'
                       : 'text-studio-600 hover:text-studio-950'
                   }`}
                 >
-                  {season}{' '}
-                  {season === 2026
-                    ? lang === 'vi'
-                      ? '(Đang đấu)'
-                      : '(Live)'
-                    : lang === 'vi'
-                      ? '(Chung cuộc)'
-                      : '(Final)'}
+                  <span>{season}</span>
+                  {season === 2026 && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  )}
                 </button>
               ))}
             </div>
 
             <button
               onClick={() => {
-                navigate('/season/2026');
+                navigate(`/season/${standingsSeason}`);
               }}
               className="text-xs font-bold uppercase tracking-wider text-f1red hover:underline flex items-center gap-1 shrink-0"
             >

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
-import { ContactShadows, Environment } from '@react-three/drei';
+import { ContactShadows, Environment, MeshReflectorMaterial } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -9,21 +9,17 @@ import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock, StudioLightingMode } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
-import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
+
+import { HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
-import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
+import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 import { f1AudioEngine } from '../../utils/f1AudioEngine';
 
-import {
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Camera,
-} from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -31,7 +27,7 @@ export const ShowroomView: React.FC = () => {
 
   // Selected Team for 3D Livery synced with query param ?team=...
   const teamParam = searchParams.get('team') as TeamId | null;
-  const initialTeamId = teamParam && TEAMS_DATA[teamParam] ? teamParam : 'mclaren';
+  const initialTeamId = teamParam && TEAMS_DATA[teamParam] ? teamParam : 'mercedes';
   const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(initialTeamId);
 
   // Sync state if URL query param changes from external navigation
@@ -39,12 +35,15 @@ export const ShowroomView: React.FC = () => {
     if (teamParam && TEAMS_DATA[teamParam] && teamParam !== selectedTeamId) {
       setSelectedTeamId(teamParam);
     }
-  }, [teamParam]);
+  }, [teamParam, selectedTeamId]);
 
-  const handleSelectTeam = (newTeamId: TeamId) => {
-    setSelectedTeamId(newTeamId);
-    setSearchParams({ team: newTeamId }, { replace: true });
-  };
+  const handleSelectTeam = useCallback(
+    (newTeamId: TeamId) => {
+      setSelectedTeamId(newTeamId);
+      setSearchParams({ team: newTeamId }, { replace: true });
+    },
+    [setSearchParams],
+  );
 
   // Active Hotspot item
   const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
@@ -54,13 +53,44 @@ export const ShowroomView: React.FC = () => {
 
   // 3D Visualizer settings
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
-  const [showWindTunnel, setShowWindTunnel] = useState<boolean>(false);
 
-  // Studio Lighting Mode (Direction 3): 'cyber' | 'night_gp' | 'daylight'
-  const [lightingMode, setLightingMode] = useState<StudioLightingMode>('cyber');
+  // Studio Lighting Mode (Direction 3): 'studio' | 'night_gp' | 'daylight'
+  const [lightingMode, setLightingMode] = useState<StudioLightingMode>('studio');
 
   // Audio Engine State (Direction 2): Web Audio API V6 Turbo Hybrid
   const [isAudioActive, setIsAudioActive] = useState<boolean>(false);
+
+  // Realistic 3D Sponsor Decals on 3D Car
+  const [showSponsors, setShowSponsors] = useState<boolean>(true);
+
+  // Engineering Hotspots Visibility (Clean default view matching studio photo)
+  const [showHotspots, setShowHotspots] = useState<boolean>(false);
+
+  // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
+  const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
+  const [zoomTrigger, setZoomTrigger] = useState<number>(0);
+  const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  const handleToggleHotspots = useCallback(() => {
+    setShowHotspots((prev) => !prev);
+  }, []);
+
+  const handleToggleSponsors = useCallback(() => {
+    setShowSponsors((prev) => !prev);
+  }, []);
+
+  const handleToggleAutoRotate = useCallback(() => {
+    setAutoRotate((prev) => !prev);
+  }, []);
+
+  const handleToggleWheelZoom = useCallback(() => {
+    setEnableWheelZoom((prev) => !prev);
+  }, []);
+
+  const handleChangeLightingMode = useCallback((mode: StudioLightingMode) => {
+    setLightingMode(mode);
+  }, []);
 
   // Stop audio when unmounting
   useEffect(() => {
@@ -69,21 +99,15 @@ export const ShowroomView: React.FC = () => {
     };
   }, []);
 
-  const handleToggleAudio = () => {
+  const handleToggleAudio = useCallback(() => {
     const isNowMuted = f1AudioEngine.toggleMute();
     setIsAudioActive(!isNowMuted);
-  };
+  }, []);
 
-  const handleRevEngine = () => {
+  const handleRevEngine = useCallback(() => {
     f1AudioEngine.revUp(3.2);
     setIsAudioActive(true);
-  };
-
-  // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
-  const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
-  const [zoomTrigger, setZoomTrigger] = useState<number>(0);
-  const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
-  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  }, []);
 
   // Listen to window scroll to show Back to Top floating button
   useEffect(() => {
@@ -102,24 +126,24 @@ export const ShowroomView: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleZoom = (dir: 'in' | 'out') => {
+  const handleZoom = useCallback((dir: 'in' | 'out') => {
     setZoomDirection(dir);
     setZoomTrigger((prev) => prev + 1);
-  };
+  }, []);
 
-  const handleResetView = () => {
+  const handleResetView = useCallback(() => {
     setActiveHotspot(null);
     setCameraPreset('overview');
     setAutoRotate(true);
-  };
+  }, []);
 
-  const handleSelectPreset = (preset: CameraPreset) => {
+  const handleSelectPreset = useCallback((preset: CameraPreset) => {
     setCameraPreset(preset);
     setActiveHotspot(null);
     setAutoRotate(false);
-  };
+  }, []);
 
-  const handleSelectHotspot = (hotspot: HotspotItem) => {
+  const handleSelectHotspot = useCallback((hotspot: HotspotItem) => {
     setActiveHotspot(hotspot);
     setCameraPreset(null);
     setAutoRotate(false);
@@ -128,10 +152,11 @@ export const ShowroomView: React.FC = () => {
       f1AudioEngine.revUp(3.0);
       setIsAudioActive(true);
     }
-  };
+  }, []);
 
-  const team = TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari;
-  const livery = getTeam3DLivery(selectedTeamId);
+  const team = useMemo(() => TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari, [selectedTeamId]);
+  const livery = useMemo(() => getTeam3DLivery(selectedTeamId), [selectedTeamId]);
+  const teamSponsors = useMemo(() => getTeamSponsors(selectedTeamId), [selectedTeamId]);
 
   return (
     <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
@@ -208,11 +233,9 @@ export const ShowroomView: React.FC = () => {
             cameraPreset={cameraPreset}
             onSelectPreset={handleSelectPreset}
             autoRotate={autoRotate}
-            onToggleAutoRotate={() => setAutoRotate(!autoRotate)}
-            showWindTunnel={showWindTunnel}
-            onToggleWindTunnel={() => setShowWindTunnel(!showWindTunnel)}
+            onToggleAutoRotate={handleToggleAutoRotate}
             enableWheelZoom={enableWheelZoom}
-            onToggleWheelZoom={() => setEnableWheelZoom(!enableWheelZoom)}
+            onToggleWheelZoom={handleToggleWheelZoom}
             onZoom={handleZoom}
             onResetView={handleResetView}
             lang={lang}
@@ -220,54 +243,89 @@ export const ShowroomView: React.FC = () => {
             onToggleAudio={handleToggleAudio}
             onRevEngine={handleRevEngine}
             lightingMode={lightingMode}
-            onChangeLightingMode={setLightingMode}
+            onChangeLightingMode={handleChangeLightingMode}
+            showSponsors={showSponsors}
+            onToggleSponsors={handleToggleSponsors}
+            showHotspots={showHotspots}
+            onToggleHotspots={handleToggleHotspots}
           />
         </div>
 
         {/* ── Three.js WebGL 3D Canvas ── */}
         <Canvas
           shadows
-          camera={{ position: [3.2, 1.6, -3.4], fov: 42 }}
-          gl={{ antialias: true, alpha: true, toneMappingExposure: lightingMode === 'night_gp' ? 1.4 : lightingMode === 'daylight' ? 1.35 : 1.25 }}
+          camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
+          gl={useMemo(
+            () => ({
+              antialias: true,
+              alpha: true,
+              toneMappingExposure:
+                lightingMode === 'night_gp' ? 1.2 : lightingMode === 'daylight' ? 1.1 : 1.0,
+            }),
+            [lightingMode],
+          )}
           className="w-full h-full cursor-grab active:cursor-grabbing"
         >
           {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-          <Environment preset={lightingMode === 'night_gp' ? 'night' : lightingMode === 'daylight' ? 'sunset' : 'city'} />
+          <Environment
+            preset={
+              lightingMode === 'night_gp'
+                ? 'night'
+                : lightingMode === 'daylight'
+                  ? 'sunset'
+                  : 'city'
+            }
+          />
 
           {/* ── Cinematic Studio Lighting according to lightingMode (Direction 3) ── */}
-          {lightingMode === 'cyber' && (
+          {lightingMode === 'studio' && (
             <>
-              <ambientLight intensity={1.5} />
+              {/* High-End Automotive Studio Key, Fill & Rim Lights (Calibrated for rich, authentic paint colors) */}
+              <ambientLight intensity={0.5} color="#f8fafc" />
               <directionalLight
-                position={[6, 9, -5]}
-                intensity={2.4}
+                position={[5, 8, -4]}
+                intensity={1.8}
+                color="#ffffff"
                 castShadow
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
                 shadow-bias={-0.0001}
               />
-              <directionalLight position={[-6, 4, 5]} intensity={1.3} color="#60a5fa" />
-              <directionalLight position={[0, -2, 0]} intensity={0.5} color="#ffffff" />
-              <pointLight position={[0, 4.5, 0]} intensity={1.5} color="#ffffff" />
-              <spotLight
-                position={[0, 7, -2]}
-                angle={0.65}
-                penumbra={0.8}
-                intensity={2.2}
-                color={team.primaryColor}
-              />
-              {/* Floor: Dark High-Tech Neon Grid */}
-              <group position={[0, -0.01, 0]}>
-                <gridHelper args={[16, 32, team.primaryColor, '#1e293b']} position={[0, 0, 0]} />
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[3.0, 3.05, 64]} />
-                  <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
+              <directionalLight position={[-6, 5, 4]} intensity={1.1} color="#e0f2fe" />
+              <directionalLight position={[0, -2, 0]} intensity={0.3} color="#ffffff" />
+
+              {/* Overhead Softbox Ceiling Light Panel (visible in Hình 2 above the car) */}
+              <group position={[0, 4.2, -0.2]}>
+                <mesh rotation={[Math.PI / 2, 0, 0]}>
+                  <planeGeometry args={[3.6, 7.5]} />
+                  <meshBasicMaterial color="#ffffff" toneMapped={false} />
                 </mesh>
-                <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[4.5, 4.53, 64]} />
-                  <meshBasicMaterial color="#38bdf8" transparent opacity={0.25} />
-                </mesh>
+                <spotLight
+                  position={[0, 0, 0]}
+                  angle={0.8}
+                  penumbra={0.7}
+                  intensity={1.8}
+                  color="#ffffff"
+                />
               </group>
+
+              {/* Polished Luxury Dark Mirror Floor (Reflecting the F1 car like Hình 2) */}
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
+                <planeGeometry args={[30, 30]} />
+                <MeshReflectorMaterial
+                  blur={[300, 100]}
+                  resolution={1024}
+                  mirror={0.7}
+                  mixBlur={0.6}
+                  mixStrength={2.2}
+                  roughness={0.15}
+                  depthScale={1.2}
+                  minDepthThreshold={0.4}
+                  maxDepthThreshold={1.4}
+                  color="#090a0d"
+                  metalness={0.7}
+                />
+              </mesh>
             </>
           )}
 
@@ -285,9 +343,27 @@ export const ShowroomView: React.FC = () => {
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
               />
-              <spotLight position={[-6, 12, -6]} angle={0.55} penumbra={0.5} intensity={3.8} color="#e0f2fe" />
-              <spotLight position={[-6, 12, 6]} angle={0.55} penumbra={0.5} intensity={3.5} color="#ffffff" />
-              <spotLight position={[6, 12, -6]} angle={0.55} penumbra={0.5} intensity={3.5} color="#e0f2fe" />
+              <spotLight
+                position={[-6, 12, -6]}
+                angle={0.55}
+                penumbra={0.5}
+                intensity={3.8}
+                color="#e0f2fe"
+              />
+              <spotLight
+                position={[-6, 12, 6]}
+                angle={0.55}
+                penumbra={0.5}
+                intensity={3.5}
+                color="#ffffff"
+              />
+              <spotLight
+                position={[6, 12, -6]}
+                angle={0.55}
+                penumbra={0.5}
+                intensity={3.5}
+                color="#e0f2fe"
+              />
               <pointLight position={[0, 5, 0]} intensity={2.0} color="#ffffff" />
               {/* Floor: Asphalt Track with High-Contrast White Grid & Yellow Curbs */}
               <group position={[0, -0.01, 0]}>
@@ -319,7 +395,13 @@ export const ShowroomView: React.FC = () => {
               />
               <directionalLight position={[-8, 6, 8]} intensity={1.6} color="#bae6fd" />
               <directionalLight position={[0, -2, 0]} intensity={0.7} color="#fef08a" />
-              <spotLight position={[0, 8, 0]} angle={0.7} penumbra={0.9} intensity={1.8} color="#fef08a" />
+              <spotLight
+                position={[0, 8, 0]}
+                angle={0.7}
+                penumbra={0.9}
+                intensity={1.8}
+                color="#fef08a"
+              />
               {/* Floor: Sunlit Pavement Grid */}
               <group position={[0, -0.01, 0]}>
                 <gridHelper args={[16, 32, team.primaryColor, '#334155']} position={[0, 0, 0]} />
@@ -341,8 +423,8 @@ export const ShowroomView: React.FC = () => {
               teamId={selectedTeamId}
               activeHotspot={activeHotspot}
               onSelectHotspot={handleSelectHotspot}
-              showWindTunnel={showWindTunnel}
               lang={lang}
+              showHotspots={showHotspots}
             />
           </Suspense>
 
@@ -389,7 +471,10 @@ export const ShowroomView: React.FC = () => {
       />
 
       {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
-      <div id="technical-dossier" className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14">
+      <div
+        id="technical-dossier"
+        className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14"
+      >
         <div className="page-container space-y-10">
           {/* Section Header: Dynamically reflects active team */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
@@ -418,161 +503,123 @@ export const ShowroomView: React.FC = () => {
             </div>
           </div>
 
-          {/* Showcase Banner: Bespoke Macro Close-Up + Core Pillars */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-            {/* Left: Dedicated Macro Close-Up Card */}
-            {(() => {
-              const heroCloseup = getTeamComponentCloseUp(selectedTeamId, 'wings');
-              return (
-                <div className="relative rounded-2xl overflow-hidden bg-studio-900/80 border border-studio-800 shadow-xl flex flex-col justify-between p-6 group">
-                  {/* Subtle Team Ambient Radial Glow */}
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-20 transition-all duration-700"
-                    style={{
-                      background: `radial-gradient(circle at 50% 40%, ${livery.bodyColor} 0%, transparent 70%)`,
-                    }}
-                  />
+          {/* Team Drivers, Principal & Technical Details Bar */}
+          <div className="flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono py-2.5 px-4 rounded-xl bg-studio-900/60 border border-studio-800/80">
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Tay đua: ' : 'Drivers: '}
+              </span>
+              <span className="text-white font-bold">
+                {lang === 'vi' ? livery.driversVi : livery.driversEn}
+              </span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Lãnh đội: ' : 'Principal: '}
+              </span>
+              <span className="text-studio-200">{livery.teamPrincipal}</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Trụ sở: ' : 'Base: '}
+              </span>
+              <span className="text-studio-200">{livery.base}</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Tài trợ chính: ' : 'Title Partner: '}
+              </span>
+              <span className="text-amber-300 font-bold">{teamSponsors.primarySponsor}</span>
+            </div>
+          </div>
 
-                  <div className="relative z-10 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300 bg-amber-950/70 border border-amber-800/80 px-2 py-0.5 rounded flex items-center gap-1">
-                        <Camera className="w-3 h-3 text-amber-400" />
-                        CẬN CẢNH KỸ THUẬT
-                      </span>
-                      <span className="text-[10px] font-mono text-studio-400">
-                        {heroCloseup.partCode}
-                      </span>
-                    </div>
-                    <h4 className="font-display text-lg font-black uppercase text-white pt-1">
-                      {lang === 'vi' ? heroCloseup.titleVi : heroCloseup.titleEn}
-                    </h4>
-                    <p className="text-xs text-studio-400">{livery.base}</p>
+          {/* 4 Technical Pillars tailored to active team */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Aero */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
+                    01
                   </div>
-
-                  {/* Bespoke Close-up Image Container */}
-                  <div
-                    onClick={() => handleSelectHotspot(F1_HOTSPOTS[0])}
-                    className="relative z-10 my-4 rounded-xl overflow-hidden border border-studio-700/60 bg-black/80 aspect-video flex items-center justify-center cursor-pointer group/img shadow-lg"
-                  >
-                    <img
-                      src={heroCloseup.imageUrl}
-                      alt={heroCloseup.titleEn}
-                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-studio-950/90 via-transparent to-black/20 opacity-80 group-hover/img:opacity-60 transition-opacity" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-xs">
-                      <span className="text-[11px] font-bold text-white bg-studio-950/80 px-2 py-1 rounded backdrop-blur-md border border-studio-700/60 flex items-center gap-1.5">
-                        <ConstructorLogo teamId={selectedTeamId} size="sm" className="w-4 h-4" />
-                        {livery.teamName} {livery.shortCarName}
-                      </span>
-                      <span className="text-[11px] font-mono text-amber-300 font-bold bg-black/70 px-2 py-1 rounded border border-amber-900/60 flex items-center gap-1">
-                        <Camera className="w-3 h-3 text-amber-400" />
-                        {lang === 'vi' ? 'Soi Cận Cảnh' : 'Inspect'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Drivers & Leadership */}
-                  <div className="relative z-10 pt-3 border-t border-studio-800/80 text-xs text-studio-300 space-y-1">
-                    <div className="flex items-center gap-1.5 font-mono text-[11px] text-white">
-                      <span className="text-studio-500 font-sans">Tay đua:</span>
-                      <span>{lang === 'vi' ? livery.driversVi : livery.driversEn}</span>
-                    </div>
-                    <div className="text-[11px] text-studio-400">
-                      Lãnh đội: <span className="text-studio-200">{livery.teamPrincipal}</span>
-                    </div>
-                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Aerodynamics
+                  </span>
                 </div>
-              );
-            })()}
-
-            {/* Right: 4 Technical Pillars tailored to active team */}
-            <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* 1. Aero */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
-                      01
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Aerodynamics
-                    </span>
-                  </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
-                  </p>
-                </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
+                </p>
               </div>
+            </div>
 
-              {/* 2. Powertrain */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
-                      02
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Power Unit
-                    </span>
+            {/* 2. Powertrain */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
+                    02
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase truncate">
-                    {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
-                  </h4>
-                  <p className="text-xs text-studio-300 font-mono">
-                    {livery.powerUnit}
-                  </p>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
-                  </p>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Power Unit
+                  </span>
                 </div>
+                <h4 className="font-display text-base font-bold text-white uppercase truncate">
+                  {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
+                </h4>
+                <p className="text-xs text-studio-300 font-mono">{livery.powerUnit}</p>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
+                </p>
               </div>
+            </div>
 
-              {/* 3. Halo Safety */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                      03
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Safety Cell
-                    </span>
+            {/* 3. Halo Safety */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                    03
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
-                      : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
-                  </p>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Safety Cell
+                  </span>
                 </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi'
+                    ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
+                    : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
+                </p>
               </div>
+            </div>
 
-              {/* 4. Pirelli & Brakes */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
-                      04
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Pirelli & Brakes
-                    </span>
+            {/* 4. Pirelli & Brakes */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
+                    04
                   </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
-                      : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
-                  </p>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Pirelli & Brakes
+                  </span>
                 </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi'
+                    ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
+                    : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
+                </p>
               </div>
             </div>
           </div>
@@ -585,7 +632,7 @@ export const ShowroomView: React.FC = () => {
           type="button"
           onClick={scrollToTop}
           className="fixed bottom-6 right-6 z-40 p-3 rounded-2xl bg-f1red/95 hover:bg-f1red text-white shadow-2xl backdrop-blur-md border border-white/20 transition-all hover:scale-110 cursor-pointer animate-fade-in flex items-center gap-2 text-xs font-bold shadow-f1red/30 active:scale-95"
-          title={lang === 'vi' ? 'Lên đầu trang xem xe 3D' : 'Back to 3D Stage'}
+          aria-label={lang === 'vi' ? 'Lên đầu trang xem xe 3D' : 'Back to 3D Stage'}
         >
           <ChevronUp className="w-4 h-4" />
           <span className="hidden sm:inline">

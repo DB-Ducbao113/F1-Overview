@@ -32,9 +32,21 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'mclaren':
         // McLaren Speedmark: Iconic curved aerodynamic swoosh in McLaren Papaya
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <defs>
-              <linearGradient id="mclarenGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="mclarenGrad"
+                x1="0"
+                y1="0"
+                x2="100"
+                y2="100"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#FF9B26" />
                 <stop offset="100%" stopColor="#FF6600" />
               </linearGradient>
@@ -56,7 +68,12 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'ferrari':
         // Scuderia Ferrari: Yellow Shield with Italian Flag and Prancing Horse
         return (
-          <svg viewBox="0 0 100 120" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 120"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             {/* Shield Body (Giallo Modena) */}
             <path
               d="M10 12C10 12 50 8 90 12C90 48 84 94 50 114C16 94 10 48 10 12Z"
@@ -83,8 +100,26 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
               <path d="M53 84C55 87 58 92 60 97C61 99 63 98 62 96C60 91 57 86 54 83L53 84Z" />
               <path d="M46 54C42 57 38 63 36 71C35 75 36 78 38 75C40 70 43 64 47 60L46 54Z" />
               {/* "S" and "F" letters */}
-              <text x="24" y="105" fontFamily="sans-serif" fontSize="13" fontWeight="900" fill="#111111">S</text>
-              <text x="66" y="105" fontFamily="sans-serif" fontSize="13" fontWeight="900" fill="#111111">F</text>
+              <text
+                x="24"
+                y="105"
+                fontFamily="sans-serif"
+                fontSize="13"
+                fontWeight="900"
+                fill="#111111"
+              >
+                S
+              </text>
+              <text
+                x="66"
+                y="105"
+                fontFamily="sans-serif"
+                fontSize="13"
+                fontWeight="900"
+                fill="#111111"
+              >
+                F
+              </text>
             </g>
           </svg>
         );
@@ -92,9 +127,21 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'mercedes':
         // Mercedes-AMG: Iconic Three-Pointed Star within Circle
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <defs>
-              <linearGradient id="mercChrome" x1="15" y1="15" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="mercChrome"
+                x1="15"
+                y1="15"
+                x2="85"
+                y2="85"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop offset="0%" stopColor="#FFFFFF" />
                 <stop offset="45%" stopColor="#E2E8F0" />
                 <stop offset="75%" stopColor="#94A3B8" />
@@ -120,7 +167,12 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'redbull':
         // Red Bull Racing: Dual Charging Bulls & Sun Disc
         return (
-          <svg viewBox="0 0 110 90" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 110 90"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             {/* Sun Disc */}
             <circle cx="55" cy="45" r="28" fill="#FFD700" />
             <circle cx="55" cy="45" r="24" fill="#FFA500" opacity="0.6" />
@@ -148,7 +200,12 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'astonmartin':
         // Aston Martin: Iconic Spread Wings
         return (
-          <svg viewBox="0 0 120 60" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 120 60"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             {/* Left Wings */}
             <path
               d="M10 26C24 23 42 27 54 34C44 37 28 36 14 30L10 26Z"
@@ -166,8 +223,26 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
             />
             <path d="M104 28C92 26 78 29 68 35" stroke="#FFFFFF" strokeWidth="0.8" opacity="0.6" />
             {/* Center Enamel Plaque */}
-            <rect x="36" y="24" width="48" height="15" rx="3" fill="#00594F" stroke="#CEDC00" strokeWidth="1.5" />
-            <text x="60" y="34.5" fontFamily="sans-serif" fontSize="6.5" fontWeight="900" fill="#FFFFFF" textAnchor="middle" letterSpacing="0.8">
+            <rect
+              x="36"
+              y="24"
+              width="48"
+              height="15"
+              rx="3"
+              fill="#00594F"
+              stroke="#CEDC00"
+              strokeWidth="1.5"
+            />
+            <text
+              x="60"
+              y="34.5"
+              fontFamily="sans-serif"
+              fontSize="6.5"
+              fontWeight="900"
+              fill="#FFFFFF"
+              textAnchor="middle"
+              letterSpacing="0.8"
+            >
               ASTON MARTIN
             </text>
           </svg>
@@ -176,11 +251,13 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'alpine':
         // Alpine: Stylized Chevron "A" Arrow
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M25 80L50 18L75 80H58L50 56L42 80H25Z"
-              fill="#0090FF"
-            />
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M25 80L50 18L75 80H58L50 56L42 80H25Z" fill="#0090FF" />
             {/* Horizontal Arrow Slash */}
             <path d="M38 58H62L66 68H34L38 58Z" fill="#FF87BC" />
             {/* French Flag Accent Tip */}
@@ -191,14 +268,36 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'racingbulls':
         // Visa Cash App RB: Charging Bull on Royal Blue Shield
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="10" width="80" height="80" rx="18" fill="#1634CB" stroke="#FFFFFF" strokeWidth="2.5" />
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="10"
+              y="10"
+              width="80"
+              height="80"
+              rx="18"
+              fill="#1634CB"
+              stroke="#FFFFFF"
+              strokeWidth="2.5"
+            />
             {/* Charging Bull Silhouette */}
             <path
               d="M26 62C32 55 40 52 48 54C54 55 60 52 64 47C69 42 73 36 74 32C71 33 67 36 63 38C61 35 59 32 54 34C47 36 41 42 38 47C33 50 28 55 26 62Z"
               fill="#FFFFFF"
             />
-            <text x="50" y="78" fontFamily="sans-serif" fontSize="12" fontWeight="900" fill="#FFFFFF" textAnchor="middle">
+            <text
+              x="50"
+              y="78"
+              fontFamily="sans-serif"
+              fontSize="12"
+              fontWeight="900"
+              fill="#FFFFFF"
+              textAnchor="middle"
+            >
               VCARB
             </text>
           </svg>
@@ -207,52 +306,71 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       case 'haas':
         // Haas F1 Team: Red Outer Gear Ring & White "H"
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <circle cx="50" cy="50" r="42" fill="#E6002B" />
             <circle cx="50" cy="50" r="33" fill="#18181B" />
             {/* Bold Italic H */}
-            <path
-              d="M36 28H44V44H56V28H64V72H56V54H44V72H36V28Z"
-              fill="#FFFFFF"
-            />
+            <path d="M36 28H44V44H56V28H64V72H56V54H44V72H36V28Z" fill="#FFFFFF" />
           </svg>
         );
 
       case 'williams':
         // Williams Racing: Split Chevron "W"
         return (
-          <svg viewBox="0 0 100 100" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 100"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <circle cx="50" cy="50" r="42" fill="#002447" stroke="#00A3E0" strokeWidth="2.5" />
             {/* Double V Chevron forming W */}
-            <path
-              d="M22 34L36 68L48 42L40 34H32L36 44L28 34H22Z"
-              fill="#00A3E0"
-            />
-            <path
-              d="M78 34L64 68L52 42L60 34H68L64 44L72 34H78Z"
-              fill="#FFFFFF"
-            />
+            <path d="M22 34L36 68L48 42L40 34H32L36 44L28 34H22Z" fill="#00A3E0" />
+            <path d="M78 34L64 68L52 42L60 34H68L64 44L72 34H78Z" fill="#FFFFFF" />
           </svg>
         );
 
       case 'audi':
         // Audi F1 Team: Four Interlocking Rings
         return (
-          <svg viewBox="0 0 120 60" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 120 60"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g stroke="#C4C8CC" strokeWidth="3.5" fill="none">
               <circle cx="28" cy="30" r="16" />
               <circle cx="49" cy="30" r="16" />
               <circle cx="70" cy="30" r="16" />
               <circle cx="91" cy="30" r="16" />
             </g>
-            <circle cx="91" cy="30" r="16" stroke="#FF1801" strokeWidth="1.5" fill="none" opacity="0.7" />
+            <circle
+              cx="91"
+              cy="30"
+              r="16"
+              stroke="#FF1801"
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.7"
+            />
           </svg>
         );
 
       case 'cadillac':
         // Cadillac: Geometric Crest
         return (
-          <svg viewBox="0 0 100 90" className={`${dim} shrink-0 drop-shadow-md`} fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            viewBox="0 0 100 90"
+            className={`${dim} shrink-0 drop-shadow-md`}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M15 28C35 22 65 22 85 28C80 56 60 76 50 82C40 76 20 56 15 28Z"
               fill="#18181B"

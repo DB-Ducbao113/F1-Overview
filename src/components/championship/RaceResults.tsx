@@ -1,284 +1,556 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getRaceResults } from '../../data/championship';
+import React, { useMemo, useState } from 'react';
+import { getRaceResults, STANDINGS_DATA } from '../../data/championship';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { Trophy, Zap, CheckCircle2, ChevronRight, ListOrdered, Database } from 'lucide-react';
-import { RaceResult } from '../../types';
+import { getCompleteRaceClassification } from '../../data/championship/raceClassificationHelper';
+import { RaceClassificationModal } from './RaceClassificationModal';
+import {
+  Trophy,
+  Zap,
+  ChevronRight,
+  Search,
+  LayoutGrid,
+  Table as TableIcon,
+  X,
+  MapPin,
+  Flag,
+  CheckCircle2,
+} from 'lucide-react';
+import { RaceResult, SeasonYear } from '../../types';
 
-export const RaceResults: React.FC<{ season: import('../../types').SeasonYear }> = ({ season }) => {
-  const navigate = useNavigate();
+interface RaceResultsProps {
+  season: SeasonYear;
+}
+
+export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) => {
   const { lang } = useNavigationStore();
-  const { detailedResults, syncMeta } = useChampionshipStore();
+  const { detailedResults } = useChampionshipStore();
 
-  const detailedRaces = detailedResults[season] || [];
-  const fallbackResults = getRaceResults(season);
-  const fallbackRounds = new Set(fallbackResults.map((race) => race.round));
-  const syncedSummaries: RaceResult[] = detailedRaces.flatMap((race) => {
-    if (fallbackRounds.has(race.round)) return [];
-    const p1 = race.entries.find((entry) => entry.position === 1);
-    const p2 = race.entries.find((entry) => entry.position === 2);
-    const p3 = race.entries.find((entry) => entry.position === 3);
-    if (!p1 || !p2 || !p3) return [];
-    const fastestLap = race.fastestLap;
-    return [
-      {
-        round: race.round,
-        grandPrix: race.grandPrix,
-        circuit: race.circuit,
-        season: race.season,
-        date: race.date,
-        dataSource: race.dataSource,
-        dataUpdatedAt: race.dataUpdatedAt,
-        podium: {
-          p1: { driver: p1.driverName, team: p1.teamName, time: p1.timeOrGap, points: p1.points },
-          p2: { driver: p2.driverName, team: p2.teamName, gap: p2.timeOrGap, points: p2.points },
-          p3: { driver: p3.driverName, team: p3.teamName, gap: p3.timeOrGap, points: p3.points },
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [selectedRaceRound, setSelectedRaceRound] = useState<number | null>(null);
+
+  const allRaces = useMemo(() => {
+    const detailedRaces = detailedResults[season] || [];
+    const fallbackResults = getRaceResults(season);
+    const fallbackRounds = new Set(fallbackResults.map((race) => race.round));
+
+    const syncedSummaries: RaceResult[] = detailedRaces.flatMap((race) => {
+      if (fallbackRounds.has(race.round)) return [];
+      const p1 = race.entries.find((entry) => entry.position === 1);
+      const p2 = race.entries.find((entry) => entry.position === 2);
+      const p3 = race.entries.find((entry) => entry.position === 3);
+      if (!p1 || !p2 || !p3) return [];
+      const fastestLap = race.fastestLap;
+      return [
+        {
+          round: race.round,
+          grandPrix: race.grandPrix,
+          circuit: race.circuit,
+          season: race.season,
+          date: race.date,
+          podium: {
+            p1: { driver: p1.driverName, team: p1.teamName, time: p1.timeOrGap, points: p1.points },
+            p2: { driver: p2.driverName, team: p2.teamName, gap: p2.timeOrGap, points: p2.points },
+            p3: { driver: p3.driverName, team: p3.teamName, gap: p3.timeOrGap, points: p3.points },
+          },
+          ...(fastestLap ? { fastestLap } : {}),
         },
-        ...(fastestLap ? { fastestLap } : {}),
-      },
+      ];
+    });
+
+    return [...fallbackResults, ...syncedSummaries].sort((a, b) => a.round - b.round);
+  }, [detailedResults, season]);
+
+  // All constructors competing in this season
+  const gridTeams = useMemo(() => {
+    return STANDINGS_DATA[season]?.constructors || [];
+  }, [season]);
+
+  const teamMatchesRace = (filterName: string, race: RaceResult): boolean => {
+    const q = filterName.toLowerCase();
+    const podiumTeams = [
+      race.podium.p1.team.toLowerCase(),
+      race.podium.p2.team.toLowerCase(),
+      race.podium.p3.team.toLowerCase(),
     ];
-  });
-  const resultCards = [...fallbackResults, ...syncedSummaries].sort((a, b) => a.round - b.round);
-  const displayRacesCount = resultCards.length;
-  const [sourceFilter, setSourceFilter] = React.useState('all');
-  const [updateFilter, setUpdateFilter] = React.useState<'all' | 'recorded' | 'missing'>('all');
-  const getRaceMetadata = (res: RaceResult) => {
-    const detailedRace = detailedRaces.find((race) => race.round === res.round);
-    const isAwaitingReview = syncMeta.syncStatus === 'review';
-    return {
-      source:
-        detailedRace?.dataSource ||
-        res.dataSource ||
-        (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
-          ? syncMeta.source
-          : lang === 'vi'
-            ? 'Bản lưu tĩnh của website'
-            : 'Bundled website snapshot'),
-      timestamp:
-        detailedRace?.dataUpdatedAt ||
-        res.dataUpdatedAt ||
-        (!isAwaitingReview && syncMeta.source !== 'Local saved snapshot'
-          ? syncMeta.lastSyncTimestamp
-          : undefined),
-    };
+
+    return podiumTeams.some((pt) => {
+      if (pt.includes(q)) return true;
+      if (q.includes('red bull') && pt.includes('red bull')) return true;
+      if (q === 'redbull' && pt.includes('red bull')) return true;
+      if (
+        (q.includes('audi') || q.includes('sauber')) &&
+        (pt.includes('audi') || pt.includes('sauber'))
+      )
+        return true;
+      if (
+        (q.includes('racing bulls') || q.includes('rb')) &&
+        (pt.includes('racing bulls') || pt.includes('rb'))
+      )
+        return true;
+      if (q.includes('aston') && pt.includes('aston')) return true;
+      if (q.includes('mercedes') && pt.includes('mercedes')) return true;
+      if (q.includes('ferrari') && pt.includes('ferrari')) return true;
+      if (q.includes('mclaren') && pt.includes('mclaren')) return true;
+      if (q.includes('williams') && pt.includes('williams')) return true;
+      if (q.includes('haas') && pt.includes('haas')) return true;
+      if (q.includes('alpine') && pt.includes('alpine')) return true;
+      if (q.includes('cadillac') && pt.includes('cadillac')) return true;
+      return false;
+    });
   };
-  const sources = [...new Set(resultCards.map((race) => getRaceMetadata(race).source))];
-  const filteredResults = resultCards.filter((race) => {
-    const { source, timestamp } = getRaceMetadata(race);
-    return (
-      (sourceFilter === 'all' || source === sourceFilter) &&
-      (updateFilter === 'all' || (updateFilter === 'recorded' ? !!timestamp : !timestamp))
-    );
-  });
-  const formatUpdatedAt = (timestamp?: string) => {
-    if (!timestamp) return lang === 'vi' ? 'Chưa ghi nhận' : 'Not recorded';
-    if (/^\d{4}-\d{2}-\d{2}$/.test(timestamp)) return timestamp;
-    const parsed = new Date(timestamp);
-    if (Number.isNaN(parsed.getTime())) return timestamp;
-    return new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-GB', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(parsed);
-  };
+
+  const filteredResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return allRaces.filter((race) => {
+      const matchesSearch =
+        !q ||
+        race.grandPrix.toLowerCase().includes(q) ||
+        race.circuit.toLowerCase().includes(q) ||
+        race.podium.p1.driver.toLowerCase().includes(q) ||
+        race.podium.p2.driver.toLowerCase().includes(q) ||
+        race.podium.p3.driver.toLowerCase().includes(q) ||
+        race.podium.p1.team.toLowerCase().includes(q) ||
+        race.podium.p2.team.toLowerCase().includes(q) ||
+        race.podium.p3.team.toLowerCase().includes(q);
+
+      const matchesTeam = selectedTeamFilter === 'all' || teamMatchesRace(selectedTeamFilter, race);
+
+      return matchesSearch && matchesTeam;
+    });
+  }, [allRaces, searchQuery, selectedTeamFilter]);
+
+  // Selected race detailed classification modal
+  const activeClassification = useMemo(() => {
+    if (!selectedRaceRound) return null;
+    return getCompleteRaceClassification(season, selectedRaceRound, detailedResults[season]);
+  }, [season, selectedRaceRound, detailedResults]);
 
   return (
-    <div className="space-y-6">
-      <div className="p-5 bg-white rounded-xl border border-studio-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fade-in">
+      {/* Top Header Bar */}
+      <div className="p-5 bg-white rounded-2xl border border-studio-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 className="font-display text-lg font-bold uppercase tracking-wider text-studio-900">
+            <h3 className="font-display text-xl font-bold uppercase tracking-wider text-studio-950">
               {lang === 'vi'
                 ? `Kết Quả Các Chặng Đua (${season})`
                 : `Grand Prix Results (${season})`}
             </h3>
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <CheckCircle2 className="w-3 h-3" />{' '}
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               {lang === 'vi'
-                ? `${displayRacesCount} chặng có kết quả`
-                : `${displayRacesCount} rounds with results`}
-            </span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
-              <ListOrdered className="w-3 h-3" />{' '}
-              {lang === 'vi' ? 'Kết quả từ bản lưu và đồng bộ' : 'Saved and synced results'}
+                ? `${allRaces.length} chặng hoàn thành`
+                : `${allRaces.length} completed rounds`}
             </span>
           </div>
           <p className="text-xs text-studio-500 font-medium">
             {lang === 'vi'
-              ? 'Podium được lưu sẵn để trang vẫn hiển thị khi nguồn đồng bộ tạm thời gián đoạn.'
-              : 'Podiums are cached locally so results remain visible when the data source is unavailable.'}
+              ? 'Chi tiết bảng xếp hạng, tay đua về nhất, bục vinh quang và vòng chạy nhanh nhất cho từng chặng.'
+              : 'Official race results, podium finishes, and fastest laps for each Grand Prix of the championship.'}
           </p>
         </div>
-        <span className="text-xs font-bold text-studio-600 bg-studio-100 px-3 py-1.5 rounded-lg border border-studio-200 shrink-0">
-          {lang === 'vi' ? (
-            <>
-              Hiển thị <strong>{filteredResults.length}</strong> / {displayRacesCount} Grands Prix
-            </>
-          ) : (
-            <>
-              Showing <strong>{filteredResults.length}</strong> of {displayRacesCount} Grands Prix
-            </>
-          )}
-        </span>
-      </div>
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-studio-200 bg-white p-4">
-        <label className="flex min-w-48 flex-1 flex-col gap-1 text-xs font-bold text-studio-700">
-          {lang === 'vi' ? 'Nguồn dữ liệu' : 'Data source'}
-          <select
-            value={sourceFilter}
-            onChange={(event) => setSourceFilter(event.target.value)}
-            className="rounded-lg border border-studio-200 bg-white px-3 py-2 text-sm font-medium"
-          >
-            <option value="all">{lang === 'vi' ? 'Tất cả nguồn' : 'All sources'}</option>
-            {sources.map((source) => (
-              <option key={source} value={source}>
-                {source}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex min-w-48 flex-1 flex-col gap-1 text-xs font-bold text-studio-700">
-          {lang === 'vi' ? 'Trạng thái cập nhật' : 'Update status'}
-          <select
-            value={updateFilter}
-            onChange={(event) => setUpdateFilter(event.target.value as typeof updateFilter)}
-            className="rounded-lg border border-studio-200 bg-white px-3 py-2 text-sm font-medium"
-          >
-            <option value="all">{lang === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
-            <option value="recorded">
-              {lang === 'vi' ? 'Có thời điểm cập nhật' : 'Update recorded'}
-            </option>
-            <option value="missing">
-              {lang === 'vi' ? 'Chưa ghi nhận thời điểm' : 'No update recorded'}
-            </option>
-          </select>
-        </label>
-        <span className="text-xs text-studio-500" aria-live="polite">
-          {lang === 'vi'
-            ? `Hiển thị ${filteredResults.length}/${displayRacesCount} chặng`
-            : `Showing ${filteredResults.length}/${displayRacesCount} rounds`}
-        </span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredResults.map((res) => (
-          <div
-            key={res.round}
-            className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4 hover:border-studio-300 hover:shadow-md transition-all flex flex-col"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-studio-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-f1red">
-                  Round {res.round} · {res.date}
-                </span>
-                <h4 className="font-display text-xl font-bold text-studio-950">{res.grandPrix}</h4>
-                <span className="text-xs text-studio-500">{res.circuit}</span>
-                {(() => {
-                  const { source, timestamp } = getRaceMetadata(res);
-                  return (
-                    <span className="mt-1 flex flex-wrap items-center gap-x-2 text-[10px] text-studio-500">
-                      <span className="inline-flex items-center gap-1">
-                        <Database className="h-3 w-3" />
-                        {lang === 'vi' ? 'Nguồn' : 'Source'}: {source}
-                      </span>
-                      <span>
-                        {lang === 'vi' ? 'Cập nhật' : 'Updated'}: {formatUpdatedAt(timestamp)}
-                      </span>
-                    </span>
-                  );
-                })()}
-              </div>
-              <Trophy className="w-6 h-6 text-amber-500" />
-            </div>
-
-            {/* Podium Finishers */}
-            <div className="space-y-2.5">
-              <div className="p-3 rounded-lg bg-amber-50/80 border border-amber-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-amber-400 text-black font-black text-xs flex items-center justify-center">
-                    1
-                  </span>
-                  <div>
-                    <span className="font-bold text-sm text-studio-950 block">
-                      {res.podium.p1.driver}
-                    </span>
-                    <span className="text-[11px] text-studio-600 font-medium">
-                      {res.podium.p1.team}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-mono font-bold text-studio-900 block">
-                    {res.podium.p1.time}
-                  </span>
-                  <span className="text-[10px] font-bold text-f1red">
-                    +{res.podium.p1.points} PTS
-                  </span>
-                </div>
-              </div>
-              <div className="p-2.5 rounded-lg bg-studio-50 border border-studio-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-5 h-5 rounded-full bg-studio-300 text-studio-900 font-bold text-xs flex items-center justify-center">
-                    2
-                  </span>
-                  <div>
-                    <span className="font-bold text-xs text-studio-900 block">
-                      {res.podium.p2.driver}
-                    </span>
-                    <span className="text-[10px] text-studio-500">{res.podium.p2.team}</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-mono text-studio-700 block">
-                    {res.podium.p2.gap}
-                  </span>
-                  <span className="text-[10px] font-bold text-f1red">
-                    +{res.podium.p2.points} PTS
-                  </span>
-                </div>
-              </div>
-              <div className="p-2.5 rounded-lg bg-studio-50 border border-studio-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-5 h-5 rounded-full bg-amber-700 text-white font-bold text-xs flex items-center justify-center">
-                    3
-                  </span>
-                  <div>
-                    <span className="font-bold text-xs text-studio-900 block">
-                      {res.podium.p3.driver}
-                    </span>
-                    <span className="text-[10px] text-studio-500">{res.podium.p3.team}</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-mono text-studio-700 block">
-                    {res.podium.p3.gap}
-                  </span>
-                  <span className="text-[10px] font-bold text-f1red">
-                    +{res.podium.p3.points} PTS
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-studio-100 flex items-center justify-between text-xs text-studio-600">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Zap className="w-3.5 h-3.5 text-purple-600" />
-                Fastest Lap: <strong>{res.fastestLap?.driver}</strong> ({res.fastestLap?.team})
-              </span>
-              <span className="font-mono font-bold text-purple-700">{res.fastestLap?.time}</span>
-            </div>
+        {/* View Switcher: Grid vs Table */}
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          <div className="flex items-center bg-studio-100 p-1 rounded-xl border border-studio-200">
             <button
-              onClick={() => navigate(`/season/${season}/race/${res.round}`)}
-              className="w-full mt-auto py-2.5 px-4 rounded-lg bg-studio-900 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                viewMode === 'grid'
+                  ? 'bg-white text-f1red shadow-xs'
+                  : 'text-studio-600 hover:text-studio-950'
+              }`}
             >
-              {lang === 'vi' ? 'Xem kết quả chặng' : 'View race result'}{' '}
-              <ChevronRight className="w-4 h-4" />
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>{lang === 'vi' ? 'Thẻ' : 'Grid'}</span>
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                viewMode === 'table'
+                  ? 'bg-white text-f1red shadow-xs'
+                  : 'text-studio-600 hover:text-studio-950'
+              }`}
+            >
+              <TableIcon className="w-3.5 h-3.5" />
+              <span>{lang === 'vi' ? 'Bảng' : 'Table'}</span>
             </button>
           </div>
-        ))}
+        </div>
       </div>
+
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col gap-3.5 bg-white p-4 rounded-2xl border border-studio-200 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-studio-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                lang === 'vi'
+                  ? 'Tìm chặng đua, trường đua hoặc tay đua...'
+                  : 'Search Grand Prix, circuit or driver...'
+              }
+              className="w-full pl-9 pr-8 py-2 text-xs font-medium bg-studio-50 border border-studio-200 rounded-xl focus:outline-none focus:border-f1red focus:bg-white transition-all text-studio-900 placeholder:text-studio-400"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-studio-400 hover:text-studio-700"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          <div className="text-xs text-studio-500 font-medium">
+            {lang === 'vi' ? (
+              <>
+                Hiển thị <strong>{filteredResults.length}</strong> / {allRaces.length} chặng
+              </>
+            ) : (
+              <>
+                Showing <strong>{filteredResults.length}</strong> of {allRaces.length} rounds
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Team Filter Pills (All Grid Constructors) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
+          <button
+            onClick={() => setSelectedTeamFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
+              selectedTeamFilter === 'all'
+                ? 'bg-studio-950 text-white shadow-xs'
+                : 'bg-studio-100 text-studio-600 hover:bg-studio-200 hover:text-studio-950'
+            }`}
+          >
+            {lang === 'vi' ? 'Tất cả đội' : 'All teams'}
+          </button>
+          {gridTeams.map((team) => {
+            const isSelected = selectedTeamFilter === team.teamName;
+            return (
+              <button
+                key={team.teamId}
+                onClick={() => setSelectedTeamFilter(isSelected ? 'all' : team.teamName)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-f1red text-white shadow-xs'
+                    : 'bg-studio-100 text-studio-600 hover:bg-studio-200 hover:text-studio-950'
+                }`}
+              >
+                <span>{team.teamName}</span>
+                {team.podiums > 0 && (
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-studio-200/80 text-studio-700'
+                    }`}
+                  >
+                    {team.podiums}P
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Zero State if filter has no match */}
+      {filteredResults.length === 0 && (
+        <div className="p-12 text-center bg-white rounded-2xl border border-studio-200">
+          <Flag className="w-8 h-8 text-studio-300 mx-auto mb-2" />
+          <p className="font-bold text-studio-700 text-sm">
+            {lang === 'vi'
+              ? `Không tìm thấy chặng đua phù hợp với "${selectedTeamFilter !== 'all' ? selectedTeamFilter : searchQuery}"`
+              : 'No matching Grand Prix found'}
+          </p>
+          {selectedTeamFilter !== 'all' && (
+            <p className="text-xs text-studio-500 mt-1 max-w-md mx-auto">
+              {lang === 'vi'
+                ? `Đội ${selectedTeamFilter} chưa có chặng nào kết thúc trên bục Podium trong mùa giải ${season}. Hãy bấm vào "Xem kết quả chi tiết" ở các chặng để xem thứ hạng hoàn thành của đội.`
+                : `Team ${selectedTeamFilter} has not achieved podium finishes in season ${season}.`}
+            </p>
+          )}
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedTeamFilter('all');
+            }}
+            className="mt-4 px-4 py-1.5 rounded-lg bg-studio-100 hover:bg-studio-200 text-xs font-bold text-studio-800 transition cursor-pointer"
+          >
+            {lang === 'vi' ? 'Đặt lại bộ lọc' : 'Reset filters'}
+          </button>
+        </div>
+      )}
+
+      {/* Grid Mode */}
+      {viewMode === 'grid' && filteredResults.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredResults.map((res) => (
+            <div
+              key={res.round}
+              className="bg-white rounded-2xl border border-studio-200 shadow-subtle p-5 sm:p-6 space-y-4 hover:border-studio-300 hover:shadow-md transition-all flex flex-col"
+            >
+              {/* Card Header */}
+              <div className="flex items-start justify-between pb-3 border-b border-studio-100 gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="text-[11px] font-mono font-black uppercase tracking-wider text-f1red bg-f1red/10 px-2 py-0.5 rounded-md">
+                      ROUND {res.round < 10 ? `0${res.round}` : res.round}
+                    </span>
+                    <span className="text-xs font-bold text-studio-400">·</span>
+                    <span className="text-xs font-medium text-studio-500">{res.date}</span>
+                  </div>
+                  <h4 className="font-display text-lg sm:text-xl font-black text-studio-950 truncate">
+                    {res.grandPrix}
+                  </h4>
+                  <p className="text-xs text-studio-500 font-medium truncate flex items-center gap-1 mt-0.5">
+                    <MapPin className="w-3 h-3 text-studio-400 shrink-0" />
+                    <span>{res.circuit}</span>
+                  </p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+                  <Trophy className="w-5 h-5 text-amber-500" />
+                </div>
+              </div>
+
+              {/* Podium Finishers */}
+              <div className="space-y-2">
+                {/* 1st Place */}
+                <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-6 h-6 rounded-full bg-amber-400 text-black font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+                      1
+                    </span>
+                    <div className="min-w-0">
+                      <span className="font-black text-sm text-studio-950 block truncate">
+                        {res.podium.p1.driver}
+                      </span>
+                      <span className="text-[11px] text-studio-600 font-medium block truncate">
+                        {res.podium.p1.team}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-2">
+                    <span className="text-xs font-mono font-bold text-studio-900 block">
+                      {res.podium.p1.time}
+                    </span>
+                    <span className="text-[10px] font-bold text-amber-800 bg-amber-200/60 px-1.5 py-0.5 rounded">
+                      +{res.podium.p1.points} PTS
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2nd Place */}
+                <div className="p-2.5 rounded-xl bg-studio-50/80 border border-studio-200 flex items-center justify-between">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-5 h-5 rounded-full bg-studio-300 text-studio-900 font-black text-[11px] flex items-center justify-center shrink-0">
+                      2
+                    </span>
+                    <div className="min-w-0">
+                      <span className="font-bold text-xs text-studio-900 block truncate">
+                        {res.podium.p2.driver}
+                      </span>
+                      <span className="text-[10px] text-studio-500 block truncate">
+                        {res.podium.p2.team}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-2">
+                    <span className="text-xs font-mono text-studio-700 block">
+                      {res.podium.p2.gap}
+                    </span>
+                    <span className="text-[10px] font-bold text-studio-700">
+                      +{res.podium.p2.points} PTS
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3rd Place */}
+                <div className="p-2.5 rounded-xl bg-studio-50/80 border border-studio-200 flex items-center justify-between">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-5 h-5 rounded-full bg-amber-700 text-white font-black text-[11px] flex items-center justify-center shrink-0">
+                      3
+                    </span>
+                    <div className="min-w-0">
+                      <span className="font-bold text-xs text-studio-900 block truncate">
+                        {res.podium.p3.driver}
+                      </span>
+                      <span className="text-[10px] text-studio-500 block truncate">
+                        {res.podium.p3.team}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-2">
+                    <span className="text-xs font-mono text-studio-700 block">
+                      {res.podium.p3.gap}
+                    </span>
+                    <span className="text-[10px] font-bold text-studio-700">
+                      +{res.podium.p3.points} PTS
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fastest Lap Banner */}
+              {res.fastestLap && (
+                <div className="pt-2 border-t border-studio-100 flex items-center justify-between text-xs text-studio-600">
+                  <span className="flex items-center gap-1.5 font-medium min-w-0 truncate">
+                    <Zap className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <span>Fastest Lap:</span>
+                    <strong className="text-studio-900 truncate">{res.fastestLap.driver}</strong>
+                  </span>
+                  <span className="font-mono font-bold text-purple-700 shrink-0 ml-2">
+                    {res.fastestLap.time}
+                  </span>
+                </div>
+              )}
+
+              {/* Classification Action */}
+              <button
+                onClick={() => setSelectedRaceRound(res.round)}
+                className="w-full mt-auto py-2.5 px-4 rounded-xl bg-studio-950 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.99]"
+              >
+                <span>{lang === 'vi' ? 'Xem kết quả chi tiết' : 'View full classification'}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Table Mode */}
+      {viewMode === 'table' && filteredResults.length > 0 && (
+        <div className="bg-white rounded-2xl border border-studio-200 shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-studio-50 border-b border-studio-200 text-studio-600 uppercase tracking-wider text-[11px] font-black">
+                  <th className="py-3.5 px-4 text-center w-14">Round</th>
+                  <th className="py-3.5 px-4 min-w-[200px]">Grand Prix / Circuit</th>
+                  <th className="py-3.5 px-4 min-w-[100px]">Ngày</th>
+                  <th className="py-3.5 px-4 min-w-[180px]">Về Nhất (P1)</th>
+                  <th className="py-3.5 px-4 min-w-[150px]">Hạng 2 (P2)</th>
+                  <th className="py-3.5 px-4 min-w-[150px]">Hạng 3 (P3)</th>
+                  <th className="py-3.5 px-4 min-w-[140px]">Fastest Lap</th>
+                  <th className="py-3.5 px-4 text-right w-24">Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-studio-100 font-medium">
+                {filteredResults.map((res) => (
+                  <tr
+                    key={res.round}
+                    className="hover:bg-studio-50/80 transition-colors cursor-pointer"
+                    onClick={() => setSelectedRaceRound(res.round)}
+                  >
+                    {/* Round */}
+                    <td className="py-3.5 px-4 text-center font-mono font-bold text-f1red">
+                      R{res.round < 10 ? `0${res.round}` : res.round}
+                    </td>
+
+                    {/* Grand Prix & Circuit */}
+                    <td className="py-3.5 px-4">
+                      <span className="font-bold text-studio-950 block text-sm">
+                        {res.grandPrix}
+                      </span>
+                      <span className="text-[11px] text-studio-500">{res.circuit}</span>
+                    </td>
+
+                    {/* Date */}
+                    <td className="py-3.5 px-4 font-mono text-studio-600 text-[11px]">
+                      {res.date}
+                    </td>
+
+                    {/* P1 Winner */}
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-amber-400 text-black font-black text-[10px] flex items-center justify-center shrink-0">
+                          1
+                        </span>
+                        <div>
+                          <span className="font-bold text-studio-950 block">
+                            {res.podium.p1.driver}
+                          </span>
+                          <span className="text-[10px] text-studio-500 font-mono">
+                            {res.podium.p1.team} · {res.podium.p1.time}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* P2 */}
+                    <td className="py-3.5 px-4">
+                      <span className="font-bold text-studio-800 block">
+                        {res.podium.p2.driver}
+                      </span>
+                      <span className="text-[10px] text-studio-500 font-mono">
+                        {res.podium.p2.team} ({res.podium.p2.gap})
+                      </span>
+                    </td>
+
+                    {/* P3 */}
+                    <td className="py-3.5 px-4">
+                      <span className="font-bold text-studio-800 block">
+                        {res.podium.p3.driver}
+                      </span>
+                      <span className="text-[10px] text-studio-500 font-mono">
+                        {res.podium.p3.team} ({res.podium.p3.gap})
+                      </span>
+                    </td>
+
+                    {/* Fastest Lap */}
+                    <td className="py-3.5 px-4">
+                      {res.fastestLap ? (
+                        <div className="flex items-center gap-1.5">
+                          <Zap className="w-3 h-3 text-purple-600 shrink-0" />
+                          <div>
+                            <span className="font-bold text-studio-900 block">
+                              {res.fastestLap.driver}
+                            </span>
+                            <span className="font-mono text-[10px] text-purple-700">
+                              {res.fastestLap.time}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-studio-400 font-mono">-</span>
+                      )}
+                    </td>
+
+                    {/* Action */}
+                    <td className="py-3.5 px-4 text-right">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedRaceRound(res.round);
+                        }}
+                        className="p-2 rounded-lg bg-studio-100 hover:bg-f1red hover:text-white text-studio-700 transition cursor-pointer"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Render Official Classification Modal when a round is chosen */}
+      {activeClassification && (
+        <RaceClassificationModal
+          race={activeClassification}
+          onClose={() => setSelectedRaceRound(null)}
+        />
+      )}
     </div>
   );
-};
+});

@@ -1,4 +1,5 @@
 import { RaceResult } from '../../types';
+import { RACE_RESULTS_2025 } from './results2025';
 
 // ============================================================================
 // OFFICIAL FIA FORMULA ONE WORLD CHAMPIONSHIP 2024 RACE RESULTS (ALL 24 ROUNDS)
@@ -551,7 +552,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
 
 export const RESULTS_BY_SEASON = {
   2024: RACE_RESULTS_2024,
-  2025: RACE_RESULTS_2024, // Fallback / reference
+  2025: RACE_RESULTS_2025,
   2026: RACE_RESULTS_2026,
 };
 

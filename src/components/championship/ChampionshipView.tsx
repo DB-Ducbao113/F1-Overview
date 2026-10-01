@@ -6,8 +6,18 @@ import { t } from '../../i18n/translations';
 import { StandingsTable } from './StandingsTable';
 import { RaceCalendar } from './RaceCalendar';
 import { RaceResults } from './RaceResults';
+import { TeamsDirectoryPage } from '../pages/TeamsDirectoryPage';
+import { DriversDirectoryPage } from '../pages/DriversDirectoryPage';
 import { CALENDAR_2026 } from '../../data/championship';
-import { Trophy, Calendar, CheckCircle2, RefreshCw, Database, AlertTriangle } from 'lucide-react';
+import {
+  Trophy,
+  Calendar,
+  CheckCircle2,
+  RefreshCw,
+  AlertTriangle,
+  Users,
+  UserRound,
+} from 'lucide-react';
 
 interface ChampionshipViewProps {
   season: SeasonYear;
@@ -73,63 +83,6 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
           <p className="text-sm sm:text-base text-studio-600 font-light leading-relaxed">
             {strings.desc}
           </p>
-        </div>
-
-        {/* F1 race data auto-refresh status */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-studio-950 text-white shadow-md border border-studio-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-black uppercase tracking-wider border border-emerald-500/30">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Auto-refreshing race data</span>
-              </span>
-
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-studio-400 bg-studio-900 px-2.5 py-0.5 rounded-full border border-studio-800">
-                <Database className="w-3 h-3 text-sky-400" />
-                <span>Source: Jolpica F1 API · refresh every 15 min</span>
-              </span>
-
-              <span className="text-[11px] text-studio-400">
-                Chặng đã hoàn thành: <strong className="text-white">{completedRaces}</strong>
-              </span>
-            </div>
-
-            <p className="text-xs text-studio-300 max-w-2xl leading-relaxed">
-              {lang === 'vi'
-                ? 'Khi website đang mở, dữ liệu tự được kiểm tra mỗi 15 phút. Bạn cũng có thể bấm Sync F1 Data để làm mới ngay; kết quả và bảng điểm sẽ được lưu trên trình duyệt này.'
-                : 'While the website is open, race data is checked every 15 minutes. Use Sync F1 Data to refresh now; results and standings are saved in this browser.'}
-            </p>
-            <div className="text-[10px] text-studio-500 font-mono">
-              Status:{' '}
-              <span
-                className={`${syncMeta.syncStatus === 'error' ? 'text-red-400' : syncMeta.syncStatus === 'review' ? 'text-amber-300' : syncMeta.syncStatus === 'success' ? 'text-emerald-400' : 'text-studio-300'} uppercase font-bold`}
-              >
-                {syncMeta.syncStatus}
-              </span>{' '}
-              · {syncMeta.message}
-            </div>
-          </div>
-
-          {/* Action triggers */}
-          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
-            <button
-              onClick={handleManualSync}
-              disabled={syncMeta.syncStatus === 'syncing' || !!pendingSyncReview}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-studio-900 hover:bg-studio-800 text-white text-xs font-bold uppercase tracking-wider border border-studio-700 transition-all disabled:opacity-50"
-              title="Làm mới kết quả từ Jolpica F1 API"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 text-sky-400 ${syncMeta.syncStatus === 'syncing' ? 'animate-spin' : ''}`}
-              />
-              <span>
-                {syncMeta.syncStatus === 'syncing'
-                  ? 'Syncing...'
-                  : lang === 'vi'
-                    ? 'Cập nhật ngay'
-                    : 'Refresh now'}
-              </span>
-            </button>
-          </div>
         </div>
 
         {pendingSyncReview && (
@@ -238,31 +191,60 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{strings.tabResults}</span>
             </button>
+            <button
+              onClick={() => setActiveSubTab('teams')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                activeSubTab === 'teams'
+                  ? 'bg-f1red text-white shadow-sm'
+                  : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>{strings.tabTeams}</span>
+            </button>
+            <button
+              onClick={() => setActiveSubTab('drivers')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                activeSubTab === 'drivers'
+                  ? 'bg-f1red text-white shadow-sm'
+                  : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
+              }`}
+            >
+              <UserRound className="w-3.5 h-3.5" />
+              <span>{strings.tabDrivers}</span>
+            </button>
           </div>
 
-          {/* Season Switcher */}
-          <div className="flex items-center gap-1 bg-studio-100 p-1 rounded-lg border border-studio-200 self-start sm:self-auto">
-            {SEASONS.map((seasonOption) => (
-              <button
-                key={seasonOption}
-                onClick={() => onSeasonChange(seasonOption)}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  season === seasonOption
-                    ? 'bg-white text-f1red shadow-xs font-black'
-                    : 'text-studio-600 hover:text-studio-950'
-                }`}
-              >
-                <span>{seasonOption}</span>
-                {seasonOption === 2026 ? (
-                  <span
-                    className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
-                    title="Ongoing season"
-                  />
-                ) : (
-                  <span className="text-[10px] text-studio-400 font-normal">Final</span>
-                )}
-              </button>
-            ))}
+          {/* Season Switcher & Refresh */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={handleManualSync}
+              disabled={syncMeta.syncStatus === 'syncing' || !!pendingSyncReview}
+              className="p-2 rounded-lg bg-studio-100 hover:bg-studio-200 text-studio-600 hover:text-studio-900 border border-studio-200 transition-all disabled:opacity-50"
+            >
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${syncMeta.syncStatus === 'syncing' ? 'animate-spin text-f1red' : ''}`}
+              />
+            </button>
+
+            <div className="flex items-center gap-1 bg-studio-100 p-1 rounded-lg border border-studio-200">
+              {SEASONS.map((seasonOption) => (
+                <button
+                  key={seasonOption}
+                  onClick={() => onSeasonChange(seasonOption)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    season === seasonOption
+                      ? 'bg-white text-f1red shadow-xs font-black'
+                      : 'text-studio-600 hover:text-studio-950'
+                  }`}
+                >
+                  <span>{seasonOption}</span>
+                  {seasonOption === 2026 && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -270,6 +252,8 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
         {activeSubTab === 'standings' && <StandingsTable season={season} />}
         {activeSubTab === 'calendar' && <RaceCalendar />}
         {activeSubTab === 'results' && <RaceResults season={season} />}
+        {activeSubTab === 'teams' && <TeamsDirectoryPage initialSeason={season} hideHeader />}
+        {activeSubTab === 'drivers' && <DriversDirectoryPage initialSeason={season} hideHeader />}
       </div>
 
       {/* Floating Toast Notification */}
