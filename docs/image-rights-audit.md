@@ -9,26 +9,26 @@ The 3D model `public/models/c42.glb` also needs a verified source and license. I
 | `public/assets/alpine/driver_2-250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/alpine/driver_250926.jpg`        | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/alpine/driver_3-250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/astonmartin/driver_2-250926.jpg` | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/astonmartin/driver_250926.jpg`   | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/astonmartin/driver_2-250926.jpg` | AI-Generated (Lance Stroll #18)        | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/astonmartin/driver_250926.jpg`   | AI-Generated (Fernando Alonso #14)     | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/audi/driver_2-250926.jpg`        | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/audi/driver_250926.jpg`          | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/cadillac/driver_2-250926.png`    | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/cadillac/driver_250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/ferrari/car_250926.jpg`          | Pinterest (downloaded by project owner) | Pinterest Editorial Curation & Aesthetic Share | **Unverified**      |
-| `public/assets/ferrari/driver_2-250926.jpg`     | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/ferrari/driver_250926.jpg`       | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/ferrari/driver_2-250926.jpg`     | AI-Generated (Lewis Hamilton #44)       | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/ferrari/driver_250926.jpg`       | AI-Generated (Charles Leclerc #16)      | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/ferrari/team_250926.jpg`         | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
 | `public/assets/haas/driver_2-250926.jpg`        | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/haas/driver_250926.jpg`          | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/mclaren/driver_2-250926.jpg`     | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/mclaren/driver_250926.jpg`       | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/mclaren/driver_2-250926.jpg`     | AI-Generated (Oscar Piastri #81)        | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/mclaren/driver_250926.jpg`       | AI-Generated (Lando Norris #4)          | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/mclaren/driver_3-250926.jpg`     | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/mclaren/team_250926.jpg`         | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
 | `public/assets/mercedes/car_2-250926.jpg`       | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/mercedes/car_250926.jpg`         | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/mercedes/driver_2-250926.jpg`    | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/mercedes/driver_250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/mercedes/driver_2-250926.jpg`    | AI-Generated (Kimi Antonelli #12)       | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/mercedes/driver_250926.jpg`      | AI-Generated (George Russell #63)       | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/mercedes/driver_3-250926.jpg`    | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/mercedes/team_2-250926.jpg`      | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
 | `public/assets/mercedes/team_250926.jpg`        | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
@@ -40,13 +40,13 @@ The 3D model `public/models/c42.glb` also needs a verified source and license. I
 | `public/assets/racingbulls/driver_3-250926.jpg` | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/racingbulls/driver_4-250926.jpg` | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/redbull/car_250926.jpg`          | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
-| `public/assets/redbull/driver_2-250926.jpg`     | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/redbull/driver_250926.jpg`       | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/redbull/driver_2-250926.jpg`     | AI-Generated (Isack Hadjar #6)          | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/redbull/driver_250926.jpg`       | AI-Generated (Max Verstappen #1)        | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/redbull/driver_3-250926.jpg`     | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/redbull/team_250926.jpg`         | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
 | `public/assets/williams/car_250926.jpg`         | Pinterest (downloaded by project owner) | Editorial Press Archive                        | **Unverified**      |
-| `public/assets/williams/driver_2-250926.jpg`    | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/williams/driver_250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
+| `public/assets/williams/driver_2-250926.jpg`    | AI-Generated (Alexander Albon #23)      | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/williams/driver_250926.jpg`      | AI-Generated (Carlos Sainz #55)         | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/images/gallery/cockpit_action.jpg`      | Not recorded                            | Not recorded                                   | **Unverified**      |
 | `public/images/gallery/mcl38_action.jpg`        | McLaren Media Centre                    | Official Press License                         | **Unverified**      |
 | `public/images/gallery/pitstop_action.jpg`      | Not recorded                            | Not recorded                                   | **Unverified**      |
