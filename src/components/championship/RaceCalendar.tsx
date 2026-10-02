@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { CALENDAR_2026 } from '../../data/championship';
-import { Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
+import { Clock, MapPin, ChevronDown, ChevronUp, Timer, ChevronRight } from 'lucide-react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { PracticeClassificationModal } from './PracticeClassificationModal';
 
 export const RaceCalendar: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -14,11 +16,17 @@ export const RaceCalendar: React.FC = React.memo(() => {
     ...seasonResults.filter((race) => race.status === 'completed').map((race) => race.round),
   ]);
   const nextRace = CALENDAR_2026.find((gp) => !completedRounds.has(gp.round));
-  const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 1);
+  const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 16);
+
+  // State cho Practice Modal
+  const [selectedPracticeRound, setSelectedPracticeRound] = useState<number | null>(null);
+  const [selectedPracticeSessionKey, setSelectedPracticeSessionKey] = useState<'fp1' | 'fp2' | 'fp3'>('fp1');
 
   const toggleExpand = (round: number) => {
     setExpandedRound(expandedRound === round ? null : round);
   };
+
+  const activePracticeData = selectedPracticeRound ? PRACTICE_RESULTS_2026[selectedPracticeRound] : null;
 
   return (
     <div className="space-y-4">
@@ -52,12 +60,13 @@ export const RaceCalendar: React.FC = React.memo(() => {
           const isCompleted = completedRounds.has(gp.round);
           const isCurrent = gp.status === 'current' && !isCompleted;
           const isNext = gp.round === nextRace?.round;
+          const hasPracticeData = Boolean(PRACTICE_RESULTS_2026[gp.round]);
 
           return (
             <div
               key={gp.round}
               className={`rounded-xl border transition-all ${
-                isCurrent
+                isCurrent || (isNext && hasPracticeData)
                   ? 'bg-white border-f1red shadow-md ring-1 ring-f1red/20'
                   : 'bg-white border-studio-200 hover:border-studio-300 shadow-xs'
               }`}
@@ -71,7 +80,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                   {/* Round number badge */}
                   <div
                     className={`w-10 h-10 rounded-lg flex flex-col items-center justify-center shrink-0 font-bold ${
-                      isCurrent
+                      isCurrent || (isNext && hasPracticeData)
                         ? 'bg-f1red text-white'
                         : isCompleted
                           ? 'bg-studio-100 text-studio-600'
@@ -98,12 +107,18 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           Sprint
                         </span>
                       )}
+                      {hasPracticeData && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-sky-100 text-sky-800 flex items-center gap-1 border border-sky-300">
+                          <Timer className="w-3 h-3 text-sky-600 animate-pulse" />
+                          {isVi ? 'Đã Chạy Practice 1 & 2' : 'FP1 & FP2 Completed'}
+                        </span>
+                      )}
                       {isCurrent && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-f1red/10 text-f1red animate-pulse">
                           {isVi ? 'Đang Diễn Ra' : 'Active Weekend'}
                         </span>
                       )}
-                      {!isCurrent && isNext && (
+                      {!isCurrent && isNext && !hasPracticeData && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800">
                           {isVi ? 'Chặng Tiếp Theo' : 'Up Next'}
                         </span>
@@ -160,7 +175,11 @@ export const RaceCalendar: React.FC = React.memo(() => {
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                     {Object.entries(gp.sessions).map(([key, session]) => {
                       if (!session) return null;
-                      const sessionStatus = isCompleted ? 'finished' : session.status;
+                      const practiceDataForRound = PRACTICE_RESULTS_2026[gp.round];
+                      const practiceSession = practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3'];
+                      
+                      const isFinishedPractice = practiceSession?.status === 'finished';
+                      const sessionStatus = isFinishedPractice ? 'finished' : isCompleted ? 'finished' : session.status;
                       const statusLabel =
                         sessionStatus === 'finished'
                           ? isVi
@@ -177,11 +196,26 @@ export const RaceCalendar: React.FC = React.memo(() => {
                       return (
                         <div
                           key={key}
-                          className="p-2.5 rounded-lg bg-white border border-studio-200 shadow-xs space-y-1"
+                          onClick={() => {
+                            if (isFinishedPractice) {
+                              setSelectedPracticeRound(gp.round);
+                              setSelectedPracticeSessionKey(key as 'fp1' | 'fp2' | 'fp3');
+                            }
+                          }}
+                          className={`p-2.5 rounded-lg border shadow-xs space-y-1 transition-all ${
+                            isFinishedPractice
+                              ? 'bg-sky-50/80 border-sky-200 hover:border-sky-400 hover:bg-sky-100/60 cursor-pointer group'
+                              : 'bg-white border-studio-200'
+                          }`}
                         >
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-studio-400 block truncate">
-                            {session.name}
-                          </span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 block truncate">
+                              {session.name}
+                            </span>
+                            {isFinishedPractice && (
+                              <ChevronRight className="w-3 h-3 text-sky-600 group-hover:translate-x-0.5 transition-transform" />
+                            )}
+                          </div>
                           <span className="text-xs font-bold text-studio-900 block">
                             {session.dateStr}
                           </span>
@@ -193,7 +227,9 @@ export const RaceCalendar: React.FC = React.memo(() => {
                             <span
                               className={`text-[9px] font-bold uppercase ${
                                 sessionStatus === 'finished'
-                                  ? 'text-studio-400'
+                                  ? isFinishedPractice
+                                    ? 'text-sky-700 font-extrabold'
+                                    : 'text-studio-400'
                                   : sessionStatus === 'live'
                                     ? 'text-f1red animate-pulse'
                                     : 'text-emerald-600'
@@ -202,6 +238,12 @@ export const RaceCalendar: React.FC = React.memo(() => {
                               {statusLabel}
                             </span>
                           </div>
+                          {isFinishedPractice && (
+                            <span className="text-[9px] text-sky-700 font-bold block pt-1 border-t border-sky-200/60 flex items-center gap-1">
+                              <Timer className="w-2.5 h-2.5 text-sky-600" />
+                              {isVi ? 'Xem BXH Practice' : 'View Practice Table'}
+                            </span>
+                          )}
                         </div>
                       );
                     })}
@@ -212,6 +254,16 @@ export const RaceCalendar: React.FC = React.memo(() => {
           );
         })}
       </div>
+
+      {/* Practice Classification Modal Portal */}
+      {activePracticeData && (
+        <PracticeClassificationModal
+          practiceData={activePracticeData}
+          initialSessionKey={selectedPracticeSessionKey}
+          onClose={() => setSelectedPracticeRound(null)}
+        />
+      )}
     </div>
   );
 });
+

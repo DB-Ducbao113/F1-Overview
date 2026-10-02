@@ -136,17 +136,17 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
 
       {/* Drivers Classification Table */}
       {standingsCategory === 'drivers' && (
-        <div className="bg-white rounded-xl border border-studio-200 shadow-subtle overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-studio-200 shadow-subtle overflow-hidden">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left text-xs min-w-[600px]">
               <thead className="bg-studio-100/80 border-b border-studio-200 text-studio-600 uppercase font-bold tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4 w-16 text-center">{strings.pos}</th>
-                  <th className="py-3.5 px-4">{strings.driver}</th>
-                  <th className="py-3.5 px-4">{strings.team}</th>
-                  <th className="py-3.5 px-4 text-center">{strings.wins}</th>
-                  <th className="py-3.5 px-4 text-center">{strings.podiums}</th>
-                  <th className="py-3.5 px-6 text-right font-black text-studio-950">
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">{strings.pos}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.driver}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.team}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.wins}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.podiums}</th>
+                  <th className="py-3 sm:py-3.5 px-4 sm:px-6 text-right font-black text-studio-950">
                     {strings.points}
                   </th>
                 </tr>
@@ -159,9 +159,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       key={`${driver.driverId}-${driver.teamId}`}
                       className="hover:bg-studio-50 transition-colors"
                     >
-                      <td className="py-3.5 px-4 text-center font-display font-black text-sm">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-display font-black text-xs sm:text-sm">
                         <span
-                          className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${
+                          className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full ${
                             driver.rank === 1
                               ? 'bg-amber-400 text-black shadow-xs'
                               : driver.rank === 2
@@ -174,31 +174,31 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                           {driver.rank}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-base" title={driver.countryFlag}>
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4">
+                        <div className="flex items-center gap-2 sm:gap-2.5">
+                          <span className="text-sm sm:text-base shrink-0" title={driver.countryFlag}>
                             {driver.countryFlag}
                           </span>
                           <div>
                             {DRIVERS_DATA[driver.driverId] ? (
                               <Link
                                 to={`/drivers/${driver.driverId}?season=${season}`}
-                                className="font-bold text-studio-900 block text-sm hover:text-f1red"
+                                className="font-bold text-studio-900 block text-xs sm:text-sm hover:text-f1red leading-tight"
                               >
                                 {driver.driverName}
                               </Link>
                             ) : (
-                              <span className="font-bold text-studio-900 block text-sm">
+                              <span className="font-bold text-studio-900 block text-xs sm:text-sm leading-tight">
                                 {driver.driverName}
                               </span>
                             )}
-                            <span className="text-[10px] text-studio-400 font-mono">
+                            <span className="text-[9px] sm:text-[10px] text-studio-400 font-mono">
                               {driver.driverCode}
                             </span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4">
                         <div className="flex items-center gap-2">
                           <span
                             className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -206,19 +206,19 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                           />
                           <Link
                             to={`/teams/${driver.teamId}`}
-                            className="font-semibold text-studio-700 hover:text-f1red"
+                            className="font-semibold text-studio-700 hover:text-f1red truncate max-w-[140px] sm:max-w-none block text-xs"
                           >
                             {driver.teamName}
                           </Link>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 text-center font-semibold text-studio-700">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-semibold text-studio-700">
                         {driver.wins}
                       </td>
-                      <td className="py-3.5 px-4 text-center font-semibold text-studio-700">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-semibold text-studio-700">
                         {driver.podiums}
                       </td>
-                      <td className="py-3.5 px-6 text-right font-display font-black text-base text-f1red">
+                      <td className="py-3 sm:py-3.5 px-4 sm:px-6 text-right font-display font-black text-sm sm:text-base text-f1red">
                         {driver.points}
                       </td>
                     </tr>
@@ -232,17 +232,17 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
 
       {/* Constructors Classification Table */}
       {standingsCategory === 'constructors' && (
-        <div className="bg-white rounded-xl border border-studio-200 shadow-subtle overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-studio-200 shadow-subtle overflow-hidden">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left text-xs min-w-[600px]">
               <thead className="bg-studio-100/80 border-b border-studio-200 text-studio-600 uppercase font-bold tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4 w-16 text-center">{strings.pos}</th>
-                  <th className="py-3.5 px-4">{strings.team}</th>
-                  <th className="py-3.5 px-4">{strings.engine}</th>
-                  <th className="py-3.5 px-4 text-center">{strings.wins}</th>
-                  <th className="py-3.5 px-4 text-center">{strings.podiums}</th>
-                  <th className="py-3.5 px-6 text-right font-black text-studio-950">
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">{strings.pos}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.team}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.engine}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.wins}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.podiums}</th>
+                  <th className="py-3 sm:py-3.5 px-4 sm:px-6 text-right font-black text-studio-950">
                     {strings.points}
                   </th>
                 </tr>
@@ -255,9 +255,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       key={`${c.teamId}-${c.rank}`}
                       className="hover:bg-studio-50 transition-colors"
                     >
-                      <td className="py-3.5 px-4 text-center font-display font-black text-sm">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-display font-black text-xs sm:text-sm">
                         <span
-                          className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${
+                          className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full ${
                             c.rank === 1
                               ? 'bg-amber-400 text-black shadow-xs'
                               : c.rank === 2
@@ -270,28 +270,28 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                           {c.rank}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4">
+                        <div className="flex items-center gap-2.5">
                           <span
-                            className="w-3 h-3 rounded-full shrink-0"
+                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0"
                             style={{ backgroundColor: team?.primaryColor || '#999' }}
                           />
                           <Link
                             to={`/teams/${c.teamId}`}
-                            className="font-bold text-studio-900 text-sm hover:text-f1red"
+                            className="font-bold text-studio-900 text-xs sm:text-sm hover:text-f1red"
                           >
                             {c.teamName}
                           </Link>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-medium text-studio-600">{c.engine}</td>
-                      <td className="py-3.5 px-4 text-center font-semibold text-studio-700">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 font-medium text-studio-600 text-xs">{c.engine}</td>
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-semibold text-studio-700">
                         {c.wins}
                       </td>
-                      <td className="py-3.5 px-4 text-center font-semibold text-studio-700">
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-semibold text-studio-700">
                         {c.podiums}
                       </td>
-                      <td className="py-3.5 px-6 text-right font-display font-black text-base text-f1red">
+                      <td className="py-3 sm:py-3.5 px-4 sm:px-6 text-right font-display font-black text-sm sm:text-base text-f1red">
                         {c.points}
                       </td>
                     </tr>
