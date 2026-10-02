@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DetailedRaceResult } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
+import { useNavigationStore } from '../../store/useNavigationStore';
 import { X, Trophy, Zap, Flag, Calendar, MapPin, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
@@ -13,6 +14,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
   race,
   onClose,
 }) => {
+  const { lang } = useNavigationStore();
+  const isVi = lang === 'vi';
+
   // Close on Escape key
   useEffect(() => {
     if (!race) return;
@@ -42,10 +46,11 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-f1red bg-f1red/15 px-2.5 py-0.5 rounded-full border border-f1red/30">
-                Round {race.round} · {race.season}
+                {isVi ? `Vòng ${race.round}` : `Round ${race.round}`} · {race.season}
               </span>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <ShieldCheck className="w-3 h-3" /> Kết Quả Chính Thức
+                <ShieldCheck className="w-3 h-3" />{' '}
+                {isVi ? 'Kết Quả Chính Thức' : 'Official Classification'}
               </span>
             </div>
 
@@ -64,7 +69,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               </span>
               <span className="flex items-center gap-1 font-mono">
                 <Flag className="w-3.5 h-3.5 text-studio-500" />
-                {race.lapsTotal} Laps
+                {race.lapsTotal} {isVi ? 'Vòng' : 'Laps'}
               </span>
             </div>
           </div>
@@ -83,7 +88,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
           {race.winner && (
             <div className="flex items-center gap-2">
               <Trophy className="w-4 h-4 text-amber-400" />
-              <span className="text-studio-400">Chiến thắng:</span>
+              <span className="text-studio-400">{isVi ? 'Chiến thắng:' : 'Winner:'}</span>
               <span className="font-bold text-white">{race.winner.driver}</span>
               <span className="text-studio-500 font-mono">({race.winner.team})</span>
               <span className="font-mono text-amber-400 ml-1 font-bold">{race.winner.time}</span>
@@ -93,7 +98,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
           {race.fastestLap && (
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-purple-400" />
-              <span className="text-studio-400">Fastest Lap:</span>
+              <span className="text-studio-400">{isVi ? 'Vòng nhanh nhất:' : 'Fastest Lap:'}</span>
               <span className="font-bold text-white">{race.fastestLap.driver}</span>
               <span className="font-mono text-purple-300 font-bold ml-1">
                 {race.fastestLap.time}
@@ -108,13 +113,15 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10 text-studio-400 uppercase tracking-wider text-[10px] font-bold">
-                  <th className="py-3 px-4 w-12 text-center">Pos</th>
-                  <th className="py-3 px-3 w-12 text-center">No</th>
-                  <th className="py-3 px-4">Tay Đua (Driver)</th>
-                  <th className="py-3 px-4">Đội Đua (Constructor)</th>
-                  <th className="py-3 px-3 text-center">Laps</th>
-                  <th className="py-3 px-4 text-right">Thời Gian / Cách Biệt</th>
-                  <th className="py-3 px-4 text-right">Điểm (PTS)</th>
+                  <th className="py-3 px-4 w-12 text-center">{isVi ? 'Hạng' : 'Pos'}</th>
+                  <th className="py-3 px-3 w-12 text-center">{isVi ? 'Số' : 'No'}</th>
+                  <th className="py-3 px-4">{isVi ? 'Tay Đua' : 'Driver'}</th>
+                  <th className="py-3 px-4">{isVi ? 'Đội Đua' : 'Constructor'}</th>
+                  <th className="py-3 px-3 text-center">{isVi ? 'Số Vòng' : 'Laps'}</th>
+                  <th className="py-3 px-4 text-right">
+                    {isVi ? 'Thời Gian / Cách Biệt' : 'Time / Gap'}
+                  </th>
+                  <th className="py-3 px-4 text-right">{isVi ? 'Điểm (PTS)' : 'Points'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 font-medium">
@@ -152,71 +159,58 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                       </td>
 
                       {/* Driver Number */}
-                      <td className="py-3 px-3 text-center font-mono text-studio-500 font-bold">
-                        {entry.driverNumber ? `#${entry.driverNumber}` : '-'}
+                      <td className="py-3 px-3 text-center font-mono font-bold text-studio-400">
+                        #{entry.driverNumber}
                       </td>
 
-                      {/* Driver Name & Code */}
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-white text-sm tracking-wide">
-                            {entry.driverName}
-                          </span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-studio-300 font-bold">
-                            {entry.driverCode}
-                          </span>
-                          {entry.fastestLap && (
-                            <span className="p-1 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold flex items-center gap-0.5">
-                              <Zap className="w-3 h-3 text-purple-400" />
-                              <span className="hidden sm:inline font-mono">
-                                {entry.fastestLapTime}
-                              </span>
-                            </span>
-                          )}
-                        </div>
+                      {/* Driver Name */}
+                      <td className="py-3 px-4 font-bold text-white flex items-center gap-2">
+                        {entry.position === 1 && <Trophy className="w-3.5 h-3.5 text-amber-400" />}
+                        <span>{entry.driverName}</span>
                       </td>
 
-                      {/* Team Name */}
+                      {/* Constructor */}
                       <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="w-1.5 h-4 rounded-full shrink-0"
-                            style={{ backgroundColor: teamInfo?.primaryColor || '#e80020' }}
-                          />
-                          <span className="text-studio-300 font-medium truncate">
-                            {entry.teamName}
-                          </span>
-                        </div>
+                        <span
+                          className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
+                          style={{
+                            backgroundColor: `${teamInfo?.primaryColor || '#e10600'}15`,
+                            borderColor: `${teamInfo?.primaryColor || '#e10600'}40`,
+                            color: teamInfo?.primaryColor || '#ffffff',
+                          }}
+                        >
+                          {entry.teamName}
+                        </span>
                       </td>
 
                       {/* Laps */}
-                      <td className="py-3 px-3 text-center font-mono text-studio-400">
+                      <td className="py-3 px-3 text-center font-mono text-studio-300">
                         {entry.laps}
                       </td>
 
-                      {/* Time / Gap / DNF status */}
+                      {/* Time / Gap / Status */}
                       <td className="py-3 px-4 text-right font-mono">
                         {isDNF ? (
-                          <span className="text-rose-400 font-bold text-[11px] bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
-                            {entry.status}
-                          </span>
-                        ) : entry.position === 1 ? (
-                          <span className="text-amber-400 font-black tracking-wide">
+                          <span className="text-red-400 font-bold uppercase">{entry.status}</span>
+                        ) : (
+                          <span
+                            className={
+                              entry.position === 1 ? 'text-amber-400 font-bold' : 'text-studio-300'
+                            }
+                          >
                             {entry.timeOrGap}
                           </span>
-                        ) : (
-                          <span className="text-studio-300">{entry.timeOrGap}</span>
                         )}
                       </td>
 
                       {/* Points */}
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3 px-4 text-right font-mono font-bold">
                         {entry.points > 0 ? (
-                          <span className="font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+                          <span className="inline-block px-2 py-0.5 rounded bg-white/10 text-white">
                             +{entry.points}
                           </span>
                         ) : (
-                          <span className="font-mono text-studio-600">0</span>
+                          <span className="text-studio-500">0</span>
                         )}
                       </td>
                     </tr>
@@ -236,9 +230,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
 
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold uppercase tracking-wider text-xs transition-colors"
+            className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold uppercase tracking-wider text-xs transition-colors cursor-pointer"
           >
-            Đóng
+            {isVi ? 'Đóng' : 'Close'}
           </button>
         </div>
       </div>
@@ -246,3 +240,4 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
     document.body,
   );
 };
+export default RaceClassificationModal;

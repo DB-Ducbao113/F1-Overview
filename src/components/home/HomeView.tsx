@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { t } from '../../i18n/translations';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
 import { FullscreenCarStage } from './FullscreenCarStage';
 import { SeasonYear } from '../../types';
@@ -12,7 +11,6 @@ import { ConstructorLogo } from '../common/ConstructorLogo';
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
-  const strings = t[lang].home;
 
   // Standings Season selector on Homepage (defaults to 2024 - Official Completed Season)
   const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(2024);
@@ -209,7 +207,7 @@ export const HomeView: React.FC = () => {
               }}
               className="text-xs font-bold uppercase tracking-wider text-f1red hover:underline flex items-center gap-1 shrink-0"
             >
-              <span>{strings.viewStandings}</span>
+              <span>{lang === 'vi' ? 'Xem đầy đủ BXH' : 'View Full Standings'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

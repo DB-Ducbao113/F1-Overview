@@ -170,14 +170,8 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
           </h1>
         </div>
 
-        {/* Action CTAs & Hint */}
+        {/* Action CTAs */}
         <div className="flex items-center gap-3 shrink-0 flex-wrap">
-          <span className="hidden xl:inline-block text-[11px] font-mono uppercase tracking-wider text-studio-400 mr-2">
-            {lang === 'vi'
-              ? '✦ Rê chuột để xem cận cảnh cỗ máy'
-              : '✦ Hover a team to inspect machine'}
-          </span>
-
           <button
             onClick={() => {
               navigate('/showroom');

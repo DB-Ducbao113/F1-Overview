@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { CALENDAR_2026 } from '../../data/championship';
 import { Clock, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
+import { useNavigationStore } from '../../store/useNavigationStore';
 
 export const RaceCalendar: React.FC = React.memo(() => {
+  const { lang } = useNavigationStore();
+  const isVi = lang === 'vi';
   const { detailedResults } = useChampionshipStore();
   const seasonResults = detailedResults[2026] || [];
   const completedRounds = new Set([
@@ -22,14 +25,24 @@ export const RaceCalendar: React.FC = React.memo(() => {
       <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200">
         <div>
           <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900">
-            2026 FIA Formula 1 World Championship Calendar
+            {isVi
+              ? 'Lịch Thi Đấu Giải Vô Địch Formula 1 2026'
+              : '2026 FIA Formula 1 World Championship Calendar'}
           </h3>
           <p className="text-xs text-studio-500 font-medium">
-            {completedRounds.size} / {CALENDAR_2026.length} rounds completed · 6 Sprint Weekends
+            {isVi
+              ? `${completedRounds.size} / ${CALENDAR_2026.length} chặng đã đua · 6 Cuối Tuần Đua Sprint`
+              : `${completedRounds.size} / ${CALENDAR_2026.length} rounds completed · 6 Sprint Weekends`}
           </p>
         </div>
         <span className="text-xs font-bold text-f1red">
-          {nextRace ? `Next: Round ${nextRace.round}` : 'Season complete'}
+          {nextRace
+            ? isVi
+              ? `Chặng kế tiếp: Vòng ${nextRace.round}`
+              : `Next: Round ${nextRace.round}`
+            : isVi
+              ? 'Mùa giải hoàn tất'
+              : 'Season complete'}
         </span>
       </div>
 
@@ -65,13 +78,15 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           : 'bg-studio-900 text-white'
                     }`}
                   >
-                    <span className="text-[9px] uppercase tracking-wider">RND</span>
+                    <span className="text-[9px] uppercase tracking-wider">
+                      {isVi ? 'VÒNG' : 'RND'}
+                    </span>
                     <span className="text-sm font-black leading-none">{gp.round}</span>
                   </div>
 
                   {/* Flag & Name */}
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-base" title={gp.country}>
                         {gp.flag}
                       </span>
@@ -85,17 +100,17 @@ export const RaceCalendar: React.FC = React.memo(() => {
                       )}
                       {isCurrent && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-f1red/10 text-f1red animate-pulse">
-                          Active Weekend
+                          {isVi ? 'Đang Diễn Ra' : 'Active Weekend'}
                         </span>
                       )}
                       {!isCurrent && isNext && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800">
-                          Up Next
+                          {isVi ? 'Chặng Tiếp Theo' : 'Up Next'}
                         </span>
                       )}
                       {isCompleted && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-studio-100 text-studio-500">
-                          Completed
+                          {isVi ? 'Đã Hoàn Tất' : 'Completed'}
                         </span>
                       )}
                     </div>
@@ -135,7 +150,9 @@ export const RaceCalendar: React.FC = React.memo(() => {
                       <MapPin className="w-3.5 h-3.5 text-f1red" /> {gp.circuit}, {gp.location}
                     </span>
                     <span className="font-medium">
-                      {gp.laps} Laps · {gp.circuitLengthKm} km · Race: {gp.raceDistanceKm} km
+                      {isVi
+                        ? `${gp.laps} Vòng · ${gp.circuitLengthKm} km · Đua chính: ${gp.raceDistanceKm} km`
+                        : `${gp.laps} Laps · ${gp.circuitLengthKm} km · Race: ${gp.raceDistanceKm} km`}
                     </span>
                   </div>
 
@@ -144,6 +161,19 @@ export const RaceCalendar: React.FC = React.memo(() => {
                     {Object.entries(gp.sessions).map(([key, session]) => {
                       if (!session) return null;
                       const sessionStatus = isCompleted ? 'finished' : session.status;
+                      const statusLabel =
+                        sessionStatus === 'finished'
+                          ? isVi
+                            ? 'hoàn tất'
+                            : 'finished'
+                          : sessionStatus === 'live'
+                            ? isVi
+                              ? 'trực tiếp'
+                              : 'live'
+                            : isVi
+                              ? 'sắp tới'
+                              : 'upcoming';
+
                       return (
                         <div
                           key={key}
@@ -169,7 +199,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                                     : 'text-emerald-600'
                               }`}
                             >
-                              {session.status}
+                              {statusLabel}
                             </span>
                           </div>
                         </div>

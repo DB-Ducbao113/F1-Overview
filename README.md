@@ -1,18 +1,18 @@
-# F1 Hub
+# Ground Effect Hub
 
-> Website thử nghiệm tổng hợp Formula 1, với giao diện tiếng Việt, khu trưng bày xe 3D, dữ liệu mùa giải và thư viện hình ảnh.
+> Không gian trải nghiệm 3D tương tác và trung tâm lưu trữ dữ liệu chuyên sâu cho kỷ nguyên xe đua hiệu ứng mặt đất Formula 1 (2022–2026). Tác giả: BaoBungBu. Dự án phi thương mại.
 
 ## Tính năng hiện có
 
-- Trang chủ với sân khấu xe 3D, lịch chặng và thông tin BXH.
-- Trang mùa giải với lịch, bảng xếp hạng và kết quả.
-- Đường dẫn trực tiếp cho mùa giải (`/season/2026`), kết quả từng chặng (`/season/2026/race/1`), gallery theo đội (`/gallery/ferrari`) và trang About.
-- Thư viện xe và hình ảnh theo đội, tay đua, xe và chặng đua.
-- Hồ sơ đội (`/teams/ferrari`) và tay đua (`/drivers/leclerc`), liên kết từ bảng xếp hạng và gallery.
-- Hồ sơ xe (`/cars/sf24`) với thông số và ghi chú kỹ thuật theo dữ liệu mẫu.
-- Danh bạ đội (`/teams`) và tay đua (`/drivers`) có tìm kiếm, lọc theo mùa giải hoặc đội.
-- Giao diện tiếng Việt và tiếng Anh.
-- Mùa giải 2026 tự kiểm tra kết quả qua Jolpica mỗi 15 phút khi website đang mở; có thể bấm **Cập nhật ngay** để làm mới tức thì. Dữ liệu mới lưu trong `localStorage` của trình duyệt hiện tại, chưa đồng bộ giữa các thiết bị.
+- Trang chủ với canvas lát cắt xe tương tác (Multi-slice poster canvas) siêu nhẹ, lịch chặng và tiêu điểm BXH.
+- Showroom 3D độc lập (`/showroom`) với mô hình hình học thống nhất (Ground Effect chassis C42), giải phẫu xe (Anatomy Hotspots), tạo màu sơn động (procedural livery) và âm thanh động cơ.
+- Trang mùa giải (`/season/2026`) với lịch thi đấu, bảng xếp hạng tay đua / đội đua và kết quả chi tiết từng chặng (`/season/2026/race/1`).
+- Hồ sơ đội (`/teams/ferrari`) và tay đua (`/drivers/leclerc`), liên kết trực tiếp từ bảng xếp hạng.
+- Hồ sơ xe (`/cars/sf24`) với thông số quy chuẩn FIA và phân tích khí động học.
+- Danh bạ đội (`/teams`) và tay đua (`/drivers`) có tìm kiếm, lọc theo mùa giải.
+- Trang giới thiệu dự án, kiến trúc kỹ thuật & tuyên bố pháp lý (`/about`).
+- Giao diện song ngữ hoàn chỉnh: Tiếng Việt và Tiếng Anh.
+- Mùa giải 2026 tự đồng bộ kết quả qua Jolpica API; dữ liệu tĩnh baseline được cập nhật tự động qua GitHub Actions CI/CD.
 
 Đây là prototype frontend: chưa có backend, tài khoản người dùng hay dữ liệu cộng đồng dùng chung. Tốc độ cập nhật phụ thuộc thời điểm Jolpica công bố phân loại sau chặng; đồng bộ tự động chỉ chạy khi website đang mở. Upload cộng đồng mặc định tắt; đừng bật `VITE_ENABLE_COMMUNITY` trước khi có xác thực và phân quyền phía server.
 
