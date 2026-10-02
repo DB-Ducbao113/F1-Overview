@@ -1,0 +1,66 @@
+name: Auto Update F1 2026 Data
+
+on:
+  schedule:
+    # Run every 4 hours daily, capturing Qualifying on Saturdays and Race results on Sundays
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-f1-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check project readiness
+        id: check_ready
+        run: |
+          if [ ! -f "package.json" ] || [ ! -f "scripts/update-2026-data.js" ]; then
+            echo "Project scaffold not yet merged to this branch. Skipping auto-update."
+            echo "ready=false" >> $GITHUB_OUTPUT
+          else
+            echo "ready=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Node.js
+        if: steps.check_ready.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.check_ready.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Sync 2026 Season Data from Jolpica API
+        if: steps.check_ready.outputs.ready == 'true'
+        run: node scripts/update-2026-data.js
+
+      - name: Verify build with updated data
+        if: steps.check_ready.outputs.ready == 'true'
+        run: npm run build
+
+      - name: Commit and push changes
+        if: steps.check_ready.outputs.ready == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/championship/ src/services/ src/store/
+          if git diff --staged --quiet; then
+            echo "No new F1 data changes detected."
+          else
+            echo "New F1 data detected! Committing and pushing..."
+            git commit -m "chore(data): auto-update 2026 F1 race & standings [skip ci]"
+            # Attempt push, but handle protected branch gracefully if direct push is forbidden
+            if ! git push origin HEAD; then
+              echo "::warning::Direct push to branch failed. Please verify branch protection rules or configure a personal access token (PAT) with bypass rights."
+            fi
+          fi
