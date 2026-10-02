@@ -50,7 +50,7 @@ export const DriverDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
-      <div className="page-container space-y-8">
+      <div className="page-container max-w-5xl space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
@@ -95,60 +95,107 @@ export const DriverDetailPage: React.FC = () => {
           )}
         </div>
 
-        <header className="relative overflow-hidden rounded-3xl bg-studio-950 p-7 text-white sm:p-12">
+        <header className="relative overflow-hidden rounded-3xl bg-studio-950 p-6 sm:p-10 text-white shadow-2xl border border-studio-800">
+          {/* Team Primary Color Left Accent Bar */}
           <div
-            className="absolute inset-y-0 left-0 w-2"
+            className="absolute inset-y-0 left-0 w-2.5 rounded-l-3xl"
+            style={{ backgroundColor: team.primaryColor }}
+          />
+
+          {/* Ambient Glows from Team Color */}
+          <div
+            className="absolute -right-16 -top-20 h-72 w-72 rounded-full opacity-25 blur-3xl pointer-events-none"
             style={{ backgroundColor: team.primaryColor }}
           />
           <div
-            className="absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-20 blur-3xl"
+            className="absolute -left-16 -bottom-20 h-72 w-72 rounded-full opacity-10 blur-3xl pointer-events-none"
             style={{ backgroundColor: team.primaryColor }}
           />
-          {driver?.imageUrl && (
-            <div className="absolute right-0 top-0 bottom-0 w-64 sm:w-80 md:w-96 pointer-events-none flex items-end justify-end overflow-hidden">
-              <img
-                src={driver.imageUrl}
-                alt={name}
-                className="h-full w-auto max-w-full object-contain object-bottom-right opacity-40 sm:opacity-55 filter grayscale(20%) contrast-110 mix-blend-screen"
-              />
-              <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-studio-950 to-transparent pointer-events-none" />
-            </div>
-          )}
-          <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-4">
-              <span
-                className="text-xs font-black uppercase tracking-[0.25em]"
-                style={{ color: team.primaryColor }}
-              >
-                {season} · {code} · {flag}
-                {country ? ` ${country}` : ''}
-              </span>
-              <h1 className="font-display text-4xl font-black uppercase tracking-tight sm:text-6xl">
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">
+            {/* Left Content */}
+            <div className="space-y-4 max-w-xl">
+              {/* Overline with season, code, flag, car number */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className="text-xs font-black uppercase tracking-[0.25em]"
+                  style={{ color: team.primaryColor }}
+                >
+                  {season} · {code} · {flag}
+                  {country ? ` ${country}` : ''}
+                </span>
+                {driver && (
+                  <span
+                    className="px-2 py-0.5 rounded-md text-[11px] font-black font-mono uppercase text-white shadow-xs"
+                    style={{ backgroundColor: team.primaryColor }}
+                  >
+                    #{driver.number}
+                  </span>
+                )}
+              </div>
+
+              {/* Driver Headline Name */}
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-none">
                 {name}
               </h1>
-              <div className="flex flex-wrap items-center gap-3 pt-1">
+
+              {/* Team and Actions */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
                   to={`/teams/${teamId}?season=${season}`}
-                  className="inline-flex items-center gap-2 text-sm font-bold text-studio-300 hover:text-white"
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md transition-all border border-white/10"
                 >
                   <ConstructorLogo teamId={teamId} size="sm" />
                   <span>{team.fullName}</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5 text-studio-400" />
                 </Link>
+
                 <Link
                   to={`/showroom?team=${teamId}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md transition-all border border-white/10"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-f1red/90 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-f1red/20 hover:scale-105"
                   title={lang === 'vi' ? 'Xem cỗ máy trong Showroom 3D' : 'View car in 3D Showroom'}
                 >
-                  <Box className="w-3.5 h-3.5 text-f1red group-hover:text-white" />
+                  <Box className="w-3.5 h-3.5" />
                   <span>{lang === 'vi' ? 'Xem Xe 3D' : '3D Showroom'}</span>
                 </Link>
               </div>
+
+              {/* Quick Career / Season Summary Badges */}
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono">
+                {entry && (
+                  <div className="flex items-center gap-1.5">
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                    <span>
+                      {lang === 'vi' ? 'Thứ hạng' : 'Rank'}:{' '}
+                      <strong className="text-white">P{entry.rank}</strong>
+                    </span>
+                  </div>
+                )}
+                {driver && (
+                  <div className="flex items-center gap-1.5">
+                    <Flag className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>
+                      {driver.careerWins} {lang === 'vi' ? 'chiến thắng' : 'wins'} ·{' '}
+                      {driver.podiums} {lang === 'vi' ? 'podium' : 'podiums'}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
-            {driver && (
-              <span className="font-display text-8xl font-black leading-none text-white/10 sm:text-9xl">
-                {driver.number}
-              </span>
+
+            {/* Right Driver Portrait Poster Card */}
+            {driver?.imageUrl && (
+              <div className="relative shrink-0 self-center md:self-auto">
+                <div className="relative w-40 sm:w-48 md:w-52 aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-studio-900 group">
+                  <img
+                    src={driver.imageUrl}
+                    alt={name}
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Subtle bottom vignette to protect the bottom caption */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                </div>
+              </div>
             )}
           </div>
         </header>
