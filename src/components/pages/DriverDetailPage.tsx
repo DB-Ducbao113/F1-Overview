@@ -5,7 +5,7 @@ import { DRIVERS_DATA, getDriverCareerStats } from '../../data/drivers';
 import { TEAMS_DATA } from '../../data/teams';
 import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { SeasonYear } from '../../types';
+import { SeasonYear, TeamId } from '../../types';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
@@ -43,12 +43,23 @@ export const DriverDetailPage: React.FC = () => {
 
   const season = entry?.season ?? 2026;
   const careerUpToSeason = getDriverCareerStats(driverId, season);
-  const teamId = entry?.teamId ?? driver!.teamId;
-  const team = TEAMS_DATA[teamId];
-  const name = driver?.name ?? entry!.driverName;
-  const code = driver?.code ?? entry!.driverCode;
+  const teamId = entry?.teamId ?? driver?.teamId ?? 'ferrari';
+  const team = TEAMS_DATA[teamId] ?? {
+    id: (teamId as TeamId) || 'ferrari',
+    name: entry?.teamName || 'Formula 1 Team',
+    fullName: entry?.teamName || 'Formula 1 Team',
+    base: 'Formula 1',
+    teamPrincipal: 'Team Principal',
+    powerUnit: 'F1 V6 Turbo Hybrid',
+    primaryColor: '#e10600',
+    accentColor: '#ffffff',
+    highlightColor: '#18181b',
+    drivers: [],
+  };
+  const name = driver?.name ?? entry?.driverName ?? 'Driver';
+  const code = driver?.code ?? entry?.driverCode ?? 'DRV';
   const flag = driver?.flagEmoji ?? entry?.countryFlag ?? '';
-  const country = driver?.country;
+  const country = driver?.country ?? '';
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
