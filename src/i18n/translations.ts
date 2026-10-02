@@ -5,8 +5,8 @@ export const t = {
       cars: 'Xe đua',
       championship: 'Giải đấu',
       collection: 'Showroom 3D',
-      brandTitle: 'Formula 1 Hub',
-      brandSub: 'Editorial & Racing Archive',
+      brandTitle: 'Ground Effect Hub',
+      brandSub: '3D Technical Showcase & Racing Archive',
     },
     home: {
       heroBadge: 'Formula 1 · Modern Grand Prix Racing',
@@ -95,8 +95,8 @@ export const t = {
       colData: 'Dữ Liệu',
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
-        'Trang web được xây dựng phục vụ mục đích học tập và tôn vinh thể thao. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan là tài sản của Formula One Licensing B.V.',
-      copyright: '© 2026 Formula 1 Hub. Dữ liệu mùa giải và lưu trữ hình ảnh tuyển chọn.',
+        'Trang web phi thương mại được xây dựng phục vụ mục đích nghiên cứu công nghệ và tôn vinh thể thao. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan là tài sản của Formula One Licensing B.V.',
+      copyright: '© 2026 Ground Effect Hub. Tác giả: BaoBungBu. Fan tribute phi thương mại.',
     },
   },
   en: {
@@ -105,8 +105,8 @@ export const t = {
       cars: 'Cars',
       championship: 'Championship',
       collection: '3D Showroom',
-      brandTitle: 'Formula 1 Hub',
-      brandSub: 'Editorial & Racing Archive',
+      brandTitle: 'Ground Effect Hub',
+      brandSub: '3D Technical Showcase & Racing Archive',
     },
     home: {
       heroBadge: 'Formula 1 · Modern Grand Prix Racing',
@@ -190,13 +190,13 @@ export const t = {
     },
 
     footer: {
-      desc: 'Formula 1 Hub — Modern editorial hub, championship telemetry, and visual archive for Formula 1 enthusiasts.',
+      desc: 'Ground Effect Hub — Non-commercial 3D technical showcase, championship telemetry, and racing archive for motorsport enthusiasts.',
       colExplore: 'Navigation',
       colData: 'Championship',
       colLegal: 'Attribution & Provenance',
       disclaimer:
-        'This website is an independent editorial project created for educational and sports appreciation purposes. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.',
-      copyright: '© 2026 Formula 1 Hub. Curated racing archive & technical reference.',
+        'This website is an independent non-commercial project created for educational and sports appreciation purposes. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.',
+      copyright: '© 2026 Ground Effect Hub. Created by BaoBungBu. Non-commercial fan tribute.',
     },
   },
 };

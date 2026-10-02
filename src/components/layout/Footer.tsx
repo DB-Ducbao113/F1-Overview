@@ -19,7 +19,7 @@ export const Footer: React.FC = React.memo(() => {
                 <span className="text-[10px] font-black text-studio-950">F1</span>
               </span>
               <span className="font-display text-lg uppercase tracking-wider font-bold text-white">
-                Formula 1 Hub
+                Ground Effect Hub
               </span>
             </div>
             <p className="text-sm text-studio-400 font-light leading-relaxed max-w-md mb-6">
@@ -92,7 +92,7 @@ export const Footer: React.FC = React.memo(() => {
           <p>{strings.copyright}</p>
           <div className="flex items-center gap-4">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>2026 Season Hub Active</span>
+            <span>2026 Ground Effect Hub · Curated by BaoBungBu</span>
           </div>
         </div>
       </div>
