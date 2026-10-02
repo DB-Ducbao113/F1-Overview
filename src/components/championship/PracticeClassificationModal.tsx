@@ -19,7 +19,9 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
 
-  const [activeSessionKey, setActiveSessionKey] = useState<'fp1' | 'fp2' | 'fp3'>(initialSessionKey);
+  const [activeSessionKey, setActiveSessionKey] = useState<'fp1' | 'fp2' | 'fp3'>(
+    initialSessionKey,
+  );
 
   useEffect(() => {
     setActiveSessionKey(initialSessionKey);
@@ -59,7 +61,8 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-400 bg-sky-500/15 px-2.5 py-0.5 rounded-full border border-sky-500/30">
-                {isVi ? `Chặng ${practiceData.round}` : `Round ${practiceData.round}`} · {practiceData.season}
+                {isVi ? `Chặng ${practiceData.round}` : `Round ${practiceData.round}`} ·{' '}
+                {practiceData.season}
               </span>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                 <Timer className="w-3.5 h-3.5" />
@@ -116,7 +119,7 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                         : 'bg-studio-800 text-studio-400'
                   }`}
                 >
-                  {isFinished ? (isVi ? 'Đã chạy' : 'Finished') : (isVi ? 'Sắp tới' : 'Scheduled')}
+                  {isFinished ? (isVi ? 'Đã chạy' : 'Finished') : isVi ? 'Sắp tới' : 'Scheduled'}
                 </span>
               </button>
             );
@@ -129,10 +132,16 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
             {currentSession.fastestDriver && (
               <div className="flex items-center gap-2">
                 <Timer className="w-4 h-4 text-sky-400" />
-                <span className="text-studio-400">{isVi ? 'Nhanh nhất phiên:' : 'Fastest in session:'}</span>
+                <span className="text-studio-400">
+                  {isVi ? 'Nhanh nhất phiên:' : 'Fastest in session:'}
+                </span>
                 <span className="font-bold text-white">{currentSession.fastestDriver.driver}</span>
-                <span className="text-studio-500 font-mono">({currentSession.fastestDriver.team})</span>
-                <span className="font-mono text-sky-300 font-bold ml-1">{currentSession.fastestDriver.time}</span>
+                <span className="text-studio-500 font-mono">
+                  ({currentSession.fastestDriver.team})
+                </span>
+                <span className="font-mono text-sky-300 font-bold ml-1">
+                  {currentSession.fastestDriver.time}
+                </span>
               </div>
             )}
 
@@ -167,7 +176,9 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                     <th className="py-3 px-3 w-12 text-center">{isVi ? 'Số' : 'No'}</th>
                     <th className="py-3 px-4">{isVi ? 'Tay Đua' : 'Driver'}</th>
                     <th className="py-3 px-4">{isVi ? 'Đội Đua' : 'Constructor'}</th>
-                    <th className="py-3 px-4 text-right">{isVi ? 'Thời Gian Tốt Nhất' : 'Best Lap Time'}</th>
+                    <th className="py-3 px-4 text-right">
+                      {isVi ? 'Thời Gian Tốt Nhất' : 'Best Lap Time'}
+                    </th>
                     <th className="py-3 px-4 text-right">{isVi ? 'Cách Biệt P1' : 'Gap to P1'}</th>
                     <th className="py-3 px-3 text-center">{isVi ? 'Số Vòng' : 'Laps'}</th>
                   </tr>
@@ -206,7 +217,9 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
 
                         {/* Driver Name */}
                         <td className="py-3 px-4 font-bold text-white flex items-center gap-2">
-                          <span className="font-mono text-xs text-studio-400 w-8">{entry.driverCode}</span>
+                          <span className="font-mono text-xs text-studio-400 w-8">
+                            {entry.driverCode}
+                          </span>
                           <span>{entry.driverName}</span>
                         </td>
 

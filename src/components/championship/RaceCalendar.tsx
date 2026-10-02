@@ -20,13 +20,17 @@ export const RaceCalendar: React.FC = React.memo(() => {
 
   // State cho Practice Modal
   const [selectedPracticeRound, setSelectedPracticeRound] = useState<number | null>(null);
-  const [selectedPracticeSessionKey, setSelectedPracticeSessionKey] = useState<'fp1' | 'fp2' | 'fp3'>('fp1');
+  const [selectedPracticeSessionKey, setSelectedPracticeSessionKey] = useState<
+    'fp1' | 'fp2' | 'fp3'
+  >('fp1');
 
   const toggleExpand = (round: number) => {
     setExpandedRound(expandedRound === round ? null : round);
   };
 
-  const activePracticeData = selectedPracticeRound ? PRACTICE_RESULTS_2026[selectedPracticeRound] : null;
+  const activePracticeData = selectedPracticeRound
+    ? PRACTICE_RESULTS_2026[selectedPracticeRound]
+    : null;
 
   return (
     <div className="space-y-4">
@@ -176,10 +180,15 @@ export const RaceCalendar: React.FC = React.memo(() => {
                     {Object.entries(gp.sessions).map(([key, session]) => {
                       if (!session) return null;
                       const practiceDataForRound = PRACTICE_RESULTS_2026[gp.round];
-                      const practiceSession = practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3'];
-                      
+                      const practiceSession =
+                        practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3'];
+
                       const isFinishedPractice = practiceSession?.status === 'finished';
-                      const sessionStatus = isFinishedPractice ? 'finished' : isCompleted ? 'finished' : session.status;
+                      const sessionStatus = isFinishedPractice
+                        ? 'finished'
+                        : isCompleted
+                          ? 'finished'
+                          : session.status;
                       const statusLabel =
                         sessionStatus === 'finished'
                           ? isVi
@@ -266,4 +275,3 @@ export const RaceCalendar: React.FC = React.memo(() => {
     </div>
   );
 });
-

@@ -55,7 +55,9 @@ export const Navbar: React.FC = React.memo(() => {
             aria-label="Formula 1 Hub"
           >
             <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle group-hover:scale-105 transition-transform duration-200">
-              <span className="text-[10px] sm:text-[11px] font-black text-studio-950 tracking-tight">F1</span>
+              <span className="text-[10px] sm:text-[11px] font-black text-studio-950 tracking-tight">
+                F1
+              </span>
             </span>
             <div className="flex flex-col">
               <span className="text-[11px] sm:text-[13px] font-display uppercase tracking-widest font-black text-studio-950 group-hover:text-f1red transition-colors duration-200 leading-tight">

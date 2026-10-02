@@ -141,7 +141,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
             <table className="w-full text-left text-xs min-w-[600px]">
               <thead className="bg-studio-100/80 border-b border-studio-200 text-studio-600 uppercase font-bold tracking-wider">
                 <tr>
-                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">{strings.pos}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">
+                    {strings.pos}
+                  </th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.driver}</th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.team}</th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.wins}</th>
@@ -176,7 +178,10 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       </td>
                       <td className="py-3 sm:py-3.5 px-3 sm:px-4">
                         <div className="flex items-center gap-2 sm:gap-2.5">
-                          <span className="text-sm sm:text-base shrink-0" title={driver.countryFlag}>
+                          <span
+                            className="text-sm sm:text-base shrink-0"
+                            title={driver.countryFlag}
+                          >
                             {driver.countryFlag}
                           </span>
                           <div>
@@ -237,7 +242,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
             <table className="w-full text-left text-xs min-w-[600px]">
               <thead className="bg-studio-100/80 border-b border-studio-200 text-studio-600 uppercase font-bold tracking-wider">
                 <tr>
-                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">{strings.pos}</th>
+                  <th className="py-3 sm:py-3.5 px-3 sm:px-4 w-12 sm:w-16 text-center">
+                    {strings.pos}
+                  </th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.team}</th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4">{strings.engine}</th>
                   <th className="py-3 sm:py-3.5 px-3 sm:px-4 text-center">{strings.wins}</th>
@@ -284,7 +291,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                           </Link>
                         </div>
                       </td>
-                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 font-medium text-studio-600 text-xs">{c.engine}</td>
+                      <td className="py-3 sm:py-3.5 px-3 sm:px-4 font-medium text-studio-600 text-xs">
+                        {c.engine}
+                      </td>
                       <td className="py-3 sm:py-3.5 px-3 sm:px-4 text-center font-semibold text-studio-700">
                         {c.wins}
                       </td>
