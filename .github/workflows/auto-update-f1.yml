@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.AUTO_UPDATE_F1_RESULT_TOKEN || github.token }}
 
       - name: Check project readiness
         id: check_ready
