@@ -187,20 +187,52 @@ export const DriverDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Driver Portrait Poster Card */}
-            {driver?.imageUrl && (
-              <div className="relative shrink-0 self-center md:self-auto">
-                <div className="relative w-40 sm:w-48 md:w-52 aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-studio-900 group">
-                  <img
-                    src={driver.imageUrl}
-                    alt={name}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {/* Subtle bottom vignette to protect the bottom caption */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                </div>
+            {/* Right Driver Racing Card / Number Poster */}
+            <div className="relative shrink-0 self-center md:self-auto">
+              <div
+                className="relative w-36 sm:w-44 md:w-48 aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-gradient-to-b from-white/10 via-studio-900 to-studio-950 flex flex-col items-center justify-between p-6 text-center group"
+                style={{
+                  boxShadow: `0 20px 40px -15px ${team.primaryColor}30`,
+                }}
+              >
+                {driver?.imageUrl ? (
+                  <>
+                    <img
+                      src={driver.imageUrl}
+                      alt={name}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  </>
+                ) : (
+                  <>
+                    {/* Top Team Logo */}
+                    <div className="pt-2">
+                      <ConstructorLogo teamId={teamId} size="md" />
+                    </div>
+
+                    {/* Middle Giant Car Number */}
+                    <div className="my-auto space-y-1">
+                      <span
+                        className="block font-display text-5xl sm:text-6xl font-black tracking-tight"
+                        style={{ color: team.primaryColor }}
+                      >
+                        #{driver?.number ?? entry?.rank}
+                      </span>
+                      <span className="block font-mono text-sm font-bold tracking-widest text-white/90">
+                        {code}
+                      </span>
+                    </div>
+
+                    {/* Bottom Flag & Nation */}
+                    <div className="pb-1 text-xs font-mono text-studio-400 flex items-center gap-1.5">
+                      <span className="text-base">{flag}</span>
+                      <span className="font-bold text-white">{country}</span>
+                    </div>
+                  </>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </header>
 

@@ -81,7 +81,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Monaco',
     countryCode: 'MC',
     flagEmoji: '🇲🇨',
-    imageUrl: '/assets/ferrari/driver_250926.jpg',
     careerWins: 11, // 8 through 2024 + 2 (2025) + 1 (2026)
     podiums: 54, // 43 through 2024 + 7 (2025) + 4 (2026)
   },
@@ -95,7 +94,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'United Kingdom',
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
-    imageUrl: '/assets/ferrari/driver_2-250926.jpg',
     careerWins: 107, // 105 through 2024 + 1 (2025) + 1 (2026)
     podiums: 211, // 202 through 2024 + 4 (2025) + 5 (2026)
   },
@@ -111,7 +109,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'United Kingdom',
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
-    imageUrl: '/assets/mclaren/driver_250926.jpg',
     careerWins: 13, // 4 through 2024 + 7 (2025) + 2 (2026)
     podiums: 49, // 28 through 2024 + 16 (2025) + 5 (2026)
   },
@@ -125,7 +122,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Australia',
     countryCode: 'AU',
     flagEmoji: '🇦🇺',
-    imageUrl: '/assets/mclaren/driver_2-250926.jpg',
     careerWins: 6, // 2 through 2024 + 4 (2025) + 0 (2026)
     podiums: 26, // 10 through 2024 + 14 (2025) + 2 (2026)
   },
@@ -141,7 +137,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Netherlands',
     countryCode: 'NL',
     flagEmoji: '🇳🇱',
-    imageUrl: '/assets/redbull/driver_250926.jpg',
     careerWins: 71, // 63 through 2024 + 8 (2025) + 0 (2026)
     podiums: 134, // 112 through 2024 + 15 (2025) + 7 (2026)
   },
@@ -155,7 +150,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'France',
     countryCode: 'FR',
     flagEmoji: '🇫🇷',
-    imageUrl: '/assets/redbull/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 2, // 2 podiums in 2026 season
   },
@@ -171,7 +165,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'United Kingdom',
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
-    imageUrl: '/assets/mercedes/driver_250926.jpg',
     careerWins: 8, // 3 through 2024 + 2 (2025) + 3 (2026)
     podiums: 31, // 15 through 2024 + 8 (2025) + 8 (2026)
   },
@@ -185,7 +178,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Italy',
     countryCode: 'IT',
     flagEmoji: '🇮🇹',
-    imageUrl: '/assets/mercedes/driver_2-250926.jpg',
     careerWins: 8, // 8 wins in 2026 season
     podiums: 15, // 3 in 2025 + 12 in 2026
   },
@@ -201,7 +193,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Spain',
     countryCode: 'ES',
     flagEmoji: '🇪🇸',
-    imageUrl: '/assets/astonmartin/driver_250926.jpg',
     careerWins: 32,
     podiums: 106,
   },
@@ -215,7 +206,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Canada',
     countryCode: 'CA',
     flagEmoji: '🇨🇦',
-    imageUrl: '/assets/astonmartin/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 3,
   },
@@ -231,7 +221,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'France',
     countryCode: 'FR',
     flagEmoji: '🇫🇷',
-    imageUrl: '/assets/alpine/driver_250926.jpg',
     careerWins: 1,
     podiums: 5, // 4 through 2023 + 1 (Brazil 2024)
   },
@@ -245,7 +234,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Argentina',
     countryCode: 'AR',
     flagEmoji: '🇦🇷',
-    imageUrl: '/assets/alpine/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -261,7 +249,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'New Zealand',
     countryCode: 'NZ',
     flagEmoji: '🇳🇿',
-    imageUrl: '/assets/racingbulls/driver_250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -275,7 +262,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'United Kingdom',
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
-    imageUrl: '/assets/racingbulls/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -291,7 +277,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'France',
     countryCode: 'FR',
     flagEmoji: '🇫🇷',
-    imageUrl: '/assets/haas/driver_250926.jpg',
     careerWins: 1,
     podiums: 4, // 3 through 2023 + 1 (Brazil 2024)
   },
@@ -305,7 +290,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'United Kingdom',
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
-    imageUrl: '/assets/haas/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -321,7 +305,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Spain',
     countryCode: 'ES',
     flagEmoji: '🇪🇸',
-    imageUrl: '/assets/williams/driver_250926.jpg',
     careerWins: 4, // 4 through 2024
     podiums: 27, // 26 through 2024 + 1 (2025)
   },
@@ -335,7 +318,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Thailand',
     countryCode: 'TH',
     flagEmoji: '🇹🇭',
-    imageUrl: '/assets/williams/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 3, // 2 through 2024 + 1 (2025)
   },
@@ -351,7 +333,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Germany',
     countryCode: 'DE',
     flagEmoji: '🇩🇪',
-    imageUrl: '/assets/audi/driver_250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -365,7 +346,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Brazil',
     countryCode: 'BR',
     flagEmoji: '🇧🇷',
-    imageUrl: '/assets/audi/driver_2-250926.jpg',
     careerWins: 0,
     podiums: 0,
   },
@@ -381,7 +361,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Mexico',
     countryCode: 'MX',
     flagEmoji: '🇲🇽',
-    imageUrl: '/assets/cadillac/driver_250926.jpg',
     careerWins: 6,
     podiums: 39,
   },
@@ -395,7 +374,6 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     country: 'Finland',
     countryCode: 'FI',
     flagEmoji: '🇫🇮',
-    imageUrl: '/assets/cadillac/driver_2-250926.png',
     careerWins: 10,
     podiums: 67,
   },
