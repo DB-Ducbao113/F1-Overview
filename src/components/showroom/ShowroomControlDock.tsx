@@ -17,14 +17,13 @@ import {
   Settings2,
   Volume2,
   VolumeX,
-  Sun,
-  Moon,
   Sparkles,
   Flame,
   Award,
+  Camera,
 } from 'lucide-react';
 
-export type StudioLightingMode = 'studio' | 'night_gp' | 'daylight';
+export type StudioLightingMode = 'studio';
 
 interface ShowroomControlDockProps {
   cameraPreset: CameraPreset | null;
@@ -36,13 +35,13 @@ interface ShowroomControlDockProps {
   onZoom: (direction: 'in' | 'out') => void;
   onResetView: () => void;
   lang: 'vi' | 'en';
-  // Audio Controls (Direction 2)
+  // Audio Controls
   isAudioActive: boolean;
   onToggleAudio: () => void;
   onRevEngine: () => void;
-  // Studio Lighting Mode (Direction 3)
-  lightingMode: StudioLightingMode;
-  onChangeLightingMode: (mode: StudioLightingMode) => void;
+  // Studio Lighting Mode
+  lightingMode?: StudioLightingMode;
+  onChangeLightingMode?: (mode: StudioLightingMode) => void;
   // Sponsor Decals
   showSponsors?: boolean;
   onToggleSponsors?: () => void;
@@ -65,8 +64,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     isAudioActive,
     onToggleAudio,
     onRevEngine,
-    lightingMode,
-    onChangeLightingMode,
+    lightingMode: _lightingMode = 'studio',
     showSponsors = true,
     onToggleSponsors,
     showHotspots = false,
@@ -109,40 +107,6 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
         labelVi: 'Từ Trên Xuống',
         labelEn: 'Top Down',
         icon: <Box className="w-3.5 h-3.5" />,
-      },
-    ];
-
-    const LIGHTING_MODES: {
-      id: StudioLightingMode;
-      labelVi: string;
-      labelEn: string;
-      descVi: string;
-      descEn: string;
-      icon: React.ReactNode;
-    }[] = [
-      {
-        id: 'studio',
-        labelVi: 'Studio W15',
-        labelEn: 'Studio W15',
-        descVi: 'Studio Ảnh Chụp Thực Tế Cao Cấp',
-        descEn: 'Authentic Studio Photoshoot',
-        icon: <Moon className="w-3.5 h-3.5" />,
-      },
-      {
-        id: 'night_gp',
-        labelVi: 'Đua Đêm',
-        labelEn: 'Night GP',
-        descVi: 'Đèn Pha Rọi Đường Đua Singapore GP',
-        descEn: 'Singapore Floodlight GP',
-        icon: <Sparkles className="w-3.5 h-3.5" />,
-      },
-      {
-        id: 'daylight',
-        labelVi: 'Ban Ngày',
-        labelEn: 'Daylight',
-        descVi: 'Nắng Địa Trung Hải Monaco GP',
-        descEn: 'Monaco Mediterranean Sunlight',
-        icon: <Sun className="w-3.5 h-3.5" />,
       },
     ];
 
@@ -225,40 +189,34 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                 </div>
               </div>
 
-              {/* 2. Studio Lighting Environment (Direction 3) */}
+              {/* 2. Studio Lighting Environment (Studio W15 Dedicated Photoshoot Stage) */}
               <div className="pt-2 border-t border-studio-800/80">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-studio-400 mb-1.5 flex items-center justify-between">
                   <span>{lang === 'vi' ? 'Ánh sáng trường quay:' : 'Studio Lighting:'}</span>
-                  <span className="text-amber-400 font-mono text-[9px] uppercase">
-                    {lightingMode === 'studio'
-                      ? 'STUDIO W15'
-                      : lightingMode === 'night_gp'
-                        ? 'NIGHT GP'
-                        : 'DAYLIGHT'}
+                  <span className="text-amber-400 font-mono text-[9px] uppercase flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                    STUDIO W15 SPEC
                   </span>
                 </div>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {LIGHTING_MODES.map((mode) => {
-                    const isActive = lightingMode === mode.id;
-                    return (
-                      <button
-                        key={mode.id}
-                        type="button"
-                        onClick={() => onChangeLightingMode(mode.id)}
-                        className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer border ${
-                          isActive
-                            ? 'bg-amber-500/20 text-amber-300 border-amber-500 shadow-sm shadow-amber-500/20'
-                            : 'bg-studio-900/80 text-studio-400 border-studio-800 hover:bg-studio-800 hover:text-white'
-                        }`}
-                        aria-label={lang === 'vi' ? mode.descVi : mode.descEn}
-                      >
-                        {mode.icon}
-                        <span className="truncate">
-                          {lang === 'vi' ? mode.labelVi : mode.labelEn}
-                        </span>
-                      </button>
-                    );
-                  })}
+                <div className="p-2.5 rounded-xl bg-gradient-to-r from-studio-900/90 to-studio-950/90 border border-studio-800/90 flex items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
+                      <Camera className="w-3.5 h-3.5 text-amber-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[11px] font-bold text-white truncate">
+                        {lang === 'vi' ? 'Studio W15 Photoshoot' : 'Studio W15 Photoshoot'}
+                      </h4>
+                      <p className="text-[9px] text-studio-400 truncate">
+                        {lang === 'vi'
+                          ? 'Dàn Softbox trần & Vách cong vô cực 5600K'
+                          : 'Overhead Softbox rig & Cyclorama 5600K'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="shrink-0 text-[9px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    {lang === 'vi' ? 'CHUẨN STUDIO' : 'CALIBRATED'}
+                  </span>
                 </div>
               </div>
 
@@ -478,6 +436,12 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                       {lang === 'vi' ? 'Zoom 3D' : '3D Zoom'}
                     </button>
                   </div>
+                  <p className="text-[9px] text-studio-500 font-medium">
+                    ✦{' '}
+                    {lang === 'vi'
+                      ? 'Đổi nhanh tại thanh đáy màn hình 3D'
+                      : 'Quick toggle on bottom 3D HUD'}
+                  </p>
                 </div>
 
                 {/* Direct Zoom In & Out Step Buttons */}

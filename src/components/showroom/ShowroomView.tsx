@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
-import { ContactShadows, Environment, MeshReflectorMaterial } from '@react-three/drei';
+import { ContactShadows, Environment } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -9,6 +9,8 @@ import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock, StudioLightingMode } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
+import { StudioW15Stage } from './StudioW15Stage';
+import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -254,7 +256,21 @@ export const ShowroomView: React.FC = () => {
       </div>
 
       {/* ── 3D Interactive Showroom Canvas Stage ── */}
-      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-radial from-[#12121a] via-[#09090e] to-[#040407] select-none">
+      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none">
+        {/* Dynamic Studio Ambient Spotlight & Team Accent Halo */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
+          style={{
+            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${team.primaryColor}16 0%, transparent 68%)`,
+          }}
+        />
+
+        {/* Studio Technical Metadata Watermark (Mercedes / Maranello Engineering Stage style) */}
+        <div className="absolute bottom-4 left-4 z-10 pointer-events-none hidden lg:flex flex-col text-[10px] font-mono tracking-widest text-studio-500 uppercase select-none space-y-0.5">
+          <span className="text-studio-400 font-bold">STUDIO W15 · PHOTOMETRIC STAGE</span>
+          <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
+        </div>
+
         {/* Top Left Floating Team Badge with Official Logo */}
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
           <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
@@ -312,167 +328,18 @@ export const ShowroomView: React.FC = () => {
           <Canvas
             shadows
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-            gl={useMemo(
-              () => ({
-                antialias: true,
-                alpha: true,
-                toneMappingExposure:
-                  lightingMode === 'night_gp' ? 1.2 : lightingMode === 'daylight' ? 1.1 : 1.0,
-              }),
-              [lightingMode],
-            )}
+            gl={{
+              antialias: true,
+              alpha: true,
+              toneMappingExposure: 1.05,
+            }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
             {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-            <Environment
-              preset={
-                lightingMode === 'night_gp'
-                  ? 'night'
-                  : lightingMode === 'daylight'
-                    ? 'sunset'
-                    : 'city'
-              }
-            />
+            <Environment preset="city" />
 
-            {/* ── Cinematic Studio Lighting according to lightingMode (Direction 3) ── */}
-            {lightingMode === 'studio' && (
-              <>
-                {/* High-End Automotive Studio Key, Fill & Rim Lights (Calibrated for rich, authentic paint colors) */}
-                <ambientLight intensity={0.5} color="#f8fafc" />
-                <directionalLight
-                  position={[5, 8, -4]}
-                  intensity={1.8}
-                  color="#ffffff"
-                  castShadow
-                  shadow-mapSize-width={2048}
-                  shadow-mapSize-height={2048}
-                  shadow-bias={-0.0001}
-                />
-                <directionalLight position={[-6, 5, 4]} intensity={1.1} color="#e0f2fe" />
-                <directionalLight position={[0, -2, 0]} intensity={0.3} color="#ffffff" />
-
-                {/* Overhead Softbox Ceiling Light Panel (visible in Hình 2 above the car) */}
-                <group position={[0, 4.2, -0.2]}>
-                  <mesh rotation={[Math.PI / 2, 0, 0]}>
-                    <planeGeometry args={[3.6, 7.5]} />
-                    <meshBasicMaterial color="#ffffff" toneMapped={false} />
-                  </mesh>
-                  <spotLight
-                    position={[0, 0, 0]}
-                    angle={0.8}
-                    penumbra={0.7}
-                    intensity={1.8}
-                    color="#ffffff"
-                  />
-                </group>
-
-                {/* Polished Luxury Dark Mirror Floor (Reflecting the F1 car like Hình 2) */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
-                  <planeGeometry args={[30, 30]} />
-                  <MeshReflectorMaterial
-                    blur={[300, 100]}
-                    resolution={1024}
-                    mirror={0.7}
-                    mixBlur={0.6}
-                    mixStrength={2.2}
-                    roughness={0.15}
-                    depthScale={1.2}
-                    minDepthThreshold={0.4}
-                    maxDepthThreshold={1.4}
-                    color="#090a0d"
-                    metalness={0.7}
-                  />
-                </mesh>
-              </>
-            )}
-
-            {lightingMode === 'night_gp' && (
-              <>
-                {/* Singapore GP Stadium Floodlights */}
-                <ambientLight intensity={0.9} color="#94a3b8" />
-                <spotLight
-                  position={[6, 12, 6]}
-                  angle={0.55}
-                  penumbra={0.5}
-                  intensity={3.8}
-                  color="#ffffff"
-                  castShadow
-                  shadow-mapSize-width={2048}
-                  shadow-mapSize-height={2048}
-                />
-                <spotLight
-                  position={[-6, 12, -6]}
-                  angle={0.55}
-                  penumbra={0.5}
-                  intensity={3.8}
-                  color="#e0f2fe"
-                />
-                <spotLight
-                  position={[-6, 12, 6]}
-                  angle={0.55}
-                  penumbra={0.5}
-                  intensity={3.5}
-                  color="#ffffff"
-                />
-                <spotLight
-                  position={[6, 12, -6]}
-                  angle={0.55}
-                  penumbra={0.5}
-                  intensity={3.5}
-                  color="#e0f2fe"
-                />
-                <pointLight position={[0, 5, 0]} intensity={2.0} color="#ffffff" />
-                {/* Floor: Asphalt Track with High-Contrast White Grid & Yellow Curbs */}
-                <group position={[0, -0.01, 0]}>
-                  <gridHelper args={[16, 32, '#ffffff', '#0f172a']} position={[0, 0, 0]} />
-                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[3.0, 3.06, 64]} />
-                    <meshBasicMaterial color="#eab308" transparent opacity={0.6} />
-                  </mesh>
-                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[4.5, 4.54, 64]} />
-                    <meshBasicMaterial color={team.primaryColor} transparent opacity={0.5} />
-                  </mesh>
-                </group>
-              </>
-            )}
-
-            {lightingMode === 'daylight' && (
-              <>
-                {/* Monaco Daylight: Mediterranean Sun */}
-                <ambientLight intensity={1.8} color="#fffbeb" />
-                <directionalLight
-                  position={[8, 14, -6]}
-                  intensity={3.4}
-                  color="#fffbeb"
-                  castShadow
-                  shadow-mapSize-width={2048}
-                  shadow-mapSize-height={2048}
-                  shadow-bias={-0.0001}
-                />
-                <directionalLight position={[-8, 6, 8]} intensity={1.6} color="#bae6fd" />
-                <directionalLight position={[0, -2, 0]} intensity={0.7} color="#fef08a" />
-                <spotLight
-                  position={[0, 8, 0]}
-                  angle={0.7}
-                  penumbra={0.9}
-                  intensity={1.8}
-                  color="#fef08a"
-                />
-                {/* Floor: Sunlit Pavement Grid */}
-                <group position={[0, -0.01, 0]}>
-                  <gridHelper args={[16, 32, team.primaryColor, '#334155']} position={[0, 0, 0]} />
-                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[3.0, 3.05, 64]} />
-                    <meshBasicMaterial color={team.primaryColor} transparent opacity={0.4} />
-                  </mesh>
-                  <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[4.5, 4.53, 64]} />
-                    <meshBasicMaterial color="#0284c7" transparent opacity={0.3} />
-                  </mesh>
-                </group>
-              </>
-            )}
+            {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
+            <StudioW15Stage teamId={selectedTeamId} />
 
             {/* F1 3D Car Model with Suspense Loading HUD */}
             <Suspense fallback={<Showroom3DLoader />}>
@@ -506,6 +373,17 @@ export const ShowroomView: React.FC = () => {
             />
           </Canvas>
         </ErrorBoundary>
+
+        {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset) ── */}
+        <ShowroomQuickHUD
+          enableWheelZoom={enableWheelZoom}
+          onToggleWheelZoom={handleToggleWheelZoom}
+          onZoom={handleZoom}
+          onResetView={handleResetView}
+          autoRotate={autoRotate}
+          onToggleAutoRotate={handleToggleAutoRotate}
+          lang={lang}
+        />
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
         <HotspotDetailsModal
