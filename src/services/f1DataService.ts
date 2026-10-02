@@ -9,7 +9,7 @@ import {
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
 
-const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v2';
+const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v3';
 const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
 const STORAGE_SYNC_REVIEW_KEY = 'f1_sync_review_v1';
 const STORAGE_DISMISSED_REVIEW_KEY = 'f1_sync_review_dismissed_v1';
@@ -41,7 +41,35 @@ const CONSTRUCTOR_MAP: Record<string, TeamId> = {
 };
 
 /**
- * Load persisted results from localStorage, merging with initial baseline
+ * Reconcile baseline static results with dynamic client cache.
+ * Baseline static snapshot (maintained in repo) is authoritative.
+ * Cached live results supplement any newly completed rounds not yet in baseline.
+ */
+function reconcileSeasonRaces(
+  baseline: DetailedRaceResult[],
+  cached: DetailedRaceResult[],
+): DetailedRaceResult[] {
+  const raceMap = new Map<number, DetailedRaceResult>();
+  for (const race of baseline) {
+    if (race && typeof race.round === 'number') {
+      raceMap.set(race.round, race);
+    }
+  }
+  for (const race of cached) {
+    if (
+      race &&
+      typeof race.round === 'number' &&
+      !race.id?.includes('simulated') &&
+      !raceMap.has(race.round)
+    ) {
+      raceMap.set(race.round, race);
+    }
+  }
+  return Array.from(raceMap.values()).sort((a, b) => a.round - b.round);
+}
+
+/**
+ * Load persisted results from localStorage, merging cleanly with initial baseline
  */
 export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResult[]> {
   try {
@@ -52,23 +80,7 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
         2024:
           parsed[2024] && parsed[2024].length > 0 ? parsed[2024] : INITIAL_DETAILED_RESULTS[2024],
         2025: parsed[2025] || INITIAL_DETAILED_RESULTS[2025],
-        2026: (() => {
-          const saved =
-            parsed[2026] && Array.isArray(parsed[2026]) && parsed[2026].length > 0
-              ? parsed[2026]
-              : INITIAL_DETAILED_RESULTS[2026];
-          const officialRound15 = INITIAL_DETAILED_RESULTS[2026]?.find((race) => race.round === 15);
-          const merged = saved.filter(
-            (race) =>
-              race &&
-              race.round !== 15 &&
-              !(race.id && race.id.includes('simulated')) &&
-              race.id !== 'race-2026-r1-australia' &&
-              race.id !== 'race-2026-r2-china',
-          );
-          if (officialRound15) merged.push(officialRound15);
-          return merged.sort((a, b) => a.round - b.round);
-        })(),
+        2026: reconcileSeasonRaces(INITIAL_DETAILED_RESULTS[2026] || [], parsed[2026] || []),
       };
     }
   } catch {

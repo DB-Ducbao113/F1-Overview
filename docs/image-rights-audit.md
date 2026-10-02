@@ -9,8 +9,8 @@ The 3D model `public/models/c42.glb` also needs a verified source and license. I
 | `public/assets/alpine/driver_2-250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/alpine/driver_250926.jpg`        | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/alpine/driver_3-250926.jpg`      | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
-| `public/assets/astonmartin/driver_2-250926.jpg` | AI-Generated (Lance Stroll #18)        | Bespoke Transformative Fan Tribute Art         | **Verified**        |
-| `public/assets/astonmartin/driver_250926.jpg`   | AI-Generated (Fernando Alonso #14)     | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/astonmartin/driver_2-250926.jpg` | AI-Generated (Lance Stroll #18)         | Bespoke Transformative Fan Tribute Art         | **Verified**        |
+| `public/assets/astonmartin/driver_250926.jpg`   | AI-Generated (Fernando Alonso #14)      | Bespoke Transformative Fan Tribute Art         | **Verified**        |
 | `public/assets/audi/driver_2-250926.jpg`        | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/audi/driver_250926.jpg`          | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |
 | `public/assets/cadillac/driver_2-250926.png`    | Pinterest (downloaded by project owner) | Pinterest Editorial Curation                   | **Unverified**      |

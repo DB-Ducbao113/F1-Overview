@@ -13,7 +13,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { useChampionshipStore } from './store/useChampionshipStore';
 import { useNavigationStore } from './store/useNavigationStore';
-import { SeasonYear } from './types';
+import { SeasonYear, isSeasonYear } from './types';
 import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
 import { getCompleteRaceClassification } from './data/championship/raceClassificationHelper';
 
@@ -46,11 +46,13 @@ const DriversDirectoryPage = lazy(() =>
     default: m.DriversDirectoryPage,
   })),
 );
+const AboutPage = lazy(() =>
+  import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+);
 
 let lastAutoRaceSyncAt = 0;
 
-const validSeason = (value?: string): value is `${SeasonYear}` =>
-  ['2024', '2025', '2026'].includes(value || '');
+const validSeason = (value?: string): value is `${SeasonYear}` => isSeasonYear(value);
 
 function SeasonRoute() {
   const { year } = useParams();
@@ -103,26 +105,6 @@ function RaceRoute() {
         onClose={() => navigate(`/season/${season}?tab=results`)}
       />
     </>
-  );
-}
-
-function About() {
-  const lang = useNavigationStore((state) => state.lang);
-  return (
-    <div className="page-container py-16 min-h-[60vh]">
-      <p className="text-xs text-f1red font-bold uppercase tracking-widest">Formula 1 Hub</p>
-      <h1 className="font-display text-4xl font-black uppercase mt-3">
-        {lang === 'vi' ? 'Về dự án' : 'About this project'}
-      </h1>
-      <p className="max-w-2xl mt-5 text-studio-600 leading-relaxed">
-        {lang === 'vi'
-          ? 'Một dự án cá nhân khám phá dữ liệu mùa giải, kết quả chặng đua và bộ sưu tập hình ảnh Formula 1.'
-          : 'A personal project exploring Formula 1 season data, race results, and a curated image collection.'}
-      </p>
-      <Link className="inline-block mt-8 text-f1red font-bold" to="/">
-        {lang === 'vi' ? 'Về trang chủ →' : 'Back home →'}
-      </Link>
-    </div>
   );
 }
 
@@ -184,13 +166,13 @@ export const App: React.FC = () => {
               <Route path="/season/:year" element={<SeasonRoute />} />
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
               <Route path="/showroom" element={<ShowroomView />} />
-              <Route path="/gallery" element={<ShowroomView />} />
+              <Route path="/gallery" element={<Navigate to="/showroom" replace />} />
               <Route path="/teams/:teamId" element={<TeamDetailPage />} />
               <Route path="/drivers/:driverId" element={<DriverDetailPage />} />
               <Route path="/cars/:carId" element={<CarDetailPage />} />
               <Route path="/teams" element={<TeamsDirectoryPage />} />
               <Route path="/drivers" element={<DriversDirectoryPage />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
