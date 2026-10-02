@@ -329,7 +329,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Albert Park Grand Prix Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '08 Mar 2026',
     podium: {
       p1: { driver: 'George Russell', team: 'Mercedes', time: '1:23:06.801', points: 25 },
@@ -344,7 +344,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Shanghai International Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '15 Mar 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:33:15.607', points: 25 },
@@ -359,7 +359,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Suzuka Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '29 Mar 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:28:03.403', points: 25 },
@@ -374,7 +374,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Miami International Autodrome',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '03 May 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:33:19.273', points: 25 },
@@ -389,7 +389,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Circuit Gilles Villeneuve',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '24 May 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:28:15.758', points: 25 },
@@ -404,7 +404,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Circuit de Monaco',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '07 Jun 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '2:23:31.243', points: 25 },
@@ -419,7 +419,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Circuit de Barcelona-Catalunya',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '14 Jun 2026',
     podium: {
       p1: { driver: 'Lewis Hamilton', team: 'Ferrari', time: '1:32:28.105', points: 25 },
@@ -434,7 +434,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Red Bull Ring',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '28 Jun 2026',
     podium: {
       p1: { driver: 'George Russell', team: 'Mercedes', time: '1:26:37.979', points: 25 },
@@ -449,7 +449,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Silverstone Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '05 Jul 2026',
     podium: {
       p1: { driver: 'Charles Leclerc', team: 'Ferrari', time: '1:27:11.335', points: 25 },
@@ -464,7 +464,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Circuit de Spa-Francorchamps',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '19 Jul 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:24:42.479', points: 25 },
@@ -479,7 +479,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Hungaroring',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '26 Jul 2026',
     podium: {
       p1: { driver: 'Lando Norris', team: 'McLaren', time: '1:39:56.180', points: 25 },
@@ -494,7 +494,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Circuit Park Zandvoort',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '23 Aug 2026',
     podium: {
       p1: { driver: 'Lando Norris', team: 'McLaren', time: '2:04:44.859', points: 25 },
@@ -509,7 +509,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Autodromo Nazionale di Monza',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '06 Sep 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:51:15.281', points: 25 },
@@ -524,7 +524,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Madring',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '13 Sep 2026',
     podium: {
       p1: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', time: '1:34:23.754', points: 25 },
@@ -539,7 +539,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     circuit: 'Baku City Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',
-    dataUpdatedAt: '2026-09-29',
+    dataUpdatedAt: '2026-10-02',
     date: '26 Sep 2026',
     podium: {
       p1: { driver: 'George Russell', team: 'Mercedes', time: '1:38:02.143', points: 25 },
