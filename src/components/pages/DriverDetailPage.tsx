@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Flag, Trophy, Box, Award, Medal } from 'lucide-react';
-import { DRIVERS_DATA } from '../../data/drivers';
+import { DRIVERS_DATA, getDriverCareerStats } from '../../data/drivers';
 import { TEAMS_DATA } from '../../data/teams';
 import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
@@ -16,6 +16,7 @@ export const DriverDetailPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const lang = useNavigationStore((state) => state.lang);
   const driver = driverId ? DRIVERS_DATA[driverId] : undefined;
+  const career = getDriverCareerStats(driverId);
   const seasonEntries = driverId
     ? SEASONS.flatMap((season) =>
         STANDINGS_DATA[season].drivers
@@ -41,6 +42,7 @@ export const DriverDetailPage: React.FC = () => {
   }
 
   const season = entry?.season ?? 2026;
+  const careerUpToSeason = getDriverCareerStats(driverId, season);
   const teamId = entry?.teamId ?? driver!.teamId;
   const team = TEAMS_DATA[teamId];
   const name = driver?.name ?? entry!.driverName;
@@ -171,14 +173,14 @@ export const DriverDetailPage: React.FC = () => {
                     </span>
                   </div>
                 )}
-                {driver && (
+                {(driver || career.careerWins > 0 || career.podiums > 0) && (
                   <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10">
                     <Award className="w-3.5 h-3.5 text-emerald-400" />
                     <span>
                       {lang === 'vi' ? 'Sự nghiệp' : 'Career'}:{' '}
-                      <strong className="text-white">{driver.careerWins ?? 0}</strong>{' '}
+                      <strong className="text-white">{career.careerWins}</strong>{' '}
                       {lang === 'vi' ? 'thắng' : 'wins'} ·{' '}
-                      <strong className="text-white">{driver.podiums ?? 0}</strong> podium
+                      <strong className="text-white">{career.podiums}</strong> podium
                     </span>
                   </div>
                 )}
@@ -248,7 +250,7 @@ export const DriverDetailPage: React.FC = () => {
             </div>
 
             {/* Section 2: Career Records */}
-            {driver && (
+            {(driver || career.careerWins > 0 || career.podiums > 0) && (
               <div className="pt-2">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-xs font-black uppercase tracking-widest text-studio-600 flex items-center gap-2">
@@ -260,29 +262,43 @@ export const DriverDetailPage: React.FC = () => {
                     </span>
                   </h3>
                   <span className="text-[11px] font-mono text-studio-400">
-                    {driver.code} · #{driver.number}
+                    {code} {driver?.number ? `· #${driver.number}` : ''}
                   </span>
                 </div>
                 <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
                   <Stat
                     icon={<Trophy className="h-4 w-4 text-amber-500" />}
                     label={lang === 'vi' ? 'Tổng chiến thắng Grand Prix' : 'Career Grand Prix Wins'}
-                    value={`${driver.careerWins ?? 0}`}
+                    value={`${career.careerWins}`}
                     subValue={
-                      lang === 'vi' ? 'Số lần về nhất sự nghiệp F1' : 'All-time F1 victories'
+                      season < 2026
+                        ? lang === 'vi'
+                          ? `Tính đến hết mùa ${season}: ${careerUpToSeason.careerWins} chiến thắng`
+                          : `Through ${season}: ${careerUpToSeason.careerWins} wins`
+                        : lang === 'vi'
+                          ? 'Số lần về nhất sự nghiệp F1'
+                          : 'All-time F1 victories'
                     }
                   />
                   <Stat
                     icon={<Medal className="h-4 w-4 text-emerald-500" />}
                     label={lang === 'vi' ? 'Tổng số lần lên bục Podium' : 'Career Total Podiums'}
-                    value={`${driver.podiums ?? 0}`}
-                    subValue={lang === 'vi' ? 'Top 3 trọn sự nghiệp F1' : 'All-time Top 3 finishes'}
+                    value={`${career.podiums}`}
+                    subValue={
+                      season < 2026
+                        ? lang === 'vi'
+                          ? `Tính đến hết mùa ${season}: ${careerUpToSeason.podiums} podium`
+                          : `Through ${season}: ${careerUpToSeason.podiums} podiums`
+                        : lang === 'vi'
+                          ? 'Top 3 trọn sự nghiệp F1'
+                          : 'All-time Top 3 finishes'
+                    }
                   />
                   <Stat
                     icon={<Flag className="h-4 w-4 text-sky-500" />}
                     label={lang === 'vi' ? 'Số xe & Quốc tịch' : 'Car Number & Nation'}
-                    value={`#${driver.number} · ${driver.country}`}
-                    subValue={driver.shortName}
+                    value={`${driver?.number ? `#${driver.number} · ` : ''}${country || flag}`}
+                    subValue={driver?.shortName || name}
                   />
                 </div>
               </div>
@@ -291,12 +307,8 @@ export const DriverDetailPage: React.FC = () => {
         ) : (
           <Stat
             icon={<Trophy className="h-4 w-4 text-amber-500" />}
-            label={
-              lang === 'vi'
-                ? 'Thành tích sự nghiệp theo dữ liệu mẫu'
-                : 'Career stats in bundled data'
-            }
-            value={`${driver?.careerWins ?? 0} wins · ${driver?.podiums ?? 0} podiums`}
+            label={lang === 'vi' ? 'Thành tích toàn sự nghiệp F1' : 'All-time F1 career record'}
+            value={`${career.careerWins} wins · ${career.podiums} podiums`}
           />
         )}
         <p className="text-[11px] text-studio-500">

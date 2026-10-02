@@ -182,7 +182,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                           <div>
                             {DRIVERS_DATA[driver.driverId] ? (
                               <Link
-                                to={`/drivers/${driver.driverId}`}
+                                to={`/drivers/${driver.driverId}?season=${season}`}
                                 className="font-bold text-studio-900 block text-sm hover:text-f1red"
                               >
                                 {driver.driverName}

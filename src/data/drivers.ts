@@ -1,4 +1,73 @@
-import { F1Driver } from '../types';
+import { F1Driver, SeasonYear } from '../types';
+import { STANDINGS_DATA } from './championship/standings';
+
+/**
+ * Historical F1 Career Records prior to the 2024 Championship season (pre-2024 baseline).
+ * Source: Official FIA Formula One Historical Statistics (formula1.com / StatsF1).
+ */
+export const PRE_2024_CAREER_BASELINE: Record<string, { wins: number; podiums: number }> = {
+  hamilton: { wins: 103, podiums: 197 },
+  verstappen: { wins: 54, podiums: 98 },
+  alonso: { wins: 32, podiums: 106 },
+  bottas: { wins: 10, podiums: 67 },
+  ricciardo: { wins: 8, podiums: 32 },
+  perez: { wins: 6, podiums: 35 },
+  leclerc: { wins: 5, podiums: 30 },
+  sainz: { wins: 2, podiums: 18 },
+  russell: { wins: 1, podiums: 11 },
+  gasly: { wins: 1, podiums: 4 },
+  ocon: { wins: 1, podiums: 3 },
+  norris: { wins: 0, podiums: 13 },
+  stroll: { wins: 0, podiums: 3 },
+  albon: { wins: 0, podiums: 2 },
+  piastri: { wins: 0, podiums: 2 },
+  magnussen: { wins: 0, podiums: 1 },
+  hulkenberg: { wins: 0, podiums: 0 },
+  tsunoda: { wins: 0, podiums: 0 },
+  zhou: { wins: 0, podiums: 0 },
+  sargeant: { wins: 0, podiums: 0 },
+  antonelli: { wins: 0, podiums: 0 },
+  hadjar: { wins: 0, podiums: 0 },
+  bearman: { wins: 0, podiums: 0 },
+  colapinto: { wins: 0, podiums: 0 },
+  lawson: { wins: 0, podiums: 0 },
+  lindblad: { wins: 0, podiums: 0 },
+  bortoleto: { wins: 0, podiums: 0 },
+  doohan: { wins: 0, podiums: 0 },
+};
+
+/**
+ * Computes career statistics (wins, podiums) dynamically by combining
+ * the pre-2024 historical baseline with official season standings results.
+ * If upToSeason is omitted, calculates all-time totals across all available seasons.
+ */
+export function getDriverCareerStats(
+  driverId?: string,
+  upToSeason?: SeasonYear,
+): { careerWins: number; podiums: number } {
+  if (!driverId) {
+    return { careerWins: 0, podiums: 0 };
+  }
+
+  const baseline = PRE_2024_CAREER_BASELINE[driverId] || { wins: 0, podiums: 0 };
+  let totalWins = baseline.wins;
+  let totalPodiums = baseline.podiums;
+
+  const seasons: SeasonYear[] = [2024, 2025, 2026];
+  for (const s of seasons) {
+    if (upToSeason && s > upToSeason) break;
+    const seasonData = STANDINGS_DATA[s];
+    if (seasonData) {
+      const entry = seasonData.drivers.find((d) => d.driverId === driverId);
+      if (entry) {
+        totalWins += entry.wins;
+        totalPodiums += entry.podiums;
+      }
+    }
+  }
+
+  return { careerWins: totalWins, podiums: totalPodiums };
+}
 
 export const DRIVERS_DATA: Record<string, F1Driver> = {
   // Ferrari
@@ -13,8 +82,8 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'MC',
     flagEmoji: '🇲🇨',
     imageUrl: '/assets/ferrari/driver_250926.jpg',
-    careerWins: 8,
-    podiums: 42,
+    careerWins: 11, // 8 through 2024 + 2 (2025) + 1 (2026)
+    podiums: 54, // 43 through 2024 + 7 (2025) + 4 (2026)
   },
   hamilton: {
     id: 'hamilton',
@@ -27,9 +96,10 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
     imageUrl: '/assets/ferrari/driver_2-250926.jpg',
-    careerWins: 105,
-    podiums: 201,
+    careerWins: 107, // 105 through 2024 + 1 (2025) + 1 (2026)
+    podiums: 211, // 202 through 2024 + 4 (2025) + 5 (2026)
   },
+
   // McLaren
   norris: {
     id: 'norris',
@@ -42,8 +112,8 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
     imageUrl: '/assets/mclaren/driver_250926.jpg',
-    careerWins: 4,
-    podiums: 28,
+    careerWins: 13, // 4 through 2024 + 7 (2025) + 2 (2026)
+    podiums: 49, // 28 through 2024 + 16 (2025) + 5 (2026)
   },
   piastri: {
     id: 'piastri',
@@ -56,9 +126,10 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'AU',
     flagEmoji: '🇦🇺',
     imageUrl: '/assets/mclaren/driver_2-250926.jpg',
-    careerWins: 2,
-    podiums: 10,
+    careerWins: 6, // 2 through 2024 + 4 (2025) + 0 (2026)
+    podiums: 26, // 10 through 2024 + 14 (2025) + 2 (2026)
   },
+
   // Red Bull
   verstappen: {
     id: 'verstappen',
@@ -71,8 +142,8 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'NL',
     flagEmoji: '🇳🇱',
     imageUrl: '/assets/redbull/driver_250926.jpg',
-    careerWins: 63,
-    podiums: 111,
+    careerWins: 71, // 63 through 2024 + 8 (2025) + 0 (2026)
+    podiums: 134, // 112 through 2024 + 15 (2025) + 7 (2026)
   },
   hadjar: {
     id: 'hadjar',
@@ -86,8 +157,9 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     flagEmoji: '🇫🇷',
     imageUrl: '/assets/redbull/driver_2-250926.jpg',
     careerWins: 0,
-    podiums: 0,
+    podiums: 2, // 2 podiums in 2026 season
   },
+
   // Mercedes
   russell: {
     id: 'russell',
@@ -100,8 +172,8 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'GB',
     flagEmoji: '🇬🇧',
     imageUrl: '/assets/mercedes/driver_250926.jpg',
-    careerWins: 2,
-    podiums: 14,
+    careerWins: 8, // 3 through 2024 + 2 (2025) + 3 (2026)
+    podiums: 31, // 15 through 2024 + 8 (2025) + 8 (2026)
   },
   antonelli: {
     id: 'antonelli',
@@ -114,9 +186,10 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'IT',
     flagEmoji: '🇮🇹',
     imageUrl: '/assets/mercedes/driver_2-250926.jpg',
-    careerWins: 0,
-    podiums: 0,
+    careerWins: 8, // 8 wins in 2026 season
+    podiums: 15, // 3 in 2025 + 12 in 2026
   },
+
   // Aston Martin
   alonso: {
     id: 'alonso',
@@ -146,6 +219,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     careerWins: 0,
     podiums: 3,
   },
+
   // Alpine
   gasly: {
     id: 'gasly',
@@ -159,7 +233,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     flagEmoji: '🇫🇷',
     imageUrl: '/assets/alpine/driver_250926.jpg',
     careerWins: 1,
-    podiums: 5,
+    podiums: 5, // 4 through 2023 + 1 (Brazil 2024)
   },
   colapinto: {
     id: 'colapinto',
@@ -175,6 +249,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     careerWins: 0,
     podiums: 0,
   },
+
   // Racing Bulls
   lawson: {
     id: 'lawson',
@@ -204,6 +279,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     careerWins: 0,
     podiums: 0,
   },
+
   // Haas
   ocon: {
     id: 'ocon',
@@ -217,7 +293,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     flagEmoji: '🇫🇷',
     imageUrl: '/assets/haas/driver_250926.jpg',
     careerWins: 1,
-    podiums: 4,
+    podiums: 4, // 3 through 2023 + 1 (Brazil 2024)
   },
   bearman: {
     id: 'bearman',
@@ -233,6 +309,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     careerWins: 0,
     podiums: 0,
   },
+
   // Williams
   sainz: {
     id: 'sainz',
@@ -245,8 +322,8 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     countryCode: 'ES',
     flagEmoji: '🇪🇸',
     imageUrl: '/assets/williams/driver_250926.jpg',
-    careerWins: 4,
-    podiums: 25,
+    careerWins: 4, // 4 through 2024
+    podiums: 27, // 26 through 2024 + 1 (2025)
   },
   albon: {
     id: 'albon',
@@ -260,8 +337,9 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     flagEmoji: '🇹🇭',
     imageUrl: '/assets/williams/driver_2-250926.jpg',
     careerWins: 0,
-    podiums: 2,
+    podiums: 3, // 2 through 2024 + 1 (2025)
   },
+
   // Audi
   hulkenberg: {
     id: 'hulkenberg',
@@ -291,6 +369,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     careerWins: 0,
     podiums: 0,
   },
+
   // Cadillac
   perez: {
     id: 'perez',
@@ -319,5 +398,85 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     imageUrl: '/assets/cadillac/driver_2-250926.png',
     careerWins: 10,
     podiums: 67,
+  },
+
+  // Additional Active Drivers (2024-2026 Championship)
+  tsunoda: {
+    id: 'tsunoda',
+    number: 22,
+    code: 'TSU',
+    name: 'Yuki Tsunoda',
+    shortName: 'Y. Tsunoda',
+    teamId: 'racingbulls',
+    country: 'Japan',
+    countryCode: 'JP',
+    flagEmoji: '🇯🇵',
+    careerWins: 0,
+    podiums: 0,
+  },
+  ricciardo: {
+    id: 'ricciardo',
+    number: 3,
+    code: 'RIC',
+    name: 'Daniel Ricciardo',
+    shortName: 'D. Ricciardo',
+    teamId: 'racingbulls',
+    country: 'Australia',
+    countryCode: 'AU',
+    flagEmoji: '🇦🇺',
+    careerWins: 8,
+    podiums: 32,
+  },
+  magnussen: {
+    id: 'magnussen',
+    number: 20,
+    code: 'MAG',
+    name: 'Kevin Magnussen',
+    shortName: 'K. Magnussen',
+    teamId: 'haas',
+    country: 'Denmark',
+    countryCode: 'DK',
+    flagEmoji: '🇩🇰',
+    careerWins: 0,
+    podiums: 1,
+  },
+  zhou: {
+    id: 'zhou',
+    number: 24,
+    code: 'ZHO',
+    name: 'Zhou Guanyu',
+    shortName: 'G. Zhou',
+    teamId: 'audi',
+    country: 'China',
+    countryCode: 'CN',
+    flagEmoji: '🇨🇳',
+    careerWins: 0,
+    podiums: 0,
+  },
+  sargeant: {
+    id: 'sargeant',
+    number: 2,
+    code: 'SAR',
+    name: 'Logan Sargeant',
+    shortName: 'L. Sargeant',
+    teamId: 'williams',
+    country: 'United States',
+    countryCode: 'US',
+    flagEmoji: '🇺🇸',
+    careerWins: 0,
+    podiums: 0,
+  },
+  doohan: {
+    id: 'doohan',
+    number: 61,
+    code: 'DOO',
+    name: 'Jack Doohan',
+    shortName: 'J. Doohan',
+    teamId: 'alpine',
+    country: 'Australia',
+    countryCode: 'AU',
+    flagEmoji: '🇦🇺',
+    careerWins: 0,
+    podiums: 0,
   },
 };
