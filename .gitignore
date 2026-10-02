@@ -41,3 +41,4 @@ manage-skills.ps1
 scratch/
 .eslintcache
 .prettiercache
+.vite/
