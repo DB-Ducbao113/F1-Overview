@@ -306,8 +306,18 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
       const syncRes = await syncF1SeasonData(season, currentRaces);
 
       if (syncRes.success) {
+        const savedByRound = new Map(
+          currentRaces.filter(Boolean).map((race) => [race.round, race]),
+        );
+        const hasExistingConflict = syncRes.results.some((incoming) => {
+          const saved = savedByRound.get(incoming.round);
+          return saved && !sameRaceClassification(saved, incoming);
+        });
+
         const differences = findSyncDifferences(season, currentRaces, syncRes.results);
-        if (differences.length > 0) {
+
+        // Chỉ đưa vào chế độ "review" nếu chặng đua ĐÃ LƯU TRƯỚC ĐÓ bị sửa đổi thông số
+        if (hasExistingConflict && differences.length > 0) {
           const signature = getSyncSignature(syncRes.results);
           if (signature === get().dismissedSyncSignature) {
             const keptMeta: F1SyncMetadata = {
