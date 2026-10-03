@@ -59,7 +59,7 @@ export function recalculateStandingsFromRaces(
     };
   }
 
-  // For 2026 (ongoing season after 15 events):
+  // For 2026 (ongoing season after 16 events):
   // Initialize with official baseline standings (reflecting events 1-15)
   const driverMap = new Map<
     string,
@@ -116,9 +116,9 @@ export function recalculateStandingsFromRaces(
   });
 
   // Only races beyond round 15 that are not in the official baseline will contribute additional points
-  // (Rounds 1-15 are already included in the official base points above)
+  // (Rounds 1-16 are already included in the official base points above)
   const additionalRaces = (Array.isArray(races) ? races : []).filter(
-    (r) => r && r.status === 'completed' && r.round > 15,
+    (r) => r && r.status === 'completed' && r.round > 16,
   );
 
   additionalRaces.forEach((race) => {

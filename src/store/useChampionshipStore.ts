@@ -260,7 +260,7 @@ function computeInitialStandings(resultsMap: Record<SeasonYear, DetailedRaceResu
     const races2026 = resultsMap?.[2026];
     if (
       Array.isArray(races2026) &&
-      races2026.some((r) => r && r.round > 15 && r.status === 'completed')
+      races2026.some((r) => r && r.round > 16 && r.status === 'completed')
     ) {
       out[2026] = recalculateStandingsFromRaces(
         2026,
