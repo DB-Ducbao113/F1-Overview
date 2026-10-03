@@ -4,6 +4,7 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { getCompleteRaceClassification } from '../../data/championship/raceClassificationHelper';
 import { RaceClassificationModal } from './RaceClassificationModal';
+import { formatDateStr } from '../../utils/dateUtils';
 import {
   Trophy,
   Zap,
@@ -306,7 +307,9 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                       ROUND {res.round < 10 ? `0${res.round}` : res.round}
                     </span>
                     <span className="text-xs font-bold text-studio-400">·</span>
-                    <span className="text-xs font-medium text-studio-500">{res.date}</span>
+                    <span className="text-xs font-medium text-studio-500">
+                      {formatDateStr(res.date, lang)}
+                    </span>
                   </div>
                   <h4 className="font-display text-lg sm:text-xl font-black text-studio-950 truncate">
                     {res.grandPrix}

@@ -5,6 +5,7 @@ import { Clock, MapPin, ChevronDown, ChevronUp, Timer, ChevronRight } from 'luci
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
+import { formatDateStr } from '../../utils/dateUtils';
 
 export const RaceCalendar: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -142,7 +143,9 @@ export const RaceCalendar: React.FC = React.memo(() => {
                 {/* Circuit & Date */}
                 <div className="flex items-center gap-6">
                   <div className="text-right hidden sm:block">
-                    <span className="font-bold text-xs text-studio-900 block">{gp.dates}</span>
+                    <span className="font-bold text-xs text-studio-900 block">
+                      {formatDateStr(gp.dates, lang)}
+                    </span>
                     <span className="text-[11px] text-studio-500 truncate max-w-[200px] block">
                       {gp.circuit}
                     </span>
@@ -226,7 +229,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                             )}
                           </div>
                           <span className="text-xs font-bold text-studio-900 block">
-                            {session.dateStr}
+                            {formatDateStr(session.dateStr, lang)}
                           </span>
                           <div className="flex items-center justify-between text-[11px] text-studio-600">
                             <span className="flex items-center gap-1">
