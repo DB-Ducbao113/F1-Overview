@@ -143,12 +143,12 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
         )}
 
         {/* Top Control Bar: Season Selector & Subtabs */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl bg-white border border-studio-200 shadow-xs">
-          {/* Subtabs (Standings, Calendar, Results) */}
-          <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-studio-200 shadow-xs overflow-hidden">
+          {/* Subtabs (Standings, Calendar, Results, Teams, Drivers) */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 sm:pb-0 custom-scrollbar max-w-full -mx-1 px-1 sm:mx-0 sm:px-0">
             <button
               onClick={() => setActiveSubTab('standings')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'standings'
                   ? 'bg-f1red text-white shadow-sm'
                   : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
@@ -159,7 +159,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
             </button>
             <button
               onClick={() => setActiveSubTab('calendar')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'calendar'
                   ? 'bg-f1red text-white shadow-sm'
                   : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
@@ -170,7 +170,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
             </button>
             <button
               onClick={() => setActiveSubTab('results')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'results'
                   ? 'bg-f1red text-white shadow-sm'
                   : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
@@ -181,7 +181,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
             </button>
             <button
               onClick={() => setActiveSubTab('teams')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'teams'
                   ? 'bg-f1red text-white shadow-sm'
                   : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
@@ -192,7 +192,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
             </button>
             <button
               onClick={() => setActiveSubTab('drivers')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'drivers'
                   ? 'bg-f1red text-white shadow-sm'
                   : 'bg-studio-100 text-studio-700 hover:bg-studio-200'
@@ -204,11 +204,12 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
           </div>
 
           {/* Season Switcher & Refresh */}
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-studio-100">
             <button
               onClick={handleManualSync}
               disabled={syncMeta.syncStatus === 'syncing' || !!pendingSyncReview}
-              className="p-2 rounded-lg bg-studio-100 hover:bg-studio-200 text-studio-600 hover:text-studio-900 border border-studio-200 transition-all disabled:opacity-50"
+              className="p-2 rounded-lg bg-studio-100 hover:bg-studio-200 text-studio-600 hover:text-studio-900 border border-studio-200 transition-all disabled:opacity-50 cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+              title={lang === 'vi' ? 'Làm mới dữ liệu kết quả' : 'Refresh season data'}
             >
               <RefreshCw
                 className={`w-3.5 h-3.5 ${syncMeta.syncStatus === 'syncing' ? 'animate-spin text-f1red' : ''}`}
@@ -220,7 +221,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
                 <button
                   key={seasonOption}
                   onClick={() => onSeasonChange(seasonOption)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
                     season === seasonOption
                       ? 'bg-white text-f1red shadow-xs font-black'
                       : 'text-studio-600 hover:text-studio-950'

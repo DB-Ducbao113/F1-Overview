@@ -7,6 +7,7 @@ import { SeasonYear } from '../../types';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { ArrowRight, Trophy, Calendar, MapPin, ShieldCheck, Box } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { formatDateStr } from '../../utils/dateUtils';
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -80,7 +81,7 @@ export const HomeView: React.FC = () => {
                 <MapPin className="w-4 h-4 text-f1red" /> {nextRace.circuit}
               </span>
               <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-f1red" /> {nextRace.dates}
+                <Calendar className="w-4 h-4 text-f1red" /> {formatDateStr(nextRace.dates, lang)}
               </span>
               <span className="text-studio-400">|</span>
               <span>
@@ -95,7 +96,7 @@ export const HomeView: React.FC = () => {
               <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
                 <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
                 <span className="text-xs font-bold text-studio-900 block">
-                  {nextRace.sessions.fp3.dateStr}
+                  {formatDateStr(nextRace.sessions.fp3.dateStr, lang)}
                 </span>
                 <span className="text-[10px] text-studio-500">{nextRace.sessions.fp3.timeStr}</span>
               </div>
@@ -106,7 +107,7 @@ export const HomeView: React.FC = () => {
                   {lang === 'vi' ? 'Sprint Phân Hạng' : 'Sprint Shootout'}
                 </span>
                 <span className="text-xs font-bold text-studio-900 block">
-                  {nextRace.sessions.sprintQualifying.dateStr}
+                  {formatDateStr(nextRace.sessions.sprintQualifying.dateStr, lang)}
                 </span>
                 <span className="text-[10px] text-studio-500">
                   {nextRace.sessions.sprintQualifying.timeStr}
@@ -119,7 +120,7 @@ export const HomeView: React.FC = () => {
                   Sprint Race
                 </span>
                 <span className="text-xs font-bold text-studio-900 block">
-                  {nextRace.sessions.sprint.dateStr}
+                  {formatDateStr(nextRace.sessions.sprint.dateStr, lang)}
                 </span>
                 <span className="text-[10px] text-studio-500">
                   {nextRace.sessions.sprint.timeStr}
@@ -132,7 +133,7 @@ export const HomeView: React.FC = () => {
                   {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
                 </span>
                 <span className="text-xs font-bold text-studio-900 block">
-                  {nextRace.sessions.qualifying.dateStr}
+                  {formatDateStr(nextRace.sessions.qualifying.dateStr, lang)}
                 </span>
                 <span className="text-[10px] font-bold text-f1red">
                   {nextRace.sessions.qualifying.timeStr}
@@ -145,7 +146,7 @@ export const HomeView: React.FC = () => {
                   Grand Prix
                 </span>
                 <span className="text-xs font-bold text-white block">
-                  {nextRace.sessions.race.dateStr}
+                  {formatDateStr(nextRace.sessions.race.dateStr, lang)}
                 </span>
                 <span className="text-[10px] text-studio-300">
                   {nextRace.sessions.race.timeStr}

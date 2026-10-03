@@ -47,28 +47,30 @@ export const Navbar: React.FC = React.memo(() => {
         }`}
         style={{ height: 64 }}
       >
-        <div className="page-container h-full flex items-center justify-between gap-6">
+        <div className="page-container h-full flex items-center justify-between gap-2 sm:gap-6">
           {/* Brand Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 group shrink-0 text-left focus:outline-none"
+            className="flex items-center gap-2 sm:gap-3 group shrink-0 text-left focus:outline-none"
             aria-label="Formula 1 Hub"
           >
-            <span className="w-9 h-9 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle group-hover:scale-105 transition-transform duration-200">
-              <span className="text-[11px] font-black text-studio-950 tracking-tight">F1</span>
+            <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-f1red flex items-center justify-center bg-white shadow-subtle group-hover:scale-105 transition-transform duration-200">
+              <span className="text-[10px] sm:text-[11px] font-black text-studio-950 tracking-tight">
+                F1
+              </span>
             </span>
             <div className="flex flex-col">
-              <span className="text-[13px] font-display uppercase tracking-widest font-black text-studio-950 group-hover:text-f1red transition-colors duration-200 leading-tight">
+              <span className="text-[11px] sm:text-[13px] font-display uppercase tracking-widest font-black text-studio-950 group-hover:text-f1red transition-colors duration-200 leading-tight">
                 {strings.brandTitle}
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-studio-500 font-semibold">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-widest text-studio-500 font-semibold hidden xs:block">
                 {strings.brandSub}
               </span>
             </div>
           </Link>
 
           {/* Center Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-6" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.id === 'home'
@@ -83,7 +85,7 @@ export const Navbar: React.FC = React.memo(() => {
                 <Link
                   key={item.id}
                   to={item.path}
-                  className={`flex items-center gap-2 py-1 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
+                  className={`flex items-center gap-1.5 lg:gap-2 py-1 text-[11px] lg:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
                     isActive
                       ? 'border-f1red text-f1red'
                       : 'border-transparent text-studio-600 hover:text-studio-950 hover:border-studio-300'
@@ -97,12 +99,12 @@ export const Navbar: React.FC = React.memo(() => {
           </nav>
 
           {/* Right — Language Selector & Mobile Toggle */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Language Switcher */}
             <div className="flex items-center bg-studio-100 p-0.5 rounded-full border border-studio-200">
               <button
                 onClick={() => setLang('vi')}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'vi'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-600 hover:text-studio-950'
@@ -113,7 +115,7 @@ export const Navbar: React.FC = React.memo(() => {
               </button>
               <button
                 onClick={() => setLang('en')}
-                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-200 ${
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'en'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-600 hover:text-studio-950'
@@ -127,7 +129,7 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors focus:ring-2 focus:ring-f1red rounded-lg"
+              className="md:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"

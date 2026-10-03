@@ -113,14 +113,14 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     return (
       <div className="flex flex-col items-end gap-2 pointer-events-auto">
         {/* ── Main Floating Control Deck ── */}
-        <div className="rounded-2xl bg-studio-950/90 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2.5 sm:p-3 text-white max-w-sm sm:max-w-md w-full transition-all">
+        <div className="rounded-2xl bg-studio-950/90 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2 sm:p-3 text-white max-w-[290px] xs:max-w-xs sm:max-w-md w-full transition-all">
           {/* Header: Title & Collapse Button */}
-          <div className="flex items-center justify-between pb-2 border-b border-studio-800/80 mb-2">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
-              <span className="text-[11px] font-black uppercase tracking-wider text-studio-300 flex items-center gap-1.5">
-                <Settings2 className="w-3.5 h-3.5 text-f1red" />
-                {lang === 'vi' ? 'Bảng Điều Khiển 3D' : '3D Control Deck'}
+          <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-studio-800/80 mb-1.5 sm:mb-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-f1red animate-pulse" />
+              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-studio-300 flex items-center gap-1 sm:gap-1.5">
+                <Settings2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-f1red" />
+                {lang === 'vi' ? 'Điều Khiển 3D' : '3D Control Deck'}
               </span>
             </div>
 
@@ -129,17 +129,17 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
               <button
                 type="button"
                 onClick={onResetView}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer"
+                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
                 aria-label={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset to default view'}
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
 
               {/* Minimize / Expand Toggle */}
               <button
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer"
+                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
                 aria-label={
                   isExpanded
                     ? lang === 'vi'
@@ -151,9 +151,9 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                 }
               >
                 {isExpanded ? (
-                  <ChevronUp className="w-3.5 h-3.5" />
+                  <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 ) : (
-                  <ChevronDown className="w-3.5 h-3.5" />
+                  <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 )}
               </button>
             </div>

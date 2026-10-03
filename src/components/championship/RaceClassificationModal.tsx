@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { DetailedRaceResult } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { formatDateStr } from '../../utils/dateUtils';
 import { X, Trophy, Zap, Flag, Calendar, MapPin, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
@@ -65,7 +66,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-studio-500" />
-                {race.date}
+                {formatDateStr(race.date, lang)}
               </span>
               <span className="flex items-center gap-1 font-mono">
                 <Flag className="w-3.5 h-3.5 text-studio-500" />
