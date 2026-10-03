@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { GrandPrixPracticeData, PracticeSessionResult } from '../../types/practice';
 import { TEAMS_DATA } from '../../data/teams';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { formatSessionName } from '../../utils/dateUtils';
 import { X, Timer, Flag, MapPin, Calendar, Thermometer, Sun, ChevronRight } from 'lucide-react';
 
 interface PracticeModalProps {
@@ -109,7 +110,7 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                     : 'bg-white/5 text-studio-300 border-white/10 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <span>{sess.sessionName}</span>
+                <span>{formatSessionName(sess.sessionName, lang)}</span>
                 <span
                   className={`text-[9px] px-1.5 py-0.2 rounded font-mono ${
                     isActive

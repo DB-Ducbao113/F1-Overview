@@ -67,3 +67,20 @@ export function formatDateStr(dateStr: string | undefined, lang: string): string
 
   return localized;
 }
+
+const SESSION_NAME_MAP_VI: Record<string, string> = {
+  'Practice 1': 'Thử nghiệm 1 (FP1)',
+  'Practice 2': 'Thử nghiệm 2 (FP2)',
+  'Practice 3': 'Thử nghiệm 3 (FP3)',
+  'Sprint Qualifying': 'Phân hạng Sprint',
+  'Sprint Shootout': 'Phân hạng Sprint',
+  'Sprint Race': 'Đua Sprint',
+  Qualifying: 'Đua phân hạng',
+  Race: 'Đua chính (Race)',
+};
+
+export function formatSessionName(name: string | undefined, lang: string): string {
+  if (!name) return '';
+  if (lang !== 'vi') return name;
+  return SESSION_NAME_MAP_VI[name] || name;
+}

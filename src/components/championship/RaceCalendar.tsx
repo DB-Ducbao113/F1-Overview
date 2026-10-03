@@ -5,7 +5,7 @@ import { Clock, MapPin, ChevronDown, ChevronUp, Timer, ChevronRight } from 'luci
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
-import { formatDateStr } from '../../utils/dateUtils';
+import { formatDateStr, formatSessionName } from '../../utils/dateUtils';
 
 export const RaceCalendar: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -222,7 +222,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 block truncate">
-                              {session.name}
+                              {formatSessionName(session.name, lang)}
                             </span>
                             {isFinishedPractice && (
                               <ChevronRight className="w-3 h-3 text-sky-600 group-hover:translate-x-0.5 transition-transform" />
