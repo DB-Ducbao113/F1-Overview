@@ -548,6 +548,21 @@ export const RACE_RESULTS_2026: RaceResult[] = [
     },
     fastestLap: { driver: 'George Russell', team: 'Mercedes', time: '1:44.916' },
   },
+  {
+    round: 16,
+    grandPrix: 'Bahrain Grand Prix in Malaysia',
+    circuit: 'Sepang International Circuit',
+    season: 2026,
+    dataSource: 'Jolpica F1 API',
+    dataUpdatedAt: '2026-10-04',
+    date: '04 Oct 2026',
+    podium: {
+      p1: { driver: 'Max Verstappen', team: 'Red Bull', time: '1:47:14.808', points: 25 },
+      p2: { driver: 'Andrea Kimi Antonelli', team: 'Mercedes', gap: '+2.307', points: 18 },
+      p3: { driver: 'Lewis Hamilton', team: 'Ferrari', gap: '+4.919', points: 15 },
+    },
+    fastestLap: { driver: 'Max Verstappen', team: 'Red Bull', time: '1:38.220' },
+  },
 ];
 
 export const RESULTS_BY_SEASON = {
