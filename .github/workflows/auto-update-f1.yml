@@ -2,9 +2,16 @@ name: Auto Update F1 2026 Data
 
 on:
   schedule:
-    # Run every 4 hours daily, capturing Qualifying on Saturdays and Race results on Sundays
-    - cron: '0 */4 * * *'
+    # Run every 4 hours Wednesday through Sunday (days 3,4,5,6,0 in UTC)
+    # Mondays (1) and Tuesdays (2) have no race activity, so they are excluded
+    - cron: '0 */4 * * 3,4,5,6,0'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+    inputs:
+      force:
+        description: 'Force update even on Monday or Tuesday'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -43,7 +50,12 @@ jobs:
 
       - name: Sync 2026 Season Data from Jolpica API
         if: steps.check_ready.outputs.ready == 'true'
-        run: node scripts/update-2026-data.js
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then
+            node scripts/update-2026-data.js --force
+          else
+            node scripts/update-2026-data.js
+          fi
 
       - name: Verify build with updated data
         if: steps.check_ready.outputs.ready == 'true'

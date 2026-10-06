@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CameraPreset } from './CameraController';
 import {
   RotateCcw,
@@ -9,18 +9,16 @@ import {
   Shield,
   Zap,
   Box,
-  ZoomIn,
-  ZoomOut,
-  MousePointer,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Settings2,
-  Volume2,
-  VolumeX,
-  Sparkles,
-  Flame,
   Award,
-  Camera,
+  Users,
+  Trophy,
+  Compass,
+  BookOpen,
 } from 'lucide-react';
 
 export type StudioLightingMode = 'studio';
@@ -30,19 +28,14 @@ interface ShowroomControlDockProps {
   onSelectPreset: (preset: CameraPreset) => void;
   autoRotate: boolean;
   onToggleAutoRotate: () => void;
-  enableWheelZoom: boolean;
-  onToggleWheelZoom: () => void;
-  onZoom: (direction: 'in' | 'out') => void;
+  enableWheelZoom?: boolean;
+  onToggleWheelZoom?: () => void;
+  onZoom?: (direction: 'in' | 'out') => void;
   onResetView: () => void;
   lang: 'vi' | 'en';
-  // Audio Controls
-  isAudioActive: boolean;
-  onToggleAudio: () => void;
-  onRevEngine: () => void;
-  // Studio Lighting Mode
+  // Deprecated/kept optional for backward compatibility
   lightingMode?: StudioLightingMode;
   onChangeLightingMode?: (mode: StudioLightingMode) => void;
-  // Sponsor Decals
   showSponsors?: boolean;
   onToggleSponsors?: () => void;
   // Interactive Hotspots
@@ -50,424 +43,469 @@ interface ShowroomControlDockProps {
   onToggleHotspots?: () => void;
 }
 
+/**
+ * ShowroomControlDock — Streamlined, Ultra-Compact 3D Control Center
+ *
+ * Systematized into 3 focused Camera Angle tabs:
+ * 1. [Toàn Cảnh]: 4 illuminated exhibition walls + 360° orbit with auto-tour
+ * 2. [Đọc Bảng]: Eye-level direct perspective for crystal-clear wall reading
+ * 3. [Chi Tiết Xe]: Aerodynamic vehicle component focus (Front, Cockpit, Rear, Top)
+ *
+ * Combined with a compact 2-button Interactive Utilities dock:
+ * - Hotspots (Engineering points), Auto-Rotate 360°
+ * (Engine sound removed per user request for minimalist focus)
+ */
 export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.memo(
   ({
     cameraPreset,
     onSelectPreset,
     autoRotate,
     onToggleAutoRotate,
-    enableWheelZoom,
-    onToggleWheelZoom,
-    onZoom,
     onResetView,
     lang,
-    isAudioActive,
-    onToggleAudio,
-    onRevEngine,
-    lightingMode: _lightingMode = 'studio',
-    showSponsors = true,
-    onToggleSponsors,
     showHotspots = false,
     onToggleHotspots,
   }) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(true);
+    const [presetCategory, setPresetCategory] = useState<'pano' | 'direct' | 'car'>('pano');
+    const [isTouring, setIsTouring] = useState<boolean>(false);
 
-    const CAMERA_PRESETS: {
+    // 4 Panoramic Wall Tour Steps
+    const TOUR_STEPS: {
       id: CameraPreset;
       labelVi: string;
       labelEn: string;
+      tag: string;
+    }[] = [
+      { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', tag: '1/4' },
+      { id: 'pano_drivers', labelVi: 'Vách Tay Đua', labelEn: 'Drivers Wall', tag: '2/4' },
+      { id: 'pano_technical', labelVi: 'Vách Kỹ Thuật', labelEn: 'Tech Specs', tag: '3/4' },
+      { id: 'pano_achievements', labelVi: 'Vách Thành Tích', labelEn: 'Records Wall', tag: '4/4' },
+    ];
+
+    const currentTourIdx = TOUR_STEPS.findIndex((s) => s.id === cameraPreset);
+
+    // Auto-Tour review effect
+    useEffect(() => {
+      if (!isTouring) return;
+      const interval = setInterval(() => {
+        const nextIdx = currentTourIdx >= 0 ? (currentTourIdx + 1) % TOUR_STEPS.length : 0;
+        onSelectPreset(TOUR_STEPS[nextIdx].id);
+      }, 5500);
+      return () => clearInterval(interval);
+    }, [isTouring, currentTourIdx, onSelectPreset]);
+
+    const handleNextTour = () => {
+      const nextIdx = currentTourIdx >= 0 ? (currentTourIdx + 1) % TOUR_STEPS.length : 0;
+      onSelectPreset(TOUR_STEPS[nextIdx].id);
+    };
+
+    const handlePrevTour = () => {
+      const prevIdx =
+        currentTourIdx >= 0
+          ? (currentTourIdx - 1 + TOUR_STEPS.length) % TOUR_STEPS.length
+          : TOUR_STEPS.length - 1;
+      onSelectPreset(TOUR_STEPS[prevIdx].id);
+    };
+
+    const handleToggleTour = () => {
+      if (isTouring) {
+        setIsTouring(false);
+      } else {
+        setIsTouring(true);
+        if (currentTourIdx < 0) {
+          onSelectPreset(TOUR_STEPS[0].id);
+        }
+      }
+    };
+
+    // 1. Panoramic Wall Angles
+    const PANO_PRESETS: {
+      id: CameraPreset;
+      labelVi: string;
+      labelEn: string;
+      tag: string;
+      icon: React.ReactNode;
+      isWide?: boolean;
+    }[] = [
+      {
+        id: 'pano_branding',
+        labelVi: 'Vách Logo',
+        labelEn: 'Launch Wall',
+        tag: 'LOGO',
+        icon: <Award className="w-3.5 h-3.5 text-amber-400" />,
+      },
+      {
+        id: 'pano_drivers',
+        labelVi: 'Vách Tay Đua',
+        labelEn: 'Drivers Wall',
+        tag: 'TAY ĐUA',
+        icon: <Users className="w-3.5 h-3.5 text-sky-400" />,
+      },
+      {
+        id: 'pano_technical',
+        labelVi: 'Vách Kỹ Thuật',
+        labelEn: 'Tech Specs',
+        tag: 'KỸ THUẬT',
+        icon: <Crosshair className="w-3.5 h-3.5 text-emerald-400" />,
+      },
+      {
+        id: 'pano_achievements',
+        labelVi: 'Vách Thành Tích',
+        labelEn: 'Records Wall',
+        tag: 'KỶ LỤC',
+        icon: <Trophy className="w-3.5 h-3.5 text-yellow-400" />,
+      },
+      {
+        id: 'overview',
+        labelVi: 'Toàn Cảnh Xe & Sàn 360°',
+        labelEn: '360° Stage Overview',
+        tag: 'ORBIT',
+        icon: <Eye className="w-3.5 h-3.5 text-purple-400" />,
+        isWide: true,
+      },
+    ];
+
+    // 2. Direct Reading Angles (eye-level)
+    const DIRECT_PRESETS: {
+      id: CameraPreset;
+      labelVi: string;
+      labelEn: string;
+      tag: string;
       icon: React.ReactNode;
     }[] = [
       {
-        id: 'overview',
-        labelVi: 'Toàn Cảnh 360°',
-        labelEn: '360° Orbit',
-        icon: <Eye className="w-3.5 h-3.5" />,
+        id: 'branding',
+        labelVi: 'Đọc Vách Logo',
+        labelEn: 'Read Launch Wall',
+        tag: 'LOGO',
+        icon: <Award className="w-3.5 h-3.5 text-amber-400" />,
       },
       {
+        id: 'drivers',
+        labelVi: 'Đọc Vách Tay Đua',
+        labelEn: 'Read Drivers Wall',
+        tag: 'TAY ĐUA',
+        icon: <Users className="w-3.5 h-3.5 text-sky-400" />,
+      },
+      {
+        id: 'technical',
+        labelVi: 'Đọc Vách Kỹ Thuật',
+        labelEn: 'Read Tech Specs',
+        tag: 'KỸ THUẬT',
+        icon: <Crosshair className="w-3.5 h-3.5 text-emerald-400" />,
+      },
+      {
+        id: 'achievements',
+        labelVi: 'Đọc Bảng Thành Tích',
+        labelEn: 'Read Records Wall',
+        tag: 'KỶ LỤC',
+        icon: <Trophy className="w-3.5 h-3.5 text-yellow-400" />,
+      },
+    ];
+
+    // 3. Vehicle Aerodynamic Detail Angles
+    const CAR_PRESETS: {
+      id: CameraPreset;
+      labelVi: string;
+      labelEn: string;
+      tag: string;
+      icon: React.ReactNode;
+    }[] = [
+      {
         id: 'front',
-        labelVi: 'Cánh Trước',
-        labelEn: 'Front Aero',
-        icon: <Crosshair className="w-3.5 h-3.5" />,
+        labelVi: 'Mũi & Cánh Trước',
+        labelEn: 'Front Wing & Nose',
+        tag: 'FRONT',
+        icon: <Crosshair className="w-3.5 h-3.5 text-red-400" />,
       },
       {
         id: 'cockpit',
-        labelVi: 'Buồng Lái',
-        labelEn: 'Cockpit',
-        icon: <Shield className="w-3.5 h-3.5" />,
+        labelVi: 'Buồng Lái & Halo',
+        labelEn: 'Cockpit & Halo',
+        tag: 'COCKPIT',
+        icon: <Shield className="w-3.5 h-3.5 text-blue-400" />,
       },
       {
         id: 'rear',
         labelVi: 'Cánh Đuôi & DRS',
-        labelEn: 'Rear & DRS',
-        icon: <Zap className="w-3.5 h-3.5" />,
+        labelEn: 'Rear Wing & DRS',
+        tag: 'REAR',
+        icon: <Zap className="w-3.5 h-3.5 text-amber-400" />,
       },
       {
         id: 'top',
-        labelVi: 'Từ Trên Xuống',
-        labelEn: 'Top Down',
-        icon: <Box className="w-3.5 h-3.5" />,
+        labelVi: 'Bình Đồ Từ Trên',
+        labelEn: 'Top-Down Aero',
+        tag: 'TOP',
+        icon: <Box className="w-3.5 h-3.5 text-purple-400" />,
       },
     ];
 
     return (
-      <div className="flex flex-col items-end gap-2 pointer-events-auto">
-        {/* ── Main Floating Control Deck ── */}
-        <div className="rounded-2xl bg-studio-950/90 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2 sm:p-3 text-white max-w-[290px] xs:max-w-xs sm:max-w-md w-full transition-all">
-          {/* Header: Title & Collapse Button */}
-          <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-studio-800/80 mb-1.5 sm:mb-2">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-f1red animate-pulse" />
-              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-studio-300 flex items-center gap-1 sm:gap-1.5">
-                <Settings2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-f1red" />
-                {lang === 'vi' ? 'Điều Khiển 3D' : '3D Control Deck'}
+      <div className="flex flex-col items-end pointer-events-auto">
+        {/* ── Main Compact Floating Control Dock ── */}
+        <div className="rounded-2xl bg-studio-950/92 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2 sm:p-2.5 text-white w-[290px] sm:w-[320px] transition-all">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between pb-1.5 border-b border-studio-800/80 mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-studio-200 flex items-center gap-1">
+                <Settings2 className="w-3.5 h-3.5 text-f1red" />
+                {lang === 'vi' ? 'Điều Khiển 3D' : '3D Controls'}
               </span>
             </div>
 
             <div className="flex items-center gap-1">
-              {/* Quick Reset Button */}
+              {/* Quick Reset View Button */}
               <button
                 type="button"
                 onClick={onResetView}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
-                aria-label={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset to default view'}
+                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                title={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset view'}
+                aria-label="Reset view"
               >
-                <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                <RotateCcw className="w-3.5 h-3.5" />
               </button>
 
               {/* Minimize / Expand Toggle */}
               <button
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
-                aria-label={
-                  isExpanded
-                    ? lang === 'vi'
-                      ? 'Thu gọn'
-                      : 'Collapse'
-                    : lang === 'vi'
-                      ? 'Mở rộng'
-                      : 'Expand'
-                }
+                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                title={isExpanded ? (lang === 'vi' ? 'Thu gọn' : 'Collapse') : (lang === 'vi' ? 'Mở rộng' : 'Expand')}
+                aria-label="Toggle expand"
               >
-                {isExpanded ? (
-                  <ChevronUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                ) : (
-                  <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                )}
+                {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
 
           {isExpanded && (
-            <div className="space-y-3 animate-fade-in">
-              {/* 1. Camera View Presets Grid */}
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-studio-400 mb-1.5 flex items-center justify-between">
-                  <span>{lang === 'vi' ? 'Góc nhìn camera:' : 'Camera Presets:'}</span>
-                  <span className="text-studio-400 font-mono text-[9px]">5 PRESETS</span>
+            <div className="space-y-2.5 animate-fade-in">
+              {/* ── 1. Systematic 3-Tab Camera Selector ── */}
+              <div className="space-y-1.5">
+                <div className="grid grid-cols-3 gap-1 bg-studio-900/90 p-1 rounded-xl border border-studio-800">
+                  {/* Tab 1: Panoramas */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPresetCategory('pano');
+                      if (cameraPreset && !PANO_PRESETS.some((p) => p.id === cameraPreset)) {
+                        onSelectPreset('pano_branding');
+                      }
+                    }}
+                    className={`py-1 px-1 rounded-lg text-[10px] font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer ${
+                      presetCategory === 'pano'
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-md font-black'
+                        : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                    }`}
+                  >
+                    <Compass className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{lang === 'vi' ? 'Toàn Cảnh' : 'Panoramas'}</span>
+                  </button>
+
+                  {/* Tab 2: Read Boards */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPresetCategory('direct');
+                      if (cameraPreset && !DIRECT_PRESETS.some((p) => p.id === cameraPreset)) {
+                        onSelectPreset('branding');
+                      }
+                    }}
+                    className={`py-1 px-1 rounded-lg text-[10px] font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer ${
+                      presetCategory === 'direct'
+                        ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md font-black'
+                        : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                    }`}
+                  >
+                    <BookOpen className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{lang === 'vi' ? 'Đọc Bảng' : 'Read Boards'}</span>
+                  </button>
+
+                  {/* Tab 3: Car Aero */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPresetCategory('car');
+                      if (cameraPreset && !CAR_PRESETS.some((p) => p.id === cameraPreset)) {
+                        onSelectPreset('front');
+                      }
+                    }}
+                    className={`py-1 px-1 rounded-lg text-[10px] font-bold transition-all text-center flex items-center justify-center gap-1 cursor-pointer ${
+                      presetCategory === 'car'
+                        ? 'bg-gradient-to-r from-red-500 to-f1red text-white shadow-md font-black'
+                        : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                    }`}
+                  >
+                    <Box className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{lang === 'vi' ? 'Chi Tiết Xe' : 'Car Aero'}</span>
+                  </button>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                  {CAMERA_PRESETS.map((p) => {
+
+                {/* ── Auto-Tour Bar (Exclusive to Toàn Cảnh tab) ── */}
+                {presetCategory === 'pano' && (
+                  <div className="flex items-center justify-between gap-1 p-1 rounded-xl bg-studio-900/90 border border-studio-800">
+                    <button
+                      type="button"
+                      onClick={handlePrevTour}
+                      className="p-1 rounded-lg text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                      title={lang === 'vi' ? 'Vách trước' : 'Previous wall'}
+                      aria-label="Previous wall"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleToggleTour}
+                      className={`flex-1 py-1 px-2 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                        isTouring
+                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black border-amber-400 shadow-md'
+                          : 'bg-studio-800 text-white border-studio-700 hover:bg-studio-700'
+                      }`}
+                    >
+                      {isTouring ? (
+                        <>
+                          <Pause className="w-3 h-3 text-black animate-pulse" />
+                          <span>{lang === 'vi' ? 'Dừng Tour Duyệt' : 'Pause Tour'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-3 h-3 text-amber-400" />
+                          <span>{lang === 'vi' ? 'Tour Duyệt 4 Vách' : 'Review 4 Walls'}</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleNextTour}
+                      className="p-1 rounded-lg text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                      title={lang === 'vi' ? 'Vách kế tiếp' : 'Next wall'}
+                      aria-label="Next wall"
+                    >
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Direct Reading Tip */}
+                {presetCategory === 'direct' && (
+                  <p className="text-[9px] text-sky-400/90 font-medium px-1 flex items-center gap-1">
+                    <span>✦</span>
+                    <span>{lang === 'vi' ? 'Góc nhìn thẳng trực diện ngang tầm mắt để đọc chữ sắc nét' : 'Direct eye-level perspective for sharp text reading'}</span>
+                  </p>
+                )}
+
+                {/* ── Preset Buttons Grid ── */}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {(presetCategory === 'pano'
+                    ? PANO_PRESETS
+                    : presetCategory === 'direct'
+                      ? DIRECT_PRESETS
+                      : CAR_PRESETS
+                  ).map((p) => {
                     const isActive = cameraPreset === p.id;
                     return (
                       <button
                         key={p.id}
                         type="button"
-                        onClick={() => onSelectPreset(p.id)}
-                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer border ${
+                        onClick={() => {
+                          if (isTouring) setIsTouring(false);
+                          onSelectPreset(p.id);
+                        }}
+                        className={`flex items-center justify-between p-1.5 rounded-xl transition-all cursor-pointer border text-left ${
+                          (p as any).isWide ? 'col-span-2' : ''
+                        } ${
                           isActive
-                            ? 'bg-f1red text-white border-f1red shadow-md shadow-f1red/30'
-                            : 'bg-studio-900/80 text-studio-300 border-studio-800 hover:bg-studio-800 hover:text-white'
+                            ? 'bg-studio-900 border-amber-500 shadow-md shadow-amber-500/20 text-white'
+                            : 'bg-studio-900/70 border-studio-800/80 hover:bg-studio-850 hover:border-studio-700 text-studio-300 hover:text-white'
                         }`}
                       >
-                        {p.icon}
-                        <span className="truncate">{lang === 'vi' ? p.labelVi : p.labelEn}</span>
+                        <div className="flex items-center gap-1.5 min-w-0 pr-1">
+                          {p.icon}
+                          <span className="font-bold text-[10px] sm:text-[11px] truncate">
+                            {lang === 'vi' ? p.labelVi : p.labelEn}
+                          </span>
+                        </div>
+                        <span
+                          className={`text-[8px] font-mono px-1 py-0.5 rounded font-black shrink-0 ${
+                            isActive ? 'bg-amber-500 text-black' : 'bg-studio-800 text-studio-400'
+                          }`}
+                        >
+                          {p.tag}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* 2. Studio Lighting Environment (Studio W15 Dedicated Photoshoot Stage) */}
+              {/* ── 2. Streamlined Interactive Utilities Row ── */}
               <div className="pt-2 border-t border-studio-800/80">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-studio-400 mb-1.5 flex items-center justify-between">
-                  <span>{lang === 'vi' ? 'Ánh sáng trường quay:' : 'Studio Lighting:'}</span>
-                  <span className="text-amber-400 font-mono text-[9px] uppercase flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5 text-amber-400" />
-                    STUDIO W15 SPEC
+                <div className="flex items-center justify-between mb-1.5 px-0.5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-studio-400 flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-amber-400" />
+                    {lang === 'vi' ? 'Tiện Ích Tương Tác:' : 'Interactive Tools:'}
                   </span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-gradient-to-r from-studio-900/90 to-studio-950/90 border border-studio-800/90 flex items-center justify-between gap-2.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                      <Camera className="w-3.5 h-3.5 text-amber-400" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-[11px] font-bold text-white truncate">
-                        {lang === 'vi' ? 'Studio W15 Photoshoot' : 'Studio W15 Photoshoot'}
-                      </h4>
-                      <p className="text-[9px] text-studio-400 truncate">
-                        {lang === 'vi'
-                          ? 'Dàn Softbox trần & Vách cong vô cực 5600K'
-                          : 'Overhead Softbox rig & Cyclorama 5600K'}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="shrink-0 text-[9px] font-black uppercase px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    {lang === 'vi' ? 'CHUẨN STUDIO' : 'CALIBRATED'}
-                  </span>
-                </div>
-              </div>
 
-              {/* 3. Official Sponsor Decals on 3D Car */}
-              {onToggleSponsors && (
-                <div className="pt-2 border-t border-studio-800/80">
+                <div className="grid grid-cols-2 gap-1.5">
+                  {/* 1. Hotspots Toggle */}
+                  {onToggleHotspots && (
+                    <button
+                      type="button"
+                      onClick={onToggleHotspots}
+                      className={`p-1.5 rounded-xl border flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
+                        showHotspots
+                          ? 'bg-f1red/20 text-red-200 border-f1red/70 shadow-sm'
+                          : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
+                      }`}
+                      title={lang === 'vi' ? 'Bật/Tắt 6 điểm kỹ thuật trên thân xe' : 'Toggle 6 engineering hotspots'}
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <Crosshair className={`w-3.5 h-3.5 shrink-0 ${showHotspots ? 'text-f1red' : 'text-studio-400'}`} />
+                        <span className="truncate">{lang === 'vi' ? 'Điểm Kỹ Thuật' : 'Hotspots'}</span>
+                      </div>
+                      <span
+                        className={`text-[8px] font-black uppercase px-1 py-0.5 rounded shrink-0 ${
+                          showHotspots ? 'bg-f1red text-white' : 'bg-studio-800 text-studio-400'
+                        }`}
+                      >
+                        {showHotspots ? (lang === 'vi' ? 'BẬT' : 'ON') : (lang === 'vi' ? 'ẨN' : 'OFF')}
+                      </span>
+                    </button>
+                  )}
+
+                  {/* 2. Auto-Rotate 360 Toggle */}
                   <button
                     type="button"
-                    onClick={onToggleSponsors}
-                    className={`w-full p-2 rounded-xl border flex items-center justify-between gap-2 text-[11px] font-bold transition-all cursor-pointer ${
-                      showSponsors
-                        ? 'bg-amber-950/80 text-amber-300 border-amber-500 shadow-sm shadow-amber-500/20'
+                    onClick={onToggleAutoRotate}
+                    className={`p-1.5 rounded-xl border flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
+                      autoRotate
+                        ? 'bg-sky-950/80 text-sky-200 border-sky-500/70 shadow-sm'
                         : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
                     }`}
-                    aria-label={
-                      lang === 'vi'
-                        ? 'Bật/Tắt thiết kế tem tài trợ thực tế trên xe 3D'
-                        : 'Toggle Official Sponsor Liveries'
-                    }
+                    title={lang === 'vi' ? 'Tự động xoay xe 360 độ' : 'Toggle 360 auto-rotation'}
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <Award
-                        className={`w-3.5 h-3.5 shrink-0 ${showSponsors ? 'text-amber-400' : 'text-studio-400'}`}
-                      />
-                      <span className="truncate">
-                        {lang === 'vi' ? 'Tem Tài Trợ Xe' : 'Sponsor Liveries'}
-                      </span>
+                      {autoRotate ? (
+                        <Pause className="w-3.5 h-3.5 shrink-0 text-sky-400" />
+                      ) : (
+                        <Play className="w-3.5 h-3.5 shrink-0 text-studio-400" />
+                      )}
+                      <span className="truncate">{lang === 'vi' ? 'Tự Xoay Xe' : 'Auto-Rotate'}</span>
                     </div>
                     <span
-                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                        showSponsors ? 'bg-amber-500 text-black' : 'bg-studio-800 text-studio-400'
+                      className={`text-[8px] font-black uppercase px-1 py-0.5 rounded shrink-0 ${
+                        autoRotate ? 'bg-sky-500 text-black' : 'bg-studio-800 text-studio-400'
                       }`}
                     >
-                      {showSponsors
-                        ? lang === 'vi'
-                          ? 'BẬT'
-                          : 'ON'
-                        : lang === 'vi'
-                          ? 'TẮT'
-                          : 'OFF'}
+                      {autoRotate ? (lang === 'vi' ? 'CHẠY' : 'ON') : (lang === 'vi' ? 'DỪNG' : 'OFF')}
                     </span>
                   </button>
-                </div>
-              )}
-
-              {/* 4. Interactive Hotspots (Điểm kỹ thuật) */}
-              {onToggleHotspots && (
-                <div className="pt-2 border-t border-studio-800/80">
-                  <button
-                    type="button"
-                    onClick={onToggleHotspots}
-                    className={`w-full p-2 rounded-xl border flex items-center justify-between gap-2 text-[11px] font-bold transition-all cursor-pointer ${
-                      showHotspots
-                        ? 'bg-f1red/20 text-red-200 border-f1red shadow-sm shadow-f1red/20'
-                        : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
-                    }`}
-                    aria-label={
-                      lang === 'vi'
-                        ? 'Bật/Tắt các điểm kỹ thuật tương tác trên xe 3D'
-                        : 'Toggle Interactive Hotspots'
-                    }
-                  >
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <Crosshair
-                        className={`w-3.5 h-3.5 shrink-0 ${showHotspots ? 'text-f1red' : 'text-studio-400'}`}
-                      />
-                      <span className="truncate">
-                        {lang === 'vi' ? 'Điểm Kỹ Thuật (Hotspots)' : 'Engineering Hotspots'}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                        showHotspots ? 'bg-f1red text-white' : 'bg-studio-800 text-studio-400'
-                      }`}
-                    >
-                      {showHotspots
-                        ? lang === 'vi'
-                          ? 'HIỂN THỊ'
-                          : 'SHOW'
-                        : lang === 'vi'
-                          ? 'ẨN'
-                          : 'HIDE'}
-                    </span>
-                  </button>
-                </div>
-              )}
-
-              {/* 4. Auto-Rotate 360 Toggle */}
-              <div className="pt-2 border-t border-studio-800/80">
-                <button
-                  type="button"
-                  onClick={onToggleAutoRotate}
-                  className={`w-full p-2 rounded-xl border flex items-center justify-between gap-2 text-[11px] font-bold transition-all cursor-pointer ${
-                    autoRotate
-                      ? 'bg-sky-950/80 text-sky-300 border-sky-500 shadow-sm shadow-sky-500/20'
-                      : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
-                  }`}
-                  aria-label={
-                    lang === 'vi' ? 'Bật/Tắt chế độ tự xoay xe 360 độ' : 'Toggle 360 Auto-Rotation'
-                  }
-                >
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    {autoRotate ? (
-                      <Pause className="w-3.5 h-3.5 shrink-0 text-sky-400" />
-                    ) : (
-                      <Play className="w-3.5 h-3.5 shrink-0 text-studio-400" />
-                    )}
-                    <span className="truncate">
-                      {lang === 'vi' ? 'Tự Xoay Xe 360°' : '360° Auto-Rotation'}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                      autoRotate ? 'bg-sky-500 text-black' : 'bg-studio-800 text-studio-400'
-                    }`}
-                  >
-                    {autoRotate ? (lang === 'vi' ? 'CHẠY' : 'ON') : lang === 'vi' ? 'DỪNG' : 'OFF'}
-                  </span>
-                </button>
-              </div>
-
-              {/* 4. Engine Sound Engine (Direction 2): Audio Toggle & Rev Blip */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-studio-800/80">
-                {/* Sound Audio Toggle */}
-                <button
-                  type="button"
-                  onClick={onToggleAudio}
-                  className={`p-2 rounded-xl border flex items-center justify-between gap-2 text-[11px] font-bold transition-all cursor-pointer ${
-                    isAudioActive
-                      ? 'bg-purple-950/80 text-purple-300 border-purple-500 shadow-sm shadow-purple-500/20'
-                      : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
-                  }`}
-                  aria-label={
-                    lang === 'vi'
-                      ? 'Bật/Tắt âm thanh động cơ V6 Turbo Hybrid'
-                      : 'Toggle F1 V6 Turbo Hybrid engine sound'
-                  }
-                >
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    {isAudioActive ? (
-                      <Volume2 className="w-3.5 h-3.5 shrink-0 text-purple-400 animate-pulse" />
-                    ) : (
-                      <VolumeX className="w-3.5 h-3.5 shrink-0 text-studio-400" />
-                    )}
-                    <span className="truncate">
-                      {lang === 'vi' ? 'Âm Động Cơ' : 'Engine Audio'}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
-                      isAudioActive ? 'bg-purple-500 text-black' : 'bg-studio-800 text-studio-400'
-                    }`}
-                  >
-                    {isAudioActive ? (lang === 'vi' ? 'BẬT' : 'ON') : lang === 'vi' ? 'TẮT' : 'OFF'}
-                  </span>
-                </button>
-
-                {/* Rev Throttle Burst */}
-                <button
-                  type="button"
-                  onClick={onRevEngine}
-                  className="p-2 rounded-xl border border-red-900/60 bg-red-950/50 hover:bg-f1red text-red-300 hover:text-white flex items-center justify-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer shadow-sm group"
-                  aria-label={
-                    lang === 'vi'
-                      ? 'Rồ ga nẹt pô động cơ V6 Turbo Hybrid (12,000 RPM)'
-                      : 'Throttle blip & rev V6 engine (12,000 RPM)'
-                  }
-                >
-                  <Flame className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-                  <span>{lang === 'vi' ? 'Gầm Máy F1' : 'Rev Engine'}</span>
-                </button>
-              </div>
-
-              {/* 5. Mouse Wheel Mode & Zoom Step Controls */}
-              <div className="pt-2 border-t border-studio-800/80 flex items-center justify-between gap-2">
-                {/* Mouse Wheel Mode Segmented Switcher */}
-                <div className="flex-1 flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-400 flex items-center gap-1">
-                    <MousePointer className="w-3 h-3 text-amber-400" />
-                    {lang === 'vi' ? 'Chế độ lăn chuột:' : 'Wheel Mode:'}
-                  </span>
-                  <div className="inline-flex rounded-lg bg-studio-900 border border-studio-800 p-0.5 text-[10px] font-bold">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (enableWheelZoom) onToggleWheelZoom();
-                      }}
-                      className={`flex-1 py-1 px-1.5 rounded-md transition-all text-center cursor-pointer ${
-                        !enableWheelZoom
-                          ? 'bg-amber-500 text-black shadow-sm font-black'
-                          : 'text-studio-400 hover:text-white'
-                      }`}
-                      aria-label={
-                        lang === 'vi'
-                          ? 'Lăn chuột cuộn trang web mượt mà (Mặc định)'
-                          : 'Mouse wheel scrolls web page'
-                      }
-                    >
-                      {lang === 'vi' ? 'Cuộn Trang' : 'Page Scroll'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!enableWheelZoom) onToggleWheelZoom();
-                      }}
-                      className={`flex-1 py-1 px-1.5 rounded-md transition-all text-center cursor-pointer ${
-                        enableWheelZoom
-                          ? 'bg-amber-500 text-black shadow-sm font-black'
-                          : 'text-studio-400 hover:text-white'
-                      }`}
-                      aria-label={
-                        lang === 'vi'
-                          ? 'Lăn chuột phóng to / thu nhỏ xe 3D'
-                          : 'Mouse wheel zooms 3D car'
-                      }
-                    >
-                      {lang === 'vi' ? 'Zoom 3D' : '3D Zoom'}
-                    </button>
-                  </div>
-                  <p className="text-[9px] text-studio-500 font-medium">
-                    ✦{' '}
-                    {lang === 'vi'
-                      ? 'Đổi nhanh tại thanh đáy màn hình 3D'
-                      : 'Quick toggle on bottom 3D HUD'}
-                  </p>
-                </div>
-
-                {/* Direct Zoom In & Out Step Buttons */}
-                <div className="flex flex-col gap-1 shrink-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-400 text-right">
-                    {lang === 'vi' ? 'Thu Phóng:' : 'Zoom Step:'}
-                  </span>
-                  <div className="inline-flex items-center rounded-lg bg-studio-900 border border-studio-800 p-0.5">
-                    <button
-                      type="button"
-                      onClick={() => onZoom('in')}
-                      className="p-1.5 text-studio-300 hover:text-white hover:bg-studio-800 rounded-md transition-colors cursor-pointer"
-                      aria-label={lang === 'vi' ? 'Phóng to (+)' : 'Zoom In (+)'}
-                    >
-                      <ZoomIn className="w-3.5 h-3.5" />
-                    </button>
-                    <div className="w-[1px] h-4 bg-studio-800" />
-                    <button
-                      type="button"
-                      onClick={() => onZoom('out')}
-                      className="p-1.5 text-studio-300 hover:text-white hover:bg-studio-800 rounded-md transition-colors cursor-pointer"
-                      aria-label={lang === 'vi' ? 'Thu nhỏ (-)' : 'Zoom Out (-)'}
-                    >
-                      <ZoomOut className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

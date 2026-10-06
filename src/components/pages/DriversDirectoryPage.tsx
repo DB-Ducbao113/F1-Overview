@@ -136,10 +136,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                           src={portraitUrl}
                           alt={driver.driverName}
                           onError={(e) => {
-                            const target = e.currentTarget;
-                            if (!target.src.endsWith('.svg')) {
-                              target.src = `/images/drivers/${driver.driverId}.svg`;
-                            }
+                            e.currentTarget.style.display = 'none';
                           }}
                           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                         />

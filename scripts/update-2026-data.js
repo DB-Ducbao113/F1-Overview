@@ -17,6 +17,15 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const IS_DRY_RUN = process.argv.includes('--dry-run');
+const IS_FORCE = process.argv.includes('--force');
+
+// F1 race weekends run from Wednesday (media/prep) through Sunday (Race).
+// Mondays (1) and Tuesdays (2) have no race activity, so skip automatic updates unless --force is passed.
+const dayOfWeekUtc = new Date().getUTCDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+if (!IS_FORCE && (dayOfWeekUtc === 1 || dayOfWeekUtc === 2)) {
+  console.log(`[update-2026-data] Monday or Tuesday detected (UTC Day: ${dayOfWeekUtc}). No race sessions scheduled on Mon/Tue. Skipping auto-update. (Use --force to run anyway)`);
+  process.exit(0);
+}
 
 const API_BASE = 'https://api.jolpi.ca/ergast/f1';
 

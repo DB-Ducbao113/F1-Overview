@@ -12,6 +12,13 @@ export function createUVTexture(
   height: number,
   draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void,
 ): THREE.CanvasTexture {
+  if (typeof document === 'undefined') {
+    const fallbackTexture = new THREE.CanvasTexture(null as any);
+    fallbackTexture.colorSpace = THREE.SRGBColorSpace;
+    fallbackTexture.flipY = false;
+    fallbackTexture.generateMipmaps = true;
+    return fallbackTexture;
+  }
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -2768,6 +2775,758 @@ export function generateWingsTexture(
 export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
   return createUVTexture(1024, 1024, (ctx, w, h) => {
     drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
+  });
+}
+
+/**
+ * Renders authentic BBS forged magnesium multi-spoke rims with exposed ventilated
+ * carbon-carbon brake disc rotor cavity and central lock nut.
+ * Directly matches the wheel construction of Mercedes W15 (Silver Arrow) and Cadillac MAC-26 (Champagne Gold).
+ */
+export function drawBBSMultiSpokeWheel(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  spokeColor: string,
+  highlightColor: string,
+  shadowColor: string,
+  centerNutColor: string,
+  isMercedes: boolean,
+) {
+  ctx.save();
+
+  // 1. Recessed Brake Disc Rotor & Cooling Duct Chamber (r <= 250)
+  const rotorGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 248);
+  rotorGrad.addColorStop(0, '#101319');
+  rotorGrad.addColorStop(0.6, '#141820');
+  rotorGrad.addColorStop(0.85, '#0d1015');
+  rotorGrad.addColorStop(1, '#07080a');
+  ctx.fillStyle = rotorGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 250, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 1a. Concentric Carbon-Carbon Friction Surface & Machining Grooves
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.055)';
+  ctx.lineWidth = 1.5;
+  [120, 140, 160, 180, 200, 218].forEach((r) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+
+  // 1b. Radial Rotor Cooling Drill Holes (Brembo Carbon Drill Venting)
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+  for (let i = 0; i < 24; i++) {
+    const a = (i * Math.PI * 2) / 24;
+    const r1 = 155;
+    const r2 = 185;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a + 0.13) * r2, cy + Math.sin(a + 0.13) * r2, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 1c. High-Performance Monobloc Brake Caliper (visible behind upper-left spokes)
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-Math.PI * 0.65);
+  ctx.fillStyle = isMercedes ? '#1a232e' : '#221e14';
+  ctx.strokeStyle = isMercedes ? '#00a19c' : '#d4af37';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 220, -0.35, 0.35);
+  ctx.arc(0, 0, 135, 0.35, -0.35, true);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+
+  // 2. Outer BBS Rim Barrel, Drop-Center & Bead Lip (radius 232 to 251)
+  const rimGrad = ctx.createRadialGradient(cx, cy, 225, cx, cy, 251);
+  rimGrad.addColorStop(0, shadowColor);
+  rimGrad.addColorStop(0.5, spokeColor);
+  rimGrad.addColorStop(0.85, highlightColor);
+  rimGrad.addColorStop(1, shadowColor);
+
+  ctx.strokeStyle = rimGrad;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 242, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Outer polished rim edge pinstripe
+  ctx.strokeStyle = highlightColor;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 249, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Inner rim drop-center channel ring
+  ctx.strokeStyle = shadowColor;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 234, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 2a. 20 Perimeter Titanium Wheel Assembly Bolts
+  for (let i = 0; i < 20; i++) {
+    const a = (i * Math.PI * 2) / 20;
+    const bx = cx + Math.cos(a) * 233;
+    const by = cy + Math.sin(a) * 233;
+    ctx.fillStyle = highlightColor;
+    ctx.beginPath();
+    ctx.arc(bx, by, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.beginPath();
+    ctx.arc(bx, by, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 3. BBS 10 Twin-Spoke (20 Spokes Total) Architecture
+  // Radiating from hub collar (radius 52) to rim barrel (radius 233)
+  const spokePairs = 10;
+  for (let i = 0; i < spokePairs; i++) {
+    const baseAngle = (i * Math.PI * 2) / spokePairs;
+
+    // Twin spoke angular spread: 0.048 rad at rim, 0.02 rad at hub
+    const angleA = baseAngle - 0.048;
+    const angleB = baseAngle + 0.048;
+    const hubAngleA = baseAngle - 0.02;
+    const hubAngleB = baseAngle + 0.02;
+
+    const rHub = 52;
+    const rRim = 233;
+
+    // Outer rim connecting bridge between twin spokes (triangular scalloped pocket)
+    ctx.fillStyle = shadowColor;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 232, angleA, angleB);
+    ctx.lineTo(cx + Math.cos(baseAngle) * 212, cy + Math.sin(baseAngle) * 212);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spoke Branch A & B (with 3D chamfered bevels)
+    const drawSpoke = (angleR: number, angleH: number) => {
+      const x1 = cx + Math.cos(angleH) * rHub;
+      const y1 = cy + Math.sin(angleH) * rHub;
+      const x2 = cx + Math.cos(angleR) * rRim;
+      const y2 = cy + Math.sin(angleR) * rRim;
+
+      // 3D Shadow stroke
+      ctx.strokeStyle = shadowColor;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      // Main metallic spoke body
+      ctx.strokeStyle = spokeColor;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      // Specular highlight edge
+      ctx.strokeStyle = highlightColor;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    };
+
+    drawSpoke(angleA, hubAngleA);
+    drawSpoke(angleB, hubAngleB);
+  }
+
+  // 4. Central Hub Collar & Hub Mounting Flange
+  ctx.fillStyle = shadowColor;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = spokeColor;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 52, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 5. Central Center-Lock Hex Nut (radius 42)
+  ctx.fillStyle = centerNutColor;
+  ctx.beginPath();
+  for (let s = 0; s < 6; s++) {
+    const na = (s * Math.PI) / 3;
+    const nx = cx + Math.cos(na) * 42;
+    const ny = cy + Math.sin(na) * 42;
+    if (s === 0) ctx.moveTo(nx, ny);
+    else ctx.lineTo(nx, ny);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.65)';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Hex nut inner socket hole (dark center spindle)
+  ctx.fillStyle = '#0a0c10';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 6. Central Constructor Monogram (Silver Star for Mercedes, Gold Crest for Cadillac)
+  if (isMercedes) {
+    drawMercedesStar(ctx, cx, cy, 32, '#f0f3f6');
+  } else {
+    drawCadillacCrest(ctx, cx, cy, 30);
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Renders authentic aerodynamic carbon wheel covers with constructor livery graphics
+ * directly matched 1:1 to official team car photos:
+ * - Ferrari SF-24: Scuderia Red outer disc with iconic Modena Yellow speed ring
+ * - McLaren MCL38: Stealth carbon disc with Google Chrome 4-color arcs (Red, Yellow, Green, Blue) & Papaya rings
+ * - Red Bull RB20: Matte Midnight Navy disc with razor-sharp Racing Red perimeter ring
+ * - Aston Martin AMR24: British Racing Green disc with 12 Fluorescent Lime Essence radial ticks
+ * - Audi C44: Fluo Neon Green radiating turbine cooling vanes & perimeter lip
+ * - Alpine A524: Alpine Blue outer ring & BWT Vibrant Pink speed ring
+ * - Racing Bulls: Racing Red outer ring & crisp Pure White speed ring
+ * - Williams FW46: Electric Cyan Blue outer ring & white speed ring
+ * - Haas VF-24: Haas Racing Red perimeter band & white speed ring
+ */
+export function drawTeamAeroWheelCover(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  teamId: TeamId,
+  livery: Team3DLivery,
+) {
+  ctx.save();
+
+  const coverColor = livery.wheelCoverColor || '#121417';
+  const accentColor = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
+  const secondaryColor = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
+  const rimColor = livery.wheelRimColor || livery.wheelAccentColor || '#ffffff';
+
+  // 1. Pristine Carbon Aerodynamic Disc Base (clears any old model fan vane artifacts)
+  const discGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 251);
+  discGrad.addColorStop(0, coverColor);
+  discGrad.addColorStop(0.7, coverColor);
+  discGrad.addColorStop(1, '#080a0d');
+  ctx.fillStyle = discGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 252, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 1a. Fine Concentric Carbon Machined Grooves (Motorsport finish)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+  ctx.lineWidth = 1.2;
+  [85, 115, 145, 175, 205, 225].forEach((r) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+
+  // 2. Outer Rim Flange Lip
+  ctx.strokeStyle = rimColor;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 250, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 3. Team-Specific Graphic Livery
+  switch (teamId) {
+    case 'ferrari': {
+      // SF-24: Scuderia Red outer band + iconic Modena Canary Yellow concentric speed ring
+      ctx.strokeStyle = '#e8002d'; // Scuderia Rosso Corsa
+      ctx.lineWidth = 16;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 239, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Iconic Modena Canary Yellow Concentric Speed Ring (matches sf24.jpg 1:1!)
+      ctx.strokeStyle = '#ffdf00'; // Modena Racing Yellow
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 208, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Scuderia Red inner aero contour ring
+      ctx.strokeStyle = '#e8002d';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 148, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Yellow center nut ring
+      ctx.strokeStyle = '#ffdf00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'mclaren': {
+      // MCL38: Iconic Google Chrome 4-color aero arcs (Red, Yellow, Green, Blue) + Papaya rings
+      const chromeArcs = [
+        { color: '#ea4335', start: -Math.PI * 0.42, end: -Math.PI * 0.08 }, // Red (top quadrant)
+        { color: '#fbbc05', start: Math.PI * 0.08, end: Math.PI * 0.42 },   // Yellow (right quadrant)
+        { color: '#34a853', start: Math.PI * 0.58, end: Math.PI * 0.92 },   // Green (bottom quadrant)
+        { color: '#4285f4', start: Math.PI * 1.08, end: Math.PI * 1.42 },   // Blue (left quadrant)
+      ];
+
+      chromeArcs.forEach((arc) => {
+        ctx.strokeStyle = arc.color;
+        ctx.lineWidth = 14;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 236, arc.start, arc.end);
+        ctx.stroke();
+      });
+      ctx.lineCap = 'butt';
+
+      // Papaya Orange outer edge boundary pinstripe
+      ctx.strokeStyle = '#ff8000';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 248, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Papaya Orange concentric speed ring
+      ctx.strokeStyle = '#ff8000';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 196, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Papaya Orange inner contour ring
+      ctx.strokeStyle = '#ff8000';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 136, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'redbull': {
+      // RB20: Matte Midnight Navy with striking Red Bull Racing Red perimeter ring
+      ctx.strokeStyle = '#ea1d2d'; // Razor-sharp Racing Red outer ring
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Racing Sunburst Yellow pinstripe
+      ctx.strokeStyle = '#ffce00';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 229, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Mid-radius aero contour ring
+      ctx.strokeStyle = '#ffce00';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 144, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Yellow center nut ring
+      ctx.strokeStyle = '#ffce00';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'astonmartin': {
+      // AMR24: British Racing Green disc with 12 Fluorescent Lime Essence radial ticks
+      const ticks = 12;
+      for (let i = 0; i < ticks; i++) {
+        const a = (i * Math.PI * 2) / ticks;
+        const x1 = cx + Math.cos(a) * 224;
+        const y1 = cy + Math.sin(a) * 224;
+        const x2 = cx + Math.cos(a) * 248;
+        const y2 = cy + Math.sin(a) * 248;
+
+        ctx.strokeStyle = '#cedc00'; // Fluorescent Lime Essence
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+
+      // Connecting Lime circular track ring
+      ctx.strokeStyle = '#cedc00';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 224, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner Lime aerodynamic contour ring
+      ctx.strokeStyle = '#cedc00';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 134, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Center nut ring
+      ctx.strokeStyle = '#cedc00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'audi': {
+      // C44: Fluo Neon Green radiating aerodynamic cooling vanes (Turbine Fins)
+      const vanes = 16;
+      for (let i = 0; i < vanes; i++) {
+        const a = (i * Math.PI * 2) / vanes;
+        const sweepAngle = a + 0.16;
+
+        const xHub = cx + Math.cos(a) * 58;
+        const yHub = cy + Math.sin(a) * 58;
+        const xRim = cx + Math.cos(sweepAngle) * 245;
+        const yRim = cy + Math.sin(sweepAngle) * 245;
+
+        // Vane trailing shadow
+        ctx.strokeStyle = '#1b7d00';
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(xHub, yHub);
+        ctx.lineTo(xRim, yRim);
+        ctx.stroke();
+
+        // Fluo Neon Green leading edge
+        ctx.strokeStyle = '#52ff00';
+        ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        ctx.moveTo(xHub, yHub);
+        ctx.lineTo(xRim, yRim);
+        ctx.stroke();
+      }
+
+      // Fluo Neon Green perimeter ring
+      ctx.strokeStyle = '#52ff00';
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 246, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Silver hub collar
+      ctx.strokeStyle = '#c4c9ce';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'alpine': {
+      // A524: Alpine Electric Blue outer ring + BWT Vibrant Flamingo Pink speed ring
+      ctx.strokeStyle = '#0090ff'; // Alpine Blue
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#fd4bc7'; // BWT Pink
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 186, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#0090ff';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 132, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#fd4bc7';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'racingbulls': {
+      // VCARB 01: Bold Racing Red perimeter ring + Pure White speed ring
+      ctx.strokeStyle = '#d90429'; // Racing Red
+      ctx.lineWidth = 13;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ffffff'; // White
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 216, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#d90429';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 142, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'williams': {
+      // FW46: Electric Cyan Blue outer ring + White speed ring
+      ctx.strokeStyle = '#00a3e0'; // Cyan
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ffffff'; // White
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 198, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#00a3e0';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 134, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#00a3e0';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    case 'haas': {
+      // VF-24: Haas Racing Red perimeter ring + Pure White speed ring
+      ctx.strokeStyle = '#e10600'; // Haas Red
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ffffff'; // White
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 194, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#e10600';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 132, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#e10600';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+
+    default: {
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 241, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = secondaryColor;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 205, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
+    }
+  }
+
+  // 4. Central Hub Cap (radius 48)
+  ctx.fillStyle = '#0a0c10';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 48, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // 5. Constructor Center Monogram / Logo
+  switch (teamId) {
+    case 'ferrari':
+      drawFerrariShield(ctx, cx, cy - 2, 34);
+      break;
+    case 'redbull':
+      drawRedBullChargingBulls(ctx, cx, cy, 52);
+      break;
+    case 'mclaren':
+      drawMcLarenSpeedmark(ctx, cx, cy, 38);
+      break;
+    case 'astonmartin':
+      drawAstonMartinWings(ctx, cx, cy, 64);
+      break;
+    case 'audi':
+      drawAudiFourRings(ctx, cx, cy, 54);
+      break;
+    case 'alpine':
+      drawAlpineLogo(ctx, cx, cy, 38);
+      break;
+    case 'racingbulls':
+      drawRedBullChargingBulls(ctx, cx, cy, 48);
+      break;
+    case 'williams':
+      drawWilliamsLogo(ctx, cx, cy, 38);
+      break;
+    case 'haas':
+      drawHaasLogo(ctx, cx, cy, 36);
+      break;
+    default:
+      drawMercedesStar(ctx, cx, cy, 32, accentColor);
+      break;
+  }
+
+  ctx.restore();
+}
+
+/**
+ * 5. SYNCHRONIZED TEAM WHEELS & AERO COVERS (Default_OBJ.006, 011, 013 / Image_7.png)
+ *
+ * Synchronizes the 18-inch Pirelli tires, BBS magnesium wheel rims, and aerodynamic
+ * wheel covers with each constructor team:
+ * - Recolor Alfa Romeo red & white artifacts to authentic constructor colors
+ * - Synchronize Pirelli P-Zero tire compound color (Soft Red, Medium Yellow, Hard White)
+ * - Render procedural BBS multi-spoke rims for Mercedes & Cadillac, and authentic aerodynamic covers for other teams
+ * - Constructor emblem / monogram on the center wheel hub (Mercedes star, Ferrari shield,
+ *   Red Bull bulls, McLaren speedmark, etc.)
+ */
+export function generateWheelTexture(
+  teamId: TeamId,
+  livery: Team3DLivery,
+  _sponsors?: TeamSponsorConfig,
+  baseImage?: CanvasImageSource | null,
+): THREE.CanvasTexture {
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
+    const primaryHex = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
+    const secondaryHex = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
+    const coverHex = livery.wheelCoverColor || '#121417';
+    const rimHex = livery.wheelRimColor || livery.wheelAccentColor || '#ffffff';
+    const compound = livery.wheelPirelliCompound || 'soft';
+
+    const parseHex = (hex: string) => {
+      const clean = hex.replace('#', '');
+      const num = parseInt(clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean, 16);
+      return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+    };
+
+    const primaryRgb = parseHex(primaryHex);
+    const secondaryRgb = parseHex(secondaryHex);
+    const rimRgb = parseHex(rimHex);
+    const compColorRgb =
+      compound === 'soft'
+        ? [225, 6, 0] // Pirelli Soft Red
+        : compound === 'medium'
+          ? [254, 209, 0] // Pirelli Medium Yellow
+          : [255, 255, 255]; // Pirelli Hard White
+
+    if (baseImage) {
+      ctx.drawImage(baseImage, 0, 0, w, h);
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const idx = (y * w + x) << 2;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+
+          // 1. Alfa Romeo Red pixel recolor (wheel aero vanes, lower rim flange)
+          if (r > 115 && g < 75 && b < 75) {
+            const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 180;
+            const target = y < 420 ? primaryRgb : rimRgb;
+            data[idx] = Math.min(255, Math.round(target[0] * lum));
+            data[idx + 1] = Math.min(255, Math.round(target[1] * lum));
+            data[idx + 2] = Math.min(255, Math.round(target[2] * lum));
+          }
+          // 2. Alfa Romeo White vanes on upper aero disc
+          else if (y < 420 && r > 195 && g > 195 && b > 195) {
+            data[idx] = Math.round(secondaryRgb[0] * 0.2 + 14);
+            data[idx + 1] = Math.round(secondaryRgb[1] * 0.2 + 14);
+            data[idx + 2] = Math.round(secondaryRgb[2] * 0.2 + 16);
+          }
+          // 3. Pirelli tire compound stripe
+          else if (x >= 230 && x <= 600 && y >= 640 && y <= 980) {
+            const dt = Math.hypot(x - 416, y - 810);
+            if (dt >= 180 && dt <= 218 && r > 200 && g > 200 && b > 200) {
+              data[idx] = compColorRgb[0];
+              data[idx + 1] = compColorRgb[1];
+              data[idx + 2] = compColorRgb[2];
+            }
+          }
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    } else {
+      // Fallback procedural background
+      ctx.fillStyle = '#0f1115';
+      ctx.fillRect(0, 0, w, h);
+      drawCarbonWeave(ctx, w, h, coverHex);
+    }
+
+    // ── High-Precision Procedural Wheel Rendering ──
+    const cx = 454;
+    const cy = 190;
+
+    // Direct branch based on actual car photo construction:
+    // Mercedes & Cadillac: Exposed BBS Multi-Spoke Magnesium Rims
+    // Other teams: Full Aerodynamic Carbon Wheel Covers with Team Graphics
+    if (teamId === 'mercedes') {
+      drawBBSMultiSpokeWheel(
+        ctx,
+        cx,
+        cy,
+        '#d8dce2', // BBS Silver spoke body
+        '#ffffff', // Specular highlight
+        '#4a505b', // Shadow bevel
+        '#00a19c', // PETRONAS Cyan hex lock nut
+        true, // isMercedes
+      );
+    } else if (teamId === 'cadillac') {
+      drawBBSMultiSpokeWheel(
+        ctx,
+        cx,
+        cy,
+        '#d4af37', // Imperial Champagne Gold spoke body
+        '#fae596', // Specular highlight
+        '#685210', // Shadow bevel
+        '#d4af37', // Imperial Gold hex lock nut
+        false, // isMercedes (uses Cadillac crest)
+      );
+    } else {
+      drawTeamAeroWheelCover(ctx, cx, cy, teamId, livery);
+    }
   });
 }
 

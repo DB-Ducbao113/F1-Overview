@@ -216,10 +216,7 @@ export const DriverDetailPage: React.FC = () => {
                       src={resolvedImageUrl}
                       alt={name}
                       onError={(e) => {
-                        const target = e.currentTarget;
-                        if (!target.src.endsWith('.svg') && driverId) {
-                          target.src = `/images/drivers/${driverId}.svg`;
-                        }
+                        e.currentTarget.style.display = 'none';
                       }}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />

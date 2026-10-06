@@ -459,24 +459,12 @@ const RAW_DRIVERS_DATA: Record<string, F1Driver> = {
   },
 };
 
-const JPG_POSTER_DRIVERS = new Set([
-  'antonelli',
-  'russell',
-  'leclerc',
-  'hamilton',
-  'verstappen',
-  'norris',
-  'piastri',
-]);
-
 export const DRIVERS_DATA: Record<string, F1Driver> = Object.fromEntries(
   Object.entries(RAW_DRIVERS_DATA).map(([id, driver]) => [
     id,
     {
       ...driver,
-      imageUrl:
-        driver.imageUrl ||
-        (JPG_POSTER_DRIVERS.has(id) ? `/images/drivers/${id}.jpg` : `/images/drivers/${id}.svg`),
+      imageUrl: driver.imageUrl || `/images/drivers/${id}.jpg`,
     },
   ]),
 );
