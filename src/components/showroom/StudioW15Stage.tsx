@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import * as THREE from 'three';
+import React, { useMemo, useEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
@@ -30,35 +29,25 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
 
   // 1. North Wall: Official Constructor Premiere Branding (CADILLAC FORMULA 1)
-  const [northTexture, setNorthTexture] = useState<THREE.CanvasTexture | null>(null);
+  const northTexture = useMemo(() => createTeamBackdropTexture(teamId, lang), [teamId, lang]);
 
   // 2. South Wall: Machine Technical Dossier (CADILLAC MAC-26 / W15 / SF-24)
-  const [southTexture, setSouthTexture] = useState<THREE.CanvasTexture | null>(null);
+  const southTexture = useMemo(() => createTechnicalBackdropTexture(teamId, lang), [teamId, lang]);
 
   // 3. West Wall (Left): Drivers Hall of Fame (Danh sách tay đua đã từng thi đấu)
-  const [westTexture, setWestTexture] = useState<THREE.CanvasTexture | null>(null);
+  const westTexture = useMemo(() => createDriversWallTexture(teamId, lang), [teamId, lang]);
 
   // 4. East Wall (Right): All-Time Constructor Achievements (Thành tích toàn thời gian)
-  const [eastTexture, setEastTexture] = useState<THREE.CanvasTexture | null>(null);
+  const eastTexture = useMemo(() => createAchievementsWallTexture(teamId, lang), [teamId, lang]);
 
   useEffect(() => {
-    const nTex = createTeamBackdropTexture(teamId, lang);
-    const sTex = createTechnicalBackdropTexture(teamId, lang);
-    const wTex = createDriversWallTexture(teamId, lang);
-    const eTex = createAchievementsWallTexture(teamId, lang);
-
-    setNorthTexture(nTex);
-    setSouthTexture(sTex);
-    setWestTexture(wTex);
-    setEastTexture(eTex);
-
     return () => {
-      nTex.dispose();
-      sTex.dispose();
-      wTex.dispose();
-      eTex.dispose();
+      northTexture.dispose();
+      southTexture.dispose();
+      westTexture.dispose();
+      eastTexture.dispose();
     };
-  }, [teamId, lang]);
+  }, [northTexture, southTexture, westTexture, eastTexture]);
 
   const studioWallColor = '#0b0d12';
   const panelFrameColor = '#12141a';
@@ -135,7 +124,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight position={[0, 0, 0.35]} intensity={2.2} distance={6.0} color={team.primaryColor} />
+          <pointLight
+            position={[0, 0, 0.35]}
+            intensity={2.2}
+            distance={6.0}
+            color={team.primaryColor}
+          />
         </group>
 
         {/* Overhead Spotlight */}
@@ -196,7 +190,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={team.primaryColor} />
+          <pointLight
+            position={[0, 0, -0.35]}
+            intensity={2.2}
+            distance={6.0}
+            color={team.primaryColor}
+          />
         </group>
 
         {/* Overhead Spotlight */}
@@ -250,7 +249,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={team.primaryColor} />
+          <pointLight
+            position={[0, 0, -0.35]}
+            intensity={2.2}
+            distance={6.0}
+            color={team.primaryColor}
+          />
         </group>
 
         {/* Overhead Spotlight shining down onto Drivers Board */}
@@ -304,7 +308,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={team.primaryColor} />
+          <pointLight
+            position={[0, 0, -0.35]}
+            intensity={2.2}
+            distance={6.0}
+            color={team.primaryColor}
+          />
         </group>
 
         {/* Overhead Spotlight shining down onto Achievements Board */}

@@ -85,11 +85,7 @@ export const BrandLogoMark: React.FC<{
         />
 
         {/* 5. Aerodynamic Apex Keel Center Vane & Speed Focal Core */}
-        <polygon
-          points="18,10.5 20.2,17.8 18,26.5 15.8,17.8"
-          fill="#ffffff"
-          opacity="0.95"
-        />
+        <polygon points="18,10.5 20.2,17.8 18,26.5 15.8,17.8" fill="#ffffff" opacity="0.95" />
         <circle cx="18" cy="17.8" r="2.2" fill="#e10600" />
       </svg>
     </div>

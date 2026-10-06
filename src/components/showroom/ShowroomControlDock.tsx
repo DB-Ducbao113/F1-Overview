@@ -43,6 +43,19 @@ interface ShowroomControlDockProps {
   onToggleHotspots?: () => void;
 }
 
+// 4 Panoramic Wall Tour Steps
+const TOUR_STEPS: {
+  id: CameraPreset;
+  labelVi: string;
+  labelEn: string;
+  tag: string;
+}[] = [
+  { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', tag: '1/4' },
+  { id: 'pano_drivers', labelVi: 'Vách Tay Đua', labelEn: 'Drivers Wall', tag: '2/4' },
+  { id: 'pano_technical', labelVi: 'Vách Kỹ Thuật', labelEn: 'Tech Specs', tag: '3/4' },
+  { id: 'pano_achievements', labelVi: 'Vách Thành Tích', labelEn: 'Records Wall', tag: '4/4' },
+];
+
 /**
  * ShowroomControlDock — Streamlined, Ultra-Compact 3D Control Center
  *
@@ -69,19 +82,6 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     const [isExpanded, setIsExpanded] = useState<boolean>(true);
     const [presetCategory, setPresetCategory] = useState<'pano' | 'direct' | 'car'>('pano');
     const [isTouring, setIsTouring] = useState<boolean>(false);
-
-    // 4 Panoramic Wall Tour Steps
-    const TOUR_STEPS: {
-      id: CameraPreset;
-      labelVi: string;
-      labelEn: string;
-      tag: string;
-    }[] = [
-      { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', tag: '1/4' },
-      { id: 'pano_drivers', labelVi: 'Vách Tay Đua', labelEn: 'Drivers Wall', tag: '2/4' },
-      { id: 'pano_technical', labelVi: 'Vách Kỹ Thuật', labelEn: 'Tech Specs', tag: '3/4' },
-      { id: 'pano_achievements', labelVi: 'Vách Thành Tích', labelEn: 'Records Wall', tag: '4/4' },
-    ];
 
     const currentTourIdx = TOUR_STEPS.findIndex((s) => s.id === cameraPreset);
 
@@ -273,10 +273,22 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
-                title={isExpanded ? (lang === 'vi' ? 'Thu gọn' : 'Collapse') : (lang === 'vi' ? 'Mở rộng' : 'Expand')}
+                title={
+                  isExpanded
+                    ? lang === 'vi'
+                      ? 'Thu gọn'
+                      : 'Collapse'
+                    : lang === 'vi'
+                      ? 'Mở rộng'
+                      : 'Expand'
+                }
                 aria-label="Toggle expand"
               >
-                {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                {isExpanded ? (
+                  <ChevronUp className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </div>
@@ -395,7 +407,11 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                 {presetCategory === 'direct' && (
                   <p className="text-[9px] text-sky-400/90 font-medium px-1 flex items-center gap-1">
                     <span>✦</span>
-                    <span>{lang === 'vi' ? 'Góc nhìn thẳng trực diện ngang tầm mắt để đọc chữ sắc nét' : 'Direct eye-level perspective for sharp text reading'}</span>
+                    <span>
+                      {lang === 'vi'
+                        ? 'Góc nhìn thẳng trực diện ngang tầm mắt để đọc chữ sắc nét'
+                        : 'Direct eye-level perspective for sharp text reading'}
+                    </span>
                   </p>
                 )}
 
@@ -463,18 +479,32 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                           ? 'bg-f1red/20 text-red-200 border-f1red/70 shadow-sm'
                           : 'bg-studio-900/70 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
                       }`}
-                      title={lang === 'vi' ? 'Bật/Tắt 6 điểm kỹ thuật trên thân xe' : 'Toggle 6 engineering hotspots'}
+                      title={
+                        lang === 'vi'
+                          ? 'Bật/Tắt 6 điểm kỹ thuật trên thân xe'
+                          : 'Toggle 6 engineering hotspots'
+                      }
                     >
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <Crosshair className={`w-3.5 h-3.5 shrink-0 ${showHotspots ? 'text-f1red' : 'text-studio-400'}`} />
-                        <span className="truncate">{lang === 'vi' ? 'Điểm Kỹ Thuật' : 'Hotspots'}</span>
+                        <Crosshair
+                          className={`w-3.5 h-3.5 shrink-0 ${showHotspots ? 'text-f1red' : 'text-studio-400'}`}
+                        />
+                        <span className="truncate">
+                          {lang === 'vi' ? 'Điểm Kỹ Thuật' : 'Hotspots'}
+                        </span>
                       </div>
                       <span
                         className={`text-[8px] font-black uppercase px-1 py-0.5 rounded shrink-0 ${
                           showHotspots ? 'bg-f1red text-white' : 'bg-studio-800 text-studio-400'
                         }`}
                       >
-                        {showHotspots ? (lang === 'vi' ? 'BẬT' : 'ON') : (lang === 'vi' ? 'ẨN' : 'OFF')}
+                        {showHotspots
+                          ? lang === 'vi'
+                            ? 'BẬT'
+                            : 'ON'
+                          : lang === 'vi'
+                            ? 'ẨN'
+                            : 'OFF'}
                       </span>
                     </button>
                   )}
@@ -496,14 +526,22 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                       ) : (
                         <Play className="w-3.5 h-3.5 shrink-0 text-studio-400" />
                       )}
-                      <span className="truncate">{lang === 'vi' ? 'Tự Xoay Xe' : 'Auto-Rotate'}</span>
+                      <span className="truncate">
+                        {lang === 'vi' ? 'Tự Xoay Xe' : 'Auto-Rotate'}
+                      </span>
                     </div>
                     <span
                       className={`text-[8px] font-black uppercase px-1 py-0.5 rounded shrink-0 ${
                         autoRotate ? 'bg-sky-500 text-black' : 'bg-studio-800 text-studio-400'
                       }`}
                     >
-                      {autoRotate ? (lang === 'vi' ? 'CHẠY' : 'ON') : (lang === 'vi' ? 'DỪNG' : 'OFF')}
+                      {autoRotate
+                        ? lang === 'vi'
+                          ? 'CHẠY'
+                          : 'ON'
+                        : lang === 'vi'
+                          ? 'DỪNG'
+                          : 'OFF'}
                     </span>
                   </button>
                 </div>

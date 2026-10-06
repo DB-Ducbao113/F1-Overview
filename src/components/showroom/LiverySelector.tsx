@@ -73,7 +73,9 @@ export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
                   />
                 </span>
 
-                <span className={isSelected ? 'text-white font-black' : 'text-studio-300 font-semibold'}>
+                <span
+                  className={isSelected ? 'text-white font-black' : 'text-studio-300 font-semibold'}
+                >
                   {name}
                 </span>
 

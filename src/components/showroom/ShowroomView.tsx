@@ -7,7 +7,7 @@ import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
-import { ShowroomControlDock, StudioLightingMode } from './ShowroomControlDock';
+import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';

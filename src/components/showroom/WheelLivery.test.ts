@@ -30,7 +30,10 @@ describe('Synchronized Constructor Wheels Livery', () => {
       expect(livery.wheelCoverColor, `Missing wheelCoverColor for ${teamId}`).toBeDefined();
       expect(livery.wheelAccentColor, `Missing wheelAccentColor for ${teamId}`).toBeDefined();
       expect(livery.wheelRimColor, `Missing wheelRimColor for ${teamId}`).toBeDefined();
-      expect(livery.wheelPirelliCompound, `Missing wheelPirelliCompound for ${teamId}`).toBeDefined();
+      expect(
+        livery.wheelPirelliCompound,
+        `Missing wheelPirelliCompound for ${teamId}`,
+      ).toBeDefined();
       expect(['soft', 'medium', 'hard']).toContain(livery.wheelPirelliCompound);
     });
   });

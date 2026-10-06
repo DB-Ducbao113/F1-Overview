@@ -46,6 +46,19 @@ export function formatDriverYears(years: string | undefined, lang: 'vi' | 'en'):
 }
 
 /**
+ * Safely applies letter-spacing to a 2D canvas context if supported.
+ */
+function applyLetterSpacing(ctx: CanvasRenderingContext2D, spacing: string): void {
+  if ('letterSpacing' in ctx) {
+    try {
+      (ctx as any).letterSpacing = spacing;
+    } catch {
+      // Ignored: non-critical aesthetic feature in unsupported environments
+    }
+  }
+}
+
+/**
  * Safely renders multi-line text with word wrapping onto canvas.
  */
 function drawWrappedText(
@@ -125,14 +138,7 @@ export function createTeamBackdropTexture(
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     // Subtle atmospheric ambient halo behind the emblem
-    const flareGrad = ctx.createRadialGradient(
-      WIDTH / 2,
-      280,
-      20,
-      WIDTH / 2,
-      280,
-      480,
-    );
+    const flareGrad = ctx.createRadialGradient(WIDTH / 2, 280, 20, WIDTH / 2, 280, 480);
     const flareColor = team.accentColor || team.primaryColor || '#ffffff';
     flareGrad.addColorStop(0.0, `${flareColor}28`);
     flareGrad.addColorStop(0.45, `${flareColor}0a`);
@@ -157,19 +163,19 @@ export function createTeamBackdropTexture(
     ctx.textBaseline = 'middle';
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = team.accentColor || '#38bdf8';
-    try { (ctx as any).letterSpacing = '8px'; } catch {}
-    const topCategory = lang === 'vi'
-      ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · LỄ RA MẮT ĐỘI ĐUA CHÍNH THỨC'
-      : 'FIA FORMULA ONE WORLD CHAMPIONSHIP · OFFICIAL CONSTRUCTOR PREMIERE';
+    applyLetterSpacing(ctx, '8px');
+    const topCategory =
+      lang === 'vi'
+        ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · LỄ RA MẮT ĐỘI ĐUA CHÍNH THỨC'
+        : 'FIA FORMULA ONE WORLD CHAMPIONSHIP · OFFICIAL CONSTRUCTOR PREMIERE';
     ctx.fillText(topCategory, WIDTH / 2, 90);
 
     // Prestigious Manufacturer Typography
-    try {
-      (ctx as any).letterSpacing = '10px';
-    } catch {}
+    applyLetterSpacing(ctx, '10px');
 
     // Headline (e.g. "CADILLAC", "MERCEDES-AMG", "SCUDERIA FERRARI")
-    ctx.font = '900 80px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+    ctx.font =
+      '900 80px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
     ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
     ctx.shadowBlur = 18;
     ctx.shadowOffsetY = 6;
@@ -177,19 +183,16 @@ export function createTeamBackdropTexture(
     ctx.fillText(label.headline, WIDTH / 2, 595);
 
     // Subtitle (e.g. "FORMULA 1", "PETRONAS FORMULA ONE")
-    try {
-      (ctx as any).letterSpacing = '14px';
-    } catch {}
-    ctx.font = '800 34px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+    applyLetterSpacing(ctx, '14px');
+    ctx.font =
+      '800 34px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
     ctx.shadowBlur = 12;
     ctx.fillStyle = '#E2E8F0';
     const subText = lang === 'vi' ? 'ĐỘI ĐUA CÔNG THỨC 1 CHÍNH THỨC' : label.subtitle;
     ctx.fillText(subText, WIDTH / 2, 690);
 
     // Dynamic Team Accent Color Underline Bar
-    try {
-      (ctx as any).letterSpacing = '0px';
-    } catch {}
+    applyLetterSpacing(ctx, '0px');
     const barW = 140;
     const barH = 4;
     ctx.fillStyle = team.accentColor || team.primaryColor || '#d4af37';
@@ -198,9 +201,10 @@ export function createTeamBackdropTexture(
     // Bottom Status Line
     ctx.font = '700 18px ui-monospace, SFMono-Regular, monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-    const statusText = lang === 'vi'
-      ? '// HỘI TRƯỜNG TRƯNG BÀY XE ĐUA F1 // QUY CHUẨN KỸ THUẬT 2026 //'
-      : '// OFFICIAL CONSTRUCTOR EXHIBITION PAVILION // 2026 SPECIFICATION //';
+    const statusText =
+      lang === 'vi'
+        ? '// HỘI TRƯỜNG TRƯNG BÀY XE ĐUA F1 // QUY CHUẨN KỸ THUẬT 2026 //'
+        : '// OFFICIAL CONSTRUCTOR EXHIBITION PAVILION // 2026 SPECIFICATION //';
     ctx.fillText(statusText, WIDTH / 2, 948);
     ctx.restore();
   };
@@ -234,11 +238,12 @@ export function createTeamBackdropTexture(
     img.onload = () => {
       drawBaseAndTypography();
 
-      const aspect = (img.naturalWidth && img.naturalHeight)
-        ? (img.naturalWidth / img.naturalHeight)
-        : (img.width && img.height)
-        ? (img.width / img.height)
-        : (360 / 220);
+      const aspect =
+        img.naturalWidth && img.naturalHeight
+          ? img.naturalWidth / img.naturalHeight
+          : img.width && img.height
+            ? img.width / img.height
+            : 360 / 220;
 
       const maxW = 380;
       const maxH = 220;
@@ -326,25 +331,27 @@ export function createTechnicalBackdropTexture(
     // Header category
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = team.accentColor || '#38bdf8';
-    try { (ctx as any).letterSpacing = '8px'; } catch {}
-    const topHeader = lang === 'vi'
-      ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · HỒ SƠ KỸ THUẬT 2026'
-      : 'FIA FORMULA ONE WORLD CHAMPIONSHIP · 2026 SPECIFICATION';
+    applyLetterSpacing(ctx, '8px');
+    const topHeader =
+      lang === 'vi'
+        ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · HỒ SƠ KỸ THUẬT 2026'
+        : 'FIA FORMULA ONE WORLD CHAMPIONSHIP · 2026 SPECIFICATION';
     ctx.fillText(topHeader, WIDTH / 2, 110);
 
     // Headline (e.g. W15 E PERFORMANCE, SF-24)
     ctx.font = '900 78px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = '#FFFFFF';
-    try { (ctx as any).letterSpacing = '6px'; } catch {}
+    applyLetterSpacing(ctx, '6px');
     ctx.fillText(livery.carModelName.toUpperCase(), WIDTH / 2, 215);
 
     // Subtitle
     ctx.font = '800 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillStyle = '#E2E8F0';
-    try { (ctx as any).letterSpacing = '8px'; } catch {}
-    const subText = lang === 'vi'
-      ? 'KHÍ ĐỘNG HỌC HIỆU ỨNG MẶT ĐẤT & CÔNG NGHỆ KHUNG GẦM'
-      : 'AERODYNAMICS & GROUND EFFECT CHASSIS DOSSIER';
+    applyLetterSpacing(ctx, '8px');
+    const subText =
+      lang === 'vi'
+        ? 'KHÍ ĐỘNG HỌC HIỆU ỨNG MẶT ĐẤT & CÔNG NGHỆ KHUNG GẦM'
+        : 'AERODYNAMICS & GROUND EFFECT CHASSIS DOSSIER';
     ctx.fillText(subText, WIDTH / 2, 295);
 
     const accentLineW = 220;
@@ -352,25 +359,26 @@ export function createTechnicalBackdropTexture(
     ctx.fillRect(WIDTH / 2 - accentLineW / 2, 335, accentLineW, 4);
 
     // 4 High-Legibility Technical Spec Cards
-    const cards = lang === 'vi'
-      ? [
-          {
-            label: 'HỆ THỐNG ĐỘNG CƠ',
-            val: team.powerUnit.split(' ')[0] + ' ' + (team.powerUnit.split(' ')[1] || 'HYBRID'),
-          },
-          { label: 'TRỤ SỞ HOẠT ĐỘNG', val: team.base },
-          { label: 'ĐỘI ĐUA CHỦ QUẢN', val: team.fullName },
-          { label: 'QUY CHUẨN LỐP ĐUA', val: 'LỐP 18-INCH PIRELLI P ZERO' },
-        ]
-      : [
-          {
-            label: 'POWER UNIT ARCHITECTURE',
-            val: team.powerUnit.split(' ')[0] + ' ' + (team.powerUnit.split(' ')[1] || 'HYBRID'),
-          },
-          { label: 'BASE OF OPERATIONS', val: team.base },
-          { label: 'CONSTRUCTOR ENTRY', val: team.fullName },
-          { label: 'TIRE REGULATION', val: '18-INCH PIRELLI P ZERO' },
-        ];
+    const cards =
+      lang === 'vi'
+        ? [
+            {
+              label: 'HỆ THỐNG ĐỘNG CƠ',
+              val: team.powerUnit.split(' ')[0] + ' ' + (team.powerUnit.split(' ')[1] || 'HYBRID'),
+            },
+            { label: 'TRỤ SỞ HOẠT ĐỘNG', val: team.base },
+            { label: 'ĐỘI ĐUA CHỦ QUẢN', val: team.fullName },
+            { label: 'QUY CHUẨN LỐP ĐUA', val: 'LỐP 18-INCH PIRELLI P ZERO' },
+          ]
+        : [
+            {
+              label: 'POWER UNIT ARCHITECTURE',
+              val: team.powerUnit.split(' ')[0] + ' ' + (team.powerUnit.split(' ')[1] || 'HYBRID'),
+            },
+            { label: 'BASE OF OPERATIONS', val: team.base },
+            { label: 'CONSTRUCTOR ENTRY', val: team.fullName },
+            { label: 'TIRE REGULATION', val: '18-INCH PIRELLI P ZERO' },
+          ];
 
     const cardW = 450;
     const cardH = 170;
@@ -390,14 +398,14 @@ export function createTechnicalBackdropTexture(
       ctx.textAlign = 'left';
       ctx.font = '800 21px -apple-system, BlinkMacSystemFont, sans-serif';
       ctx.fillStyle = team.accentColor || '#38bdf8';
-      try { (ctx as any).letterSpacing = '2px'; } catch {}
+      applyLetterSpacing(ctx, '2px');
       ctx.fillText(card.label, cx + 26, cardY + 48);
 
       // Card Value (Larger, crisp pure white)
       const fontSize = card.val.length > 28 ? '800 20px' : '900 23px';
       ctx.font = `${fontSize} -apple-system, BlinkMacSystemFont, sans-serif`;
       ctx.fillStyle = '#FFFFFF';
-      try { (ctx as any).letterSpacing = '0px'; } catch {}
+      applyLetterSpacing(ctx, '0px');
       ctx.fillText(card.val, cx + 26, cardY + 105);
 
       // Bottom accent notch
@@ -409,9 +417,10 @@ export function createTechnicalBackdropTexture(
     ctx.textAlign = 'center';
     ctx.font = '700 18px ui-monospace, SFMono-Regular, monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    const statusText = lang === 'vi'
-      ? '// DỮ LIỆU TELEMETRY THỜI GIAN THỰC // HIỆU CHUẨN 5600K // TIÊU CHUẨN KIỂM ĐỊNH FIA //'
-      : '// TELEMETRY LIVE SYNC // 5600K PHOTOMETRIC CALIBRATION // FIA HOMOLOGATED //';
+    const statusText =
+      lang === 'vi'
+        ? '// DỮ LIỆU TELEMETRY THỜI GIAN THỰC // HIỆU CHUẨN 5600K // TIÊU CHUẨN KIỂM ĐỊNH FIA //'
+        : '// TELEMETRY LIVE SYNC // 5600K PHOTOMETRIC CALIBRATION // FIA HOMOLOGATED //';
     ctx.fillText(statusText, WIDTH / 2, 710);
     ctx.restore();
   };
@@ -547,10 +556,11 @@ export function createDriversWallTexture(
     // Header category
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = team.accentColor || '#38bdf8';
-    try { (ctx as any).letterSpacing = '6px'; } catch {}
-    const topHeader = lang === 'vi'
-      ? 'DI SẢN ĐỘI ĐUA · ĐỘI HÌNH TAY ĐUA HUYỀN THOẠI'
-      : 'CONSTRUCTOR HERITAGE · HISTORIC RACING ROSTER';
+    applyLetterSpacing(ctx, '6px');
+    const topHeader =
+      lang === 'vi'
+        ? 'DI SẢN ĐỘI ĐUA · ĐỘI HÌNH TAY ĐUA HUYỀN THOẠI'
+        : 'CONSTRUCTOR HERITAGE · HISTORIC RACING ROSTER';
     ctx.fillText(topHeader, WIDTH / 2, logoImage ? 148 : 105);
 
     // Headline
@@ -558,24 +568,24 @@ export function createDriversWallTexture(
     ctx.fillStyle = '#FFFFFF';
     ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
     ctx.shadowBlur = 16;
-    try { (ctx as any).letterSpacing = '8px'; } catch {}
-    const headline = lang === 'vi'
-      ? 'BẢNG DANH DỰ CÁC TAY ĐUA // HALL OF FAME'
-      : 'HALL OF FAME // RACING DRIVERS';
+    applyLetterSpacing(ctx, '8px');
+    const headline =
+      lang === 'vi' ? 'BẢNG DANH DỰ CÁC TAY ĐUA // HALL OF FAME' : 'HALL OF FAME // RACING DRIVERS';
     ctx.fillText(headline, WIDTH / 2, logoImage ? 210 : 175);
 
     // Subtitle
     ctx.font = '700 26px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = '#E2E8F0';
     ctx.shadowBlur = 0;
-    try { (ctx as any).letterSpacing = '4px'; } catch {}
-    const subTitle = lang === 'vi'
-      ? `${team.fullName.toUpperCase()} · CÁC TAY ĐUA ĐÃ TỪNG THI ĐẤU`
-      : `${team.fullName.toUpperCase()} · DRIVERS THROUGH THE AGES`;
+    applyLetterSpacing(ctx, '4px');
+    const subTitle =
+      lang === 'vi'
+        ? `${team.fullName.toUpperCase()} · CÁC TAY ĐUA ĐÃ TỪNG THI ĐẤU`
+        : `${team.fullName.toUpperCase()} · DRIVERS THROUGH THE AGES`;
     ctx.fillText(subTitle, WIDTH / 2, logoImage ? 262 : 235);
 
     // Accent Line
-    try { (ctx as any).letterSpacing = '0px'; } catch {}
+    applyLetterSpacing(ctx, '0px');
     ctx.fillStyle = team.primaryColor || '#dc0000';
     ctx.fillRect(WIDTH / 2 - 140, logoImage ? 288 : 265, 280, 4);
 
@@ -635,7 +645,7 @@ export function createDriversWallTexture(
       }
 
       // Bottom card indicator
-      ctx.fillStyle = driver.isChampion ? '#FCD34D' : (team.accentColor || '#38bdf8');
+      ctx.fillStyle = driver.isChampion ? '#FCD34D' : team.accentColor || '#38bdf8';
       ctx.fillRect(x + 24, y + 238, 54, 3);
     });
 
@@ -643,9 +653,10 @@ export function createDriversWallTexture(
     ctx.textAlign = 'center';
     ctx.font = '700 18px ui-monospace, SFMono-Regular, monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-    const statusText = lang === 'vi'
-      ? '// LƯU TRỮ CHÍNH THỨC ĐỘI ĐUA // DANH BẠ ĐƯỢC FIA CÔNG NHẬN // TIÊU CHUẨN 2026 //'
-      : '// OFFICIAL CONSTRUCTOR ARCHIVE // FIA ACCREDITED ROSTER // 2026 SPECIFICATION //';
+    const statusText =
+      lang === 'vi'
+        ? '// LƯU TRỮ CHÍNH THỨC ĐỘI ĐUA // DANH BẠ ĐƯỢC FIA CÔNG NHẬN // TIÊU CHUẨN 2026 //'
+        : '// OFFICIAL CONSTRUCTOR ARCHIVE // FIA ACCREDITED ROSTER // 2026 SPECIFICATION //';
     ctx.fillText(statusText, WIDTH / 2, 948);
 
     ctx.restore();
@@ -775,10 +786,11 @@ export function createAchievementsWallTexture(
     // Header category
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = team.accentColor || '#38bdf8';
-    try { (ctx as any).letterSpacing = '6px'; } catch {}
-    const topHeader = lang === 'vi'
-      ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · BẢNG VÀNG KỶ LỤC LỊCH SỬ'
-      : 'FORMULA 1 WORLD CHAMPIONSHIP · OFFICIAL RECORD BOOKS';
+    applyLetterSpacing(ctx, '6px');
+    const topHeader =
+      lang === 'vi'
+        ? 'GIẢI ĐUA XE CÔNG THỨC 1 THẾ GIỚI · BẢNG VÀNG KỶ LỤC LỊCH SỬ'
+        : 'FORMULA 1 WORLD CHAMPIONSHIP · OFFICIAL RECORD BOOKS';
     ctx.fillText(topHeader, WIDTH / 2, logoImage ? 148 : 105);
 
     // Headline
@@ -786,117 +798,118 @@ export function createAchievementsWallTexture(
     ctx.fillStyle = '#FFFFFF';
     ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
     ctx.shadowBlur = 16;
-    try { (ctx as any).letterSpacing = '8px'; } catch {}
-    const headline = lang === 'vi'
-      ? 'BẢNG VÀNG THÀNH TÍCH TOÀN THỜI GIAN'
-      : 'ALL-TIME CONSTRUCTOR ACHIEVEMENTS';
+    applyLetterSpacing(ctx, '8px');
+    const headline =
+      lang === 'vi' ? 'BẢNG VÀNG THÀNH TÍCH TOÀN THỜI GIAN' : 'ALL-TIME CONSTRUCTOR ACHIEVEMENTS';
     ctx.fillText(headline, WIDTH / 2, logoImage ? 210 : 175);
 
     // Subtitle
     ctx.font = '700 26px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = '#E2E8F0';
     ctx.shadowBlur = 0;
-    try { (ctx as any).letterSpacing = '4px'; } catch {}
-    const subTitle = lang === 'vi'
-      ? `${team.fullName.toUpperCase()} · BẢNG VÀNG THÀNH TÍCH & DI SẢN`
-      : `${team.fullName.toUpperCase()} · HISTORIC RACING LEGACY`;
+    applyLetterSpacing(ctx, '4px');
+    const subTitle =
+      lang === 'vi'
+        ? `${team.fullName.toUpperCase()} · BẢNG VÀNG THÀNH TÍCH & DI SẢN`
+        : `${team.fullName.toUpperCase()} · HISTORIC RACING LEGACY`;
     ctx.fillText(subTitle, WIDTH / 2, logoImage ? 262 : 235);
 
     // Accent Line
-    try { (ctx as any).letterSpacing = '0px'; } catch {}
+    applyLetterSpacing(ctx, '0px');
     ctx.fillStyle = team.primaryColor || '#dc0000';
     ctx.fillRect(WIDTH / 2 - 140, logoImage ? 288 : 265, 280, 4);
 
     // 6 Big Trophy & Record Stat Cards (2 rows of 3 columns)
-    const cards = lang === 'vi'
-      ? [
-          {
-            icon: '🏆',
-            title: 'VÔ ĐỊCH ĐỘI ĐUA',
-            sub: 'Constructors World Titles',
-            val: String(stats.constructorTitles),
-            highlight: stats.constructorTitles > 0,
-          },
-          {
-            icon: '👑',
-            title: 'VÔ ĐỊCH TAY ĐUA',
-            sub: 'Drivers World Titles',
-            val: String(stats.driverTitles),
-            highlight: stats.driverTitles > 0,
-          },
-          {
-            icon: '🥇',
-            title: 'CHIẾN THẮNG CHẶNG',
-            sub: 'Grand Prix Victories',
-            val: String(stats.raceWins),
-            highlight: stats.raceWins > 0,
-          },
-          {
-            icon: '⏱️',
-            title: 'XUẤT PHÁT ĐẦU (POLE)',
-            sub: 'P1 Qualifying Starts',
-            val: String(stats.polePositions),
-            highlight: stats.polePositions > 0,
-          },
-          {
-            icon: '🍾',
-            title: 'BỤC NHẬN GIẢI TOP 3',
-            sub: 'Podium Finishes',
-            val: String(stats.podiums),
-            highlight: stats.podiums > 0,
-          },
-          {
-            icon: '⚡',
-            title: 'VÒNG ĐUA NHANH NHẤT',
-            sub: 'Fastest Race Laps',
-            val: String(stats.fastestLaps),
-            highlight: stats.fastestLaps > 0,
-          },
-        ]
-      : [
-          {
-            icon: '🏆',
-            title: 'CONSTRUCTORS TITLES',
-            sub: 'World Championship Titles',
-            val: String(stats.constructorTitles),
-            highlight: stats.constructorTitles > 0,
-          },
-          {
-            icon: '👑',
-            title: 'DRIVERS TITLES',
-            sub: 'World Championship Titles',
-            val: String(stats.driverTitles),
-            highlight: stats.driverTitles > 0,
-          },
-          {
-            icon: '🥇',
-            title: 'GRAND PRIX WINS',
-            sub: 'Formula 1 Race Victories',
-            val: String(stats.raceWins),
-            highlight: stats.raceWins > 0,
-          },
-          {
-            icon: '⏱️',
-            title: 'POLE POSITIONS',
-            sub: 'P1 Qualifying Starts',
-            val: String(stats.polePositions),
-            highlight: stats.polePositions > 0,
-          },
-          {
-            icon: '🍾',
-            title: 'PODIUM FINISHES',
-            sub: 'Top 3 Podium Finishes',
-            val: String(stats.podiums),
-            highlight: stats.podiums > 0,
-          },
-          {
-            icon: '⚡',
-            title: 'FASTEST LAPS',
-            sub: 'Fastest Race Laps Recorded',
-            val: String(stats.fastestLaps),
-            highlight: stats.fastestLaps > 0,
-          },
-        ];
+    const cards =
+      lang === 'vi'
+        ? [
+            {
+              icon: '🏆',
+              title: 'VÔ ĐỊCH ĐỘI ĐUA',
+              sub: 'Constructors World Titles',
+              val: String(stats.constructorTitles),
+              highlight: stats.constructorTitles > 0,
+            },
+            {
+              icon: '👑',
+              title: 'VÔ ĐỊCH TAY ĐUA',
+              sub: 'Drivers World Titles',
+              val: String(stats.driverTitles),
+              highlight: stats.driverTitles > 0,
+            },
+            {
+              icon: '🥇',
+              title: 'CHIẾN THẮNG CHẶNG',
+              sub: 'Grand Prix Victories',
+              val: String(stats.raceWins),
+              highlight: stats.raceWins > 0,
+            },
+            {
+              icon: '⏱️',
+              title: 'XUẤT PHÁT ĐẦU (POLE)',
+              sub: 'P1 Qualifying Starts',
+              val: String(stats.polePositions),
+              highlight: stats.polePositions > 0,
+            },
+            {
+              icon: '🍾',
+              title: 'BỤC NHẬN GIẢI TOP 3',
+              sub: 'Podium Finishes',
+              val: String(stats.podiums),
+              highlight: stats.podiums > 0,
+            },
+            {
+              icon: '⚡',
+              title: 'VÒNG ĐUA NHANH NHẤT',
+              sub: 'Fastest Race Laps',
+              val: String(stats.fastestLaps),
+              highlight: stats.fastestLaps > 0,
+            },
+          ]
+        : [
+            {
+              icon: '🏆',
+              title: 'CONSTRUCTORS TITLES',
+              sub: 'World Championship Titles',
+              val: String(stats.constructorTitles),
+              highlight: stats.constructorTitles > 0,
+            },
+            {
+              icon: '👑',
+              title: 'DRIVERS TITLES',
+              sub: 'World Championship Titles',
+              val: String(stats.driverTitles),
+              highlight: stats.driverTitles > 0,
+            },
+            {
+              icon: '🥇',
+              title: 'GRAND PRIX WINS',
+              sub: 'Formula 1 Race Victories',
+              val: String(stats.raceWins),
+              highlight: stats.raceWins > 0,
+            },
+            {
+              icon: '⏱️',
+              title: 'POLE POSITIONS',
+              sub: 'P1 Qualifying Starts',
+              val: String(stats.polePositions),
+              highlight: stats.polePositions > 0,
+            },
+            {
+              icon: '🍾',
+              title: 'PODIUM FINISHES',
+              sub: 'Top 3 Podium Finishes',
+              val: String(stats.podiums),
+              highlight: stats.podiums > 0,
+            },
+            {
+              icon: '⚡',
+              title: 'FASTEST LAPS',
+              sub: 'Fastest Race Laps Recorded',
+              val: String(stats.fastestLaps),
+              highlight: stats.fastestLaps > 0,
+            },
+          ];
 
     const cols = 3;
     const cardW = 580;
@@ -954,7 +967,7 @@ export function createAchievementsWallTexture(
       ctx.fillText(card.sub, x + 32, y + 162);
 
       // Bottom accent bar
-      ctx.fillStyle = card.highlight ? '#FCD34D' : (team.accentColor || '#38bdf8');
+      ctx.fillStyle = card.highlight ? '#FCD34D' : team.accentColor || '#38bdf8';
       ctx.fillRect(x + 32, y + 184, 56, 3);
     });
 
@@ -970,9 +983,10 @@ export function createAchievementsWallTexture(
     ctx.textAlign = 'left';
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, sans-serif';
     ctx.fillStyle = team.accentColor || '#38bdf8';
-    const debutHeader = lang === 'vi'
-      ? `NĂM RA MẮT F1: ${stats.debutYear} · DI SẢN VĂN HÓA ĐUA XE`
-      : `F1 DEBUT: ${stats.debutYear} · RACING HERITAGE & CULTURE`;
+    const debutHeader =
+      lang === 'vi'
+        ? `NĂM RA MẮT F1: ${stats.debutYear} · DI SẢN VĂN HÓA ĐUA XE`
+        : `F1 DEBUT: ${stats.debutYear} · RACING HERITAGE & CULTURE`;
     ctx.fillText(debutHeader, startX + 32, noteY + 45);
 
     // Multi-line safe citation note with high-contrast text

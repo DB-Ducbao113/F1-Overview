@@ -50,11 +50,7 @@ export const Navbar: React.FC = React.memo(() => {
       >
         <div className="page-container h-full flex items-center justify-between gap-2 sm:gap-6">
           {/* Brand Logo */}
-          <Link
-            to="/"
-            className="focus:outline-none"
-            aria-label="Ground Effect Hub"
-          >
+          <Link to="/" className="focus:outline-none" aria-label="Ground Effect Hub">
             <BrandLogo size="md" variant="full" />
           </Link>
 

@@ -3080,9 +3080,9 @@ export function drawTeamAeroWheelCover(
       // MCL38: Iconic Google Chrome 4-color aero arcs (Red, Yellow, Green, Blue) + Papaya rings
       const chromeArcs = [
         { color: '#ea4335', start: -Math.PI * 0.42, end: -Math.PI * 0.08 }, // Red (top quadrant)
-        { color: '#fbbc05', start: Math.PI * 0.08, end: Math.PI * 0.42 },   // Yellow (right quadrant)
-        { color: '#34a853', start: Math.PI * 0.58, end: Math.PI * 0.92 },   // Green (bottom quadrant)
-        { color: '#4285f4', start: Math.PI * 1.08, end: Math.PI * 1.42 },   // Blue (left quadrant)
+        { color: '#fbbc05', start: Math.PI * 0.08, end: Math.PI * 0.42 }, // Yellow (right quadrant)
+        { color: '#34a853', start: Math.PI * 0.58, end: Math.PI * 0.92 }, // Green (bottom quadrant)
+        { color: '#4285f4', start: Math.PI * 1.08, end: Math.PI * 1.42 }, // Blue (left quadrant)
       ];
 
       chromeArcs.forEach((arc) => {
@@ -3436,7 +3436,15 @@ export function generateWheelTexture(
 
     const parseHex = (hex: string) => {
       const clean = hex.replace('#', '');
-      const num = parseInt(clean.length === 3 ? clean.split('').map((c) => c + c).join('') : clean, 16);
+      const num = parseInt(
+        clean.length === 3
+          ? clean
+              .split('')
+              .map((c) => c + c)
+              .join('')
+          : clean,
+        16,
+      );
       return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
     };
 

@@ -35,7 +35,12 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
       { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', code: 'LOGO' },
       { id: 'pano_drivers', labelVi: 'Vách Tay Đua', labelEn: 'Drivers Wall', code: 'TAY ĐUA' },
       { id: 'pano_technical', labelVi: 'Vách Kỹ Thuật', labelEn: 'Tech Specs', code: 'KỸ THUẬT' },
-      { id: 'pano_achievements', labelVi: 'Vách Thành Tích', labelEn: 'Records Wall', code: 'KỶ LỤC' },
+      {
+        id: 'pano_achievements',
+        labelVi: 'Vách Thành Tích',
+        labelEn: 'Records Wall',
+        code: 'KỶ LỤC',
+      },
     ];
 
     const currentPanoIdx = PANO_CYCLE.findIndex((p) => p.id === cameraPreset);
@@ -150,7 +155,9 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
                 }
                 aria-label={lang === 'vi' ? 'Toàn cảnh 4 vách' : '4-Wall Panorama'}
               >
-                <Compass className={`w-3.5 h-3.5 ${currentPanoIdx >= 0 ? 'text-amber-400' : 'text-studio-400'}`} />
+                <Compass
+                  className={`w-3.5 h-3.5 ${currentPanoIdx >= 0 ? 'text-amber-400' : 'text-studio-400'}`}
+                />
                 <span className="hidden md:inline">
                   {currentPanoIdx >= 0
                     ? lang === 'vi'

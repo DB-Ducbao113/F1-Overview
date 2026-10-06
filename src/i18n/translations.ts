@@ -37,7 +37,8 @@ export const t = {
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
         'Dự án phi lợi nhuận được phát triển độc lập nhằm mục đích nghiên cứu công nghệ khí động học và tôn vinh thể thao tốc độ. Formula 1, F1, Grand Prix cùng các thương hiệu và tài sản trí tuệ liên quan thuộc quyền sở hữu của Formula One Licensing B.V. và các đội đua chính thức.',
-      copyright: '© 2026 Ground Effect Hub · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
+      copyright:
+        '© 2026 Ground Effect Hub · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
     },
   },
   en: {
@@ -78,7 +79,8 @@ export const t = {
       colLegal: 'Attribution & Provenance',
       disclaimer:
         'An independent, non-commercial platform built for aerodynamic research, engineering exploration, and motorsport appreciation. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks are trademarks of Formula One Licensing B.V. and their respective constructors.',
-      copyright: '© 2026 Ground Effect Hub · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
+      copyright:
+        '© 2026 Ground Effect Hub · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
     },
   },
 };
