@@ -7,6 +7,7 @@ import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -123,13 +124,33 @@ export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
                 const roster = STANDINGS_DATA[season].drivers.filter(
                   (driver) => driver.teamId === team.id,
                 );
+                const teamColor = getTeamTextColor(team.id, false);
                 return (
                   <article
                     key={team.id}
-                    className="overflow-hidden rounded-2xl border border-studio-200 bg-white shadow-subtle transition hover:-translate-y-1 hover:shadow-lg"
+                    className="overflow-hidden rounded-2xl border bg-white shadow-subtle transition hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between"
+                    style={{ borderColor: `${teamColor}40` }}
                   >
-                    <div className="h-2" style={{ backgroundColor: team.primaryColor }} />
-                    <div className="space-y-5 p-5 sm:p-6">
+                    <div>
+                      <div className="h-2" style={{ backgroundColor: teamColor }} />
+
+                      {/* Team Car Showcase Banner */}
+                      {team.imageUrl && (
+                        <div className="relative aspect-[16/7] overflow-hidden bg-studio-950">
+                          <img
+                            src={team.imageUrl}
+                            alt={profile.fullName}
+                            className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+                          <div className="absolute bottom-2 left-4 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-xs px-2.5 py-0.5 text-[10px] font-black uppercase text-white border border-white/10">
+                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: teamColor }} />
+                            <span>{team.name} · {season}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-5 p-5 sm:p-6">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                           <ConstructorLogo teamId={team.id} size="md" />
@@ -194,7 +215,8 @@ export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
                         </Link>
                       </div>
                     </div>
-                  </article>
+                  </div>
+                </article>
                 );
               })}
             </div>

@@ -48,6 +48,7 @@ interface ChampionshipStoreState {
   selectedSeason: SeasonYear;
   activeSubTab: 'standings' | 'calendar' | 'results' | 'drivers' | 'teams';
   standingsCategory: 'drivers' | 'constructors';
+  selectedRaceRound: number | null;
 
   // Live and Raw Data
   detailedResults: Record<SeasonYear, DetailedRaceResult[]>;
@@ -63,6 +64,7 @@ interface ChampionshipStoreState {
   setSelectedSeason: (season: SeasonYear) => void;
   setActiveSubTab: (tab: 'standings' | 'calendar' | 'results' | 'drivers' | 'teams') => void;
   setStandingsCategory: (category: 'drivers' | 'constructors') => void;
+  setSelectedRaceRound: (round: number | null) => void;
 
   // Data Pipeline Synchronization Actions
   syncSeasonData: (season: SeasonYear) => Promise<void>;
@@ -280,6 +282,7 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
   selectedSeason: 2026,
   activeSubTab: 'standings',
   standingsCategory: 'drivers',
+  selectedRaceRound: null,
 
   detailedResults: initialDetailedResults,
   calculatedStandings: computeInitialStandings(initialDetailedResults),
@@ -290,6 +293,7 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
   setSelectedSeason: (season) => set({ selectedSeason: season }),
   setActiveSubTab: (tab) => set({ activeSubTab: tab }),
   setStandingsCategory: (category) => set({ standingsCategory: category }),
+  setSelectedRaceRound: (round) => set({ selectedRaceRound: round }),
 
   syncSeasonData: async (season) => {
     if (get().pendingSyncReview) return;

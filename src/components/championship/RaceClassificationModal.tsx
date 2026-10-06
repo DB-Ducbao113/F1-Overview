@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { DetailedRaceResult } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { formatDateStr } from '../../utils/dateUtils';
+import { getTeamTextColor } from '../../utils/teamColors';
 import { X, Trophy, Zap, Flag, Calendar, MapPin, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
@@ -90,7 +90,12 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
             <div className="flex items-center gap-2">
               <Trophy className="w-4 h-4 text-amber-400" />
               <span className="text-studio-400">{isVi ? 'Chiến thắng:' : 'Winner:'}</span>
-              <span className="font-bold text-white">{race.winner.driver}</span>
+              <span
+                className="font-bold"
+                style={{ color: getTeamTextColor(race.winner.team || race.winner.driver, true) }}
+              >
+                {race.winner.driver}
+              </span>
               <span className="text-studio-500 font-mono">({race.winner.team})</span>
               <span className="font-mono text-amber-400 ml-1 font-bold">{race.winner.time}</span>
             </div>
@@ -100,7 +105,12 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-purple-400" />
               <span className="text-studio-400">{isVi ? 'Vòng nhanh nhất:' : 'Fastest Lap:'}</span>
-              <span className="font-bold text-white">{race.fastestLap.driver}</span>
+              <span
+                className="font-bold"
+                style={{ color: getTeamTextColor(race.fastestLap.team || race.fastestLap.driver, true) }}
+              >
+                {race.fastestLap.driver}
+              </span>
               <span className="font-mono text-purple-300 font-bold ml-1">
                 {race.fastestLap.time}
               </span>
@@ -127,7 +137,6 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               </thead>
               <tbody className="divide-y divide-white/5 font-medium">
                 {race.entries.map((entry) => {
-                  const teamInfo = TEAMS_DATA[entry.teamId];
                   const isPodium = entry.position >= 1 && entry.position <= 3;
                   const isDNF =
                     entry.status.toLowerCase().includes('dnf') ||
@@ -165,9 +174,11 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                       </td>
 
                       {/* Driver Name */}
-                      <td className="py-3 px-4 font-bold text-white flex items-center gap-2">
-                        {entry.position === 1 && <Trophy className="w-3.5 h-3.5 text-amber-400" />}
-                        <span>{entry.driverName}</span>
+                      <td className="py-3 px-4 font-bold flex items-center gap-2">
+                        {entry.position === 1 && <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                        <span style={{ color: getTeamTextColor(entry.teamId || entry.teamName, true) }}>
+                          {entry.driverName}
+                        </span>
                       </td>
 
                       {/* Constructor */}
@@ -175,9 +186,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                         <span
                           className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
                           style={{
-                            backgroundColor: `${teamInfo?.primaryColor || '#e10600'}15`,
-                            borderColor: `${teamInfo?.primaryColor || '#e10600'}40`,
-                            color: teamInfo?.primaryColor || '#ffffff',
+                            backgroundColor: `${getTeamTextColor(entry.teamId || entry.teamName, true)}18`,
+                            borderColor: `${getTeamTextColor(entry.teamId || entry.teamName, true)}55`,
+                            color: getTeamTextColor(entry.teamId || entry.teamName, true),
                           }}
                         >
                           {entry.teamName}

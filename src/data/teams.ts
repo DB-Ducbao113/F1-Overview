@@ -1,6 +1,6 @@
 import { F1Team, TeamId } from '../types';
 
-export const TEAMS_DATA: Record<TeamId, F1Team> = {
+const RAW_TEAMS_DATA: Record<TeamId, F1Team> = {
   ferrari: {
     id: 'ferrari',
     name: 'Ferrari',
@@ -134,3 +134,27 @@ export const TEAMS_DATA: Record<TeamId, F1Team> = {
     drivers: ['perez', 'bottas'],
   },
 };
+
+const TEAM_IMAGES: Record<TeamId, string> = {
+  ferrari: '/images/teams/sf24.jpg',
+  mclaren: '/images/teams/mcl38.jpg',
+  redbull: '/images/teams/rb20.jpg',
+  mercedes: '/images/teams/w15.jpg',
+  astonmartin: '/images/teams/astonmartin.jpg',
+  alpine: '/images/teams/alpine.jpg',
+  racingbulls: '/images/teams/racingbulls.jpg',
+  haas: '/images/teams/haas.jpg',
+  williams: '/images/teams/williams.jpg',
+  audi: '/images/teams/audi.jpg',
+  cadillac: '/images/teams/cadillac.jpg',
+};
+
+export const TEAMS_DATA: Record<TeamId, F1Team> = Object.fromEntries(
+  Object.entries(RAW_TEAMS_DATA).map(([id, team]) => [
+    id as TeamId,
+    {
+      ...team,
+      imageUrl: TEAM_IMAGES[id as TeamId] || `/images/teams/${id}.jpg`,
+    },
+  ]),
+) as Record<TeamId, F1Team>;

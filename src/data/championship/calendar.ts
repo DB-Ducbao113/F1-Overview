@@ -86,7 +86,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     circuitLengthKm: 5.412,
     raceDistanceKm: 308.484,
     sessions: {
-      fp1: { name: 'Sprint Qualifying', dateStr: 'Fri 01 May', timeStr: '12:30', status: 'finished' },
+      fp1: { name: 'Practice 1', dateStr: 'Fri 01 May', timeStr: '12:30', status: 'finished' },
       sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 01 May', timeStr: '15:30', status: 'finished' },
       sprint: { name: 'Sprint', dateStr: 'Sat 02 May', timeStr: '11:00', status: 'finished' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 02 May', timeStr: '15:00', status: 'finished' },
@@ -110,7 +110,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     circuitLengthKm: 4.361,
     raceDistanceKm: 296.548,
     sessions: {
-      fp1: { name: 'Sprint Qualifying', dateStr: 'Fri 22 May', timeStr: '12:30', status: 'finished' },
+      fp1: { name: 'Practice 1', dateStr: 'Fri 22 May', timeStr: '12:30', status: 'finished' },
       sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 22 May', timeStr: '15:30', status: 'finished' },
       sprint: { name: 'Sprint', dateStr: 'Sat 23 May', timeStr: '11:00', status: 'finished' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 23 May', timeStr: '15:00', status: 'finished' },
@@ -200,7 +200,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     circuitLengthKm: 5.891,
     raceDistanceKm: 306.332,
     sessions: {
-      fp1: { name: 'Sprint Qualifying', dateStr: 'Fri 03 Jul', timeStr: '12:30', status: 'finished' },
+      fp1: { name: 'Practice 1', dateStr: 'Fri 03 Jul', timeStr: '12:30', status: 'finished' },
       sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 03 Jul', timeStr: '15:30', status: 'finished' },
       sprint: { name: 'Sprint', dateStr: 'Sat 04 Jul', timeStr: '11:00', status: 'finished' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 04 Jul', timeStr: '15:00', status: 'finished' },
@@ -268,7 +268,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     circuitLengthKm: 4.259,
     raceDistanceKm: 306.648,
     sessions: {
-      fp1: { name: 'Sprint Qualifying', dateStr: 'Fri 21 Aug', timeStr: '12:30', status: 'finished' },
+      fp1: { name: 'Practice 1', dateStr: 'Fri 21 Aug', timeStr: '12:30', status: 'finished' },
       sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 21 Aug', timeStr: '15:30', status: 'finished' },
       sprint: { name: 'Sprint', dateStr: 'Sat 22 Aug', timeStr: '11:00', status: 'finished' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 22 Aug', timeStr: '15:00', status: 'finished' },

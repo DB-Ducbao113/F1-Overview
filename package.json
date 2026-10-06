@@ -13,6 +13,8 @@
     "format:check": "prettier --check .",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "sync:2026": "node scripts/update-2026-data.js"
   },
   "dependencies": {
@@ -33,6 +35,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.165.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^5.0.3",
     "autoprefixer": "^10.4.19",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -44,6 +47,7 @@
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.70.1",
-    "vite": "^6.4.3"
+    "vite": "^6.4.3",
+    "vitest": "^5.0.3"
   }
 }

@@ -8,6 +8,7 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { ArrowRight, Trophy, Calendar, MapPin, ShieldCheck, Box } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { formatDateStr } from '../../utils/dateUtils';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -228,41 +229,48 @@ export const HomeView: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {topDrivers.map((driver) => (
-                <div
-                  key={driver.driverId}
-                  className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border border-studio-200 hover:bg-studio-100/60 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
-                        driver.rank === 1
-                          ? 'bg-amber-400 text-black shadow-xs'
-                          : driver.rank === 2
-                            ? 'bg-studio-300 text-studio-900'
-                            : 'bg-amber-700 text-white'
-                      }`}
-                    >
-                      {driver.rank}
-                    </span>
-                    <div>
-                      <span className="font-bold text-sm text-studio-900 block">
-                        {driver.driverName} {driver.countryFlag}
+              {topDrivers.map((driver) => {
+                const driverColor = getTeamTextColor(driver.teamId, false);
+                return (
+                  <div
+                    key={driver.driverId}
+                    className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border hover:bg-studio-100/60 transition-colors"
+                    style={{ borderColor: `${driverColor}40` }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
+                          driver.rank === 1
+                            ? 'bg-amber-400 text-black shadow-xs'
+                            : driver.rank === 2
+                              ? 'bg-studio-300 text-studio-900'
+                              : 'bg-amber-700 text-white'
+                        }`}
+                      >
+                        {driver.rank}
                       </span>
-                      <span className="text-xs text-studio-500">{driver.teamName}</span>
+                      <div>
+                        <span
+                          className="font-bold text-sm block"
+                          style={{ color: driverColor }}
+                        >
+                          {driver.driverName} {driver.countryFlag}
+                        </span>
+                        <span className="text-xs text-studio-500">{driver.teamName}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="font-display font-black text-base text-f1red block">
+                        {driver.points} PTS
+                      </span>
+                      <span className="text-[10px] text-studio-400">
+                        {driver.wins} wins · {driver.podiums} podiums
+                      </span>
                     </div>
                   </div>
-
-                  <div className="text-right">
-                    <span className="font-display font-black text-base text-f1red block">
-                      {driver.points} PTS
-                    </span>
-                    <span className="text-[10px] text-studio-400">
-                      {driver.wins} wins · {driver.podiums} podiums
-                    </span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -279,33 +287,39 @@ export const HomeView: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {topConstructors.map((c) => (
-                <div
-                  key={c.teamId}
-                  className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border border-studio-200 hover:bg-studio-100/60 transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
-                        c.rank === 1
-                          ? 'bg-amber-400 text-black shadow-xs'
-                          : c.rank === 2
-                            ? 'bg-studio-300 text-studio-900'
-                            : 'bg-amber-700 text-white'
-                      }`}
-                    >
-                      {c.rank}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <ConstructorLogo teamId={c.teamId} size="sm" />
-                        <span className="font-bold text-sm text-studio-900 block">
-                          {c.teamName}
-                        </span>
+              {topConstructors.map((c) => {
+                const teamColor = getTeamTextColor(c.teamId, false);
+                return (
+                  <div
+                    key={c.teamId}
+                    className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border hover:bg-studio-100/60 transition-colors group"
+                    style={{ borderColor: `${teamColor}40` }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
+                          c.rank === 1
+                            ? 'bg-amber-400 text-black shadow-xs'
+                            : c.rank === 2
+                              ? 'bg-studio-300 text-studio-900'
+                              : 'bg-amber-700 text-white'
+                        }`}
+                      >
+                        {c.rank}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <ConstructorLogo teamId={c.teamId} size="sm" />
+                          <span
+                            className="font-bold text-sm block"
+                            style={{ color: teamColor }}
+                          >
+                            {c.teamName}
+                          </span>
+                        </div>
+                        <span className="text-xs text-studio-500">{c.engine} Power Unit</span>
                       </div>
-                      <span className="text-xs text-studio-500">{c.engine} Power Unit</span>
                     </div>
-                  </div>
 
                   <div className="flex items-center gap-3">
                     <div className="text-right">
@@ -326,7 +340,8 @@ export const HomeView: React.FC = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+              );
+            })}
             </div>
           </div>
         </div>

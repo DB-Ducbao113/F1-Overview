@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getStandings } from '../../data/championship';
-import { TEAMS_DATA } from '../../data/teams';
 import { DRIVERS_DATA } from '../../data/drivers';
 import { SeasonYear } from '../../types';
 import { t } from '../../i18n/translations';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { Trophy, Award, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 interface StandingsTableProps {
   season: SeasonYear;
@@ -155,7 +155,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
               </thead>
               <tbody className="divide-y divide-studio-100">
                 {activeDrivers.map((driver) => {
-                  const team = TEAMS_DATA[driver.teamId];
+                  const driverColor = getTeamTextColor(driver.teamId, false);
                   return (
                     <tr
                       key={`${driver.driverId}-${driver.teamId}`}
@@ -188,12 +188,16 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                             {DRIVERS_DATA[driver.driverId] ? (
                               <Link
                                 to={`/drivers/${driver.driverId}?season=${season}`}
-                                className="font-bold text-studio-900 block text-xs sm:text-sm hover:text-f1red leading-tight"
+                                className="font-extrabold block text-xs sm:text-sm hover:underline leading-tight"
+                                style={{ color: driverColor }}
                               >
                                 {driver.driverName}
                               </Link>
                             ) : (
-                              <span className="font-bold text-studio-900 block text-xs sm:text-sm leading-tight">
+                              <span
+                                className="font-extrabold block text-xs sm:text-sm leading-tight"
+                                style={{ color: driverColor }}
+                              >
                                 {driver.driverName}
                               </span>
                             )}
@@ -207,11 +211,12 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                         <div className="flex items-center gap-2">
                           <span
                             className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: team?.primaryColor || '#999' }}
+                            style={{ backgroundColor: driverColor }}
                           />
                           <Link
                             to={`/teams/${driver.teamId}`}
-                            className="font-semibold text-studio-700 hover:text-f1red truncate max-w-[140px] sm:max-w-none block text-xs"
+                            className="font-bold hover:underline truncate max-w-[140px] sm:max-w-none block text-xs"
+                            style={{ color: driverColor }}
                           >
                             {driver.teamName}
                           </Link>
@@ -256,7 +261,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
               </thead>
               <tbody className="divide-y divide-studio-100">
                 {activeConstructors.map((c) => {
-                  const team = TEAMS_DATA[c.teamId];
+                  const teamColor = getTeamTextColor(c.teamId, false);
                   return (
                     <tr
                       key={`${c.teamId}-${c.rank}`}
@@ -281,11 +286,12 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                         <div className="flex items-center gap-2.5">
                           <span
                             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0"
-                            style={{ backgroundColor: team?.primaryColor || '#999' }}
+                            style={{ backgroundColor: teamColor }}
                           />
                           <Link
                             to={`/teams/${c.teamId}`}
-                            className="font-bold text-studio-900 text-xs sm:text-sm hover:text-f1red"
+                            className="font-extrabold text-xs sm:text-sm hover:underline"
+                            style={{ color: teamColor }}
                           >
                             {c.teamName}
                           </Link>

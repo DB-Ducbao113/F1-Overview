@@ -34,5 +34,12 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Run Unit Tests & Coverage
+        run: npm run test:coverage
+
       - name: Build
         run: npm run build
+
+      - name: Security Audit (Dependencies)
+        run: npm audit --audit-level=critical
+        continue-on-error: true

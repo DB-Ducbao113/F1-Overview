@@ -22,5 +22,6 @@ export interface F1Team {
   accentColor: string;
   highlightColor: string;
   logoUrl?: string;
+  imageUrl?: string;
   drivers: string[]; // driver ids
 }
