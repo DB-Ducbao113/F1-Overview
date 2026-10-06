@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
 import { CALENDAR_2026 } from '../../data/championship';
 import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
-import { Clock, MapPin, ChevronDown, ChevronUp, Timer, ChevronRight } from 'lucide-react';
+import { QUALIFYING_RESULTS_2026 } from '../../data/championship/qualifyingResults2026';
+import {
+  Clock,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  Timer,
+  ChevronRight,
+  Award,
+  Trophy,
+  Zap,
+} from 'lucide-react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
+import { QualifyingClassificationModal } from './QualifyingClassificationModal';
 import { formatDateStr, formatSessionName } from '../../utils/dateUtils';
+import { SeasonYear } from '../../types';
 
 export const RaceCalendar: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const { detailedResults } = useChampionshipStore();
+  const { detailedResults, setActiveSubTab, setSelectedSeason, setSelectedRaceRound } =
+    useChampionshipStore();
   const seasonResults = detailedResults[2026] || [];
   const completedRounds = new Set([
     ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
@@ -25,6 +39,12 @@ export const RaceCalendar: React.FC = React.memo(() => {
     'fp1' | 'fp2' | 'fp3'
   >('fp1');
 
+  // State cho Qualifying Modal
+  const [selectedQualifyingRound, setSelectedQualifyingRound] = useState<number | null>(null);
+  const [selectedQualifyingSessionKey, setSelectedQualifyingSessionKey] = useState<
+    'qualifying' | 'sprintQualifying' | 'sprint'
+  >('qualifying');
+
   const toggleExpand = (round: number) => {
     setExpandedRound(expandedRound === round ? null : round);
   };
@@ -32,6 +52,16 @@ export const RaceCalendar: React.FC = React.memo(() => {
   const activePracticeData = selectedPracticeRound
     ? PRACTICE_RESULTS_2026[selectedPracticeRound]
     : null;
+
+  const activeQualifyingData = selectedQualifyingRound
+    ? QUALIFYING_RESULTS_2026[selectedQualifyingRound]
+    : null;
+
+  const handleGoToRaceResults = (_round?: number, seasonYear: SeasonYear = 2026) => {
+    setSelectedSeason(seasonYear);
+    setSelectedRaceRound(null);
+    setActiveSubTab('results');
+  };
 
   return (
     <div className="space-y-4">
@@ -66,6 +96,15 @@ export const RaceCalendar: React.FC = React.memo(() => {
           const isCurrent = gp.status === 'current' && !isCompleted;
           const isNext = gp.round === nextRace?.round;
           const hasPracticeData = Boolean(PRACTICE_RESULTS_2026[gp.round]);
+          const finishedPracticeKeys = (['fp1', 'fp2', 'fp3'] as const).filter((key) => {
+            const session = gp.sessions[key] ?? PRACTICE_RESULTS_2026[gp.round]?.sessions[key];
+            return session?.status === 'finished';
+          });
+          const hasFinishedPractice = finishedPracticeKeys.length > 0;
+          const practiceBadgeLabel =
+            finishedPracticeKeys.length > 0
+              ? finishedPracticeKeys.map((key) => key.toUpperCase()).join(', ')
+              : '';
 
           return (
             <div
@@ -112,10 +151,12 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           Sprint
                         </span>
                       )}
-                      {hasPracticeData && (
+                      {!isCompleted && hasFinishedPractice && (
                         <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-sky-100 text-sky-800 flex items-center gap-1 border border-sky-300">
                           <Timer className="w-3 h-3 text-sky-600 animate-pulse" />
-                          {isVi ? 'Đã Chạy Practice 1 & 2' : 'FP1 & FP2 Completed'}
+                          {isVi
+                            ? `Đã Chạy ${practiceBadgeLabel}`
+                            : `${practiceBadgeLabel} Completed`}
                         </span>
                       )}
                       {isCurrent && (
@@ -183,15 +224,46 @@ export const RaceCalendar: React.FC = React.memo(() => {
                     {Object.entries(gp.sessions).map(([key, session]) => {
                       if (!session) return null;
                       const practiceDataForRound = PRACTICE_RESULTS_2026[gp.round];
-                      const practiceSession =
-                        practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3'];
+                      const qualifyingDataForRound = QUALIFYING_RESULTS_2026[gp.round];
 
-                      const isFinishedPractice = practiceSession?.status === 'finished';
-                      const sessionStatus = isFinishedPractice
-                        ? 'finished'
-                        : isCompleted
-                          ? 'finished'
-                          : session.status;
+                      const isPracticeSession = key === 'fp1' || key === 'fp2' || key === 'fp3';
+                      const isQualifyingSession =
+                        key === 'qualifying' || key === 'sprintQualifying';
+                      const isSprintSession = key === 'sprint';
+                      const isRaceSession = key === 'race';
+
+                      const practiceSession = isPracticeSession
+                        ? practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3']
+                        : undefined;
+                      const qualifyingSession = isQualifyingSession
+                        ? qualifyingDataForRound?.sessions[key as 'qualifying' | 'sprintQualifying']
+                        : undefined;
+                      const sprintSession = isSprintSession
+                        ? qualifyingDataForRound?.sessions.sprint
+                        : undefined;
+
+                      const isFinishedPractice = Boolean(
+                        practiceSession && (practiceSession.status === 'finished' || isCompleted),
+                      );
+                      const isFinishedQualifying = Boolean(
+                        qualifyingSession &&
+                        (qualifyingSession.status === 'finished' || isCompleted),
+                      );
+                      const isFinishedSprint = Boolean(
+                        sprintSession && (sprintSession.status === 'finished' || isCompleted),
+                      );
+                      const isFinishedRace =
+                        isRaceSession && (isCompleted || session.status === 'finished');
+
+                      const isFinished =
+                        isFinishedPractice ||
+                        isFinishedQualifying ||
+                        isFinishedSprint ||
+                        isFinishedRace ||
+                        session.status === 'finished';
+
+                      const sessionStatus = isFinished ? 'finished' : session.status;
+
                       const statusLabel =
                         sessionStatus === 'finished'
                           ? isVi
@@ -205,27 +277,74 @@ export const RaceCalendar: React.FC = React.memo(() => {
                               ? 'sắp tới'
                               : 'upcoming';
 
+                      const handleSessionClick = () => {
+                        if (isFinishedPractice) {
+                          setSelectedPracticeRound(gp.round);
+                          setSelectedPracticeSessionKey(key as 'fp1' | 'fp2' | 'fp3');
+                        } else if (isFinishedQualifying) {
+                          setSelectedQualifyingRound(gp.round);
+                          setSelectedQualifyingSessionKey(key as 'qualifying' | 'sprintQualifying');
+                        } else if (isFinishedSprint) {
+                          setSelectedQualifyingRound(gp.round);
+                          setSelectedQualifyingSessionKey('sprint');
+                        } else if (isFinishedRace) {
+                          handleGoToRaceResults(gp.round, gp.season);
+                        }
+                      };
+
+                      const isClickable =
+                        isFinishedPractice ||
+                        isFinishedQualifying ||
+                        isFinishedSprint ||
+                        isFinishedRace;
+
+                      const cardThemeClass = isFinishedPractice
+                        ? 'bg-sky-50/80 border-sky-200 hover:border-sky-400 hover:bg-sky-100/60 cursor-pointer group'
+                        : isFinishedQualifying
+                          ? 'bg-purple-50/80 border-purple-200 hover:border-purple-400 hover:bg-purple-100/60 cursor-pointer group'
+                          : isFinishedSprint
+                            ? 'bg-amber-50/80 border-amber-200 hover:border-amber-400 hover:bg-amber-100/60 cursor-pointer group'
+                            : isFinishedRace
+                              ? 'bg-emerald-50/80 border-emerald-200 hover:border-emerald-400 hover:bg-emerald-100/60 cursor-pointer group'
+                              : 'bg-white border-studio-200';
+
+                      const statusTextClass =
+                        sessionStatus === 'finished'
+                          ? isFinishedPractice
+                            ? 'text-sky-700 font-extrabold'
+                            : isFinishedQualifying
+                              ? 'text-purple-700 font-extrabold'
+                              : isFinishedSprint
+                                ? 'text-amber-700 font-extrabold'
+                                : isFinishedRace
+                                  ? 'text-emerald-700 font-extrabold'
+                                  : 'text-studio-400'
+                          : sessionStatus === 'live'
+                            ? 'text-f1red animate-pulse'
+                            : 'text-emerald-600';
+
                       return (
                         <div
                           key={key}
-                          onClick={() => {
-                            if (isFinishedPractice) {
-                              setSelectedPracticeRound(gp.round);
-                              setSelectedPracticeSessionKey(key as 'fp1' | 'fp2' | 'fp3');
-                            }
-                          }}
-                          className={`p-2.5 rounded-lg border shadow-xs space-y-1 transition-all ${
-                            isFinishedPractice
-                              ? 'bg-sky-50/80 border-sky-200 hover:border-sky-400 hover:bg-sky-100/60 cursor-pointer group'
-                              : 'bg-white border-studio-200'
-                          }`}
+                          onClick={handleSessionClick}
+                          className={`p-2.5 rounded-lg border shadow-xs space-y-1 transition-all ${cardThemeClass}`}
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 block truncate">
                               {formatSessionName(session.name, lang)}
                             </span>
-                            {isFinishedPractice && (
-                              <ChevronRight className="w-3 h-3 text-sky-600 group-hover:translate-x-0.5 transition-transform" />
+                            {isClickable && (
+                              <ChevronRight
+                                className={`w-3 h-3 group-hover:translate-x-0.5 transition-transform ${
+                                  isFinishedPractice
+                                    ? 'text-sky-600'
+                                    : isFinishedQualifying
+                                      ? 'text-purple-600'
+                                      : isFinishedSprint
+                                        ? 'text-amber-600'
+                                        : 'text-emerald-600'
+                                }`}
+                              />
                             )}
                           </div>
                           <span className="text-xs font-bold text-studio-900 block">
@@ -236,25 +355,54 @@ export const RaceCalendar: React.FC = React.memo(() => {
                               <Clock className="w-3 h-3 text-studio-400" />
                               {session.timeStr}
                             </span>
-                            <span
-                              className={`text-[9px] font-bold uppercase ${
-                                sessionStatus === 'finished'
-                                  ? isFinishedPractice
-                                    ? 'text-sky-700 font-extrabold'
-                                    : 'text-studio-400'
-                                  : sessionStatus === 'live'
-                                    ? 'text-f1red animate-pulse'
-                                    : 'text-emerald-600'
-                              }`}
-                            >
+                            <span className={`text-[9px] font-bold uppercase ${statusTextClass}`}>
                               {statusLabel}
                             </span>
                           </div>
+
+                          {/* Action Buttons for Finished Sessions */}
                           {isFinishedPractice && (
                             <span className="text-[9px] text-sky-700 font-bold block pt-1 border-t border-sky-200/60 flex items-center gap-1">
                               <Timer className="w-2.5 h-2.5 text-sky-600" />
                               {isVi ? 'Xem BXH Practice' : 'View Practice Table'}
                             </span>
+                          )}
+
+                          {isFinishedQualifying && (
+                            <span className="text-[9px] text-purple-700 font-bold block pt-1 border-t border-purple-200/60 flex items-center gap-1">
+                              <Award className="w-2.5 h-2.5 text-purple-600" />
+                              {key === 'sprintQualifying'
+                                ? isVi
+                                  ? 'Xem BXH Sprint Quali'
+                                  : 'View Sprint Quali'
+                                : isVi
+                                  ? 'Xem BXH Phân Hạng'
+                                  : 'View Qualifying Table'}
+                            </span>
+                          )}
+
+                          {isFinishedSprint && (
+                            <span className="text-[9px] text-amber-700 font-bold block pt-1 border-t border-amber-200/60 flex items-center gap-1">
+                              <Zap className="w-2.5 h-2.5 text-amber-600" />
+                              {isVi ? 'Xem BXH Sprint' : 'View Sprint Table'}
+                            </span>
+                          )}
+
+                          {isFinishedRace && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleGoToRaceResults(gp.round, gp.season);
+                              }}
+                              className="text-[9px] text-emerald-700 font-bold block pt-1 border-t border-emerald-200/60 flex items-center justify-between gap-1 w-full hover:text-emerald-900 cursor-pointer"
+                            >
+                              <span className="flex items-center gap-1">
+                                <Trophy className="w-2.5 h-2.5 text-emerald-600" />
+                                {isVi ? 'Xem kết quả chặng' : 'View Race Results'}
+                              </span>
+                              <ChevronRight className="w-2.5 h-2.5 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
+                            </button>
                           )}
                         </div>
                       );
@@ -273,6 +421,15 @@ export const RaceCalendar: React.FC = React.memo(() => {
           practiceData={activePracticeData}
           initialSessionKey={selectedPracticeSessionKey}
           onClose={() => setSelectedPracticeRound(null)}
+        />
+      )}
+
+      {/* Qualifying Classification Modal Portal */}
+      {activeQualifyingData && (
+        <QualifyingClassificationModal
+          qualifyingData={activeQualifyingData}
+          initialSessionKey={selectedQualifyingSessionKey}
+          onClose={() => setSelectedQualifyingRound(null)}
         />
       )}
     </div>

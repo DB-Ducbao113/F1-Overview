@@ -69,7 +69,7 @@ export function getDriverCareerStats(
   return { careerWins: totalWins, podiums: totalPodiums };
 }
 
-export const DRIVERS_DATA: Record<string, F1Driver> = {
+const RAW_DRIVERS_DATA: Record<string, F1Driver> = {
   // Ferrari
   leclerc: {
     id: 'leclerc',
@@ -458,3 +458,25 @@ export const DRIVERS_DATA: Record<string, F1Driver> = {
     podiums: 0,
   },
 };
+
+const JPG_POSTER_DRIVERS = new Set([
+  'antonelli',
+  'russell',
+  'leclerc',
+  'hamilton',
+  'verstappen',
+  'norris',
+  'piastri',
+]);
+
+export const DRIVERS_DATA: Record<string, F1Driver> = Object.fromEntries(
+  Object.entries(RAW_DRIVERS_DATA).map(([id, driver]) => [
+    id,
+    {
+      ...driver,
+      imageUrl:
+        driver.imageUrl ||
+        (JPG_POSTER_DRIVERS.has(id) ? `/images/drivers/${id}.jpg` : `/images/drivers/${id}.svg`),
+    },
+  ]),
+);

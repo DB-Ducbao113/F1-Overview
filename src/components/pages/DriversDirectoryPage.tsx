@@ -7,6 +7,7 @@ import { DRIVERS_DATA } from '../../data/drivers';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -117,72 +118,78 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
           {drivers.length ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {drivers.map((driver) => {
-                const team = TEAMS_DATA[driver.teamId];
                 const profile = DRIVERS_DATA[driver.driverId];
                 const portraitUrl = profile?.imageUrl;
+                const teamColor = getTeamTextColor(driver.teamId, false);
 
                 return (
                   <Link
                     key={driver.driverId}
                     to={`/drivers/${driver.driverId}?season=${season}`}
-                    className="group relative overflow-hidden rounded-2xl border border-studio-200 bg-white shadow-subtle transition-all duration-300 hover:-translate-y-1 hover:border-studio-400 hover:shadow-xl flex flex-col justify-between"
+                    className="group relative overflow-hidden rounded-2xl border bg-white shadow-subtle transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between"
+                    style={{ borderColor: `${teamColor}40` }}
                   >
-                    {/* Subtle Top Accent Color Band */}
-                    <div
-                      className="h-1.5 w-full"
-                      style={{ backgroundColor: team?.primaryColor || '#e80020' }}
-                    />
+                    {/* Top 16:9 Celebration Poster Banner */}
+                    <div className="relative w-full aspect-video bg-studio-950 overflow-hidden">
+                      {portraitUrl ? (
+                        <img
+                          src={portraitUrl}
+                          alt={driver.driverName}
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.endsWith('.svg')) {
+                              target.src = `/images/drivers/${driver.driverId}.svg`;
+                            }
+                          }}
+                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center font-display font-black text-white/20 text-4xl">
+                          #{profile?.number || driver.rank}
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                      <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/65 backdrop-blur-md px-2.5 py-1 text-xs font-black text-white shadow-xs border border-white/20">
+                        <Trophy className="h-3.5 w-3.5 text-amber-400" />
+                        <span>P{driver.rank}</span>
+                      </span>
+                      {/* Team Color Accent Underline */}
+                      <div
+                        className="absolute bottom-0 inset-x-0 h-1"
+                        style={{ backgroundColor: teamColor }}
+                      />
+                    </div>
 
-                    {/* Card Content with Driver Portrait Banner */}
-                    <div className="relative p-5 sm:p-6 overflow-hidden">
+                    {/* Card Content */}
+                    <div className="relative p-5 sm:p-6 flex-1 flex flex-col justify-between">
                       {/* Ambient Glow from Team Color */}
                       <div
                         className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-10 blur-2xl pointer-events-none group-hover:opacity-25 transition-opacity"
-                        style={{ backgroundColor: team?.primaryColor || '#e80020' }}
+                        style={{ backgroundColor: teamColor }}
                       />
 
-                      {/* Watermark Car Number */}
-                      {profile?.number && (
-                        <span className="absolute right-3 bottom-2 text-7xl font-display font-black text-studio-950/[0.04] group-hover:text-f1red/[0.08] select-none pointer-events-none transition-colors">
-                          {profile.number}
-                        </span>
-                      )}
-
-                      {/* Full Driver Portrait - Chìm nhưng thấy toàn bộ ảnh */}
-                      {portraitUrl && (
-                        <div className="absolute right-0 top-0 bottom-0 w-40 sm:w-48 pointer-events-none flex items-end justify-end overflow-hidden">
-                          <img
-                            src={portraitUrl}
-                            alt={driver.driverName}
-                            className="h-full w-auto max-w-full object-contain object-bottom-right opacity-35 group-hover:opacity-85 filter grayscale contrast-115 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                          />
-                          {/* Soft edge blend on the left boundary only */}
-                          <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                        </div>
-                      )}
-
-                      <div className="relative z-10 flex items-start justify-between gap-3">
-                        <div>
-                          <span className="text-xs font-black uppercase tracking-widest text-studio-400 flex items-center gap-1.5">
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest text-studio-400">
+                          <span className="flex items-center gap-1.5">
                             <span className="text-base">{driver.countryFlag}</span>
                             <span>{driver.driverCode}</span>
                             {profile?.number && (
-                              <span className="text-studio-300 font-mono">#{profile.number}</span>
+                              <span className="text-studio-400 font-mono">#{profile.number}</span>
                             )}
                           </span>
-                          <h2 className="mt-2 font-display text-xl sm:text-2xl font-black text-studio-950 group-hover:text-f1red transition-colors">
-                            {driver.driverName}
-                          </h2>
-                          <div className="mt-1.5 flex items-center gap-2 text-xs font-semibold text-studio-600">
-                            <ConstructorLogo teamId={driver.teamId} size="sm" />
-                            <span>
-                              {driver.teamName} · {season}
-                            </span>
-                          </div>
+                          <span className="text-[11px] font-mono font-bold text-studio-400 uppercase">
+                            {driver.teamId}
+                          </span>
                         </div>
-                        <span className="inline-flex items-center gap-1 rounded-full bg-studio-100 px-3 py-1 text-xs font-black text-studio-800 shadow-xs border border-studio-200 shrink-0">
-                          <Trophy className="h-3.5 w-3.5 text-amber-500" />P{driver.rank}
-                        </span>
+                        <h2 className="mt-2 font-display text-xl sm:text-2xl font-black text-studio-950 group-hover:text-f1red transition-colors">
+                          {driver.driverName}
+                        </h2>
+                        <div className="mt-1.5 flex items-center gap-2 text-xs font-semibold text-studio-600">
+                          <ConstructorLogo teamId={driver.teamId} size="sm" />
+                          <span>
+                            {driver.teamName} · {season}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="relative z-10 mt-6 flex items-end justify-between border-t border-studio-100 pt-4">

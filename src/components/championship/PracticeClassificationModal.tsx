@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GrandPrixPracticeData, PracticeSessionResult } from '../../types/practice';
-import { TEAMS_DATA } from '../../data/teams';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { formatSessionName } from '../../utils/dateUtils';
-import { X, Timer, Flag, MapPin, Calendar, Thermometer, Sun, ChevronRight } from 'lucide-react';
+import { getTeamTextColor } from '../../utils/teamColors';
+import { X, Timer, MapPin, Thermometer, Sun } from 'lucide-react';
 
 interface PracticeModalProps {
   practiceData: GrandPrixPracticeData | null;
@@ -23,10 +23,12 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
   const [activeSessionKey, setActiveSessionKey] = useState<'fp1' | 'fp2' | 'fp3'>(
     initialSessionKey,
   );
+  const [prevInitialKey, setPrevInitialKey] = useState(initialSessionKey);
 
-  useEffect(() => {
+  if (initialSessionKey !== prevInitialKey) {
+    setPrevInitialKey(initialSessionKey);
     setActiveSessionKey(initialSessionKey);
-  }, [initialSessionKey]);
+  }
 
   useEffect(() => {
     if (!practiceData) return;
@@ -136,7 +138,17 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                 <span className="text-studio-400">
                   {isVi ? 'Nhanh nhất phiên:' : 'Fastest in session:'}
                 </span>
-                <span className="font-bold text-white">{currentSession.fastestDriver.driver}</span>
+                <span
+                  className="font-bold"
+                  style={{
+                    color: getTeamTextColor(
+                      currentSession.fastestDriver.team || currentSession.fastestDriver.driver,
+                      true,
+                    ),
+                  }}
+                >
+                  {currentSession.fastestDriver.driver}
+                </span>
                 <span className="text-studio-500 font-mono">
                   ({currentSession.fastestDriver.team})
                 </span>
@@ -186,7 +198,6 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                 </thead>
                 <tbody className="divide-y divide-white/5 font-medium">
                   {currentSession.entries.map((entry) => {
-                    const teamInfo = TEAMS_DATA[entry.teamId];
                     const isP1 = entry.position === 1;
 
                     return (
@@ -217,11 +228,17 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                         </td>
 
                         {/* Driver Name */}
-                        <td className="py-3 px-4 font-bold text-white flex items-center gap-2">
+                        <td className="py-3 px-4 font-bold flex items-center gap-2">
                           <span className="font-mono text-xs text-studio-400 w-8">
                             {entry.driverCode}
                           </span>
-                          <span>{entry.driverName}</span>
+                          <span
+                            style={{
+                              color: getTeamTextColor(entry.teamId || entry.teamName, true),
+                            }}
+                          >
+                            {entry.driverName}
+                          </span>
                         </td>
 
                         {/* Team Name */}
@@ -229,9 +246,9 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                           <span
                             className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
                             style={{
-                              backgroundColor: `${teamInfo?.primaryColor || '#e10600'}15`,
-                              borderColor: `${teamInfo?.primaryColor || '#e10600'}40`,
-                              color: teamInfo?.primaryColor || '#ffffff',
+                              backgroundColor: `${getTeamTextColor(entry.teamId || entry.teamName, true)}18`,
+                              borderColor: `${getTeamTextColor(entry.teamId || entry.teamName, true)}55`,
+                              color: getTeamTextColor(entry.teamId || entry.teamName, true),
                             }}
                           >
                             {entry.teamName}

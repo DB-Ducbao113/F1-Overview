@@ -36,9 +36,37 @@ const CONSTRUCTOR_MAP: Record<string, TeamId> = {
   alpine: 'alpine',
   rb: 'racingbulls',
   sauber: 'audi',
+  audi: 'audi',
   haas: 'haas',
   williams: 'williams',
 };
+
+// Map Jolpica native driver IDs to our internal driver IDs.
+// Jolpica returns e.g. "max_verstappen"/"arvid_lindblad" while the app's standings
+// baseline keys drivers as "verstappen"/"lindblad"; without this mapping a freshly
+// synced round creates ghost duplicate drivers instead of crediting the real one.
+const DRIVER_MAP: Record<string, string> = {
+  max_verstappen: 'verstappen',
+  arvid_lindblad: 'lindblad',
+};
+
+function normalizeDriverId(driverId: string | undefined): string {
+  if (!driverId) return 'unknown';
+  return DRIVER_MAP[driverId] || driverId;
+}
+
+function normalizeRaceResults(races: DetailedRaceResult[]): DetailedRaceResult[] {
+  return (Array.isArray(races) ? races : []).map((race) => {
+    if (!race) return race;
+    const entries = Array.isArray(race.entries) ? race.entries : [];
+    return {
+      ...race,
+      entries: entries.map((entry) =>
+        entry ? { ...entry, driverId: normalizeDriverId(entry.driverId) } : entry,
+      ),
+    };
+  });
+}
 
 /**
  * Reconcile baseline static results with dynamic client cache.
@@ -78,9 +106,14 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
       const parsed: Record<SeasonYear, DetailedRaceResult[]> = JSON.parse(raw);
       return {
         2024:
-          parsed[2024] && parsed[2024].length > 0 ? parsed[2024] : INITIAL_DETAILED_RESULTS[2024],
-        2025: parsed[2025] || INITIAL_DETAILED_RESULTS[2025],
-        2026: reconcileSeasonRaces(INITIAL_DETAILED_RESULTS[2026] || [], parsed[2026] || []),
+          parsed[2024] && parsed[2024].length > 0
+            ? normalizeRaceResults(parsed[2024])
+            : INITIAL_DETAILED_RESULTS[2024],
+        2025: normalizeRaceResults(parsed[2025] || INITIAL_DETAILED_RESULTS[2025]),
+        2026: reconcileSeasonRaces(
+          INITIAL_DETAILED_RESULTS[2026] || [],
+          normalizeRaceResults(parsed[2026] || []),
+        ),
       };
     }
   } catch {
@@ -246,7 +279,7 @@ export async function syncF1SeasonData(
           const pos = parseInt(res.position, 10) || 20;
           return {
             position: pos,
-            driverId: res.Driver?.driverId || 'unknown',
+            driverId: normalizeDriverId(res.Driver?.driverId),
             driverName: `${res.Driver?.givenName || ''} ${res.Driver?.familyName || ''}`.trim(),
             driverCode: res.Driver?.code || 'F1',
             driverNumber: parseInt(res.Driver?.permanentNumber, 10) || undefined,

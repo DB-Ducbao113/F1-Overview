@@ -1,6 +1,173 @@
-import { GrandPrixPracticeData } from '../../types/practice';
+import { GrandPrixPracticeData, PracticeSessionEntry } from '../../types/practice';
+import { CALENDAR_2026 } from './calendar';
+import { TeamId } from '../../types/team';
+
+interface PracticeGridDriver {
+  driverId: string;
+  driverName: string;
+  driverCode: string;
+  driverNumber: number;
+  teamId: TeamId;
+  teamName: string;
+}
+
+const DRIVERS_POOL: PracticeGridDriver[] = [
+  { driverId: 'russell', driverName: 'George Russell', driverCode: 'RUS', driverNumber: 63, teamId: 'mercedes', teamName: 'Mercedes-AMG PETRONAS F1' },
+  { driverId: 'antonelli', driverName: 'Andrea Kimi Antonelli', driverCode: 'ANT', driverNumber: 12, teamId: 'mercedes', teamName: 'Mercedes-AMG PETRONAS F1' },
+  { driverId: 'verstappen', driverName: 'Max Verstappen', driverCode: 'VER', driverNumber: 3, teamId: 'redbull', teamName: 'Oracle Red Bull Racing' },
+  { driverId: 'hadjar', driverName: 'Isack Hadjar', driverCode: 'HAD', driverNumber: 6, teamId: 'redbull', teamName: 'Oracle Red Bull Racing' },
+  { driverId: 'leclerc', driverName: 'Charles Leclerc', driverCode: 'LEC', driverNumber: 16, teamId: 'ferrari', teamName: 'Scuderia Ferrari HP' },
+  { driverId: 'hamilton', driverName: 'Lewis Hamilton', driverCode: 'HAM', driverNumber: 44, teamId: 'ferrari', teamName: 'Scuderia Ferrari HP' },
+  { driverId: 'norris', driverName: 'Lando Norris', driverCode: 'NOR', driverNumber: 1, teamId: 'mclaren', teamName: 'McLaren Mastercard F1 Team' },
+  { driverId: 'piastri', driverName: 'Oscar Piastri', driverCode: 'PIA', driverNumber: 81, teamId: 'mclaren', teamName: 'McLaren Mastercard F1 Team' },
+  { driverId: 'sainz', driverName: 'Carlos Sainz', driverCode: 'SAI', driverNumber: 55, teamId: 'williams', teamName: 'Williams Racing' },
+  { driverId: 'albon', driverName: 'Alexander Albon', driverCode: 'ALB', driverNumber: 23, teamId: 'williams', teamName: 'Williams Racing' },
+  { driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', driverNumber: 14, teamId: 'astonmartin', teamName: 'Aston Martin Aramco F1' },
+  { driverId: 'stroll', driverName: 'Lance Stroll', driverCode: 'STR', driverNumber: 18, teamId: 'astonmartin', teamName: 'Aston Martin Aramco F1' },
+  { driverId: 'lawson', driverName: 'Liam Lawson', driverCode: 'LAW', driverNumber: 30, teamId: 'racingbulls', teamName: 'Visa Cash App Racing Bulls' },
+  { driverId: 'lindblad', driverName: 'Arvid Lindblad', driverCode: 'LIN', driverNumber: 41, teamId: 'racingbulls', teamName: 'Visa Cash App Racing Bulls' },
+  { driverId: 'ocon', driverName: 'Esteban Ocon', driverCode: 'OCO', driverNumber: 31, teamId: 'haas', teamName: 'MoneyGram Haas F1 Team' },
+  { driverId: 'bearman', driverName: 'Oliver Bearman', driverCode: 'BEA', driverNumber: 87, teamId: 'haas', teamName: 'MoneyGram Haas F1 Team' },
+  { driverId: 'hulkenberg', driverName: 'Nico Hülkenberg', driverCode: 'HUL', driverNumber: 27, teamId: 'audi', teamName: 'Audi Revolut F1 Team' },
+  { driverId: 'bortoleto', driverName: 'Gabriel Bortoleto', driverCode: 'BOR', driverNumber: 5, teamId: 'audi', teamName: 'Audi Revolut F1 Team' },
+  { driverId: 'gasly', driverName: 'Pierre Gasly', driverCode: 'GAS', driverNumber: 10, teamId: 'alpine', teamName: 'BWT Alpine F1 Team' },
+  { driverId: 'colapinto', driverName: 'Franco Colapinto', driverCode: 'COL', driverNumber: 43, teamId: 'alpine', teamName: 'BWT Alpine F1 Team' },
+  { driverId: 'perez', driverName: 'Sergio Pérez', driverCode: 'PER', driverNumber: 11, teamId: 'cadillac', teamName: 'Cadillac Formula 1 Team' },
+  { driverId: 'bottas', driverName: 'Valtteri Bottas', driverCode: 'BOT', driverNumber: 77, teamId: 'cadillac', teamName: 'Cadillac Formula 1 Team' },
+];
+
+const TRACK_BASE_TIMES: Record<number, number> = {
+  1: 77.400,
+  2: 95.200,
+  3: 89.500,
+  4: 88.400,
+  5: 72.600,
+  6: 71.800,
+  7: 73.200,
+  8: 65.100,
+  9: 87.500,
+  10: 104.200,
+  11: 76.800,
+  12: 70.500,
+  13: 80.100,
+  14: 74.600,
+  15: 102.500,
+};
+
+function formatPracticeLap(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = (sec % 60).toFixed(3);
+  return `${m}:${s.padStart(6, '0')}`;
+}
+
+function generateEntriesForPractice(
+  round: number,
+  sessionKey: 'fp1' | 'fp2' | 'fp3',
+  baseLap: number
+): PracticeSessionEntry[] {
+  const sessionOffset = sessionKey === 'fp1' ? 0 : sessionKey === 'fp2' ? 1 : 2;
+  const sortedDrivers = [...DRIVERS_POOL].sort((a, b) => {
+    const scoreA = (a.driverNumber * 13 + round * 19 + sessionOffset * 7) % 100;
+    const scoreB = (b.driverNumber * 13 + round * 19 + sessionOffset * 7) % 100;
+    return scoreA - scoreB;
+  });
+
+  return sortedDrivers.map((d, idx) => {
+    const pos = idx + 1;
+    const gapSec = pos === 1 ? 0 : 0.08 + (pos - 1) * 0.115 + ((round * 7 + pos * 5) % 35) / 1000;
+    const lapTime = baseLap + gapSec + (sessionKey === 'fp1' ? 0.8 : sessionKey === 'fp2' ? 0.3 : 0);
+
+    return {
+      position: pos,
+      driverId: d.driverId,
+      driverName: d.driverName,
+      driverCode: d.driverCode,
+      driverNumber: d.driverNumber,
+      teamId: d.teamId,
+      teamName: d.teamName,
+      bestLapTime: formatPracticeLap(lapTime),
+      gapToP1: pos === 1 ? 'LEADER' : `+${gapSec.toFixed(3)}s`,
+      lapsCompleted: 20 + ((d.driverNumber + round + sessionOffset) % 9),
+    };
+  });
+}
+
+function buildPracticeResults1To15(): Record<number, GrandPrixPracticeData> {
+  const result: Record<number, GrandPrixPracticeData> = {};
+
+  CALENDAR_2026.forEach((gp) => {
+    if (gp.round < 1 || gp.round > 15) return;
+    const baseLap = TRACK_BASE_TIMES[gp.round] || 85.0;
+
+    const sessionsObj: GrandPrixPracticeData['sessions'] = {};
+
+    const fp1Entries = generateEntriesForPractice(gp.round, 'fp1', baseLap);
+    sessionsObj.fp1 = {
+      sessionKey: 'fp1',
+      sessionName: 'Free Practice 1 (FP1)',
+      dateStr: gp.sessions.fp1.dateStr,
+      status: 'finished',
+      weather: 'Dry / Mild',
+      airTempC: 25,
+      trackTempC: 36,
+      fastestDriver: {
+        driver: fp1Entries[0].driverName,
+        team: fp1Entries[0].teamName,
+        time: fp1Entries[0].bestLapTime,
+      },
+      entries: fp1Entries,
+    };
+
+    if (!gp.hasSprint) {
+      const fp2Entries = generateEntriesForPractice(gp.round, 'fp2', baseLap);
+      sessionsObj.fp2 = {
+        sessionKey: 'fp2',
+        sessionName: 'Free Practice 2 (FP2)',
+        dateStr: gp.sessions.fp2?.dateStr || gp.sessions.fp1.dateStr,
+        status: 'finished',
+        weather: 'Dry / Optimal',
+        airTempC: 27,
+        trackTempC: 39,
+        fastestDriver: {
+          driver: fp2Entries[0].driverName,
+          team: fp2Entries[0].teamName,
+          time: fp2Entries[0].bestLapTime,
+        },
+        entries: fp2Entries,
+      };
+
+      const fp3Entries = generateEntriesForPractice(gp.round, 'fp3', baseLap);
+      sessionsObj.fp3 = {
+        sessionKey: 'fp3',
+        sessionName: 'Free Practice 3 (FP3)',
+        dateStr: gp.sessions.fp3?.dateStr || gp.dates,
+        status: 'finished',
+        weather: 'Sunny / Warm',
+        airTempC: 29,
+        trackTempC: 42,
+        fastestDriver: {
+          driver: fp3Entries[0].driverName,
+          team: fp3Entries[0].teamName,
+          time: fp3Entries[0].bestLapTime,
+        },
+        entries: fp3Entries,
+      };
+    }
+
+    result[gp.round] = {
+      round: gp.round,
+      grandPrix: gp.name,
+      season: gp.season,
+      circuit: gp.circuit,
+      sessions: sessionsObj,
+    };
+  });
+
+  return result;
+}
 
 export const PRACTICE_RESULTS_2026: Record<number, GrandPrixPracticeData> = {
+  ...buildPracticeResults1To15(),
   // Round 16: Sepang International Circuit, Malaysia (Bahrain GP relocating to Sepang in 2026 calendar)
   16: {
     round: 16,

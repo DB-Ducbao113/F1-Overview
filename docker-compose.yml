@@ -1,0 +1,15 @@
+services:
+  f1-overview:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: f1-overview:latest
+    container_name: f1_overview_app
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost/healthz']
+      interval: 30s
+      timeout: 5s
+      retries: 3

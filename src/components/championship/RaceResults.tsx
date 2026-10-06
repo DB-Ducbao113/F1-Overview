@@ -5,6 +5,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { getCompleteRaceClassification } from '../../data/championship/raceClassificationHelper';
 import { RaceClassificationModal } from './RaceClassificationModal';
 import { formatDateStr } from '../../utils/dateUtils';
+import { getTeamTextColor } from '../../utils/teamColors';
 import {
   Trophy,
   Zap,
@@ -25,12 +26,11 @@ interface RaceResultsProps {
 
 export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) => {
   const { lang } = useNavigationStore();
-  const { detailedResults } = useChampionshipStore();
+  const { detailedResults, selectedRaceRound, setSelectedRaceRound } = useChampionshipStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeamFilter, setSelectedTeamFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
-  const [selectedRaceRound, setSelectedRaceRound] = useState<number | null>(null);
 
   const allRaces = useMemo(() => {
     const detailedRaces = detailedResults[season] || [];
@@ -333,10 +333,26 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                       1
                     </span>
                     <div className="min-w-0">
-                      <span className="font-black text-sm text-studio-950 block truncate">
+                      <span
+                        className="font-black text-sm block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p1.team || res.podium.p1.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p1.driver}
                       </span>
-                      <span className="text-[11px] text-studio-600 font-medium block truncate">
+                      <span
+                        className="text-[11px] font-bold block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p1.team || res.podium.p1.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p1.team}
                       </span>
                     </div>
@@ -358,10 +374,26 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                       2
                     </span>
                     <div className="min-w-0">
-                      <span className="font-bold text-xs text-studio-900 block truncate">
+                      <span
+                        className="font-bold text-xs block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p2.driver}
                       </span>
-                      <span className="text-[10px] text-studio-500 block truncate">
+                      <span
+                        className="text-[10px] font-bold block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p2.team}
                       </span>
                     </div>
@@ -383,10 +415,26 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                       3
                     </span>
                     <div className="min-w-0">
-                      <span className="font-bold text-xs text-studio-900 block truncate">
+                      <span
+                        className="font-bold text-xs block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p3.driver}
                       </span>
-                      <span className="text-[10px] text-studio-500 block truncate">
+                      <span
+                        className="text-[10px] font-bold block truncate"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p3.team}
                       </span>
                     </div>
@@ -407,8 +455,18 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                 <div className="pt-2 border-t border-studio-100 flex items-center justify-between text-xs text-studio-600">
                   <span className="flex items-center gap-1.5 font-medium min-w-0 truncate">
                     <Zap className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Fastest Lap:</span>
-                    <strong className="text-studio-900 truncate">{res.fastestLap.driver}</strong>
+                    <span>{lang === 'vi' ? 'Vòng nhanh nhất:' : 'Fastest Lap:'}</span>
+                    <strong
+                      className="truncate font-black"
+                      style={{
+                        color: getTeamTextColor(
+                          res.fastestLap.team || res.fastestLap.driver,
+                          false,
+                        ),
+                      }}
+                    >
+                      {res.fastestLap.driver}
+                    </strong>
                   </span>
                   <span className="font-mono font-bold text-purple-700 shrink-0 ml-2">
                     {res.fastestLap.time}
@@ -468,7 +526,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
 
                     {/* Date */}
                     <td className="py-3.5 px-4 font-mono text-studio-600 text-[11px]">
-                      {res.date}
+                      {formatDateStr(res.date, lang)}
                     </td>
 
                     {/* P1 Winner */}
@@ -478,11 +536,30 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           1
                         </span>
                         <div>
-                          <span className="font-bold text-studio-950 block">
+                          <span
+                            className="font-extrabold block"
+                            style={{
+                              color: getTeamTextColor(
+                                res.podium.p1.team || res.podium.p1.driver,
+                                false,
+                              ),
+                            }}
+                          >
                             {res.podium.p1.driver}
                           </span>
-                          <span className="text-[10px] text-studio-500 font-mono">
-                            {res.podium.p1.team} · {res.podium.p1.time}
+                          <span className="text-[10px] font-mono">
+                            <span
+                              className="font-bold"
+                              style={{
+                                color: getTeamTextColor(
+                                  res.podium.p1.team || res.podium.p1.driver,
+                                  false,
+                                ),
+                              }}
+                            >
+                              {res.podium.p1.team}
+                            </span>
+                            <span className="text-studio-500"> · {res.podium.p1.time}</span>
                           </span>
                         </div>
                       </div>
@@ -490,21 +567,59 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
 
                     {/* P2 */}
                     <td className="py-3.5 px-4">
-                      <span className="font-bold text-studio-800 block">
+                      <span
+                        className="font-extrabold block"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p2.driver}
                       </span>
-                      <span className="text-[10px] text-studio-500 font-mono">
-                        {res.podium.p2.team} ({res.podium.p2.gap})
+                      <span className="text-[10px] font-mono">
+                        <span
+                          className="font-bold"
+                          style={{
+                            color: getTeamTextColor(
+                              res.podium.p2.team || res.podium.p2.driver,
+                              false,
+                            ),
+                          }}
+                        >
+                          {res.podium.p2.team}
+                        </span>
+                        <span className="text-studio-500"> ({res.podium.p2.gap})</span>
                       </span>
                     </td>
 
                     {/* P3 */}
                     <td className="py-3.5 px-4">
-                      <span className="font-bold text-studio-800 block">
+                      <span
+                        className="font-extrabold block"
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
+                      >
                         {res.podium.p3.driver}
                       </span>
-                      <span className="text-[10px] text-studio-500 font-mono">
-                        {res.podium.p3.team} ({res.podium.p3.gap})
+                      <span className="text-[10px] font-mono">
+                        <span
+                          className="font-bold"
+                          style={{
+                            color: getTeamTextColor(
+                              res.podium.p3.team || res.podium.p3.driver,
+                              false,
+                            ),
+                          }}
+                        >
+                          {res.podium.p3.team}
+                        </span>
+                        <span className="text-studio-500"> ({res.podium.p3.gap})</span>
                       </span>
                     </td>
 
@@ -514,7 +629,15 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                         <div className="flex items-center gap-1.5">
                           <Zap className="w-3 h-3 text-purple-600 shrink-0" />
                           <div>
-                            <span className="font-bold text-studio-900 block">
+                            <span
+                              className="font-extrabold block"
+                              style={{
+                                color: getTeamTextColor(
+                                  res.fastestLap.team || res.fastestLap.driver,
+                                  false,
+                                ),
+                              }}
+                            >
                               {res.fastestLap.driver}
                             </span>
                             <span className="font-mono text-[10px] text-purple-700">

@@ -8,6 +8,7 @@ import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear, TeamId } from '../../types';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 export const TeamDetailPage: React.FC = () => {
   const { teamId } = useParams();
@@ -38,6 +39,8 @@ export const TeamDetailPage: React.FC = () => {
   const cars = getCarsBySeason(season).filter((entry) => entry.teamId === team.id);
   const standings = STANDINGS_DATA[season].constructors.find((entry) => entry.teamId === team.id);
   const seasonCar = cars[0];
+  const darkTeamColor = getTeamTextColor(team.id, true);
+  const lightTeamColor = getTeamTextColor(team.id, false);
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
@@ -97,57 +100,108 @@ export const TeamDetailPage: React.FC = () => {
           </section>
         ) : (
           <>
-            <header className="relative overflow-hidden rounded-3xl bg-studio-950 p-7 sm:p-12 text-white">
+            <header className="relative overflow-hidden rounded-3xl bg-studio-950 p-6 sm:p-10 text-white shadow-2xl border border-studio-800">
               <div
-                className="absolute inset-y-0 left-0 w-2"
-                style={{ backgroundColor: team.primaryColor }}
+                className="absolute inset-y-0 left-0 w-2.5 rounded-l-3xl"
+                style={{ backgroundColor: darkTeamColor }}
               />
               <div
-                className="absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-20 blur-3xl"
-                style={{ backgroundColor: team.primaryColor }}
+                className="absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-25 blur-3xl pointer-events-none"
+                style={{ backgroundColor: darkTeamColor }}
               />
-              <div className="relative max-w-3xl space-y-4">
-                <div className="flex items-center gap-3">
-                  <ConstructorLogo teamId={team.id} size="md" />
-                  <span
-                    className="text-xs font-black uppercase tracking-[0.25em]"
-                    style={{ color: team.primaryColor }}
-                  >
-                    {team.name} · {season}
-                  </span>
-                </div>
-                <h1 className="font-display text-4xl sm:text-6xl font-black uppercase tracking-tight">
-                  {seasonProfile.fullName}
-                </h1>
-                <p className="max-w-2xl text-sm sm:text-base text-studio-300">
-                  {lang === 'vi'
-                    ? `Đội hình, thứ hạng và xe đua theo dữ liệu mùa giải ${season}.`
-                    : `Driver line-up, standings, and car data for the ${season} season.`}
-                </p>
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {standings ? (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold">
-                      <Trophy className="w-4 h-4 text-amber-400" />P{standings.rank} ·{' '}
-                      {standings.points} PTS
-                    </div>
-                  ) : (
-                    <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-studio-300">
-                      {lang === 'vi'
-                        ? 'Không có thứ hạng đội trong dữ liệu mùa này'
-                        : 'No constructor standings for this season'}
-                    </span>
-                  )}
+              <div
+                className="absolute -left-20 -bottom-24 h-80 w-80 rounded-full opacity-10 blur-3xl pointer-events-none"
+                style={{ backgroundColor: darkTeamColor }}
+              />
 
-                  <Link
-                    to={`/showroom?team=${team.id}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-f1red hover:bg-red-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105"
-                  >
-                    <Box className="w-4 h-4" />
-                    <span>
-                      {lang === 'vi' ? 'Xem Xe Trong Showroom 3D' : 'View in 3D Showroom'}
+              <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                {/* Left Content */}
+                <div className="max-w-2xl space-y-4">
+                  <div className="flex items-center gap-3">
+                    <ConstructorLogo teamId={team.id} size="md" />
+                    <span
+                      className="text-xs font-black uppercase tracking-[0.25em]"
+                      style={{ color: darkTeamColor }}
+                    >
+                      {team.name} · {season}
                     </span>
-                  </Link>
+                  </div>
+                  <h1 className="font-display text-4xl sm:text-6xl font-black uppercase tracking-tight">
+                    {seasonProfile.fullName}
+                  </h1>
+                  <p className="max-w-2xl text-sm sm:text-base text-studio-300">
+                    {lang === 'vi'
+                      ? `Đội hình, thứ hạng và xe đua theo dữ liệu mùa giải ${season}.`
+                      : `Driver line-up, standings, and car data for the ${season} season.`}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    {standings ? (
+                      <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold">
+                        <Trophy className="w-4 h-4 text-amber-400" />P{standings.rank} ·{' '}
+                        {standings.points} PTS
+                      </div>
+                    ) : (
+                      <span className="inline-flex rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-studio-300">
+                        {lang === 'vi'
+                          ? 'Không có thứ hạng đội trong dữ liệu mùa này'
+                          : 'No constructor standings for this season'}
+                      </span>
+                    )}
+
+                    <Link
+                      to={`/showroom?team=${team.id}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-f1red hover:bg-red-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105"
+                    >
+                      <Box className="w-4 h-4" />
+                      <span>
+                        {lang === 'vi' ? 'Xem Xe Trong Showroom 3D' : 'View in 3D Showroom'}
+                      </span>
+                    </Link>
+                  </div>
                 </div>
+
+                {/* Right Team Machine Poster Showcase */}
+                {team.imageUrl && (
+                  <div className="relative shrink-0 self-center lg:self-auto w-full max-w-sm sm:max-w-md lg:w-96">
+                    <div
+                      className="group relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-white/10 via-studio-900 to-studio-950 shadow-2xl transition hover:-translate-y-1"
+                      style={{
+                        boxShadow: `0 20px 40px -15px ${darkTeamColor}30`,
+                      }}
+                    >
+                      <div className="relative aspect-[16/10] overflow-hidden bg-black/60">
+                        <img
+                          src={team.imageUrl}
+                          alt={seasonProfile.fullName}
+                          className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-studio-950/20 to-transparent" />
+
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[11px] font-black uppercase text-white border border-white/10">
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: darkTeamColor }}
+                          />
+                          <span>{seasonCar?.shortName || team.name}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-1.5 border-t border-white/10">
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-studio-400">
+                            F1 {season} Challenger
+                          </p>
+                          <span className="text-[10px] font-mono text-studio-400">
+                            {seasonProfile.powerUnit}
+                          </span>
+                        </div>
+                        <h4 className="font-display text-sm font-black text-white truncate">
+                          {seasonCar?.name || seasonProfile.fullName}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </header>
 
@@ -205,11 +259,12 @@ export const TeamDetailPage: React.FC = () => {
                   <Link
                     key={driver.driverId}
                     to={`/drivers/${driver.driverId}?season=${season}`}
-                    className="group flex items-center gap-4 rounded-2xl border border-studio-200 bg-white p-5 shadow-subtle transition hover:-translate-y-0.5 hover:border-studio-400 hover:shadow-md"
+                    className="group flex items-center gap-4 rounded-2xl border bg-white p-5 shadow-subtle transition hover:-translate-y-0.5 hover:shadow-md"
+                    style={{ borderColor: `${lightTeamColor}40` }}
                   >
                     <span
                       className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl text-2xl font-black text-white"
-                      style={{ backgroundColor: team.primaryColor }}
+                      style={{ backgroundColor: lightTeamColor }}
                     >
                       P{driver.rank}
                     </span>

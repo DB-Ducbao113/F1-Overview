@@ -7,6 +7,7 @@ import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear, TeamId } from '../../types';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getTeamTextColor } from '../../utils/teamColors';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -56,10 +57,13 @@ export const DriverDetailPage: React.FC = () => {
     highlightColor: '#18181b',
     drivers: [],
   };
+  const teamColor = getTeamTextColor(teamId, true);
   const name = driver?.name ?? entry?.driverName ?? 'Driver';
   const code = driver?.code ?? entry?.driverCode ?? 'DRV';
   const flag = driver?.flagEmoji ?? entry?.countryFlag ?? '';
   const country = driver?.country ?? '';
+  const resolvedImageUrl =
+    driver?.imageUrl || (driverId ? `/images/drivers/${driverId}.svg` : undefined);
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
@@ -112,17 +116,17 @@ export const DriverDetailPage: React.FC = () => {
           {/* Team Primary Color Left Accent Bar */}
           <div
             className="absolute inset-y-0 left-0 w-2.5 rounded-l-3xl"
-            style={{ backgroundColor: team.primaryColor }}
+            style={{ backgroundColor: teamColor }}
           />
 
           {/* Ambient Glows from Team Color */}
           <div
             className="absolute -right-16 -top-20 h-72 w-72 rounded-full opacity-25 blur-3xl pointer-events-none"
-            style={{ backgroundColor: team.primaryColor }}
+            style={{ backgroundColor: teamColor }}
           />
           <div
             className="absolute -left-16 -bottom-20 h-72 w-72 rounded-full opacity-10 blur-3xl pointer-events-none"
-            style={{ backgroundColor: team.primaryColor }}
+            style={{ backgroundColor: teamColor }}
           />
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">
@@ -132,7 +136,7 @@ export const DriverDetailPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className="text-xs font-black uppercase tracking-[0.25em]"
-                  style={{ color: team.primaryColor }}
+                  style={{ color: teamColor }}
                 >
                   {season} · {code} · {flag}
                   {country ? ` ${country}` : ''}
@@ -140,7 +144,7 @@ export const DriverDetailPage: React.FC = () => {
                 {driver && (
                   <span
                     className="px-2 py-0.5 rounded-md text-[11px] font-black font-mono uppercase text-white shadow-xs"
-                    style={{ backgroundColor: team.primaryColor }}
+                    style={{ backgroundColor: teamColor }}
                   >
                     #{driver.number}
                   </span>
@@ -198,22 +202,31 @@ export const DriverDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Driver Racing Card / Number Poster */}
-            <div className="relative shrink-0 self-center md:self-auto">
+            {/* Right Driver 16:9 Celebration Poster */}
+            <div className="relative shrink-0 self-center md:self-auto w-full sm:w-[360px] md:w-[420px] lg:w-[460px]">
               <div
-                className="relative w-36 sm:w-44 md:w-48 aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-gradient-to-b from-white/10 via-studio-900 to-studio-950 flex flex-col items-center justify-between p-6 text-center group"
+                className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/20 shadow-2xl shadow-black/80 bg-studio-950 flex flex-col items-center justify-center text-center group transition-all duration-300 hover:border-white/40"
                 style={{
-                  boxShadow: `0 20px 40px -15px ${team.primaryColor}30`,
+                  boxShadow: `0 20px 45px -10px ${teamColor}40`,
                 }}
               >
-                {driver?.imageUrl ? (
+                {resolvedImageUrl ? (
                   <>
                     <img
-                      src={driver.imageUrl}
+                      src={resolvedImageUrl}
                       alt={name}
-                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.endsWith('.svg') && driverId) {
+                          target.src = `/images/drivers/${driverId}.svg`;
+                        }
+                      }}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-mono font-bold tracking-wider text-white uppercase opacity-75 group-hover:opacity-100 transition-opacity">
+                      16:9 POSTER
+                    </div>
                   </>
                 ) : (
                   <>
@@ -226,7 +239,7 @@ export const DriverDetailPage: React.FC = () => {
                     <div className="my-auto space-y-1">
                       <span
                         className="block font-display text-5xl sm:text-6xl font-black tracking-tight"
-                        style={{ color: team.primaryColor }}
+                        style={{ color: teamColor }}
                       >
                         #{driver?.number ?? entry?.rank}
                       </span>
