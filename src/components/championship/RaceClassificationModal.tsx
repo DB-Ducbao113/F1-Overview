@@ -107,7 +107,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               <span className="text-studio-400">{isVi ? 'Vòng nhanh nhất:' : 'Fastest Lap:'}</span>
               <span
                 className="font-bold"
-                style={{ color: getTeamTextColor(race.fastestLap.team || race.fastestLap.driver, true) }}
+                style={{
+                  color: getTeamTextColor(race.fastestLap.team || race.fastestLap.driver, true),
+                }}
               >
                 {race.fastestLap.driver}
               </span>
@@ -175,8 +177,12 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
 
                       {/* Driver Name */}
                       <td className="py-3 px-4 font-bold flex items-center gap-2">
-                        {entry.position === 1 && <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                        <span style={{ color: getTeamTextColor(entry.teamId || entry.teamName, true) }}>
+                        {entry.position === 1 && (
+                          <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        )}
+                        <span
+                          style={{ color: getTeamTextColor(entry.teamId || entry.teamName, true) }}
+                        >
                           {entry.driverName}
                         </span>
                       </td>

@@ -140,7 +140,12 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                 </span>
                 <span
                   className="font-bold"
-                  style={{ color: getTeamTextColor(currentSession.fastestDriver.team || currentSession.fastestDriver.driver, true) }}
+                  style={{
+                    color: getTeamTextColor(
+                      currentSession.fastestDriver.team || currentSession.fastestDriver.driver,
+                      true,
+                    ),
+                  }}
                 >
                   {currentSession.fastestDriver.driver}
                 </span>
@@ -227,7 +232,11 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                           <span className="font-mono text-xs text-studio-400 w-8">
                             {entry.driverCode}
                           </span>
-                          <span style={{ color: getTeamTextColor(entry.teamId || entry.teamName, true) }}>
+                          <span
+                            style={{
+                              color: getTeamTextColor(entry.teamId || entry.teamName, true),
+                            }}
+                          >
                             {entry.driverName}
                           </span>
                         </td>

@@ -250,10 +250,7 @@ export const HomeView: React.FC = () => {
                         {driver.rank}
                       </span>
                       <div>
-                        <span
-                          className="font-bold text-sm block"
-                          style={{ color: driverColor }}
-                        >
+                        <span className="font-bold text-sm block" style={{ color: driverColor }}>
                           {driver.driverName} {driver.countryFlag}
                         </span>
                         <span className="text-xs text-studio-500">{driver.teamName}</span>
@@ -310,10 +307,7 @@ export const HomeView: React.FC = () => {
                       <div>
                         <div className="flex items-center gap-2">
                           <ConstructorLogo teamId={c.teamId} size="sm" />
-                          <span
-                            className="font-bold text-sm block"
-                            style={{ color: teamColor }}
-                          >
+                          <span className="font-bold text-sm block" style={{ color: teamColor }}>
                             {c.teamName}
                           </span>
                         </div>
@@ -321,27 +315,27 @@ export const HomeView: React.FC = () => {
                       </div>
                     </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <span className="font-display font-black text-base text-f1red block">
-                        {c.points} PTS
-                      </span>
-                      <span className="text-[10px] text-studio-400">
-                        {c.wins} wins · {c.podiums} podiums
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <span className="font-display font-black text-base text-f1red block">
+                          {c.points} PTS
+                        </span>
+                        <span className="text-[10px] text-studio-400">
+                          {c.wins} wins · {c.podiums} podiums
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/showroom?team=${c.teamId}`)}
+                        className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
+                        title={lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'}
+                      >
+                        <Box className="w-3.5 h-3.5 text-f1red" />
+                        <span className="hidden sm:inline">3D</span>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => navigate(`/showroom?team=${c.teamId}`)}
-                      className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
-                      title={lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'}
-                    >
-                      <Box className="w-3.5 h-3.5 text-f1red" />
-                      <span className="hidden sm:inline">3D</span>
-                    </button>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
             </div>
           </div>
         </div>

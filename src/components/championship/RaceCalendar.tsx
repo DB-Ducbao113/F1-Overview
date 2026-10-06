@@ -23,12 +23,8 @@ import { SeasonYear } from '../../types';
 export const RaceCalendar: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const {
-    detailedResults,
-    setActiveSubTab,
-    setSelectedSeason,
-    setSelectedRaceRound,
-  } = useChampionshipStore();
+  const { detailedResults, setActiveSubTab, setSelectedSeason, setSelectedRaceRound } =
+    useChampionshipStore();
   const seasonResults = detailedResults[2026] || [];
   const completedRounds = new Set([
     ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
@@ -231,7 +227,8 @@ export const RaceCalendar: React.FC = React.memo(() => {
                       const qualifyingDataForRound = QUALIFYING_RESULTS_2026[gp.round];
 
                       const isPracticeSession = key === 'fp1' || key === 'fp2' || key === 'fp3';
-                      const isQualifyingSession = key === 'qualifying' || key === 'sprintQualifying';
+                      const isQualifyingSession =
+                        key === 'qualifying' || key === 'sprintQualifying';
                       const isSprintSession = key === 'sprint';
                       const isRaceSession = key === 'race';
 
@@ -249,12 +246,14 @@ export const RaceCalendar: React.FC = React.memo(() => {
                         practiceSession && (practiceSession.status === 'finished' || isCompleted),
                       );
                       const isFinishedQualifying = Boolean(
-                        qualifyingSession && (qualifyingSession.status === 'finished' || isCompleted),
+                        qualifyingSession &&
+                        (qualifyingSession.status === 'finished' || isCompleted),
                       );
                       const isFinishedSprint = Boolean(
                         sprintSession && (sprintSession.status === 'finished' || isCompleted),
                       );
-                      const isFinishedRace = isRaceSession && (isCompleted || session.status === 'finished');
+                      const isFinishedRace =
+                        isRaceSession && (isCompleted || session.status === 'finished');
 
                       const isFinished =
                         isFinishedPractice ||
@@ -294,7 +293,10 @@ export const RaceCalendar: React.FC = React.memo(() => {
                       };
 
                       const isClickable =
-                        isFinishedPractice || isFinishedQualifying || isFinishedSprint || isFinishedRace;
+                        isFinishedPractice ||
+                        isFinishedQualifying ||
+                        isFinishedSprint ||
+                        isFinishedRace;
 
                       const cardThemeClass = isFinishedPractice
                         ? 'bg-sky-50/80 border-sky-200 hover:border-sky-400 hover:bg-sky-100/60 cursor-pointer group'

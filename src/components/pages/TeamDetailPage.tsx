@@ -176,9 +176,12 @@ export const TeamDetailPage: React.FC = () => {
                           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-studio-950/20 to-transparent" />
-                        
+
                         <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[11px] font-black uppercase text-white border border-white/10">
-                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: darkTeamColor }} />
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: darkTeamColor }}
+                          />
                           <span>{seasonCar?.shortName || team.name}</span>
                         </div>
                       </div>

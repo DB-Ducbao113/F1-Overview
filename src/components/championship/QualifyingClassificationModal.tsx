@@ -19,9 +19,9 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
 
-  const [activeSessionKey, setActiveSessionKey] = useState<'qualifying' | 'sprintQualifying' | 'sprint'>(
-    initialSessionKey,
-  );
+  const [activeSessionKey, setActiveSessionKey] = useState<
+    'qualifying' | 'sprintQualifying' | 'sprint'
+  >(initialSessionKey);
   const [prevInitialKey, setPrevInitialKey] = useState(initialSessionKey);
 
   if (initialSessionKey !== prevInitialKey) {
@@ -69,7 +69,8 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-purple-400 bg-purple-500/15 px-2.5 py-0.5 rounded-full border border-purple-500/30">
-                {isVi ? `Chặng ${qualifyingData.round}` : `Round ${qualifyingData.round}`} · {qualifyingData.season}
+                {isVi ? `Chặng ${qualifyingData.round}` : `Round ${qualifyingData.round}`} ·{' '}
+                {qualifyingData.season}
               </span>
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                 {isSprintRace ? (
@@ -143,7 +144,11 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                       : 'bg-white/5 text-studio-300 border-white/10 hover:bg-white/10 hover:text-white'
                   }`}
                 >
-                  {key === 'sprint' ? <Zap className="w-3.5 h-3.5" /> : <Award className="w-3.5 h-3.5" />}
+                  {key === 'sprint' ? (
+                    <Zap className="w-3.5 h-3.5" />
+                  ) : (
+                    <Award className="w-3.5 h-3.5" />
+                  )}
                   <span>{label}</span>
                 </button>
               );
@@ -156,7 +161,11 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
           <div className="bg-black/40 border-b border-white/10 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2.5">
               <span className="p-1 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40">
-                {isSprintRace ? <Trophy className="w-4 h-4 text-amber-400" /> : <Award className="w-4 h-4 text-purple-300" />}
+                {isSprintRace ? (
+                  <Trophy className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Award className="w-4 h-4 text-purple-300" />
+                )}
               </span>
               <span className="text-studio-300">
                 {isSprintRace
@@ -169,7 +178,12 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
               </span>
               <span
                 className="font-extrabold text-sm"
-                style={{ color: getTeamTextColor(currentSession.poleDriver.team || currentSession.poleDriver.driver, true) }}
+                style={{
+                  color: getTeamTextColor(
+                    currentSession.poleDriver.team || currentSession.poleDriver.driver,
+                    true,
+                  ),
+                }}
               >
                 {currentSession.poleDriver.driver}
               </span>
@@ -203,16 +217,28 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                     <th className="py-3 px-4">{isVi ? 'Đội Đua' : 'Constructor'}</th>
                     {!isSprintRace && (
                       <>
-                        <th className="py-3 px-3 text-right font-mono">{activeSessionKey === 'sprintQualifying' ? 'SQ1' : 'Q1'}</th>
-                        <th className="py-3 px-3 text-right font-mono">{activeSessionKey === 'sprintQualifying' ? 'SQ2' : 'Q2'}</th>
-                        <th className="py-3 px-3 text-right font-mono">{activeSessionKey === 'sprintQualifying' ? 'SQ3' : 'Q3'}</th>
+                        <th className="py-3 px-3 text-right font-mono">
+                          {activeSessionKey === 'sprintQualifying' ? 'SQ1' : 'Q1'}
+                        </th>
+                        <th className="py-3 px-3 text-right font-mono">
+                          {activeSessionKey === 'sprintQualifying' ? 'SQ2' : 'Q2'}
+                        </th>
+                        <th className="py-3 px-3 text-right font-mono">
+                          {activeSessionKey === 'sprintQualifying' ? 'SQ3' : 'Q3'}
+                        </th>
                       </>
                     )}
                     <th className="py-3 px-4 text-right">
-                      {isSprintRace ? (isVi ? 'Thời gian / Khoảng cách' : 'Time / Gap') : (isVi ? 'Vòng tốt nhất' : 'Best Lap')}
+                      {isSprintRace
+                        ? isVi
+                          ? 'Thời gian / Khoảng cách'
+                          : 'Time / Gap'
+                        : isVi
+                          ? 'Vòng tốt nhất'
+                          : 'Best Lap'}
                     </th>
                     <th className="py-3 px-4 text-right">
-                      {isSprintRace ? (isVi ? 'Điểm' : 'Pts') : (isVi ? 'Cách Pole' : 'Gap')}
+                      {isSprintRace ? (isVi ? 'Điểm' : 'Pts') : isVi ? 'Cách Pole' : 'Gap'}
                     </th>
                     <th className="py-3 px-3 text-center w-16">{isVi ? 'Vòng' : 'Laps'}</th>
                   </tr>
@@ -231,11 +257,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                       <React.Fragment key={entry.driverId}>
                         <tr
                           className={`hover:bg-white/[0.04] transition-colors ${
-                            isP1
-                              ? 'bg-purple-500/10'
-                              : isP2 || isP3
-                                ? 'bg-white/[0.02]'
-                                : ''
+                            isP1 ? 'bg-purple-500/10' : isP2 || isP3 ? 'bg-white/[0.02]' : ''
                           }`}
                         >
                           {/* Position Badge */}
@@ -263,9 +285,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                           {/* Driver Name & Code */}
                           <td className="py-2.5 px-4 font-bold">
                             <div className="flex items-center gap-2">
-                              <span style={{ color: teamColor }}>
-                                {entry.driverName}
-                              </span>
+                              <span style={{ color: teamColor }}>{entry.driverName}</span>
                               <span className="text-[10px] font-mono text-studio-400 px-1 py-0.2 rounded bg-white/5 border border-white/10">
                                 {entry.driverCode}
                               </span>
@@ -340,15 +360,25 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                         {/* Cutoff rows */}
                         {isQ3Elim && (
                           <tr>
-                            <td colSpan={10} className="py-1 px-4 bg-purple-950/40 text-[10px] text-purple-300 font-bold tracking-wider text-center border-y border-purple-500/20">
-                              {isVi ? '--- Vòng Q3: Top 10 Giành Pole ---' : '--- Q3 Cutoff: Top 10 Shootout ---'}
+                            <td
+                              colSpan={10}
+                              className="py-1 px-4 bg-purple-950/40 text-[10px] text-purple-300 font-bold tracking-wider text-center border-y border-purple-500/20"
+                            >
+                              {isVi
+                                ? '--- Vòng Q3: Top 10 Giành Pole ---'
+                                : '--- Q3 Cutoff: Top 10 Shootout ---'}
                             </td>
                           </tr>
                         )}
                         {isQ2Elim && (
                           <tr>
-                            <td colSpan={10} className="py-1 px-4 bg-studio-900/40 text-[10px] text-studio-400 font-bold tracking-wider text-center border-y border-white/10">
-                              {isVi ? '--- Bị loại sau Q2 (Hạng 11 - 16) ---' : '--- Eliminated in Q2 (P11 - P16) ---'}
+                            <td
+                              colSpan={10}
+                              className="py-1 px-4 bg-studio-900/40 text-[10px] text-studio-400 font-bold tracking-wider text-center border-y border-white/10"
+                            >
+                              {isVi
+                                ? '--- Bị loại sau Q2 (Hạng 11 - 16) ---'
+                                : '--- Eliminated in Q2 (P11 - P16) ---'}
                             </td>
                           </tr>
                         )}
@@ -360,7 +390,9 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
             </div>
           ) : (
             <div className="text-center py-12 text-studio-400 font-medium">
-              {isVi ? 'Chưa có dữ liệu phân hạng cho chặng này.' : 'No qualifying data available for this round.'}
+              {isVi
+                ? 'Chưa có dữ liệu phân hạng cho chặng này.'
+                : 'No qualifying data available for this round.'}
             </div>
           )}
         </div>

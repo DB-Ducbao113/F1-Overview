@@ -144,79 +144,84 @@ export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                           <div className="absolute bottom-2 left-4 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-xs px-2.5 py-0.5 text-[10px] font-black uppercase text-white border border-white/10">
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: teamColor }} />
-                            <span>{team.name} · {season}</span>
+                            <span
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: teamColor }}
+                            />
+                            <span>
+                              {team.name} · {season}
+                            </span>
                           </div>
                         </div>
                       )}
 
                       <div className="space-y-5 p-5 sm:p-6">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <ConstructorLogo teamId={team.id} size="md" />
-                          <div className="min-w-0">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                              {team.name}
-                            </p>
-                            <h2 className="mt-0.5 font-display text-lg sm:text-xl font-black uppercase text-studio-950 truncate">
-                              {profile.fullName}
-                            </h2>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <ConstructorLogo teamId={team.id} size="md" />
+                            <div className="min-w-0">
+                              <p className="text-[10px] font-black uppercase tracking-widest text-studio-400">
+                                {team.name}
+                              </p>
+                              <h2 className="mt-0.5 font-display text-lg sm:text-xl font-black uppercase text-studio-950 truncate">
+                                {profile.fullName}
+                              </h2>
+                            </div>
                           </div>
+                          {result && (
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-studio-100 px-2.5 py-1 text-[11px] font-black text-studio-700">
+                              <Trophy className="h-3 w-3 text-amber-500" />P{result.rank}
+                            </span>
+                          )}
+                        </div>
+                        <div className="space-y-2 text-xs text-studio-600">
+                          <p className="flex items-start gap-2">
+                            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-f1red" />
+                            {profile.base}
+                          </p>
+                          <p className="pl-5 text-[11px] text-studio-500">
+                            {profile.teamLeadTitle}: {profile.teamLead} · {profile.powerUnit}
+                          </p>
+                          <p className="flex items-start gap-2">
+                            <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-f1red" />
+                            {roster.length
+                              ? roster.map((driver) => driver.driverName).join(' · ')
+                              : lang === 'vi'
+                                ? 'Chưa có roster trong dữ liệu mùa này'
+                                : 'No season roster in the available data'}
+                          </p>
                         </div>
                         {result && (
-                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-studio-100 px-2.5 py-1 text-[11px] font-black text-studio-700">
-                            <Trophy className="h-3 w-3 text-amber-500" />P{result.rank}
-                          </span>
+                          <p className="border-t border-studio-100 pt-3 text-xs font-bold text-studio-500">
+                            {result.points} PTS <span className="mx-1 text-studio-300">·</span>{' '}
+                            {result.wins} {lang === 'vi' ? 'chiến thắng' : 'wins'}{' '}
+                            <span className="mx-1 text-studio-300">·</span> {season}
+                          </p>
                         )}
-                      </div>
-                      <div className="space-y-2 text-xs text-studio-600">
-                        <p className="flex items-start gap-2">
-                          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-f1red" />
-                          {profile.base}
-                        </p>
-                        <p className="pl-5 text-[11px] text-studio-500">
-                          {profile.teamLeadTitle}: {profile.teamLead} · {profile.powerUnit}
-                        </p>
-                        <p className="flex items-start gap-2">
-                          <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-f1red" />
-                          {roster.length
-                            ? roster.map((driver) => driver.driverName).join(' · ')
-                            : lang === 'vi'
-                              ? 'Chưa có roster trong dữ liệu mùa này'
-                              : 'No season roster in the available data'}
-                        </p>
-                      </div>
-                      {result && (
-                        <p className="border-t border-studio-100 pt-3 text-xs font-bold text-studio-500">
-                          {result.points} PTS <span className="mx-1 text-studio-300">·</span>{' '}
-                          {result.wins} {lang === 'vi' ? 'chiến thắng' : 'wins'}{' '}
-                          <span className="mx-1 text-studio-300">·</span> {season}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between pt-3 border-t border-studio-100">
-                        <Link
-                          to={`/teams/${team.id}?season=${season}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-studio-700 hover:text-f1red transition-colors"
-                        >
-                          <span>{lang === 'vi' ? 'Hồ sơ đội' : 'Team profile'}</span>
-                          <ArrowRight className="h-3.5 w-3.5 text-f1red" />
-                        </Link>
-                        <Link
-                          to={`/showroom?team=${team.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-950 hover:bg-f1red text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-sm hover:scale-105 active:scale-95"
-                          title={
-                            lang === 'vi'
-                              ? 'Xem cỗ máy F1 trong Showroom 3D'
-                              : 'Inspect 3D machine in Showroom'
-                          }
-                        >
-                          <Box className="w-3.5 h-3.5 text-f1red" />
-                          <span>{lang === 'vi' ? 'Xem Xe 3D' : '3D Showroom'}</span>
-                        </Link>
+                        <div className="flex items-center justify-between pt-3 border-t border-studio-100">
+                          <Link
+                            to={`/teams/${team.id}?season=${season}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-studio-700 hover:text-f1red transition-colors"
+                          >
+                            <span>{lang === 'vi' ? 'Hồ sơ đội' : 'Team profile'}</span>
+                            <ArrowRight className="h-3.5 w-3.5 text-f1red" />
+                          </Link>
+                          <Link
+                            to={`/showroom?team=${team.id}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-950 hover:bg-f1red text-white text-[11px] font-bold uppercase tracking-wider transition-all shadow-sm hover:scale-105 active:scale-95"
+                            title={
+                              lang === 'vi'
+                                ? 'Xem cỗ máy F1 trong Showroom 3D'
+                                : 'Inspect 3D machine in Showroom'
+                            }
+                          >
+                            <Box className="w-3.5 h-3.5 text-f1red" />
+                            <span>{lang === 'vi' ? 'Xem Xe 3D' : '3D Showroom'}</span>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
                 );
               })}
             </div>

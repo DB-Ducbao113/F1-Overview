@@ -335,13 +335,23 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <div className="min-w-0">
                       <span
                         className="font-black text-sm block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p1.team || res.podium.p1.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p1.team || res.podium.p1.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p1.driver}
                       </span>
                       <span
                         className="text-[11px] font-bold block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p1.team || res.podium.p1.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p1.team || res.podium.p1.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p1.team}
                       </span>
@@ -366,13 +376,23 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <div className="min-w-0">
                       <span
                         className="font-bold text-xs block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p2.team || res.podium.p2.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p2.driver}
                       </span>
                       <span
                         className="text-[10px] font-bold block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p2.team || res.podium.p2.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p2.team}
                       </span>
@@ -397,13 +417,23 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <div className="min-w-0">
                       <span
                         className="font-bold text-xs block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p3.team || res.podium.p3.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p3.driver}
                       </span>
                       <span
                         className="text-[10px] font-bold block truncate"
-                        style={{ color: getTeamTextColor(res.podium.p3.team || res.podium.p3.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p3.team}
                       </span>
@@ -428,7 +458,12 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <span>{lang === 'vi' ? 'Vòng nhanh nhất:' : 'Fastest Lap:'}</span>
                     <strong
                       className="truncate font-black"
-                      style={{ color: getTeamTextColor(res.fastestLap.team || res.fastestLap.driver, false) }}
+                      style={{
+                        color: getTeamTextColor(
+                          res.fastestLap.team || res.fastestLap.driver,
+                          false,
+                        ),
+                      }}
                     >
                       {res.fastestLap.driver}
                     </strong>
@@ -503,14 +538,24 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                         <div>
                           <span
                             className="font-extrabold block"
-                            style={{ color: getTeamTextColor(res.podium.p1.team || res.podium.p1.driver, false) }}
+                            style={{
+                              color: getTeamTextColor(
+                                res.podium.p1.team || res.podium.p1.driver,
+                                false,
+                              ),
+                            }}
                           >
                             {res.podium.p1.driver}
                           </span>
                           <span className="text-[10px] font-mono">
                             <span
                               className="font-bold"
-                              style={{ color: getTeamTextColor(res.podium.p1.team || res.podium.p1.driver, false) }}
+                              style={{
+                                color: getTeamTextColor(
+                                  res.podium.p1.team || res.podium.p1.driver,
+                                  false,
+                                ),
+                              }}
                             >
                               {res.podium.p1.team}
                             </span>
@@ -524,14 +569,24 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <td className="py-3.5 px-4">
                       <span
                         className="font-extrabold block"
-                        style={{ color: getTeamTextColor(res.podium.p2.team || res.podium.p2.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p2.team || res.podium.p2.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p2.driver}
                       </span>
                       <span className="text-[10px] font-mono">
                         <span
                           className="font-bold"
-                          style={{ color: getTeamTextColor(res.podium.p2.team || res.podium.p2.driver, false) }}
+                          style={{
+                            color: getTeamTextColor(
+                              res.podium.p2.team || res.podium.p2.driver,
+                              false,
+                            ),
+                          }}
                         >
                           {res.podium.p2.team}
                         </span>
@@ -543,14 +598,24 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     <td className="py-3.5 px-4">
                       <span
                         className="font-extrabold block"
-                        style={{ color: getTeamTextColor(res.podium.p3.team || res.podium.p3.driver, false) }}
+                        style={{
+                          color: getTeamTextColor(
+                            res.podium.p3.team || res.podium.p3.driver,
+                            false,
+                          ),
+                        }}
                       >
                         {res.podium.p3.driver}
                       </span>
                       <span className="text-[10px] font-mono">
                         <span
                           className="font-bold"
-                          style={{ color: getTeamTextColor(res.podium.p3.team || res.podium.p3.driver, false) }}
+                          style={{
+                            color: getTeamTextColor(
+                              res.podium.p3.team || res.podium.p3.driver,
+                              false,
+                            ),
+                          }}
                         >
                           {res.podium.p3.team}
                         </span>
@@ -566,7 +631,12 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           <div>
                             <span
                               className="font-extrabold block"
-                              style={{ color: getTeamTextColor(res.fastestLap.team || res.fastestLap.driver, false) }}
+                              style={{
+                                color: getTeamTextColor(
+                                  res.fastestLap.team || res.fastestLap.driver,
+                                  false,
+                                ),
+                              }}
                             >
                               {res.fastestLap.driver}
                             </span>
