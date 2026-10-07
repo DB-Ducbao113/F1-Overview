@@ -1288,12 +1288,243 @@ export function generateNoseTexture(
 }
 
 /**
+ * 2.1 SIDEPOD COOLING LOUVRES & VENTILATION GILLS ("Phần rãnh rãnh")
+ * Accurately covers the sidepod upper decks and cooling extraction louvre vents across Primitive 1 (Default_OBJ.004).
+ * Delivers signature constructor paint, aerodynamic speed gradients, team accent stripes,
+ * and engineered slat extraction slots with realistic shadow depth for all 11 Formula 1 teams.
+ */
+export function drawCoolingLouvres(
+  ctx: CanvasRenderingContext2D,
+  teamId: TeamId,
+  livery: Team3DLivery,
+) {
+  interface LouvreConfig {
+    baseColor: string;
+    deckGradStart: string;
+    deckGradEnd: string;
+    accentColor: string;
+    accentSecondary: string;
+    slatShadow: string;
+  }
+
+  const configs: Record<TeamId, LouvreConfig> = {
+    mercedes: {
+      baseColor: '#0a0b0d', // Obsidian Black
+      deckGradStart: '#1b1e24',
+      deckGradEnd: '#090a0d',
+      accentColor: '#00a19c', // Petronas Emerald Turquoise
+      accentSecondary: '#00f5d4', // Electric Glowing Mint Cyan
+      slatShadow: 'rgba(0, 0, 0, 0.55)',
+    },
+    ferrari: {
+      baseColor: '#e8002d', // Scuderia Rosso Corsa
+      deckGradStart: '#ff1a3d',
+      deckGradEnd: '#cc0026',
+      accentColor: '#ffdf00', // Modena Racing Yellow
+      accentSecondary: '#ffffff', // Italian Racing White
+      slatShadow: 'rgba(60, 0, 10, 0.55)',
+    },
+    redbull: {
+      baseColor: '#030a1c', // Matte Deep Navy Blue
+      deckGradStart: '#081438',
+      deckGradEnd: '#020612',
+      accentColor: '#ffce00', // Red Bull Racing Sunburst Yellow
+      accentSecondary: '#ed1a3b', // Racing Crimson Red
+      slatShadow: 'rgba(0, 2, 10, 0.65)',
+    },
+    mclaren: {
+      baseColor: '#ff8000', // Papaya Orange
+      deckGradStart: '#ff991a',
+      deckGradEnd: '#e66000',
+      accentColor: '#141619', // Anthracite Carbon
+      accentSecondary: '#47a1ff', // Chrome Sky Blue
+      slatShadow: 'rgba(50, 18, 0, 0.55)',
+    },
+    astonmartin: {
+      baseColor: '#00594f', // British Racing Green
+      deckGradStart: '#006e62',
+      deckGradEnd: '#00473e',
+      accentColor: '#cedc00', // Fluorescent AMR Racing Lime
+      accentSecondary: '#ffffff',
+      slatShadow: 'rgba(0, 30, 25, 0.55)',
+    },
+    alpine: {
+      baseColor: '#0078d0', // Alpine Metallic Blue
+      deckGradStart: '#0d8cf0',
+      deckGradEnd: '#005fa8',
+      accentColor: '#fd4bc7', // BWT Flamingo Pink
+      accentSecondary: '#ffffff',
+      slatShadow: 'rgba(0, 20, 60, 0.55)',
+    },
+    williams: {
+      baseColor: '#001f54', // Heritage Royal Navy Blue
+      deckGradStart: '#003380',
+      deckGradEnd: '#001438',
+      accentColor: '#00a3e0', // Electric Cyan Blue (matches 2D reference photo)
+      accentSecondary: '#00d2ff', // Light Cyan highlight
+      slatShadow: 'rgba(0, 10, 40, 0.6)',
+    },
+    racingbulls: {
+      baseColor: '#1434cb', // Royal Electric Blue
+      deckGradStart: '#1f44eb',
+      deckGradEnd: '#0b2094',
+      accentColor: '#ffffff', // Visa Dynamic White
+      accentSecondary: '#00d632', // Cash App Neon Racing Green
+      slatShadow: 'rgba(5, 15, 60, 0.6)',
+    },
+    audi: {
+      baseColor: '#0d0e11', // Stealth Carbon Black
+      deckGradStart: '#181b22',
+      deckGradEnd: '#07080a',
+      accentColor: '#52ff00', // High-Voltage Fluo Neon Green
+      accentSecondary: '#80ff44',
+      slatShadow: 'rgba(0, 0, 0, 0.65)',
+    },
+    haas: {
+      baseColor: '#f8fafc', // Clean Racing White
+      deckGradStart: '#ffffff',
+      deckGradEnd: '#e2e8f0',
+      accentColor: '#e10600', // Haas Scarlet Red
+      accentSecondary: '#121417', // Carbon Black
+      slatShadow: 'rgba(20, 20, 25, 0.45)',
+    },
+    cadillac: {
+      baseColor: '#0a0b0d', // Satin Obsidian Black
+      deckGradStart: '#181920',
+      deckGradEnd: '#050507',
+      accentColor: '#d4af37', // Luxury Racing Gold
+      accentSecondary: '#f3e5ab', // Champagne Metallic Gold
+      slatShadow: 'rgba(0, 0, 0, 0.65)',
+    },
+  };
+
+  const cfg = configs[teamId] || {
+    baseColor: livery.bodyColor || '#141619',
+    deckGradStart: livery.sidepodColor || livery.bodyColor || '#1f2329',
+    deckGradEnd: livery.bodyColor || '#0a0b0d',
+    accentColor: livery.accentColor || '#ffffff',
+    accentSecondary: livery.highlightColor || '#ffdf00',
+    slatShadow: 'rgba(0, 0, 0, 0.55)',
+  };
+
+  ctx.save();
+
+  // Helper: Draw horizontal slat group with longitudinal accent stripes and transverse ventilation slots
+  const drawHorizSlatBank = (x: number, y: number, w: number, h: number, verticalStripes = true) => {
+    ctx.fillStyle = cfg.baseColor;
+    ctx.fillRect(x, y, w, h);
+
+    if (verticalStripes) {
+      // Team accent speed stripes along the bank
+      const stripeY = y + Math.floor(h * 0.42);
+      ctx.fillStyle = cfg.accentColor;
+      ctx.fillRect(x, stripeY, w, 14);
+      ctx.fillStyle = cfg.accentSecondary;
+      ctx.fillRect(x, stripeY + 14, w, 6);
+    }
+
+    // Engineered slat extraction grooves
+    ctx.fillStyle = cfg.slatShadow;
+    for (let sx = x; sx < x + w; sx += 16) {
+      ctx.fillRect(sx, y, 4, h);
+    }
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    for (let sx = x; sx < x + w; sx += 16) {
+      ctx.fillRect(sx + 4, y, 2, h);
+    }
+  };
+
+  // Helper: Draw vertical slat group with transverse accent stripes and longitudinal ventilation slots
+  const drawVertSlatBank = (x: number, y: number, w: number, h: number, horizStripes = true) => {
+    ctx.fillStyle = cfg.baseColor;
+    ctx.fillRect(x, y, w, h);
+
+    if (horizStripes) {
+      const stripeX = x + Math.floor(w * 0.42);
+      ctx.fillStyle = cfg.accentColor;
+      ctx.fillRect(stripeX, y, 14, h);
+      ctx.fillStyle = cfg.accentSecondary;
+      ctx.fillRect(stripeX + 14, y, 6, h);
+    }
+
+    ctx.fillStyle = cfg.slatShadow;
+    for (let sy = y; sy < y + h; sy += 16) {
+      ctx.fillRect(x, sy, w, 4);
+    }
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    for (let sy = y; sy < y + h; sy += 16) {
+      ctx.fillRect(x, sy + 4, w, 2);
+    }
+  };
+
+  // 1. LEFT SIDEPOD UPPER DECK PANEL (Island 1: X: 80..300, Y: 280..1000)
+  const leftDeckGrad = ctx.createLinearGradient(80, 280, 300, 1000);
+  leftDeckGrad.addColorStop(0, cfg.deckGradStart);
+  leftDeckGrad.addColorStop(1, cfg.deckGradEnd);
+  ctx.fillStyle = leftDeckGrad;
+  ctx.fillRect(80, 280, 220, 720);
+
+  // Aerodynamic speed accent pinstripe along left deck
+  ctx.fillStyle = cfg.accentColor;
+  ctx.fillRect(172, 280, 14, 720);
+  ctx.fillStyle = cfg.accentSecondary;
+  ctx.fillRect(186, 280, 6, 720);
+
+  // 2. RIGHT SIDEPOD UPPER DECK PANEL (Island 2: X: 1620..1800, Y: 1220..1920)
+  const rightDeckGrad = ctx.createLinearGradient(1620, 1220, 1800, 1920);
+  rightDeckGrad.addColorStop(0, cfg.deckGradStart);
+  rightDeckGrad.addColorStop(1, cfg.deckGradEnd);
+  ctx.fillStyle = rightDeckGrad;
+  ctx.fillRect(1620, 1220, 180, 700);
+
+  ctx.fillStyle = cfg.accentColor;
+  ctx.fillRect(1692, 1220, 14, 700);
+  ctx.fillStyle = cfg.accentSecondary;
+  ctx.fillRect(1706, 1220, 6, 700);
+
+  // 3. LEFT COOLING LOUVRE EXTRACTION GILLS & SLAT CLUSTERS
+  drawVertSlatBank(1800, 460, 248, 1120);
+  drawHorizSlatBank(950, 120, 720, 280);
+  drawHorizSlatBank(1200, 440, 220, 220);
+  drawHorizSlatBank(1330, 820, 160, 160);
+  drawHorizSlatBank(310, 820, 150, 90);
+  drawVertSlatBank(1600, 1850, 80, 140);
+  drawVertSlatBank(1140, 790, 50, 60, false);
+  drawHorizSlatBank(960, 570, 120, 80, false);
+
+  // 4. RIGHT COOLING LOUVRE EXTRACTION GILLS & SLAT CLUSTERS
+  drawHorizSlatBank(180, 60, 920, 200);
+  drawHorizSlatBank(1080, 180, 540, 220);
+  drawVertSlatBank(1780, 820, 120, 620);
+  drawHorizSlatBank(1260, 820, 480, 80);
+  drawVertSlatBank(730, 1180, 50, 280, false);
+  drawVertSlatBank(1840, 160, 60, 240, false);
+  drawVertSlatBank(1910, 560, 138, 220, false);
+  drawHorizSlatBank(1920, 2000, 128, 48, false);
+  drawHorizSlatBank(180, 560, 340, 280);
+  drawVertSlatBank(440, 760, 80, 140, false);
+  drawVertSlatBank(560, 1210, 90, 140, false);
+  drawHorizSlatBank(700, 440, 140, 80, false);
+  drawVertSlatBank(130, 980, 70, 100, false);
+  drawVertSlatBank(10, 840, 40, 60, false);
+  drawVertSlatBank(990, 1520, 50, 100, false);
+  drawHorizSlatBank(0, 320, 70, 70, false);
+  drawVertSlatBank(0, 760, 70, 140, false);
+  drawHorizSlatBank(1020, 1140, 70, 80, false);
+  drawHorizSlatBank(630, 1910, 80, 80, false);
+  drawHorizSlatBank(310, 1980, 140, 70, false);
+
+  ctx.restore();
+}
+
+/**
  * 2. MAIN BODYWORK: SIDEPODS, ENGINE COVER, SHARK FIN & AIRBOX (Default_OBJ.004 / Image_1.png)
  * UV mapped precisely to Primitive 1 in C42 GLTF.
  * Features:
  *  - Airbox roll-hoop intake cowl (Y: 0..120): Team signature airbox (Red INEOS, Yellow Red Bull, Duracell copper)
  *  - Left sidepod & engine cover (X: 150..1450, Y: 1550..2048): Dynamic sweeping ribbon, bold white title sponsors
  *  - Right sidepod flank (X: 728..1012, Y: 770..1620): Vertical sidepod flank with team branding
+ *  - Sidepod cooling louvres & upper decks: Signature team paint, aerodynamic gradients & ventilation slats
  *  - Engine cover starfield & logos (X: 950..1850, Y: 450..1500)
  */
 export function generateBodyworkTexture(
@@ -1304,6 +1535,9 @@ export function generateBodyworkTexture(
   return createUVTexture(2048, 2048, (ctx, w, h) => {
     // 1. Carbon fiber base weave
     drawCarbonWeave(ctx, w, h, livery.bodyColor || '#0a0b0d');
+
+    // 2. Team-Specific Sidepod Cooling Louvres & Vents ("Phần rãnh rãnh")
+    drawCoolingLouvres(ctx, teamId, livery);
 
     if (teamId === 'mercedes') {
       // 1. Airbox Roll-Hoop Intake Cowl (Top Edge Y: 0..120): INEOS Burgundy Red
