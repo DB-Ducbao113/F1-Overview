@@ -54,6 +54,21 @@ describe('CircuitDetailModal Component', () => {
     expect(html).toContain('DRS 3');
     expect(html).toContain('DRS 4');
     expect(html).toContain('Live Radar');
+    expect(html).toContain('Bản Đồ Thực Tế');
+  });
+});
+
+describe('CircuitRealWorldMap Component', () => {
+  it('renders satellite map container with GPS coordinates and Google Maps link', async () => {
+    const { CircuitRealWorldMap, CIRCUIT_COORDINATES } = await import('./CircuitRealWorldMap');
+    const circuit = getCircuitByRound(1)!;
+
+    const html = renderToStaticMarkup(<CircuitRealWorldMap circuit={circuit} lang="en" />);
+    expect(html).toContain('Satellite');
+    expect(html).toContain('Street');
+    expect(html).toContain('Google Maps');
+    expect(CIRCUIT_COORDINATES['albert-park']).toBeDefined();
+    expect(CIRCUIT_COORDINATES['albert-park'].lat).toBeCloseTo(-37.8497, 3);
   });
 });
 

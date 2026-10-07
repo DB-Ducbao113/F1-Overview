@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CircuitData } from '../../types/circuit';
-import { X, Trophy, MapPin, Compass, Activity, Zap, Radio } from 'lucide-react';
+import { X, Trophy, MapPin, Compass, Activity, Zap, Radio, Globe } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { CircuitLiveRadar } from './CircuitLiveRadar';
+import { CircuitRealWorldMap } from './CircuitRealWorldMap';
+
+type MapMode = 'real' | 'vector' | 'radar';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -13,7 +16,7 @@ interface CircuitDetailModalProps {
 export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit, onClose }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const [isLiveRadarActive, setIsLiveRadarActive] = useState<boolean>(false);
+  const [mapMode, setMapMode] = useState<MapMode>('real');
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
@@ -78,54 +81,77 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
         <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column (7 cols): Map + Essential Telemetry Grid */}
           <div className="lg:col-span-7 space-y-3.5">
-            {/* Header bar above map with Mode toggle */}
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-studio-400">
-                  {isVi ? 'Sơ Đồ Đường Đua' : 'Track Layout'}
-                </span>
-                {isLiveRadarActive && (
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    LIVE TELEMETRY
-                  </span>
-                )}
+            {/* Header bar above map with 3-way Mode toggle */}
+            <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+              <div className="flex items-center gap-1.5 p-1 bg-studio-900/90 rounded-xl border border-studio-800 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setMapMode('real')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    mapMode === 'real'
+                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
+                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                  }`}
+                  title={isVi ? 'Bản đồ thực tế chụp vệ tinh' : 'Real-world Satellite Map'}
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>{isVi ? '🛰️ Bản Đồ Thực Tế' : '🛰️ Satellite Map'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMapMode('vector')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    mapMode === 'vector'
+                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
+                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                  }`}
+                  title={isVi ? 'Sơ đồ thiết kế vector' : 'Vector Track Schematic'}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>{isVi ? '🏎️ Sơ Đồ Thiết Kế' : '🏎️ Schematic'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMapMode('radar')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    mapMode === 'radar'
+                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
+                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                  }`}
+                  title={isVi ? 'Mô phỏng radar tay đua trực tiếp' : 'Live Driver Radar Tracking'}
+                >
+                  <Radio className={`w-3.5 h-3.5 ${mapMode === 'radar' ? 'animate-pulse text-white' : ''}`} />
+                  <span>{isVi ? '📡 Live Radar' : '📡 Live Radar'}</span>
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsLiveRadarActive((prev) => !prev)}
-                className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
-                  isLiveRadarActive
-                    ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.4)]'
-                    : 'bg-studio-850 hover:bg-studio-800 text-studio-300 border border-studio-700/60 hover:text-white'
-                }`}
-                title={
-                  isLiveRadarActive
-                    ? isVi
-                      ? 'Chuyển sang bản đồ tĩnh'
-                      : 'Switch to static track map'
-                    : isVi
-                      ? 'Bật mô phỏng radar tay đua trực tiếp'
-                      : 'Enable live driver radar simulation'
-                }
-              >
-                <Radio className={`w-3.5 h-3.5 ${isLiveRadarActive ? 'animate-pulse text-white' : 'text-f1red'}`} />
-                <span>
-                  {isLiveRadarActive
-                    ? isVi
-                      ? 'Bản Đồ Tĩnh'
-                      : 'Static View'
-                    : isVi
-                      ? '📡 Live Radar F1'
-                      : '📡 Live Radar'}
+
+              {mapMode === 'real' && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  SATELLITE & GPS
                 </span>
-              </button>
+              )}
+
+              {mapMode === 'radar' && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  LIVE TELEMETRY
+                </span>
+              )}
             </div>
 
-            {/* Main Visual Track Map Display or Live Radar Component */}
-            {isLiveRadarActive ? (
+            {/* Main Visual Track Map Display */}
+            {mapMode === 'real' && (
+              <CircuitRealWorldMap circuit={circuit} lang={lang} />
+            )}
+
+            {mapMode === 'radar' && (
               <CircuitLiveRadar circuit={circuit} lang={lang} />
-            ) : (
+            )}
+
+            {mapMode === 'vector' && (
               <div className="relative rounded-2xl bg-gradient-to-b from-studio-900 to-studio-950 border border-studio-800/80 p-3 sm:p-5 overflow-hidden flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px]">
                 {/* Background Grid Pattern */}
                 <div
