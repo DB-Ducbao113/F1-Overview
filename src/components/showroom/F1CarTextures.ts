@@ -49,19 +49,23 @@ export function drawCarbonWeave(
   w: number,
   h: number,
   baseColor = '#101216',
+  weaveOpacity = 0.14,
 ) {
+  // 1. Fill base tone
   ctx.fillStyle = baseColor;
   ctx.fillRect(0, 0, w, h);
 
+  // 2. Microscopic twill weave pattern using subtle translucent lighting/shadow offsets
+  // so underlying team paint colors are 100% preserved with rich saturation
   const patternCanvas = document.createElement('canvas');
   patternCanvas.width = 8;
   patternCanvas.height = 8;
   const pctx = patternCanvas.getContext('2d');
   if (pctx) {
-    pctx.fillStyle = '#17191e';
+    pctx.fillStyle = `rgba(255, 255, 255, ${weaveOpacity * 0.65})`;
     pctx.fillRect(0, 0, 4, 4);
     pctx.fillRect(4, 4, 4, 4);
-    pctx.fillStyle = '#0a0b0d';
+    pctx.fillStyle = `rgba(0, 0, 0, ${weaveOpacity * 1.4})`;
     pctx.fillRect(4, 0, 4, 4);
     pctx.fillRect(0, 4, 4, 4);
     const pattern = ctx.createPattern(patternCanvas, 'repeat');
@@ -669,8 +673,18 @@ export function generateNoseTexture(
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
   return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
+    const noseBaseColor = livery.noseColor || livery.bodyColor || '#e8002d';
+    // 1. Full-canvas forward monocoque & nose cone paint coat with subtle composite weave (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, noseBaseColor, 0.08);
+
+    // Subtle 3D aerodynamic depth shading across outer nose flanks and monocoque roots
+    const flankShade = ctx.createLinearGradient(0, 0, 0, h);
+    flankShade.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+    flankShade.addColorStop(0.25, 'rgba(0, 0, 0, 0.0)');
+    flankShade.addColorStop(0.75, 'rgba(0, 0, 0, 0.0)');
+    flankShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.25)');
+    ctx.fillStyle = flankShade;
+    ctx.fillRect(0, 0, w, h);
 
     // Helper: Draw horizontal tapering nose cone spine
     const drawSpine = (fill: string | CanvasGradient) => {
@@ -685,12 +699,14 @@ export function generateNoseTexture(
     };
 
     if (teamId === 'mercedes') {
-      // 1. Polished Silver Arrow Metallic Nose Gradient (Transitioning from bright silver tip into deep obsidian black near cockpit)
-      const silverNoseGrad = ctx.createLinearGradient(60, 0, 1280, 0);
+      // 1. Polished Silver Arrow Metallic Nose Gradient (Seamless transition across entire forward monocoque)
+      const silverNoseGrad = ctx.createLinearGradient(0, 0, 1400, 0);
       silverNoseGrad.addColorStop(0, '#edf0f2'); // Pure polished silver tip
       silverNoseGrad.addColorStop(0.35, '#9aa2ab'); // Brushed aluminum transition
       silverNoseGrad.addColorStop(0.75, '#22262c'); // Metallic charcoal
       silverNoseGrad.addColorStop(1.0, '#0a0b0d'); // Deep obsidian black cockpit surround
+      ctx.fillStyle = silverNoseGrad;
+      ctx.fillRect(0, 0, w, h);
 
       drawSpine(silverNoseGrad);
 
@@ -1533,8 +1549,30 @@ export function generateBodyworkTexture(
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
   return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, livery.bodyColor || '#0a0b0d');
+    const bodyBaseColor = livery.bodyColor || livery.sidepodColor || '#e8002d';
+
+    // 1. Full-canvas main bodywork paint coat with subtle composite weave (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, bodyBaseColor, 0.08);
+
+    // Subtle 3D aerodynamic shading gradient across engine cover & sidepod decks
+    const aeroShade = ctx.createLinearGradient(0, 0, 0, h);
+    aeroShade.addColorStop(0, 'rgba(0, 0, 0, 0.15)');
+    aeroShade.addColorStop(0.3, 'rgba(255, 255, 255, 0.04)');
+    aeroShade.addColorStop(0.7, 'rgba(0, 0, 0, 0.0)');
+    aeroShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.22)');
+    ctx.fillStyle = aeroShade;
+    ctx.fillRect(0, 0, w, h);
+
+    if (teamId === 'mercedes') {
+      // Silver Arrow metallic gradient transitioning smoothly into obsidian black
+      const mercBodyGrad = ctx.createLinearGradient(0, 0, 1600, 0);
+      mercBodyGrad.addColorStop(0, '#c8ccd0');
+      mercBodyGrad.addColorStop(0.35, '#4a525d');
+      mercBodyGrad.addColorStop(0.75, '#14171d');
+      mercBodyGrad.addColorStop(1.0, '#0a0b0d');
+      ctx.fillStyle = mercBodyGrad;
+      ctx.fillRect(0, 0, w, h);
+    }
 
     // 2. Team-Specific Sidepod Cooling Louvres & Vents ("Phần rãnh rãnh")
     drawCoolingLouvres(ctx, teamId, livery);
@@ -2224,8 +2262,31 @@ export function generateWingsTexture(
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
   return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, '#0a0b0d');
+    const wingBaseColor = livery.wingColor || '#0a0b0e';
+    const aeroPaint = livery.bodyColor || '#e8002d';
+    const accentPaint = livery.accentColor || '#ffffff';
+
+    // 1. Carbon fiber base weave for aerodynamic wing structure
+    drawCarbonWeave(ctx, w, h, wingBaseColor, 0.16);
+
+    // 2. Front Wing Flap Assembly (UV rows Y: 40..460 and Y: 1720..2020 which map to Front Wing in Primitive 10)
+    // Coated with team signature aerodynamic paint and cascade accent stripes
+    ctx.fillStyle = aeroPaint;
+    ctx.fillRect(0, 40, w, 220);
+    ctx.fillRect(0, 1740, w, 180);
+
+    // Aerodynamic highlight speedline along front wing flaps
+    ctx.fillStyle = accentPaint;
+    ctx.fillRect(0, 260, w, 14);
+    ctx.fillRect(0, 1920, w, 14);
+
+    // Aerodynamic shading between flap cascades
+    const fwShade = ctx.createLinearGradient(0, 40, 0, 260);
+    fwShade.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+    fwShade.addColorStop(0.5, 'rgba(0, 0, 0, 0.0)');
+    fwShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.35)');
+    ctx.fillStyle = fwShade;
+    ctx.fillRect(0, 40, w, 220);
 
     // Helper: Draw graphics horizontally across a rear wing element
     const drawFlapBranding = (
@@ -3243,6 +3304,23 @@ export function generateSuspensionMirrorsTexture(
     // Render Right Mirror Housing
     drawMirrorHousing(w - 420, 140, 320, 180, true);
 
+    // 3. C42 3D Model Cockpit Mirror Shells (UV cluster at U: 510..600, V: 380..460)
+    // Guarantees 3D model mirrors are fully coated in official team mirror livery paint
+    const c42MirrorGrad = ctx.createLinearGradient(510, 380, 600, 460);
+    c42MirrorGrad.addColorStop(0, mirrorPaint);
+    c42MirrorGrad.addColorStop(0.85, mirrorPaint);
+    c42MirrorGrad.addColorStop(1.0, '#06080a');
+    ctx.fillStyle = c42MirrorGrad;
+    ctx.beginPath();
+    ctx.roundRect(510, 380, 90, 80, 16);
+    ctx.fill();
+
+    // Mirror housing accent trim & top specular highlight
+    ctx.fillStyle = mirrorAccent;
+    ctx.fillRect(510, 450, 90, 6);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.fillRect(520, 386, 70, 8);
+
     ctx.restore();
   });
 }
@@ -3598,26 +3676,22 @@ export function generateHaloTexture(
   sponsors?: TeamSponsorConfig,
 ): THREE.CanvasTexture {
   return createUVTexture(1024, 1024, (ctx, w, h) => {
-    // Grade 5 Titanium Brushed Metallic Gradient
-    const bgGrad = ctx.createLinearGradient(0, 0, w, h);
-    bgGrad.addColorStop(0, '#1c1f26');
-    bgGrad.addColorStop(0.5, '#2e333d');
-    bgGrad.addColorStop(1, '#181b22');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.save();
-
     const haloPaint = livery.haloColor || livery.bodyColor || '#e8002d';
     const accentColor = livery.accentColor || '#ffffff';
 
-    // ── 1. Aerodynamic Upper Fairing in Team Livery Paint ──
-    const fairingGrad = ctx.createLinearGradient(0, 100, 0, 500);
-    fairingGrad.addColorStop(0, haloPaint);
-    fairingGrad.addColorStop(0.7, haloPaint);
-    fairingGrad.addColorStop(1, '#0c0e12'); // Clean transition to exposed carbon
-    ctx.fillStyle = fairingGrad;
-    ctx.fillRect(80, 120, w - 160, 360);
+    // 1. Full-canvas team livery paint coat across entire halo safety ring (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, haloPaint, 0.08);
+
+    // Aerodynamic lighting & curvature depth gradient across halo structure
+    const archGrad = ctx.createLinearGradient(0, 0, 0, h);
+    archGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+    archGrad.addColorStop(0.25, 'rgba(255, 255, 255, 0.0)');
+    archGrad.addColorStop(0.75, 'rgba(0, 0, 0, 0.0)');
+    archGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.35)');
+    ctx.fillStyle = archGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.save();
 
     // Specular Highlight on Upper Halo Arch
     const specGrad = ctx.createLinearGradient(0, 120, 0, 240);

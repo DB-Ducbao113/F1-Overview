@@ -210,8 +210,9 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('003')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: suspensionMirrorsTex,
+            color: new THREE.Color('#ffffff'),
             roughness: 0.25,
-            metalness: 0.4,
+            metalness: 0.35,
             clearcoat: livery.bodyClearcoat ?? 1.0,
             clearcoatRoughness: 0.08,
             envMapIntensity: 1.4,
@@ -222,8 +223,9 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('009')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: diffuserRainLightTex,
+            color: new THREE.Color('#ffffff'),
             roughness: 0.3,
-            metalness: 0.35,
+            metalness: 0.3,
             clearcoat: 0.4,
             clearcoatRoughness: 0.1,
             envMapIntensity: 1.3,
@@ -233,33 +235,36 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('005')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: wingsTex,
+            color: new THREE.Color('#ffffff'),
             roughness: livery.wingRoughness ?? 0.22,
-            metalness: livery.wingMetalness ?? 0.35,
+            metalness: livery.wingMetalness ?? 0.25,
             clearcoat: livery.bodyClearcoat ?? 1.0,
             clearcoatRoughness: 0.08,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.05 : 0.45,
+            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.15 : 0.5,
           });
         }
         // 8. Main Bodywork: Sidepods, Engine Cover, Shark Fin & Airbox (004 - Prim 1)
         else if (matName.includes('004')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: bodyworkTex,
+            color: new THREE.Color('#ffffff'),
             roughness: livery.sidepodRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.sidepodMetalness ?? 0.25,
+            metalness: livery.sidepodMetalness ?? 0.2,
             clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.2 : 0.45,
+            clearcoatRoughness: 0.06,
+            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
           });
         }
         // 9. Forward Monocoque & Nose Cone (007 - Prim 6)
         else if (matName.includes('007')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: noseTex,
+            color: new THREE.Color('#ffffff'),
             roughness: livery.noseRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.65,
+            metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.2,
             clearcoat: livery.bodyClearcoat ?? 1.0,
             clearcoatRoughness: 0.06,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.3 : 0.45,
+            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
           });
         }
         // Fallback for any other body parts

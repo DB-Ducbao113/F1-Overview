@@ -15,6 +15,7 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
+    if (typeof document === 'undefined') return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
@@ -29,7 +30,7 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
     };
   }, [onClose]);
 
-  return createPortal(
+  const modalContent = (
     <div
       role="dialog"
       aria-modal="true"
@@ -345,7 +346,12 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
           </button>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
+
+  if (typeof document === 'undefined') {
+    return modalContent;
+  }
+
+  return createPortal(modalContent, document.body);
 };

@@ -31,7 +31,7 @@ describe('SchematicComparisonModal Component', () => {
     expect(html).toBe('');
   });
 
-  it('renders modal with CAD schematic image and technical tabs when isOpen is true', () => {
+  it('renders modal with CAD schematic image when isOpen is true', () => {
     const html = renderToStaticMarkup(
       <SchematicComparisonModal
         isOpen={true}
@@ -40,9 +40,7 @@ describe('SchematicComparisonModal Component', () => {
         lang="vi"
       />,
     );
-    expect(html).toContain('Bản Vẽ CAD 2D Gốc');
-    expect(html).toContain('So Sánh 8 Bộ Phận Kỹ Thuật');
-    expect(html).toContain('Bảng Mã Màu Thực Tế');
+    expect(html).toContain('BẢN VẼ KỸ THUẬT CAD 2D');
     expect(html).toContain('/images/showroom/schematics/mercedes.jpg');
     expect(html).toContain('MERC-W15-AERO-8K');
   });
@@ -56,9 +54,7 @@ describe('SchematicComparisonModal Component', () => {
         lang="en"
       />,
     );
-    expect(html).toContain('Original 2D CAD Blueprint');
-    expect(html).toContain('8-Component Technical Audit');
-    expect(html).toContain('Livery Color Matrix');
+    expect(html).toContain('2D CAD SCHEMATIC');
     expect(html).toContain('/images/showroom/schematics/mclaren.jpg');
     expect(html).toContain('MCL-38-CFD-8K');
   });

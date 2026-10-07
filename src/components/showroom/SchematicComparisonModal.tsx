@@ -43,7 +43,7 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || typeof document === 'undefined') return;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
@@ -60,7 +60,7 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
 
   if (!isOpen) return null;
 
-  return createPortal(
+  const modalContent = (
     <div
       role="dialog"
       aria-modal="true"
@@ -206,7 +206,12 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
           </div>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
+
+  if (typeof document === 'undefined') {
+    return modalContent;
+  }
+
+  return createPortal(modalContent, document.body);
 };
