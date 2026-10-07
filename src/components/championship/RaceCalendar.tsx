@@ -17,6 +17,7 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
 import { QualifyingClassificationModal } from './QualifyingClassificationModal';
+import { CircuitTrackMap } from './CircuitTrackMap';
 import { formatDateStr, formatSessionName } from '../../utils/dateUtils';
 import { SeasonYear } from '../../types';
 
@@ -206,7 +207,10 @@ export const RaceCalendar: React.FC = React.memo(() => {
                 </div>
 
                 {/* Circuit & Date */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3 sm:gap-6">
+                  {/* Circuit track thumbnail mini preview */}
+                  <CircuitTrackMap round={gp.round} variant="thumbnail" />
+
                   <div className="text-right hidden sm:block">
                     <span className="font-bold text-xs text-studio-900 block">
                       {formatDateStr(gp.dates, lang)}
@@ -242,6 +246,9 @@ export const RaceCalendar: React.FC = React.memo(() => {
                         : `${gp.laps} Laps · ${gp.circuitLengthKm} km · Race: ${gp.raceDistanceKm} km`}
                     </span>
                   </div>
+
+                  {/* Circuit Track Layout Map */}
+                  <CircuitTrackMap round={gp.round} variant="card" />
 
                   {/* Sessions grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
