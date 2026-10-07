@@ -19,6 +19,7 @@ import {
   Trophy,
   Compass,
   BookOpen,
+  FileText,
 } from 'lucide-react';
 
 export type StudioLightingMode = 'studio';
@@ -41,6 +42,8 @@ interface ShowroomControlDockProps {
   // Interactive Hotspots
   showHotspots?: boolean;
   onToggleHotspots?: () => void;
+  // 2D Schematic Blueprint Comparison
+  onOpenSchematic?: () => void;
 }
 
 // 4 Panoramic Wall Tour Steps
@@ -78,6 +81,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     lang,
     showHotspots = false,
     onToggleHotspots,
+    onOpenSchematic,
   }) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(true);
     const [presetCategory, setPresetCategory] = useState<'pano' | 'direct' | 'car'>('pano');
@@ -544,6 +548,30 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                           : 'OFF'}
                     </span>
                   </button>
+
+                  {/* 3. Original 2D Blueprint Comparison */}
+                  {onOpenSchematic && (
+                    <button
+                      type="button"
+                      onClick={onOpenSchematic}
+                      className="col-span-2 p-1.5 rounded-xl border bg-gradient-to-r from-red-950/70 via-studio-900 to-amber-950/50 hover:from-red-900/80 hover:to-amber-900/60 border-amber-500/50 text-amber-300 hover:text-white flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                      title={
+                        lang === 'vi'
+                          ? 'Xem bản vẽ CAD 2D gốc và đối chiếu từng bộ phận'
+                          : 'View original 2D CAD blueprint and compare components'
+                      }
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <FileText className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                        <span className="truncate">
+                          {lang === 'vi' ? 'So Sánh Bản Gốc 2D' : 'Compare 2D Blueprint'}
+                        </span>
+                      </div>
+                      <span className="text-[8px] font-black uppercase px-1 py-0.5 rounded bg-amber-500 text-black shrink-0">
+                        8K CAD
+                      </span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

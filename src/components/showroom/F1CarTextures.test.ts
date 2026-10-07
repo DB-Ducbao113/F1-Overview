@@ -1,6 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
-import { drawCoolingLouvres } from './F1CarTextures';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+import {
+  drawCoolingLouvres,
+  generateFloorTexture,
+  generateSuspensionMirrorsTexture,
+  generateDiffuserRainLightTexture,
+  generateCockpitTexture,
+  generateHaloTexture,
+} from './F1CarTextures';
+import { getTeam3DLivery, TEAM_3D_LIVERIES } from '../../data/showroom/teamLiveries';
 import { TeamId } from '../../types';
 
 describe('F1CarTextures - drawCoolingLouvres', () => {
@@ -85,3 +92,59 @@ describe('F1CarTextures - drawCoolingLouvres', () => {
     expect(fillRectCalls.length).toBeGreaterThan(50);
   });
 });
+
+describe('F1CarTextures - Enhanced Component Textures & Livery Color Tokens', () => {
+  const teams: TeamId[] = [
+    'ferrari',
+    'mercedes',
+    'mclaren',
+    'redbull',
+    'astonmartin',
+    'alpine',
+    'racingbulls',
+    'haas',
+    'williams',
+    'audi',
+    'cadillac',
+  ];
+
+  it('ensures all 11 teams define complete authentic component color tokens', () => {
+    teams.forEach((teamId) => {
+      const livery = TEAM_3D_LIVERIES[teamId];
+      expect(livery).toBeDefined();
+      expect(livery.mirrorColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(livery.mirrorAccentColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(livery.floorEdgeAccentColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(livery.seatbeltColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(livery.diffuserAccentColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(livery.rainLightColor).toMatch(/^#[0-9a-fA-F]{6}$/);
+    });
+  });
+
+  it('generates authentic textures for floor, suspension/mirrors, diffuser, cockpit, and halo without errors', () => {
+    teams.forEach((teamId) => {
+      const livery = getTeam3DLivery(teamId);
+
+      const floorTex = generateFloorTexture(teamId, livery);
+      expect(floorTex).toBeDefined();
+      expect(floorTex.isTexture).toBe(true);
+
+      const mirrorsTex = generateSuspensionMirrorsTexture(teamId, livery);
+      expect(mirrorsTex).toBeDefined();
+      expect(mirrorsTex.isTexture).toBe(true);
+
+      const diffuserTex = generateDiffuserRainLightTexture(teamId, livery);
+      expect(diffuserTex).toBeDefined();
+      expect(diffuserTex.isTexture).toBe(true);
+
+      const cockpitTex = generateCockpitTexture(teamId, livery);
+      expect(cockpitTex).toBeDefined();
+      expect(cockpitTex.isTexture).toBe(true);
+
+      const haloTex = generateHaloTexture(teamId, livery);
+      expect(haloTex).toBeDefined();
+      expect(haloTex.isTexture).toBe(true);
+    });
+  });
+});
+

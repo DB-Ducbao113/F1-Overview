@@ -45,6 +45,13 @@ export interface Team3DLivery {
   wheelSecondaryColor?: string;
   wheelRimColor?: string;
   wheelPirelliCompound?: 'soft' | 'medium' | 'hard';
+  // Dedicated Component Detail & Livery Color Tokens (Mirrors, Floor edges, Cockpit, Diffuser)
+  mirrorColor?: string;
+  mirrorAccentColor?: string;
+  floorEdgeAccentColor?: string;
+  seatbeltColor?: string;
+  diffuserAccentColor?: string;
+  rainLightColor?: string;
   // Engineering highlights
   aeroPhilosophyVi: string;
   aeroPhilosophyEn: string;
@@ -95,6 +102,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffdf00', // Modena Yellow concentric speed ring
     wheelRimColor: '#e8002d', // Scuderia Red rim edge
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#e8002d', // Scuderia Rosso Corsa mirrors
+    mirrorAccentColor: '#ffdf00', // Modena Racing Yellow aero accent
+    floorEdgeAccentColor: '#ffdf00', // Modena Yellow floor edge stripe
+    seatbeltColor: '#e8002d', // Sabelt Scuderia Red racing harness
+    diffuserAccentColor: '#ffdf00', // Modena Yellow diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Hốc gió dạng bồn tắm (Bathtub downwash sidepods) dẫn luồng khí áp suất cao ép sát eo xe xuống thẳng sàn sau và bộ khuếch tán.',
     aeroPhilosophyEn:
@@ -152,6 +165,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#c8ccd0', // Mercedes Silver concentric speed ring
     wheelRimColor: '#c8ccd0', // Silver Arrow rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#c8ccd0', // Silver Arrow mirror housing
+    mirrorAccentColor: '#00a19c', // Petronas Turquoise aero stripe
+    floorEdgeAccentColor: '#00a19c', // Petronas Emerald Turquoise floor edge
+    seatbeltColor: '#00a19c', // Petronas Teal racing harness
+    diffuserAccentColor: '#00a19c', // Petronas Turquoise diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý khí động học tinh gọn với rãnh dẫn khí sườn dốc (Undercut Channel) và cánh gió trước đa tầng triệt tiêu nhiễu động bánh xe.',
     aeroPhilosophyEn:
@@ -203,6 +222,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#47c7fc', // Google Chrome / Stealth Blue accent
     wheelRimColor: '#ff8000', // Papaya rim edge
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#ff8000', // Papaya Orange mirror housing
+    mirrorAccentColor: '#47c7fc', // Chrome Cyan aero accent
+    floorEdgeAccentColor: '#ff8000', // Papaya Orange floor edge
+    seatbeltColor: '#ff8000', // Sabelt Papaya Orange racing harness
+    diffuserAccentColor: '#ff8000', // Papaya Orange diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Hệ thống hốc gió hớt gầm sâu nhất đoàn đua (Extreme Undercut) và sàn xe Venturi tối ưu lực ép khi vào các góc cua tốc độ cao.',
     aeroPhilosophyEn:
@@ -254,6 +279,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ed1a3b', // Bull Racing Red inner ring
     wheelRimColor: '#ffce00', // Golden rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#0c192c', // Matte Midnight Navy mirror housing
+    mirrorAccentColor: '#ffce00', // Red Bull Sunburst Yellow aero stripe
+    floorEdgeAccentColor: '#ed1a3b', // Bull Racing Red floor edge
+    seatbeltColor: '#ed1a3b', // Red Bull Sabelt Red harness
+    diffuserAccentColor: '#ffce00', // Sunburst Yellow diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Tuyệt tác khí động học với các hốc hút gió sườn đảo ngược (Overbite Inlet) và hệ thống treo trước Pull-rod chống chúi đầu khi phanh gấp.',
     aeroPhilosophyEn:
@@ -305,6 +336,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#006f62', // Racing Green inner accent
     wheelRimColor: '#cedc00', // Lime rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#006f62', // British Racing Green mirror housing
+    mirrorAccentColor: '#cedc00', // Fluorescent Lime Essence aero accent
+    floorEdgeAccentColor: '#cedc00', // Lime Essence floor edge
+    seatbeltColor: '#cedc00', // Lime Essence racing harness
+    diffuserAccentColor: '#cedc00', // Lime Essence diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Máng trượt khí động học sườn xe sâu hút không khí dồn về phía sau kết hợp cánh sau DRS tối ưu lực cản tại đường thẳng.',
     aeroPhilosophyEn:
@@ -356,6 +393,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#0090ff', // Alpine Blue speed ring
     wheelRimColor: '#0090ff', // Alpine Blue rim flange
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#0090ff', // Alpine Metallic Blue mirror housing
+    mirrorAccentColor: '#fd4bc7', // BWT Flamingo Pink aero accent
+    floorEdgeAccentColor: '#fd4bc7', // BWT Pink floor edge stripe
+    seatbeltColor: '#0090ff', // Alpine Blue racing harness
+    diffuserAccentColor: '#fd4bc7', // BWT Pink diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Cấu trúc thân xe gọn gàng với triết lý tối giản hóa bề mặt ướt khí động và mũi xe dẹt hạ thấp trọng tâm quán tính.',
     aeroPhilosophyEn:
@@ -407,6 +450,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#d90429', // Racing Red inner ring
     wheelRimColor: '#ffffff', // White rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#1434cb', // Royal Electric Blue mirror housing
+    mirrorAccentColor: '#ffffff', // Crisp Pure White aero accent
+    floorEdgeAccentColor: '#ffffff', // Clean White floor edge stripe
+    seatbeltColor: '#1434cb', // Royal Blue racing harness
+    diffuserAccentColor: '#d90429', // Orlen Racing Red diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thừa hưởng cấu trúc hình học hệ thống treo và khí động học tương đồng với cỗ máy vô địch RB20 của đội mẹ Red Bull Racing.',
     aeroPhilosophyEn:
@@ -458,6 +507,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // Clean White racing ring
     wheelRimColor: '#ffffff', // White BBS rim edge
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#ffffff', // Racing White mirror housing
+    mirrorAccentColor: '#e10600', // Haas Racing Red aero accent
+    floorEdgeAccentColor: '#e10600', // MoneyGram Red floor edge stripe
+    seatbeltColor: '#e10600', // Haas Racing Red harness
+    diffuserAccentColor: '#e10600', // Haas Red diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý khí động học theo trường phái Downwash của Ferrari, tối ưu hóa việc dẫn gió làm mát và giải quyết hiện tượng thoái hóa lốp.',
     aeroPhilosophyEn:
@@ -509,6 +564,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // White aerodynamic ring
     wheelRimColor: '#00a3e0', // Electric Blue rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#001f54', // Williams Deep Navy mirror housing
+    mirrorAccentColor: '#00a3e0', // Electric Cyan aero accent
+    floorEdgeAccentColor: '#00a3e0', // Electric Cyan floor edge stripe
+    seatbeltColor: '#005aff', // Williams Heritage Blue harness
+    diffuserAccentColor: '#00a3e0', // Electric Cyan diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thân xe thiết kế cho tốc độ đường thẳng vượt trội, kết hợp sàn xe thế hệ mới giảm độ nhạy cảm trước gió tạt ngang góc cua.',
     aeroPhilosophyEn:
@@ -560,6 +621,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#c4c9ce', // Titanium Silver concentric ring
     wheelRimColor: '#c4c9ce', // Titanium Silver rim flange
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#0d0e11', // Stealth Carbon mirror housing
+    mirrorAccentColor: '#52ff00', // Fluo Racing Green aero accent
+    floorEdgeAccentColor: '#52ff00', // Fluo Racing Green floor edge stripe
+    seatbeltColor: '#52ff00', // Neon Green racing harness
+    diffuserAccentColor: '#52ff00', // Fluo Green diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý "Vorsprung durch Technik": Thiết kế khí động học sắc bén nguyên khối phát triển song song tại Hinwil và Neuburg.',
     aeroPhilosophyEn:
@@ -611,6 +678,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // Pure White concentric ring
     wheelRimColor: '#cda851', // Champagne Gold BBS rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#0a0b0d', // Satin Obsidian Black mirror housing
+    mirrorAccentColor: '#cda851', // Imperial Champagne Gold aero accent
+    floorEdgeAccentColor: '#cda851', // Champagne Gold floor edge stripe
+    seatbeltColor: '#cda851', // Cadillac Racing Gold harness
+    diffuserAccentColor: '#cda851', // Champagne Gold diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thiết kế khí động học mang đậm phong cách cơ bắp Mỹ với cánh gió trước hình khiên và hốc gió tản nhiệt cỡ lớn.',
     aeroPhilosophyEn:

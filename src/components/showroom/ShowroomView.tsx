@@ -11,6 +11,7 @@ import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
+import { SchematicComparisonModal } from './SchematicComparisonModal';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -20,7 +21,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
-import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 
 interface WebGLFallbackProps {
@@ -111,6 +112,9 @@ export const ShowroomView: React.FC = () => {
   const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
+  // 2D CAD Blueprint & Component Comparison Modal
+  const [isSchematicOpen, setIsSchematicOpen] = useState<boolean>(false);
+
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
   }, []);
@@ -193,6 +197,16 @@ export const ShowroomView: React.FC = () => {
             <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
               <button
                 type="button"
+                onClick={() => setIsSchematicOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                title={lang === 'vi' ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe' : 'View original 2D CAD blueprint & color matrix'}
+              >
+                <FileText className="w-3.5 h-3.5 text-amber-400" />
+                <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={scrollToDossier}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
               >
@@ -257,6 +271,7 @@ export const ShowroomView: React.FC = () => {
             lang={lang}
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
           />
         </div>
 
@@ -332,6 +347,7 @@ export const ShowroomView: React.FC = () => {
           cameraPreset={cameraPreset}
           onSelectPreset={handleSelectPreset}
           lang={lang}
+          onOpenSchematic={() => setIsSchematicOpen(true)}
         />
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
@@ -344,6 +360,15 @@ export const ShowroomView: React.FC = () => {
           }}
           onSelectHotspot={handleSelectHotspot}
           lang={lang}
+        />
+
+        {/* ── Interactive 2D CAD Blueprint & Component Livery Comparison Modal ── */}
+        <SchematicComparisonModal
+          isOpen={isSchematicOpen}
+          onClose={() => setIsSchematicOpen(false)}
+          teamId={selectedTeamId}
+          lang={lang}
+          onFocusPart={handleSelectPreset}
         />
       </div>
 

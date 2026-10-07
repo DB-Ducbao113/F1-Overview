@@ -12,6 +12,10 @@ import {
   generateWingsTexture,
   generateFloorTexture,
   generateWheelTexture,
+  generateSuspensionMirrorsTexture,
+  generateDiffuserRainLightTexture,
+  generateCockpitTexture,
+  generateHaloTexture,
 } from './F1CarTextures';
 
 interface F1Car3DModelProps {
@@ -118,6 +122,19 @@ const RealF1CarMesh: React.FC<{
     [teamId, livery, sponsors],
   );
   const floorTex = useMemo(() => generateFloorTexture(teamId, livery), [teamId, livery]);
+  const suspensionMirrorsTex = useMemo(
+    () => generateSuspensionMirrorsTexture(teamId, livery),
+    [teamId, livery],
+  );
+  const diffuserRainLightTex = useMemo(
+    () => generateDiffuserRainLightTexture(teamId, livery),
+    [teamId, livery],
+  );
+  const cockpitTex = useMemo(() => generateCockpitTexture(teamId, livery), [teamId, livery]);
+  const haloTex = useMemo(
+    () => generateHaloTexture(teamId, livery, sponsors),
+    [teamId, livery, sponsors],
+  );
 
   // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
   const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.png');
@@ -156,51 +173,60 @@ const RealF1CarMesh: React.FC<{
           });
         }
         // 2. Cockpit Interior & Steering Wheel (002)
+        // PCU-8D OLED telemetry display, RPM LEDs, colorful cockpit pushbuttons & 6-point racing harness
         else if (matName.includes('002')) {
-          const orig = originalMaterialsRef.current.get(matName) || currentMat;
           newMat = new THREE.MeshStandardMaterial({
-            map: orig?.map || null,
-            color: new THREE.Color('#141619'),
-            roughness: 0.85,
-            metalness: 0.15,
+            map: cockpitTex,
+            roughness: 0.75,
+            metalness: 0.25,
+            envMapIntensity: 1.2,
           });
         }
         // 3. Titanium Halo Safety Cell (008)
+        // Grade 5 titanium structure with aerodynamic upper fairing painted in team livery
         else if (matName.includes('008')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: null,
-            color: new THREE.Color(livery.haloColor),
-            roughness: livery.haloRoughness,
-            metalness: livery.haloMetalness,
+          newMat = new THREE.MeshPhysicalMaterial({
+            map: haloTex,
+            color: new THREE.Color('#ffffff'),
+            roughness: livery.haloRoughness ?? 0.2,
+            metalness: livery.haloMetalness ?? 0.45,
+            clearcoat: (livery.bodyClearcoat ?? 1.0) * 0.7,
+            clearcoatRoughness: 0.1,
             envMapIntensity: 1.6,
           });
         }
         // 4. Aerodynamic Underfloor & Chassis (001 - Prim 3)
-        // Clean carbon fiber twill weave with ZERO misplaced sponsor graphics or red bleed
+        // Venturi ground-effect floor with colored edge fences, Jabroc reference plank & golden titanium skids
         else if (matName.includes('001')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: floorTex,
-            roughness: 0.35,
-            metalness: 0.2,
-            envMapIntensity: 1.0,
-          });
-        }
-        // 5. Suspension Wishbones, Pushrods & Mirrors (003 - Prim 0)
-        else if (matName.includes('003')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: floorTex,
-            roughness: 0.4,
-            metalness: 0.35,
-            envMapIntensity: 1.2,
-          });
-        }
-        // 6. Rear Aero Deflectors & Diffuser (009 - Prim 4)
-        else if (matName.includes('009')) {
           newMat = new THREE.MeshStandardMaterial({
             map: floorTex,
             roughness: 0.35,
             metalness: 0.25,
             envMapIntensity: 1.1,
+          });
+        }
+        // 5. Suspension Wishbones, Pushrods & Wing Mirrors (003 - Prim 0)
+        // Authentic team livery mirror housings, aero accent pinstripes, reflection glass, titanium rod ends
+        else if (matName.includes('003')) {
+          newMat = new THREE.MeshPhysicalMaterial({
+            map: suspensionMirrorsTex,
+            roughness: 0.25,
+            metalness: 0.4,
+            clearcoat: livery.bodyClearcoat ?? 1.0,
+            clearcoatRoughness: 0.08,
+            envMapIntensity: 1.4,
+          });
+        }
+        // 6. Rear Aero Deflectors & Diffuser (009 - Prim 4)
+        // High-intensity FIA 24-LED Ruby Rain Light, Inconel exhaust heat-bluing, team-colored diffuser strakes
+        else if (matName.includes('009')) {
+          newMat = new THREE.MeshPhysicalMaterial({
+            map: diffuserRainLightTex,
+            roughness: 0.3,
+            metalness: 0.35,
+            clearcoat: 0.4,
+            clearcoatRoughness: 0.1,
+            envMapIntensity: 1.3,
           });
         }
         // 7. Wings Assembly: Front Wing Flaps & Rear Wing (005 - Prim 10)
@@ -264,8 +290,25 @@ const RealF1CarMesh: React.FC<{
       wingsTex.dispose();
       floorTex.dispose();
       wheelTex.dispose();
+      cockpitTex.dispose();
+      haloTex.dispose();
+      suspensionMirrorsTex.dispose();
+      diffuserRainLightTex.dispose();
     };
-  }, [clonedScene, teamId, livery, noseTex, bodyworkTex, wingsTex, floorTex, wheelTex]);
+  }, [
+    clonedScene,
+    teamId,
+    livery,
+    noseTex,
+    bodyworkTex,
+    wingsTex,
+    floorTex,
+    wheelTex,
+    cockpitTex,
+    haloTex,
+    suspensionMirrorsTex,
+    diffuserRainLightTex,
+  ]);
 
   return (
     <primitive
