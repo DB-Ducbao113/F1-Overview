@@ -32,6 +32,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
     ...seasonResults.filter((race) => race.status === 'completed').map((race) => race.round),
   ]);
   const nextRace = CALENDAR_2026.find((gp) => !completedRounds.has(gp.round));
+  const sprintCount = CALENDAR_2026.filter((gp) => gp.hasSprint).length;
   const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 16);
 
   // State cho Practice Modal
@@ -84,8 +85,8 @@ export const RaceCalendar: React.FC = React.memo(() => {
           </h3>
           <p className="text-xs text-studio-500 font-medium">
             {isVi
-              ? `${completedRounds.size} / ${CALENDAR_2026.length} chặng đã đua · 6 Cuối Tuần Đua Sprint`
-              : `${completedRounds.size} / ${CALENDAR_2026.length} rounds completed · 6 Sprint Weekends`}
+              ? `${completedRounds.size} / ${CALENDAR_2026.length} chặng đã đua · ${sprintCount} Cuối Tuần Đua Sprint`
+              : `${completedRounds.size} / ${CALENDAR_2026.length} rounds completed · ${sprintCount} Sprint Weekends`}
           </p>
         </div>
         {nextRace ? (
@@ -252,8 +253,10 @@ export const RaceCalendar: React.FC = React.memo(() => {
 
                   {/* Sessions grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                    {Object.entries(gp.sessions).map(([key, session]) => {
-                      if (!session) return null;
+                    {(gp.hasSprint
+                      ? (['fp1', 'sprintQualifying', 'sprint', 'qualifying', 'race'] as const)
+                      : (['fp1', 'fp2', 'fp3', 'qualifying', 'race'] as const)
+                    ).map((key) => {
                       const practiceDataForRound = PRACTICE_RESULTS_2026[gp.round];
                       const qualifyingDataForRound = QUALIFYING_RESULTS_2026[gp.round];
 
@@ -262,6 +265,28 @@ export const RaceCalendar: React.FC = React.memo(() => {
                         key === 'qualifying' || key === 'sprintQualifying';
                       const isSprintSession = key === 'sprint';
                       const isRaceSession = key === 'race';
+
+                      let session = gp.sessions[key];
+                      if (
+                        !session &&
+                        isPracticeSession &&
+                        practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3']
+                      ) {
+                        const pSession =
+                          practiceDataForRound.sessions[key as 'fp1' | 'fp2' | 'fp3']!;
+                        session = {
+                          name:
+                            key === 'fp1'
+                              ? 'Practice 1'
+                              : key === 'fp2'
+                                ? 'Practice 2'
+                                : 'Practice 3',
+                          dateStr: pSession.dateStr,
+                          timeStr: key === 'fp1' ? '12:30' : key === 'fp2' ? '16:00' : '12:30',
+                          status: pSession.status,
+                        };
+                      }
+                      if (!session) return null;
 
                       const practiceSession = isPracticeSession
                         ? practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3']
@@ -395,7 +420,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           {isFinishedPractice && (
                             <span className="text-[9px] text-sky-700 font-bold block pt-1 border-t border-sky-200/60 flex items-center gap-1">
                               <Timer className="w-2.5 h-2.5 text-sky-600" />
-                              {isVi ? 'Xem BXH Practice' : 'View Practice Table'}
+                              {isVi ? `Xem BXH ${key.toUpperCase()}` : `View ${key.toUpperCase()} Table`}
                             </span>
                           )}
 
