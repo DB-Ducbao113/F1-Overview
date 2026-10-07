@@ -53,5 +53,25 @@ describe('CircuitDetailModal Component', () => {
     expect(html).toContain('DRS 2');
     expect(html).toContain('DRS 3');
     expect(html).toContain('DRS 4');
+    expect(html).toContain('Live Radar');
+  });
+});
+
+describe('CircuitLiveRadar Component', () => {
+  it('renders radar HUD with drivers, speed gauge, and playback controls', async () => {
+    const { CircuitLiveRadar, RADAR_DRIVERS } = await import('./CircuitLiveRadar');
+    const circuit = getCircuitByRound(1)!;
+
+    const html = renderToStaticMarkup(<CircuitLiveRadar circuit={circuit} lang="en" />);
+    expect(html).toContain('LIVE RADAR');
+    expect(html).toContain('Live Speed');
+    expect(html).toContain('Gear');
+    expect(html).toContain('DRS');
+    expect(html).toContain('VER');
+    expect(html).toContain('LEC');
+    expect(html).toContain('NOR');
+    expect(html).toContain('HAM');
+    expect(html).toContain('RUS');
+    expect(RADAR_DRIVERS).toHaveLength(5);
   });
 });

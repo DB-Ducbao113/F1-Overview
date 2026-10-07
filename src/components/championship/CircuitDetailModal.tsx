@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CircuitData } from '../../types/circuit';
-import { X, Trophy, MapPin, Compass, Activity, Zap } from 'lucide-react';
+import { X, Trophy, MapPin, Compass, Activity, Zap, Radio } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { CircuitLiveRadar } from './CircuitLiveRadar';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -12,6 +13,7 @@ interface CircuitDetailModalProps {
 export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit, onClose }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
+  const [isLiveRadarActive, setIsLiveRadarActive] = useState<boolean>(false);
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
@@ -75,109 +77,157 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
         {/* Modal Body: Responsive 2-column layout on desktop (lg:) so map and stats fit without scrolling */}
         <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column (7 cols): Map + Essential Telemetry Grid */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* Main Visual Track Map Display */}
-            <div className="relative rounded-2xl bg-gradient-to-b from-studio-900 to-studio-950 border border-studio-800/80 p-3 sm:p-5 overflow-hidden flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px]">
-              {/* Background Grid Pattern */}
-              <div
-                className="absolute inset-0 opacity-15 pointer-events-none"
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
-                  backgroundSize: '20px 20px',
-                }}
-              />
-
-              {/* Glowing Track Path SVG */}
-              <div className="relative w-full max-w-[460px] aspect-[16/11] flex items-center justify-center">
-                <svg
-                  viewBox={circuit.viewBox}
-                  className="w-full h-full filter drop-shadow-[0_0_14px_rgba(255,24,1,0.55)]"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {/* Track shadow / background glow */}
-                  <path
-                    d={circuit.svgPath}
-                    fill="none"
-                    stroke="#ff1801"
-                    strokeWidth="20"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="opacity-25 blur-xs"
-                  />
-
-                  {/* Outer kerb border */}
-                  <path
-                    d={circuit.svgPath}
-                    fill="none"
-                    stroke="#ffffff"
-                    strokeWidth="14"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="opacity-85"
-                  />
-
-                  {/* Asphalt main track line */}
-                  <path
-                    d={circuit.svgPath}
-                    fill="none"
-                    stroke="#161922"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-
-                  {/* Glowing speed vector line */}
-                  <path
-                    d={circuit.svgPath}
-                    fill="none"
-                    stroke="#ff1801"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeDasharray="16 4"
-                    className="animate-pulse"
-                  />
-
-                  {/* Start / Finish Marker */}
-                  <circle
-                    cx={circuit.startFinish.x}
-                    cy={circuit.startFinish.y}
-                    r="14"
-                    fill="#ff1801"
-                    className="opacity-60 animate-pulse"
-                  />
-                  <circle
-                    cx={circuit.startFinish.x}
-                    cy={circuit.startFinish.y}
-                    r="8"
-                    fill="#ffffff"
-                    stroke="#ff1801"
-                    strokeWidth="3.5"
-                  />
-                </svg>
-
-                {/* Start / Finish Tag Floating */}
-                <div className="absolute top-2 left-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
-                  <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
-                  <span>{isVi ? 'Vạch Xuất Phát / Đích' : 'Start / Finish'}</span>
-                </div>
-
-                {/* Direction Indicator */}
-                <div className="absolute top-2 right-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
-                  <Compass className="w-3 h-3 text-amber-400" />
-                  <span>
-                    {circuit.telemetry.direction === 'clockwise'
-                      ? isVi
-                        ? 'Thuận chiều kim đồng hồ ↻'
-                        : 'Clockwise ↻'
-                      : isVi
-                        ? 'Ngược chiều kim đồng hồ ↺'
-                        : 'Anti-clockwise ↺'}
+          <div className="lg:col-span-7 space-y-3.5">
+            {/* Header bar above map with Mode toggle */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-studio-400">
+                  {isVi ? 'Sơ Đồ Đường Đua' : 'Track Layout'}
+                </span>
+                {isLiveRadarActive && (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    LIVE TELEMETRY
                   </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsLiveRadarActive((prev) => !prev)}
+                className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                  isLiveRadarActive
+                    ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.4)]'
+                    : 'bg-studio-850 hover:bg-studio-800 text-studio-300 border border-studio-700/60 hover:text-white'
+                }`}
+                title={
+                  isLiveRadarActive
+                    ? isVi
+                      ? 'Chuyển sang bản đồ tĩnh'
+                      : 'Switch to static track map'
+                    : isVi
+                      ? 'Bật mô phỏng radar tay đua trực tiếp'
+                      : 'Enable live driver radar simulation'
+                }
+              >
+                <Radio className={`w-3.5 h-3.5 ${isLiveRadarActive ? 'animate-pulse text-white' : 'text-f1red'}`} />
+                <span>
+                  {isLiveRadarActive
+                    ? isVi
+                      ? 'Bản Đồ Tĩnh'
+                      : 'Static View'
+                    : isVi
+                      ? '📡 Live Radar F1'
+                      : '📡 Live Radar'}
+                </span>
+              </button>
+            </div>
+
+            {/* Main Visual Track Map Display or Live Radar Component */}
+            {isLiveRadarActive ? (
+              <CircuitLiveRadar circuit={circuit} lang={lang} />
+            ) : (
+              <div className="relative rounded-2xl bg-gradient-to-b from-studio-900 to-studio-950 border border-studio-800/80 p-3 sm:p-5 overflow-hidden flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px]">
+                {/* Background Grid Pattern */}
+                <div
+                  className="absolute inset-0 opacity-15 pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
+                    backgroundSize: '20px 20px',
+                  }}
+                />
+
+                {/* Glowing Track Path SVG */}
+                <div className="relative w-full max-w-[460px] aspect-[16/11] flex items-center justify-center">
+                  <svg
+                    viewBox={circuit.viewBox}
+                    className="w-full h-full filter drop-shadow-[0_0_14px_rgba(255,24,1,0.55)]"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {/* Track shadow / background glow */}
+                    <path
+                      d={circuit.svgPath}
+                      fill="none"
+                      stroke="#ff1801"
+                      strokeWidth="20"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="opacity-25 blur-xs"
+                    />
+
+                    {/* Outer kerb border */}
+                    <path
+                      d={circuit.svgPath}
+                      fill="none"
+                      stroke="#ffffff"
+                      strokeWidth="14"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="opacity-85"
+                    />
+
+                    {/* Asphalt main track line */}
+                    <path
+                      d={circuit.svgPath}
+                      fill="none"
+                      stroke="#161922"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+
+                    {/* Glowing speed vector line */}
+                    <path
+                      d={circuit.svgPath}
+                      fill="none"
+                      stroke="#ff1801"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeDasharray="16 4"
+                      className="animate-pulse"
+                    />
+
+                    {/* Start / Finish Marker */}
+                    <circle
+                      cx={circuit.startFinish.x}
+                      cy={circuit.startFinish.y}
+                      r="14"
+                      fill="#ff1801"
+                      className="opacity-60 animate-pulse"
+                    />
+                    <circle
+                      cx={circuit.startFinish.x}
+                      cy={circuit.startFinish.y}
+                      r="8"
+                      fill="#ffffff"
+                      stroke="#ff1801"
+                      strokeWidth="3.5"
+                    />
+                  </svg>
+
+                  {/* Start / Finish Tag Floating */}
+                  <div className="absolute top-2 left-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
+                    <span>{isVi ? 'Vạch Xuất Phát / Đích' : 'Start / Finish'}</span>
+                  </div>
+
+                  {/* Direction Indicator */}
+                  <div className="absolute top-2 right-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
+                    <Compass className="w-3 h-3 text-amber-400" />
+                    <span>
+                      {circuit.telemetry.direction === 'clockwise'
+                        ? isVi
+                          ? 'Thuận chiều kim đồng hồ ↻'
+                          : 'Clockwise ↻'
+                        : isVi
+                          ? 'Ngược chiều kim đồng hồ ↺'
+                          : 'Anti-clockwise ↺'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Quick Telemetry Grid (4 cards) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
