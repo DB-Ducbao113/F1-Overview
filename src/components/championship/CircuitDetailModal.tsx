@@ -3,10 +3,10 @@ import { createPortal } from 'react-dom';
 import { CircuitData } from '../../types/circuit';
 import { X, Trophy, MapPin, Compass, Activity, Zap, Radio, Globe } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { CircuitLiveRadar } from './CircuitLiveRadar';
 import { CircuitRealWorldMap } from './CircuitRealWorldMap';
+import { OpenF1LiveMap } from './OpenF1LiveMap';
 
-type MapMode = 'real' | 'vector' | 'radar';
+type MapMode = 'real' | 'openf1' | 'vector';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -114,16 +114,16 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
 
                 <button
                   type="button"
-                  onClick={() => setMapMode('radar')}
+                  onClick={() => setMapMode('openf1')}
                   className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'radar'
+                    mapMode === 'openf1'
                       ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
                       : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
                   }`}
-                  title={isVi ? 'Mô phỏng radar tay đua trực tiếp' : 'Live Driver Radar Tracking'}
+                  title={isVi ? 'Live GPS xe đua thật từ OpenF1 API' : 'Real-time GPS tracker from OpenF1 API'}
                 >
-                  <Radio className={`w-3.5 h-3.5 ${mapMode === 'radar' ? 'animate-pulse text-white' : ''}`} />
-                  <span>{isVi ? '📡 Live Radar' : '📡 Live Radar'}</span>
+                  <Radio className={`w-3.5 h-3.5 ${mapMode === 'openf1' ? 'animate-pulse text-white' : ''}`} />
+                  <span>{isVi ? '🔴 OpenF1 Live' : '🔴 OpenF1 Live'}</span>
                 </button>
               </div>
 
@@ -134,10 +134,10 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                 </span>
               )}
 
-              {mapMode === 'radar' && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  LIVE TELEMETRY
+              {mapMode === 'openf1' && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-f1red/20 text-f1red border border-f1red/30 shadow-[0_0_8px_rgba(255,24,1,0.3)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-f1red animate-ping" />
+                  OPENF1 TELEMETRY
                 </span>
               )}
             </div>
@@ -147,8 +147,8 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
               <CircuitRealWorldMap circuit={circuit} lang={lang} />
             )}
 
-            {mapMode === 'radar' && (
-              <CircuitLiveRadar circuit={circuit} lang={lang} />
+            {mapMode === 'openf1' && (
+              <OpenF1LiveMap lang={lang} />
             )}
 
             {mapMode === 'vector' && (

@@ -53,7 +53,7 @@ describe('CircuitDetailModal Component', () => {
     expect(html).toContain('DRS 2');
     expect(html).toContain('DRS 3');
     expect(html).toContain('DRS 4');
-    expect(html).toContain('Live Radar');
+    expect(html).toContain('OpenF1 Live');
     expect(html).toContain('Bản Đồ Thực Tế');
   });
 });
@@ -69,6 +69,19 @@ describe('CircuitRealWorldMap Component', () => {
     expect(html).toContain('Google Maps');
     expect(CIRCUIT_COORDINATES['albert-park']).toBeDefined();
     expect(CIRCUIT_COORDINATES['albert-park'].lat).toBeCloseTo(-37.8497, 3);
+  });
+});
+
+describe('OpenF1LiveMap Component', () => {
+  it('renders OpenF1 tracker with replay telemetry, race selector, and openf1 credit', async () => {
+    const { OpenF1LiveMap } = await import('./OpenF1LiveMap');
+
+    const html = renderToStaticMarkup(<OpenF1LiveMap lang="en" />);
+    expect(html).toContain('REPLAY TELEMETRY');
+    expect(html).toContain('Australian GP 2024');
+    expect(html).toContain('OpenF1.org');
+    expect(html).toContain('00:00');
+    expect(html).toContain('90:00');
   });
 });
 

@@ -24,6 +24,12 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/jolpica/, ''),
         headers: { 'User-Agent': 'F1-Hub/1.0' },
       },
+      '/api/openf1': {
+        target: 'https://api.openf1.org/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openf1/, ''),
+        headers: { 'User-Agent': 'F1-Overview/1.0' },
+      },
     },
   },
   build: {
