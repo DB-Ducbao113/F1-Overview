@@ -228,11 +228,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                 {/* Circuit & Date */}
                 <div className="flex items-center gap-3 sm:gap-6">
                   {/* Circuit track thumbnail mini preview */}
-                  <CircuitTrackMap
-                    round={gp.round}
-                    variant="thumbnail"
-                    onThumbnailClick={() => toggleExpand(gp.round)}
-                  />
+                  <CircuitTrackMap round={gp.round} variant="thumbnail" />
 
                   <div className="text-right hidden sm:block">
                     <span className="font-bold text-xs text-studio-900 block">
