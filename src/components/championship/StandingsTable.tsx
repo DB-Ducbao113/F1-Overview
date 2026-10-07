@@ -19,7 +19,6 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
   const strings = t[lang].championship;
 
   const rawStandings = getStandings(season);
-  const isCalculated = Boolean(calculatedStandings[season]);
   const activeDrivers = calculatedStandings[season]?.drivers || rawStandings.drivers;
   const activeConstructors = calculatedStandings[season]?.constructors || rawStandings.constructors;
   const isOngoing = rawStandings.status === 'ongoing';
@@ -32,10 +31,10 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
   const leaderDriver = activeDrivers[0];
   const leaderConstructor = activeConstructors[0];
 
-  const dynamicLeaderTitle =
-    isOngoing && leaderDriver && leaderConstructor
-      ? `CURRENT CHAMPIONSHIP LEADER: ${(leaderDriver.driverName || '').toUpperCase()} (${leaderDriver.points || 0} PTS) · ${(leaderConstructor.teamName || '').toUpperCase()} (${leaderConstructor.points || 0} PTS)`
-      : rawStandings.leaderTitle || `${strings.title} ${season}`;
+  const leaderDriverColor = leaderDriver ? getTeamTextColor(leaderDriver.teamId, false) : '#18181b';
+  const leaderConstructorColor = leaderConstructor
+    ? getTeamTextColor(leaderConstructor.teamId, false)
+    : '#18181b';
 
   return (
     <div className="space-y-6">
@@ -43,20 +42,23 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
       <div
         className={`p-4 sm:p-5 rounded-2xl border transition-all ${
           isOngoing
-            ? 'bg-gradient-to-r from-emerald-950/20 via-studio-900 to-studio-950 text-white border-emerald-500/30'
-            : 'bg-white border-studio-200 text-studio-900 shadow-xs'
+            ? 'bg-gradient-to-r from-emerald-50/60 via-white to-white border-emerald-200/80 shadow-xs border-l-4 border-l-emerald-500'
+            : 'bg-white border-studio-200 text-studio-900 shadow-xs border-l-4 border-l-studio-300'
         }`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               {isOngoing ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black uppercase tracking-wider border border-emerald-500/30">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-wider border border-emerald-200">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+                  </span>
                   <span>{lang === 'vi' ? 'Mùa giải đang diễn ra' : 'Ongoing Season'}</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-100 text-studio-700 text-xs font-black uppercase tracking-wider border border-studio-200">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-100 text-studio-700 text-xs font-bold uppercase tracking-wider border border-studio-200">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>
                     {lang === 'vi' ? 'Kết quả chung cuộc chính thức' : 'Official Final Standings'}
@@ -64,46 +66,66 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                 </span>
               )}
 
-              {isCalculated && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30">
-                  ⚡{' '}
-                  {lang === 'vi'
-                    ? 'Động: Tính từ Race Results'
-                    : 'Dynamic: Calculated from Race Results'}
-                </span>
-              )}
-
               {rawStandings.lastUpdated && (
-                <span
-                  className={`inline-flex items-center gap-1 text-[11px] ${isOngoing ? 'text-studio-300' : 'text-studio-500'}`}
-                >
-                  <Clock className="w-3 h-3" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-studio-600 bg-studio-100 px-2.5 py-1 rounded-full border border-studio-200">
+                  <Clock className="w-3 h-3 text-studio-400" />
                   <span>
-                    {lang === 'vi' ? 'Cập nhật:' : 'Last updated:'} {rawStandings.lastUpdated}
+                    {lang === 'vi' ? 'Cập nhật:' : 'Updated:'} {rawStandings.lastUpdated}
                   </span>
                 </span>
               )}
             </div>
 
-            <h3
-              className={`font-display text-lg sm:text-xl font-black uppercase tracking-tight ${isOngoing ? 'text-white' : 'text-studio-950'}`}
-            >
-              {dynamicLeaderTitle}
-            </h3>
+            {isOngoing && leaderDriver && leaderConstructor ? (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-0.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-studio-500">
+                  {lang === 'vi' ? 'Dẫn đầu BXH:' : 'Championship Leaders:'}
+                </span>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {/* Driver Leader */}
+                  <span className="inline-flex items-center gap-1.5 font-bold text-sm sm:text-base text-studio-950">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
+                      style={{ backgroundColor: leaderDriverColor }}
+                    />
+                    <span style={{ color: leaderDriverColor }}>{leaderDriver.driverName}</span>
+                    <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {leaderDriver.points || 0} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+                    </span>
+                  </span>
+
+                  <span className="text-studio-300 hidden sm:inline">·</span>
+
+                  {/* Constructor Leader */}
+                  <span className="inline-flex items-center gap-1.5 font-bold text-sm sm:text-base text-studio-950">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
+                      style={{ backgroundColor: leaderConstructorColor }}
+                    />
+                    <span style={{ color: leaderConstructorColor }}>
+                      {leaderConstructor.teamName}
+                    </span>
+                    <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {leaderConstructor.points || 0} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-studio-950">
+                {rawStandings.leaderTitle || `${strings.title} ${season}`}
+              </h3>
+            )}
           </div>
 
           <a
             href={f1SourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all self-start sm:self-center shrink-0 ${
-              isOngoing
-                ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/40'
-                : 'bg-studio-100 hover:bg-studio-200 text-studio-800 border border-studio-200'
-            }`}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all self-start sm:self-center shrink-0 bg-studio-100 hover:bg-studio-200 text-studio-800 border border-studio-200 hover:border-studio-300 shadow-2xs"
           >
             <span>F1.com Official Source</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <ExternalLink className="w-3.5 h-3.5 text-studio-500" />
           </a>
         </div>
       </div>

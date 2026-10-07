@@ -2,7 +2,6 @@ import React from 'react';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { Palette, Check } from 'lucide-react';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 
 interface LiverySelectorProps {
@@ -27,28 +26,16 @@ const TEAMS_LIST: { id: TeamId; name: string }[] = [
 
 export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
   ({ selectedTeamId, onSelectTeam, lang }) => {
-    const currentLivery = getTeam3DLivery(selectedTeamId);
-
     return (
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between text-xs text-studio-400 font-bold uppercase tracking-wider px-1">
-          <span className="flex items-center gap-1.5 text-white">
-            <Palette className="w-3.5 h-3.5 text-f1red" />
-            {lang === 'vi' ? 'Chọn Đội Đua (11 Mẫu Tem 2026)' : 'Constructor Liveries'}
-          </span>
-          <div className="flex items-center gap-2">
-            <span
-              className="w-2.5 h-2.5 rounded-full shadow-xs"
-              style={{ backgroundColor: currentLivery.bodyColor }}
-            />
-            <span className="text-[11px] text-white font-bold truncate max-w-[200px] sm:max-w-xs font-mono">
-              {currentLivery.fullName} · {currentLivery.carModelName}
-            </span>
-          </div>
+      <div className="flex items-center gap-2 pt-1 border-t border-studio-850/80">
+        {/* Category Prefix Tag */}
+        <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-studio-400 shrink-0 pr-1">
+          <Palette className="w-3.5 h-3.5 text-f1red" />
+          <span>{lang === 'vi' ? 'Tem xe:' : 'Liveries:'}</span>
         </div>
 
         {/* Horizontal Scrollable Constructor Cards */}
-        <div className="flex items-center gap-2 overflow-x-auto py-1 px-1 custom-scrollbar">
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1 px-0.5 custom-scrollbar w-full">
           {TEAMS_LIST.map(({ id, name }) => {
             const team = TEAMS_DATA[id];
             const isSelected = selectedTeamId === id;
@@ -58,18 +45,26 @@ export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
                 key={id}
                 type="button"
                 onClick={() => onSelectTeam(id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer ${
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer select-none ${
                   isSelected
-                    ? 'bg-studio-900 text-white border-white/80 ring-2 ring-f1red shadow-xl scale-105'
-                    : 'bg-studio-950/80 text-studio-300 border-studio-800/80 hover:bg-studio-900 hover:text-white hover:border-studio-700'
+                    ? 'bg-studio-900 text-white shadow-lg ring-1 ring-white/40'
+                    : 'bg-studio-950/80 text-studio-400 border-studio-800/80 hover:bg-studio-900 hover:text-white hover:border-studio-700'
                 }`}
+                style={
+                  isSelected
+                    ? {
+                        borderColor: team.accentColor || team.primaryColor,
+                        boxShadow: `0 4px 14px ${team.primaryColor}24`,
+                      }
+                    : undefined
+                }
               >
                 {/* Official Team Logo Emblem */}
-                <ConstructorLogo teamId={id} size="sm" className="w-5 h-5 shrink-0" />
+                <ConstructorLogo teamId={id} size="sm" className="w-4 h-4 shrink-0" />
 
                 {/* Color swatch circle with split accent */}
                 <span
-                  className="w-3.5 h-3.5 rounded-full border border-black/40 shrink-0 relative overflow-hidden"
+                  className="w-3 h-3 rounded-full border border-black/50 shrink-0 relative overflow-hidden"
                   style={{ backgroundColor: team.primaryColor }}
                 >
                   <span
@@ -78,9 +73,18 @@ export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
                   />
                 </span>
 
-                <span>{name}</span>
+                <span
+                  className={isSelected ? 'text-white font-black' : 'text-studio-300 font-semibold'}
+                >
+                  {name}
+                </span>
 
-                {isSelected && <Check className="w-3.5 h-3.5 text-emerald-400 ml-0.5" />}
+                {isSelected && (
+                  <Check
+                    className="w-3.5 h-3.5 ml-0.5"
+                    style={{ color: team.accentColor || '#34d399' }}
+                  />
+                )}
               </button>
             );
           })}

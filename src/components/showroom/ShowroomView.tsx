@@ -7,7 +7,7 @@ import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
-import { ShowroomControlDock, StudioLightingMode } from './ShowroomControlDock';
+import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
@@ -19,7 +19,6 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
-import { f1AudioEngine } from '../../utils/f1AudioEngine';
 
 import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
@@ -99,18 +98,9 @@ export const ShowroomView: React.FC = () => {
 
   // Active Camera Preset
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
-
-  // 3D Visualizer settings
+  const [presetTrigger, setPresetTrigger] = useState<number>(0);
+  // 3D Visualizer auto-rotation
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
-
-  // Studio Lighting Mode (Direction 3): 'studio' | 'night_gp' | 'daylight'
-  const [lightingMode, setLightingMode] = useState<StudioLightingMode>('studio');
-
-  // Audio Engine State (Direction 2): Web Audio API V6 Turbo Hybrid
-  const [isAudioActive, setIsAudioActive] = useState<boolean>(false);
-
-  // Realistic 3D Sponsor Decals on 3D Car
-  const [showSponsors, setShowSponsors] = useState<boolean>(true);
 
   // Engineering Hotspots Visibility (Clean default view matching studio photo)
   const [showHotspots, setShowHotspots] = useState<boolean>(false);
@@ -125,37 +115,12 @@ export const ShowroomView: React.FC = () => {
     setShowHotspots((prev) => !prev);
   }, []);
 
-  const handleToggleSponsors = useCallback(() => {
-    setShowSponsors((prev) => !prev);
-  }, []);
-
   const handleToggleAutoRotate = useCallback(() => {
     setAutoRotate((prev) => !prev);
   }, []);
 
   const handleToggleWheelZoom = useCallback(() => {
     setEnableWheelZoom((prev) => !prev);
-  }, []);
-
-  const handleChangeLightingMode = useCallback((mode: StudioLightingMode) => {
-    setLightingMode(mode);
-  }, []);
-
-  // Stop audio when unmounting
-  useEffect(() => {
-    return () => {
-      f1AudioEngine.stop();
-    };
-  }, []);
-
-  const handleToggleAudio = useCallback(() => {
-    const isNowMuted = f1AudioEngine.toggleMute();
-    setIsAudioActive(!isNowMuted);
-  }, []);
-
-  const handleRevEngine = useCallback(() => {
-    f1AudioEngine.revUp(3.2);
-    setIsAudioActive(true);
   }, []);
 
   // Listen to window scroll to show Back to Top floating button
@@ -183,11 +148,13 @@ export const ShowroomView: React.FC = () => {
   const handleResetView = useCallback(() => {
     setActiveHotspot(null);
     setCameraPreset('overview');
+    setPresetTrigger((prev) => prev + 1);
     setAutoRotate(true);
   }, []);
 
   const handleSelectPreset = useCallback((preset: CameraPreset) => {
     setCameraPreset(preset);
+    setPresetTrigger((prev) => prev + 1);
     setActiveHotspot(null);
     setAutoRotate(false);
   }, []);
@@ -196,11 +163,6 @@ export const ShowroomView: React.FC = () => {
     setActiveHotspot(hotspot);
     setCameraPreset(null);
     setAutoRotate(false);
-    // When inspecting Power Unit (Hotspot 3), trigger authentic engine rev
-    if (hotspot.id === 'power_unit') {
-      f1AudioEngine.revUp(3.0);
-      setIsAudioActive(true);
-    }
   }, []);
 
   const team = useMemo(() => TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari, [selectedTeamId]);
@@ -209,44 +171,38 @@ export const ShowroomView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
-      {/* ── Sub-Navigation Bar ── */}
-      <div className="bg-studio-900/95 backdrop-blur-md border-b border-studio-800 sticky top-16 z-30">
-        <div className="page-container flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3">
-          <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-f1red flex items-center justify-center font-display text-xs font-black text-white shadow-md shadow-f1red/30">
-              3D
-            </span>
-            <div>
-              <h1 className="font-display text-lg sm:text-xl font-black uppercase tracking-wider text-white flex items-center gap-2">
-                {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
-                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/70 border border-emerald-700/80 px-2 py-0.5 rounded-full">
+      {/* ── Unified Showroom Header & Constructor Livery Selector Bar ── */}
+      <div className="bg-studio-950/95 backdrop-blur-xl border-b border-studio-800/80 sticky top-16 z-30 shadow-md">
+        <div className="page-container py-2.5 space-y-2">
+          {/* Top Row: Title, Refined Description & Dossier Quick Action */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-7 h-7 rounded-lg bg-f1red flex items-center justify-center font-display text-[11px] font-black text-white shadow-md shadow-f1red/30 shrink-0">
+                3D
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider text-white">
+                  {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
+                </h1>
+                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
                   2026 SPEC
                 </span>
-              </h1>
-              <p className="text-xs text-studio-400">
-                {lang === 'vi'
-                  ? 'Mô hình xe F1 khí động học chân thực · 6 Điểm tương tác linh kiện · Đổi màu tem 11 đội đua'
-                  : 'Authentic ground-effect F1 aerodynamics · 6 Interactive hotspots · 11 Constructor liveries'}
-              </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <button
+                type="button"
+                onClick={scrollToDossier}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
+              >
+                <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Technical Dossier'}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-f1red" />
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={scrollToDossier}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-800 hover:bg-studio-700 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/60 cursor-pointer"
-            >
-              <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Dossier'}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-f1red" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Constructor Livery Quick-Selector Ribbon ── */}
-      <div className="bg-studio-950 border-b border-studio-800/80 py-2.5 px-3 sm:px-6 shadow-sm z-20">
-        <div className="max-w-7xl mx-auto">
+          {/* Streamlined Livery Selector Tabs */}
           <LiverySelector
             selectedTeamId={selectedTeamId}
             onSelectTeam={handleSelectTeam}
@@ -290,25 +246,15 @@ export const ShowroomView: React.FC = () => {
           </div>
         </div>
 
-        {/* Top Right Unified Control Dock (Camera Presets, Lighting, Audio, Toggles, Wheel Mode, Zoom) */}
+        {/* Top Right Compact Control Dock (Camera Presets & Interactive Tools) */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
           <ShowroomControlDock
             cameraPreset={cameraPreset}
             onSelectPreset={handleSelectPreset}
             autoRotate={autoRotate}
             onToggleAutoRotate={handleToggleAutoRotate}
-            enableWheelZoom={enableWheelZoom}
-            onToggleWheelZoom={handleToggleWheelZoom}
-            onZoom={handleZoom}
             onResetView={handleResetView}
             lang={lang}
-            isAudioActive={isAudioActive}
-            onToggleAudio={handleToggleAudio}
-            onRevEngine={handleRevEngine}
-            lightingMode={lightingMode}
-            onChangeLightingMode={handleChangeLightingMode}
-            showSponsors={showSponsors}
-            onToggleSponsors={handleToggleSponsors}
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
           />
@@ -339,7 +285,7 @@ export const ShowroomView: React.FC = () => {
             <Environment preset="city" />
 
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage teamId={selectedTeamId} />
+            <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 
             {/* F1 3D Car Model with Suspense Loading HUD */}
             <Suspense fallback={<Showroom3DLoader />}>
@@ -366,6 +312,7 @@ export const ShowroomView: React.FC = () => {
             <CameraController
               activeHotspot={activeHotspot}
               cameraPreset={cameraPreset}
+              presetTrigger={presetTrigger}
               autoRotate={autoRotate}
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
@@ -374,7 +321,7 @@ export const ShowroomView: React.FC = () => {
           </Canvas>
         </ErrorBoundary>
 
-        {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset) ── */}
+        {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
         <ShowroomQuickHUD
           enableWheelZoom={enableWheelZoom}
           onToggleWheelZoom={handleToggleWheelZoom}
@@ -382,6 +329,8 @@ export const ShowroomView: React.FC = () => {
           onResetView={handleResetView}
           autoRotate={autoRotate}
           onToggleAutoRotate={handleToggleAutoRotate}
+          cameraPreset={cameraPreset}
+          onSelectPreset={handleSelectPreset}
           lang={lang}
         />
 

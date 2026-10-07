@@ -32,12 +32,13 @@ export const t = {
       engine: 'Động cơ',
     },
     footer: {
-      desc: 'Ground Effect Hub — Nền tảng kỹ thuật 3D, dữ liệu trực tiếp và lưu trữ hình ảnh Formula 1 phi thương mại.',
+      desc: 'Ground Effect Hub — Nền tảng mô phỏng kỹ thuật 3D, dữ liệu chặng đua thời gian thực và không gian lưu trữ di sản Formula 1 đỉnh cao.',
       colExplore: 'Khám Phá',
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
-        'Trang web phi thương mại được xây dựng phục vụ mục đích nghiên cứu công nghệ và tôn vinh thể thao. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan là tài sản của Formula One Licensing B.V.',
-      copyright: '© 2026 Ground Effect Hub. Tác giả: BaoBungBu. Fan tribute phi thương mại.',
+        'Dự án phi lợi nhuận được phát triển độc lập nhằm mục đích nghiên cứu công nghệ khí động học và tôn vinh thể thao tốc độ. Formula 1, F1, Grand Prix cùng các thương hiệu và tài sản trí tuệ liên quan thuộc quyền sở hữu của Formula One Licensing B.V. và các đội đua chính thức.',
+      copyright:
+        '© 2026 Ground Effect Hub · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
     },
   },
   en: {
@@ -73,12 +74,13 @@ export const t = {
       engine: 'Power Unit',
     },
     footer: {
-      desc: 'Ground Effect Hub — Non-commercial 3D technical showcase, championship telemetry, and racing archive for motorsport enthusiasts.',
-      colExplore: 'Navigation',
+      desc: 'Ground Effect Hub — An interactive 3D engineering platform, real-time championship telemetry, and heritage archive celebrating the pinnacle of Formula 1.',
+      colExplore: 'Explore',
       colLegal: 'Attribution & Provenance',
       disclaimer:
-        'This website is an independent non-commercial project created for educational and sports appreciation purposes. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trademarks of Formula One Licensing B.V.',
-      copyright: '© 2026 Ground Effect Hub. Created by BaoBungBu. Non-commercial fan tribute.',
+        'An independent, non-commercial platform built for aerodynamic research, engineering exploration, and motorsport appreciation. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks are trademarks of Formula One Licensing B.V. and their respective constructors.',
+      copyright:
+        '© 2026 Ground Effect Hub · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
     },
   },
 };

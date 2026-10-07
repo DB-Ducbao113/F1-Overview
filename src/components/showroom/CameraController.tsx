@@ -5,11 +5,25 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { HotspotItem } from '../../data/showroom/hotspotsData';
 
-export type CameraPreset = 'overview' | 'front' | 'cockpit' | 'rear' | 'top';
+export type CameraPreset =
+  | 'overview'
+  | 'pano_branding'
+  | 'pano_technical'
+  | 'pano_drivers'
+  | 'pano_achievements'
+  | 'branding'
+  | 'technical'
+  | 'drivers'
+  | 'achievements'
+  | 'front'
+  | 'cockpit'
+  | 'rear'
+  | 'top';
 
 interface CameraControllerProps {
   activeHotspot: HotspotItem | null;
   cameraPreset?: CameraPreset | null;
+  presetTrigger?: number; // Increment to force re-transition even if same preset is clicked
   autoRotate: boolean;
   enableWheelZoom?: boolean;
   zoomTrigger?: number; // Increment to trigger programmatic zoom
@@ -20,11 +34,56 @@ const PRESET_VIEWS: Record<
   CameraPreset,
   { pos: [number, number, number]; target: [number, number, number] }
 > = {
-  overview: { pos: [3.2, 1.6, -3.4], target: [0, 0.42, 0] },
-  front: { pos: [0, 0.8, -3.7], target: [0, 0.3, -1.8] },
-  cockpit: { pos: [0.8, 1.1, -0.6], target: [0, 0.55, -0.2] },
-  rear: { pos: [0, 1.25, 3.9], target: [0, 0.65, 1.8] },
-  top: { pos: [0.01, 5.8, 0], target: [0, 0.2, 0] },
+  // ── 1. Toàn Cảnh 4 Vách Triển Lãm (Cinematic Panoramas: Car + Illuminated Wall) ──
+  pano_branding: {
+    // Vách Logo (Sau xe): Góc 3/4 trước xe nhìn về toàn bộ vách Logo (chuẩn cadillac.jpg)
+    pos: [3.3, 1.45, -3.2],
+    target: [0, 1.4, 2.2],
+  },
+  pano_technical: {
+    // Vách Kỹ Thuật (Trước xe): Góc 3/4 sau xe nhìn về toàn bộ vách Thông số kỹ thuật F1
+    pos: [-3.3, 1.5, 3.2],
+    target: [0, 1.4, -2.2],
+  },
+  pano_drivers: {
+    // Vách Tay Đua (Trái xe): Nhìn từ mạn phải qua toàn bộ xe sang vách Danh sách tay đua
+    pos: [3.8, 1.6, 0.4],
+    target: [-2.6, 1.7, 0],
+  },
+  pano_achievements: {
+    // Vách Thành Tích (Phải xe): Nhìn từ mạn trái qua toàn bộ xe sang vách Kỷ lục thành tích
+    pos: [-3.8, 1.6, -0.4],
+    target: [2.6, 1.7, 0],
+  },
+
+  // ── 2. Trực Diện Đọc Bảng 4 Vách (Unobstructed Full-Frame Board View) ──
+  branding: {
+    // Đứng chính diện nhìn thẳng toàn cảnh bảng Logo (cự ly 6.6m, bao quát 7.8m chiều ngang)
+    pos: [0, 2.55, -0.8],
+    target: [0, 2.55, 5.8],
+  },
+  technical: {
+    // Đứng chính diện nhìn thẳng toàn cảnh bảng Kỹ thuật (cự ly 6.6m, bao quát 7.8m)
+    pos: [0, 2.55, 0.8],
+    target: [0, 2.55, -5.8],
+  },
+  drivers: {
+    // Đứng chính diện nhìn thẳng bảng Danh sách tay đua (cự ly 6.6m, bao quát 8.0m)
+    pos: [-0.6, 2.55, 0],
+    target: [-7.2, 2.55, 0],
+  },
+  achievements: {
+    // Đứng chính diện nhìn thẳng bảng Thành tích (cự ly 6.6m, bao quát 8.0m)
+    pos: [0.6, 2.55, 0],
+    target: [7.2, 2.55, 0],
+  },
+
+  // ── 3. Góc Chi Tiết Xe Đua (Car Focus Presets) ──
+  overview: { pos: [2.8, 1.4, -2.8], target: [0, 0.42, 0] },
+  front: { pos: [0, 0.85, -2.8], target: [0, 0.35, -0.6] },
+  cockpit: { pos: [0.75, 1.05, -0.5], target: [0, 0.52, -0.1] },
+  rear: { pos: [0, 1.15, 2.9], target: [0, 0.55, 0.6] },
+  top: { pos: [0.01, 5.4, 0], target: [0, 0.2, 0] },
 };
 
 const DEFAULT_POS = new THREE.Vector3(...PRESET_VIEWS.overview.pos);
@@ -34,6 +93,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
   ({
     activeHotspot,
     cameraPreset,
+    presetTrigger = 0,
     autoRotate,
     enableWheelZoom = false, // Default false: mouse wheel scrolls webpage, doesn't trap user
     zoomTrigger = 0,
@@ -58,7 +118,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         desiredTarget.current.set(...p.target);
         isTransitioning.current = true;
       }
-    }, [activeHotspot, cameraPreset]);
+    }, [activeHotspot, cameraPreset, presetTrigger]);
 
     // Handle programmatic Zoom In / Zoom Out triggered from UI HUD buttons
     useEffect(() => {
@@ -104,7 +164,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         dampingFactor={0.06}
         maxPolarAngle={Math.PI / 2 + 0.02} // Prevent camera going below floor
         minDistance={0.8}
-        maxDistance={8.5}
+        maxDistance={14.0}
         enableZoom={enableWheelZoom} // If false, mouse wheel scrolls web page naturally
         autoRotate={autoRotate && !activeHotspot}
         autoRotateSpeed={0.8}

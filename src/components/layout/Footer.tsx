@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -14,13 +15,8 @@ export const Footer: React.FC = React.memo(() => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand Info */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-8 rounded-full border-2 border-f1red flex items-center justify-center bg-white">
-                <span className="text-[10px] font-black text-studio-950">F1</span>
-              </span>
-              <span className="font-display text-lg uppercase tracking-wider font-bold text-white">
-                Ground Effect Hub
-              </span>
+            <div className="mb-4">
+              <BrandLogo size="md" variant="full" theme="dark" showSub={false} />
             </div>
             <p className="text-sm text-studio-400 font-light leading-relaxed max-w-md mb-6">
               {strings.desc}
@@ -92,7 +88,7 @@ export const Footer: React.FC = React.memo(() => {
           <p>{strings.copyright}</p>
           <div className="flex items-center gap-4">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>2026 Ground Effect Hub · Curated by BaoBungBu</span>
+            <span>2026 Ground Effect Hub · By BaoBungBu</span>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { MousePointer, ZoomIn, ZoomOut, RotateCcw, Play, Pause } from 'lucide-react';
+import { MousePointer, ZoomIn, ZoomOut, RotateCcw, Play, Pause, Compass } from 'lucide-react';
+import { CameraPreset } from './CameraController';
 
 interface ShowroomQuickHUDProps {
   enableWheelZoom: boolean;
@@ -8,6 +9,8 @@ interface ShowroomQuickHUDProps {
   onResetView: () => void;
   autoRotate: boolean;
   onToggleAutoRotate: () => void;
+  cameraPreset?: CameraPreset | null;
+  onSelectPreset?: (preset: CameraPreset) => void;
   lang: 'vi' | 'en';
 }
 
@@ -24,8 +27,29 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
     onResetView,
     autoRotate,
     onToggleAutoRotate,
+    cameraPreset,
+    onSelectPreset,
     lang,
   }) => {
+    const PANO_CYCLE: { id: CameraPreset; labelVi: string; labelEn: string; code: string }[] = [
+      { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', code: 'LOGO' },
+      { id: 'pano_drivers', labelVi: 'Vách Tay Đua', labelEn: 'Drivers Wall', code: 'TAY ĐUA' },
+      { id: 'pano_technical', labelVi: 'Vách Kỹ Thuật', labelEn: 'Tech Specs', code: 'KỸ THUẬT' },
+      {
+        id: 'pano_achievements',
+        labelVi: 'Vách Thành Tích',
+        labelEn: 'Records Wall',
+        code: 'KỶ LỤC',
+      },
+    ];
+
+    const currentPanoIdx = PANO_CYCLE.findIndex((p) => p.id === cameraPreset);
+
+    const handleNextPano = () => {
+      if (!onSelectPreset) return;
+      const nextIdx = currentPanoIdx >= 0 ? (currentPanoIdx + 1) % PANO_CYCLE.length : 0;
+      onSelectPreset(PANO_CYCLE[nextIdx].id);
+    };
     return (
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
         <div className="flex items-center gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/90 shadow-2xl shadow-black/80 text-white select-none">
@@ -112,8 +136,45 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
           {/* Divider */}
           <div className="w-[1px] h-6 bg-studio-800/90 hidden sm:block" />
 
-          {/* ── 3. Quick Action Buttons: Auto-Rotate & Reset ── */}
+          {/* ── 3. Quick Action Buttons: 4-Wall Tour, Auto-Rotate & Reset ── */}
           <div className="flex items-center gap-1">
+            {/* Quick 4-Direction Panoramic Wall Cycle */}
+            {onSelectPreset && (
+              <button
+                type="button"
+                onClick={handleNextPano}
+                className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
+                  currentPanoIdx >= 0
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-sm'
+                    : 'bg-studio-900/90 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
+                }`}
+                title={
+                  lang === 'vi'
+                    ? 'Xem toàn cảnh 4 vách bảng (Logo · Tay Đua · Kỹ Thuật · Thành Tích)'
+                    : 'Cycle 4 panoramic wall angles'
+                }
+                aria-label={lang === 'vi' ? 'Toàn cảnh 4 vách' : '4-Wall Panorama'}
+              >
+                <Compass
+                  className={`w-3.5 h-3.5 ${currentPanoIdx >= 0 ? 'text-amber-400' : 'text-studio-400'}`}
+                />
+                <span className="hidden md:inline">
+                  {currentPanoIdx >= 0
+                    ? lang === 'vi'
+                      ? PANO_CYCLE[currentPanoIdx].labelVi
+                      : PANO_CYCLE[currentPanoIdx].labelEn
+                    : lang === 'vi'
+                      ? '4 Bảng'
+                      : '4 Walls'}
+                </span>
+                {currentPanoIdx >= 0 && (
+                  <span className="text-[9px] font-mono px-1 rounded bg-amber-500 text-black font-black">
+                    {PANO_CYCLE[currentPanoIdx].code}
+                  </span>
+                )}
+              </button>
+            )}
+
             {/* Auto-Rotate 360 */}
             <button
               type="button"

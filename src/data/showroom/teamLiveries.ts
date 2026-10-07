@@ -39,6 +39,12 @@ export interface Team3DLivery {
   floorColor: string;
   accentColor: string;
   highlightColor: string;
+  // Dedicated Wheel Aero Disc & BBS Rim Livery Tokens
+  wheelCoverColor?: string;
+  wheelAccentColor?: string;
+  wheelSecondaryColor?: string;
+  wheelRimColor?: string;
+  wheelPirelliCompound?: 'soft' | 'medium' | 'hard';
   // Engineering highlights
   aeroPhilosophyVi: string;
   aeroPhilosophyEn: string;
@@ -84,6 +90,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#0a0b0d',
     accentColor: '#ffdf00', // Modena Yellow
     highlightColor: '#0096d6', // HP Title Sponsor Blue accent
+    wheelCoverColor: '#15171c', // Matte stealth carbon base
+    wheelAccentColor: '#e8002d', // Scuderia Rosso Corsa outer ring
+    wheelSecondaryColor: '#ffdf00', // Modena Yellow concentric speed ring
+    wheelRimColor: '#e8002d', // Scuderia Red rim edge
+    wheelPirelliCompound: 'soft',
     aeroPhilosophyVi:
       'Hốc gió dạng bồn tắm (Bathtub downwash sidepods) dẫn luồng khí áp suất cao ép sát eo xe xuống thẳng sàn sau và bộ khuếch tán.',
     aeroPhilosophyEn:
@@ -136,6 +147,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#08090b',
     accentColor: '#00a19c', // Iconic Petronas Emerald Turquoise speedline
     highlightColor: '#00f5d4', // Bright neon mint/cyan highlight accent
+    wheelCoverColor: '#0d1014', // Obsidian carbon aero disc
+    wheelAccentColor: '#00a19c', // Iconic PETRONAS Cyan perimeter ring
+    wheelSecondaryColor: '#c8ccd0', // Mercedes Silver concentric speed ring
+    wheelRimColor: '#c8ccd0', // Silver Arrow rim flange
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Triết lý khí động học tinh gọn với rãnh dẫn khí sườn dốc (Undercut Channel) và cánh gió trước đa tầng triệt tiêu nhiễu động bánh xe.',
     aeroPhilosophyEn:
@@ -182,6 +198,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#0c0d10',
     accentColor: '#ff8000', // Papaya
     highlightColor: '#47c7fc', // Stealth Blue
+    wheelCoverColor: '#111317', // Stealth Carbon base disc
+    wheelAccentColor: '#ff8000', // Signature Papaya Orange perimeter ring
+    wheelSecondaryColor: '#47c7fc', // Google Chrome / Stealth Blue accent
+    wheelRimColor: '#ff8000', // Papaya rim edge
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Hệ thống hốc gió hớt gầm sâu nhất đoàn đua (Extreme Undercut) và sàn xe Venturi tối ưu lực ép khi vào các góc cua tốc độ cao.',
     aeroPhilosophyEn:
@@ -228,6 +249,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#080a0e',
     accentColor: '#ffce00', // Sunburst Yellow
     highlightColor: '#ed1a3b', // Red Bull Racing Red
+    wheelCoverColor: '#0c192c', // Matte Midnight Navy base
+    wheelAccentColor: '#ffce00', // Red Bull Racing Yellow perimeter ring
+    wheelSecondaryColor: '#ed1a3b', // Bull Racing Red inner ring
+    wheelRimColor: '#ffce00', // Golden rim lip
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Tuyệt tác khí động học với các hốc hút gió sườn đảo ngược (Overbite Inlet) và hệ thống treo trước Pull-rod chống chúi đầu khi phanh gấp.',
     aeroPhilosophyEn:
@@ -274,6 +300,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#080b0a',
     accentColor: '#cedc00', // Fluorescent Lime Essence
     highlightColor: '#006f62',
+    wheelCoverColor: '#003d35', // Aston Martin Racing Green aero disc
+    wheelAccentColor: '#cedc00', // High-visibility Lime Essence track ring
+    wheelSecondaryColor: '#006f62', // Racing Green inner accent
+    wheelRimColor: '#cedc00', // Lime rim flange
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Máng trượt khí động học sườn xe sâu hút không khí dồn về phía sau kết hợp cánh sau DRS tối ưu lực cản tại đường thẳng.',
     aeroPhilosophyEn:
@@ -320,6 +351,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#0c0e12',
     accentColor: '#fd4bc7', // BWT Pink
     highlightColor: '#0090ff', // Alpine Blue
+    wheelCoverColor: '#0d1722', // Alpine Navy / Carbon disc
+    wheelAccentColor: '#fd4bc7', // BWT Hyper Pink perimeter ring
+    wheelSecondaryColor: '#0090ff', // Alpine Blue speed ring
+    wheelRimColor: '#0090ff', // Alpine Blue rim flange
+    wheelPirelliCompound: 'soft',
     aeroPhilosophyVi:
       'Cấu trúc thân xe gọn gàng với triết lý tối giản hóa bề mặt ướt khí động và mũi xe dẹt hạ thấp trọng tâm quán tính.',
     aeroPhilosophyEn:
@@ -366,6 +402,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#0a0c10',
     accentColor: '#ffffff',
     highlightColor: '#d90429', // Orlen Red
+    wheelCoverColor: '#0e2270', // Metallic Royal Blue disc
+    wheelAccentColor: '#ffffff', // Crisp Pure White Bull perimeter ring
+    wheelSecondaryColor: '#d90429', // Racing Red inner ring
+    wheelRimColor: '#ffffff', // White rim flange
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Thừa hưởng cấu trúc hình học hệ thống treo và khí động học tương đồng với cỗ máy vô địch RB20 của đội mẹ Red Bull Racing.',
     aeroPhilosophyEn:
@@ -412,6 +453,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#0a0c0e',
     accentColor: '#e10600', // Haas Red
     highlightColor: '#ffffff',
+    wheelCoverColor: '#181b20', // Matte Carbon disc
+    wheelAccentColor: '#e10600', // Haas Racing Red perimeter band
+    wheelSecondaryColor: '#ffffff', // Clean White racing ring
+    wheelRimColor: '#ffffff', // White BBS rim edge
+    wheelPirelliCompound: 'soft',
     aeroPhilosophyVi:
       'Triết lý khí động học theo trường phái Downwash của Ferrari, tối ưu hóa việc dẫn gió làm mát và giải quyết hiện tượng thoái hóa lốp.',
     aeroPhilosophyEn:
@@ -458,6 +504,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#080b0f',
     accentColor: '#00a3e0', // Cyan Blue
     highlightColor: '#b87333', // Duracell Metallic Copper
+    wheelCoverColor: '#00173d', // Williams Heritage Deep Navy disc
+    wheelAccentColor: '#00a3e0', // Williams Electric Blue perimeter ring
+    wheelSecondaryColor: '#ffffff', // White aerodynamic ring
+    wheelRimColor: '#00a3e0', // Electric Blue rim lip
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Thân xe thiết kế cho tốc độ đường thẳng vượt trội, kết hợp sàn xe thế hệ mới giảm độ nhạy cảm trước gió tạt ngang góc cua.',
     aeroPhilosophyEn:
@@ -504,6 +555,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#080a0c',
     accentColor: '#52ff00', // Fluo Racing Green
     highlightColor: '#ffffff',
+    wheelCoverColor: '#16191d', // Titanium & Carbon disc
+    wheelAccentColor: '#52ff00', // Audi Revolut Neon Green/Red perimeter ring
+    wheelSecondaryColor: '#c4c9ce', // Titanium Silver concentric ring
+    wheelRimColor: '#c4c9ce', // Titanium Silver rim flange
+    wheelPirelliCompound: 'soft',
     aeroPhilosophyVi:
       'Triết lý "Vorsprung durch Technik": Thiết kế khí động học sắc bén nguyên khối phát triển song song tại Hinwil và Neuburg.',
     aeroPhilosophyEn:
@@ -550,6 +606,11 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     floorColor: '#08090a',
     accentColor: '#cda851', // Metallic Olympic Gold
     highlightColor: '#cda851',
+    wheelCoverColor: '#0a0b0d', // Luxury Obsidian Metallic Black disc
+    wheelAccentColor: '#cda851', // Imperial Champagne Gold perimeter ring
+    wheelSecondaryColor: '#ffffff', // Pure White concentric ring
+    wheelRimColor: '#cda851', // Champagne Gold BBS rim lip
+    wheelPirelliCompound: 'medium',
     aeroPhilosophyVi:
       'Thiết kế khí động học mang đậm phong cách cơ bắp Mỹ với cánh gió trước hình khiên và hốc gió tản nhiệt cỡ lớn.',
     aeroPhilosophyEn:

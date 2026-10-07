@@ -1,5 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useGLTF, Html } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -10,6 +11,7 @@ import {
   generateBodyworkTexture,
   generateWingsTexture,
   generateFloorTexture,
+  generateWheelTexture,
 } from './F1CarTextures';
 
 interface F1Car3DModelProps {
@@ -117,6 +119,15 @@ const RealF1CarMesh: React.FC<{
   );
   const floorTex = useMemo(() => generateFloorTexture(teamId, livery), [teamId, livery]);
 
+  // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
+  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.png');
+
+  // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
+  const wheelTex = useMemo(
+    () => generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image),
+    [teamId, livery, sponsors, baseWheelTex],
+  );
+
   // Apply authentic team livery & sponsor graphics directly to the 3D car mesh
   useEffect(() => {
     if (!clonedScene) return;
@@ -135,13 +146,12 @@ const RealF1CarMesh: React.FC<{
         let newMat: THREE.Material;
 
         // 1. Pirelli Tires & BBS Wheel Rims (006 = Front, 011 = Rear L, 013 = Rear R)
+        // Dynamically synchronized with each constructor team's aero covers & rim accents
         if (matName.includes('006') || matName.includes('011') || matName.includes('013')) {
-          const orig = originalMaterialsRef.current.get(matName) || currentMat;
           newMat = new THREE.MeshStandardMaterial({
-            map: orig?.map || null,
-            color: new THREE.Color('#ffffff'),
-            roughness: 0.55,
-            metalness: 0.65,
+            map: wheelTex,
+            roughness: 0.45,
+            metalness: 0.55,
             envMapIntensity: 1.5,
           });
         }
@@ -253,8 +263,9 @@ const RealF1CarMesh: React.FC<{
       bodyworkTex.dispose();
       wingsTex.dispose();
       floorTex.dispose();
+      wheelTex.dispose();
     };
-  }, [clonedScene, teamId, livery, noseTex, bodyworkTex, wingsTex, floorTex]);
+  }, [clonedScene, teamId, livery, noseTex, bodyworkTex, wingsTex, floorTex, wheelTex]);
 
   return (
     <primitive

@@ -63,9 +63,18 @@ export const RaceCalendar: React.FC = React.memo(() => {
     setActiveSubTab('results');
   };
 
+  const handleJumpToNextRace = () => {
+    if (!nextRace) return;
+    setExpandedRound(nextRace.round);
+    const targetEl = document.getElementById(`calendar-round-${nextRace.round}`);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200">
+      <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3">
         <div>
           <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900">
             {isVi
@@ -78,15 +87,27 @@ export const RaceCalendar: React.FC = React.memo(() => {
               : `${completedRounds.size} / ${CALENDAR_2026.length} rounds completed · 6 Sprint Weekends`}
           </p>
         </div>
-        <span className="text-xs font-bold text-f1red">
-          {nextRace
-            ? isVi
-              ? `Chặng kế tiếp: Vòng ${nextRace.round}`
-              : `Next: Round ${nextRace.round}`
-            : isVi
-              ? 'Mùa giải hoàn tất'
-              : 'Season complete'}
-        </span>
+        {nextRace ? (
+          <button
+            onClick={handleJumpToNextRace}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-f1red/10 hover:bg-f1red text-f1red hover:text-white border border-f1red/20 hover:border-f1red text-xs font-bold transition-all shadow-2xs group cursor-pointer shrink-0"
+            title={
+              isVi
+                ? `Chuyển tới chặng kế tiếp: Vòng ${nextRace.round} (${nextRace.name})`
+                : `Jump to next race: Round ${nextRace.round} (${nextRace.name})`
+            }
+          >
+            <Zap className="w-3.5 h-3.5 fill-current animate-pulse text-amber-500 group-hover:text-amber-300" />
+            <span>
+              {isVi ? `Chặng kế tiếp: Vòng ${nextRace.round}` : `Next: Round ${nextRace.round}`}
+            </span>
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        ) : (
+          <span className="text-xs font-bold text-studio-500">
+            {isVi ? 'Mùa giải hoàn tất' : 'Season complete'}
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-3">
@@ -109,10 +130,13 @@ export const RaceCalendar: React.FC = React.memo(() => {
           return (
             <div
               key={gp.round}
-              className={`rounded-xl border transition-all ${
+              id={`calendar-round-${gp.round}`}
+              className={`rounded-xl border transition-all scroll-mt-24 ${
                 isCurrent || (isNext && hasPracticeData)
                   ? 'bg-white border-f1red shadow-md ring-1 ring-f1red/20'
-                  : 'bg-white border-studio-200 hover:border-studio-300 shadow-xs'
+                  : isNext
+                    ? 'bg-white border-f1red/50 shadow-xs ring-1 ring-f1red/10'
+                    : 'bg-white border-studio-200 hover:border-studio-300 shadow-xs'
               }`}
             >
               {/* Collapsed Bar */}
