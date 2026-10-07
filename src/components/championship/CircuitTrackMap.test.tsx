@@ -54,7 +54,22 @@ describe('CircuitDetailModal Component', () => {
     expect(html).toContain('DRS 3');
     expect(html).toContain('DRS 4');
     expect(html).toContain('OpenF1 Live');
-    expect(html).toContain('Bản Đồ Thực Tế');
+    expect(html).toContain('Review Khúc Đường');
+  });
+});
+
+describe('CircuitStreetReview Component', () => {
+  it('renders track street view review with checkpoints, photos, and telemetry', async () => {
+    const { CircuitStreetReview } = await import('./CircuitStreetReview');
+    const circuit = getCircuitByRound(1)!;
+
+    const html = renderToStaticMarkup(<CircuitStreetReview circuit={circuit} lang="vi" />);
+    expect(html).toContain('TRACK STREET VIEW');
+    expect(html).toContain('Review Chi Tiết Từng Khúc Đường');
+    expect(html).toContain('Street View');
+    expect(html).toContain('Vạch Xuất Phát');
+    expect(html).toContain('TỐC ĐỘ');
+    expect(html).toContain('SỐ');
   });
 });
 

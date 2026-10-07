@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CircuitData } from '../../types/circuit';
-import { X, Trophy, MapPin, Compass, Activity, Zap, Radio, Globe } from 'lucide-react';
+import { X, Trophy, MapPin, Compass, Activity, Zap, Radio, Globe, Camera } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { CircuitRealWorldMap } from './CircuitRealWorldMap';
 import { OpenF1LiveMap } from './OpenF1LiveMap';
+import { CircuitStreetReview } from './CircuitStreetReview';
 
-type MapMode = 'real' | 'openf1' | 'vector';
+type MapMode = 'review' | 'real' | 'openf1' | 'vector';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -16,7 +17,7 @@ interface CircuitDetailModalProps {
 export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit, onClose }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const [mapMode, setMapMode] = useState<MapMode>('real');
+  const [mapMode, setMapMode] = useState<MapMode>('review');
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
@@ -81,9 +82,23 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
         <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column (7 cols): Map + Essential Telemetry Grid */}
           <div className="lg:col-span-7 space-y-3.5">
-            {/* Header bar above map with 3-way Mode toggle */}
+            {/* Header bar above map with 4-way Mode toggle */}
             <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-              <div className="flex items-center gap-1.5 p-1 bg-studio-900/90 rounded-xl border border-studio-800 shadow-sm">
+              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-studio-900/90 rounded-xl border border-studio-800 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setMapMode('review')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    mapMode === 'review'
+                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
+                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                  }`}
+                  title={isVi ? 'Xem ảnh chụp thực tế từng khúc đường' : 'Street View review of each track section'}
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>{isVi ? '📸 Review Khúc Đường' : '📸 Track Review'}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setMapMode('real')}
@@ -95,21 +110,7 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   title={isVi ? 'Bản đồ thực tế chụp vệ tinh' : 'Real-world Satellite Map'}
                 >
                   <Globe className="w-3.5 h-3.5" />
-                  <span>{isVi ? '🛰️ Bản Đồ Thực Tế' : '🛰️ Satellite Map'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setMapMode('vector')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'vector'
-                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-                  }`}
-                  title={isVi ? 'Sơ đồ thiết kế vector' : 'Vector Track Schematic'}
-                >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>{isVi ? '🏎️ Sơ Đồ Thiết Kế' : '🏎️ Schematic'}</span>
+                  <span>{isVi ? '🛰️ Vệ Tinh' : '🛰️ Satellite'}</span>
                 </button>
 
                 <button
@@ -125,7 +126,28 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   <Radio className={`w-3.5 h-3.5 ${mapMode === 'openf1' ? 'animate-pulse text-white' : ''}`} />
                   <span>{isVi ? '🔴 OpenF1 Live' : '🔴 OpenF1 Live'}</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMapMode('vector')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    mapMode === 'vector'
+                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
+                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
+                  }`}
+                  title={isVi ? 'Sơ đồ thiết kế vector' : 'Vector Track Schematic'}
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>{isVi ? '🏎️ Vector' : '🏎️ Vector'}</span>
+                </button>
               </div>
+
+              {mapMode === 'review' && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  PHOTO STREET VIEW
+                </span>
+              )}
 
               {mapMode === 'real' && (
                 <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
@@ -143,6 +165,10 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
             </div>
 
             {/* Main Visual Track Map Display */}
+            {mapMode === 'review' && (
+              <CircuitStreetReview circuit={circuit} lang={lang} />
+            )}
+
             {mapMode === 'real' && (
               <CircuitRealWorldMap circuit={circuit} lang={lang} />
             )}
