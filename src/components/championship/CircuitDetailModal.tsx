@@ -69,21 +69,21 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
             />
 
             {/* Glowing Track Path SVG */}
-            <div className="relative w-full max-w-[560px] aspect-4/3 flex items-center justify-center">
+            <div className="relative w-full max-w-[500px] max-h-[290px] sm:max-h-[340px] aspect-4/3 flex items-center justify-center">
               <svg
                 viewBox={circuit.viewBox}
-                className="w-full h-full filter drop-shadow-[0_0_12px_rgba(225,6,0,0.45)]"
+                className="w-full h-full filter drop-shadow-[0_0_14px_rgba(255,24,1,0.55)]"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 {/* Track shadow / background glow */}
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#e10600"
-                  strokeWidth="14"
+                  stroke="#ff1801"
+                  strokeWidth="20"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="opacity-20 blur-xs"
+                  className="opacity-25 blur-xs"
                 />
 
                 {/* Outer kerb border */}
@@ -91,18 +91,18 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   d={circuit.svgPath}
                   fill="none"
                   stroke="#ffffff"
-                  strokeWidth="8"
+                  strokeWidth="14"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="opacity-40"
+                  className="opacity-85"
                 />
 
                 {/* Asphalt main track line */}
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#1c1f26"
-                  strokeWidth="6"
+                  stroke="#161922"
+                  strokeWidth="10"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -111,8 +111,8 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#e10600"
-                  strokeWidth="3.5"
+                  stroke="#ff1801"
+                  strokeWidth="5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeDasharray="16 4"
@@ -123,19 +123,17 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                 <circle
                   cx={circuit.startFinish.x}
                   cy={circuit.startFinish.y}
-                  r="7"
-                  fill="#ffffff"
-                  stroke="#e10600"
-                  strokeWidth="3"
-                  className="animate-ping opacity-60"
+                  r="14"
+                  fill="#ff1801"
+                  className="opacity-60 animate-pulse"
                 />
                 <circle
                   cx={circuit.startFinish.x}
                   cy={circuit.startFinish.y}
-                  r="5"
+                  r="8"
                   fill="#ffffff"
-                  stroke="#e10600"
-                  strokeWidth="2.5"
+                  stroke="#ff1801"
+                  strokeWidth="3.5"
                 />
               </svg>
 

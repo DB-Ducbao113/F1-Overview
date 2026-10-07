@@ -11,10 +11,18 @@ interface CircuitTrackMapProps {
   circuitData?: CircuitData;
   variant?: 'card' | 'thumbnail';
   className?: string;
+  onThumbnailClick?: (circuit: CircuitData) => void;
 }
 
 export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
-  ({ round, circuitName, circuitData: explicitData, variant = 'card', className = '' }) => {
+  ({
+    round,
+    circuitName,
+    circuitData: explicitData,
+    variant = 'card',
+    className = '',
+    onThumbnailClick,
+  }) => {
     const { lang } = useNavigationStore();
     const isVi = lang === 'vi';
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,40 +37,126 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
       return null;
     }
 
-    // 1. Thumbnail Variant (Compact silhouette displayed in collapsed calendar row)
+    // 1. Thumbnail Variant (High-Contrast F1 Telemetry Preview in calendar row)
     if (variant === 'thumbnail') {
       return (
         <div
-          className={`relative group cursor-pointer inline-flex items-center justify-center ${className}`}
+          className={`relative group cursor-pointer inline-flex items-center justify-center shrink-0 ${className}`}
           onClick={(e) => {
             e.stopPropagation();
-            setIsModalOpen(true);
+            if (onThumbnailClick) {
+              onThumbnailClick(circuit);
+            } else {
+              setIsModalOpen(true);
+            }
           }}
-          title={isVi ? `Xem bản đồ ${circuit.circuitName}` : `View ${circuit.circuitName} map`}
+          title={
+            isVi
+              ? `Bấm để xem bản đồ chi tiết sơ đồ ${circuit.circuitName}`
+              : `Click to view ${circuit.circuitName} full track layout`
+          }
         >
-          <div className="w-10 h-8 sm:w-12 sm:h-9 rounded-lg bg-studio-900 border border-studio-700/60 p-1 flex items-center justify-center overflow-hidden transition-all group-hover:border-f1red/60 group-hover:bg-studio-950 group-hover:shadow-xs shrink-0">
+          {/* F1 High-Tech Radar Glassmorphism Badge */}
+          <div className="relative w-16 h-11 sm:w-22 sm:h-13 rounded-xl bg-gradient-to-br from-[#0c0e16] via-[#131724] to-[#07090e] border border-studio-700/80 group-hover:border-f1red/90 p-1 sm:p-1.5 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:shadow-[0_0_16px_rgba(225,6,0,0.4)] group-hover:scale-105 shrink-0">
+            {/* Background Radar Telemetry Grid Pattern */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.25) 1px, transparent 0)',
+                backgroundSize: '8px 8px',
+              }}
+            />
+
+            {/* Corner Live Status Beacon */}
+            <div className="absolute top-1 left-1 flex items-center gap-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-f1red opacity-90 group-hover:animate-ping" />
+            </div>
+
+            {/* Micro Badge: MAP / SƠ ĐỒ */}
+            <span className="absolute bottom-0.5 right-1 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-studio-400 group-hover:text-f1red transition-colors select-none">
+              {isVi ? 'BẢN ĐỒ' : 'MAP'}
+            </span>
+
+            {/* High-Visibility Multi-Layer Circuit SVG Silhouette */}
             <svg
               viewBox={circuit.viewBox}
-              className="w-full h-full filter drop-shadow-[0_0_3px_rgba(225,6,0,0.5)] transition-transform group-hover:scale-105"
+              className="w-full h-full filter drop-shadow-[0_0_5px_rgba(255,24,1,0.55)] transition-transform duration-300 group-hover:scale-105"
               xmlns="http://www.w3.org/2000/svg"
             >
+              {/* Layer 1: Ambient Red Glow */}
               <path
                 d={circuit.svgPath}
                 fill="none"
-                stroke="#e10600"
-                strokeWidth="10"
+                stroke="#ff1801"
+                strokeWidth="26"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="opacity-30 blur-2xs"
+              />
+
+              {/* Layer 2: High-Contrast White Kerb Ribbon */}
+              <path
+                d={circuit.svgPath}
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth="18"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="opacity-95"
+              />
+
+              {/* Layer 3: Dark Asphalt Track Bed */}
+              <path
+                d={circuit.svgPath}
+                fill="none"
+                stroke="#151822"
+                strokeWidth="13"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Layer 4: Vivid Neon F1 Red Racing Line */}
+              <path
+                d={circuit.svgPath}
+                fill="none"
+                stroke="#ff1801"
+                strokeWidth="7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Layer 5: Start / Finish Marker Beacon */}
+              <circle
+                cx={circuit.startFinish.x}
+                cy={circuit.startFinish.y}
+                r="14"
+                fill="#ff1801"
+                className="opacity-60 animate-pulse"
               />
               <circle
                 cx={circuit.startFinish.x}
                 cy={circuit.startFinish.y}
-                r="7"
+                r="9"
                 fill="#ffffff"
-                stroke="#e10600"
-                strokeWidth="3"
+                stroke="#ff1801"
+                strokeWidth="3.5"
               />
             </svg>
+
+            {/* Direct Fullscreen Modal Trigger on Hover */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsModalOpen(true);
+              }}
+              className="absolute top-0.5 right-0.5 p-0.5 sm:p-1 rounded bg-studio-950/85 hover:bg-f1red text-studio-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border border-studio-700/80 hover:border-f1red"
+              title={isVi ? 'Phóng to bản đồ' : 'Expand full map'}
+              aria-label="Expand circuit map"
+            >
+              <Maximize2 className="w-2.5 h-2.5" />
+            </button>
           </div>
 
           {isModalOpen && (
@@ -101,11 +195,11 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#e10600"
-                  strokeWidth="12"
+                  stroke="#ff1801"
+                  strokeWidth="20"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="opacity-20 blur-2xs"
+                  className="opacity-25 blur-xs"
                 />
 
                 {/* Outer kerb white border */}
@@ -113,18 +207,18 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
                   d={circuit.svgPath}
                   fill="none"
                   stroke="#ffffff"
-                  strokeWidth="7"
+                  strokeWidth="13"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="opacity-40"
+                  className="opacity-80"
                 />
 
                 {/* Asphalt main track line */}
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#1c1f26"
-                  strokeWidth="5"
+                  stroke="#161922"
+                  strokeWidth="9"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -133,21 +227,28 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
                 <path
                   d={circuit.svgPath}
                   fill="none"
-                  stroke="#e10600"
-                  strokeWidth="3"
+                  stroke="#ff1801"
+                  strokeWidth="4.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeDasharray="14 3"
+                  strokeDasharray="16 4"
                 />
 
-                {/* Start / Finish Point Marker */}
+                {/* Start / Finish Point Marker Beacon */}
                 <circle
                   cx={circuit.startFinish.x}
                   cy={circuit.startFinish.y}
-                  r="6"
+                  r="12"
+                  fill="#ff1801"
+                  className="opacity-50 animate-pulse"
+                />
+                <circle
+                  cx={circuit.startFinish.x}
+                  cy={circuit.startFinish.y}
+                  r="7"
                   fill="#ffffff"
-                  stroke="#e10600"
-                  strokeWidth="2.5"
+                  stroke="#ff1801"
+                  strokeWidth="3"
                 />
               </svg>
 

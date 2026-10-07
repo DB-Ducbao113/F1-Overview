@@ -33,7 +33,8 @@ export const RaceCalendar: React.FC = React.memo(() => {
   ]);
   const nextRace = CALENDAR_2026.find((gp) => !completedRounds.has(gp.round));
   const sprintCount = CALENDAR_2026.filter((gp) => gp.hasSprint).length;
-  const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 16);
+  // Default to Round 1 so track map is immediately visible above the fold without any scrolling
+  const [expandedRound, setExpandedRound] = useState<number | null>(1);
 
   // State cho Practice Modal
   const [selectedPracticeRound, setSelectedPracticeRound] = useState<number | null>(null);
@@ -48,7 +49,20 @@ export const RaceCalendar: React.FC = React.memo(() => {
   >('qualifying');
 
   const toggleExpand = (round: number) => {
-    setExpandedRound(expandedRound === round ? null : round);
+    const isOpening = expandedRound !== round;
+    setExpandedRound(isOpening ? round : null);
+
+    // Auto-scroll the newly expanded race directly into view so user never needs to scroll down
+    if (isOpening) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const targetEl = document.getElementById(`calendar-round-${round}`);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 50);
+      });
+    }
   };
 
   const activePracticeData = selectedPracticeRound
@@ -68,10 +82,14 @@ export const RaceCalendar: React.FC = React.memo(() => {
   const handleJumpToNextRace = () => {
     if (!nextRace) return;
     setExpandedRound(nextRace.round);
-    const targetEl = document.getElementById(`calendar-round-${nextRace.round}`);
-    if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const targetEl = document.getElementById(`calendar-round-${nextRace.round}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
   };
 
   return (
@@ -210,7 +228,11 @@ export const RaceCalendar: React.FC = React.memo(() => {
                 {/* Circuit & Date */}
                 <div className="flex items-center gap-3 sm:gap-6">
                   {/* Circuit track thumbnail mini preview */}
-                  <CircuitTrackMap round={gp.round} variant="thumbnail" />
+                  <CircuitTrackMap
+                    round={gp.round}
+                    variant="thumbnail"
+                    onThumbnailClick={() => toggleExpand(gp.round)}
+                  />
 
                   <div className="text-right hidden sm:block">
                     <span className="font-bold text-xs text-studio-900 block">
