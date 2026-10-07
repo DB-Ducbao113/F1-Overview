@@ -13,9 +13,10 @@ import { getTeamTextColor } from '../../utils/teamColors';
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
+  const { selectedSeason, calculatedStandings } = useChampionshipStore();
 
-  // Standings Season selector on Homepage (defaults to 2024 - Official Completed Season)
-  const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(2024);
+  // Standings Season selector on Homepage (syncs with store, defaults to 2026)
+  const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(selectedSeason || 2026);
 
   // Show the active race weekend, or the next scheduled round.
   const detailedResultsRaw = useChampionshipStore((state) => state.detailedResults?.[2026]);
@@ -38,19 +39,22 @@ export const HomeView: React.FC = () => {
     );
   }, [detailedResultsRaw]);
 
-  // Standings for current selected season
+  // Standings for current selected season (synchronized with championship store)
   const currentStandings = useMemo(
-    () => STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2024],
+    () => STANDINGS_DATA[standingsSeason] || STANDINGS_DATA[2026],
     [standingsSeason],
   );
-  const topDrivers = useMemo(
-    () => (currentStandings?.drivers || []).slice(0, 3),
-    [currentStandings],
-  );
-  const topConstructors = useMemo(
-    () => (currentStandings?.constructors || []).slice(0, 3),
-    [currentStandings],
-  );
+  const topDrivers = useMemo(() => {
+    const drivers =
+      calculatedStandings[standingsSeason]?.drivers || currentStandings?.drivers || [];
+    return drivers.slice(0, 3);
+  }, [calculatedStandings, currentStandings, standingsSeason]);
+
+  const topConstructors = useMemo(() => {
+    const constructors =
+      calculatedStandings[standingsSeason]?.constructors || currentStandings?.constructors || [];
+    return constructors.slice(0, 3);
+  }, [calculatedStandings, currentStandings, standingsSeason]);
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in space-y-16">
@@ -234,12 +238,15 @@ export const HomeView: React.FC = () => {
                 return (
                   <div
                     key={driver.driverId}
-                    className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border hover:bg-studio-100/60 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-xl bg-studio-50 border hover:bg-studio-100/70 transition-all cursor-pointer group"
                     style={{ borderColor: `${driverColor}40` }}
+                    onClick={() =>
+                      navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`)
+                    }
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs shrink-0 ${
                           driver.rank === 1
                             ? 'bg-amber-400 text-black shadow-xs'
                             : driver.rank === 2
@@ -249,21 +256,46 @@ export const HomeView: React.FC = () => {
                       >
                         {driver.rank}
                       </span>
-                      <div>
-                        <span className="font-bold text-sm block" style={{ color: driverColor }}>
-                          {driver.driverName} {driver.countryFlag}
-                        </span>
-                        <span className="text-xs text-studio-500">{driver.teamName}</span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold text-sm block" style={{ color: driverColor }}>
+                            {driver.driverName}
+                          </span>
+                          <span className="text-xs" title={driver.countryFlag}>
+                            {driver.countryFlag}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <ConstructorLogo teamId={driver.teamId} size="sm" />
+                          <span
+                            className="text-xs font-semibold truncate"
+                            style={{ color: driverColor }}
+                          >
+                            {driver.teamName}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <span className="font-display font-black text-base text-f1red block">
-                        {driver.points} PTS
-                      </span>
-                      <span className="text-[10px] text-studio-400">
-                        {driver.wins} wins · {driver.podiums} podiums
-                      </span>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="text-right">
+                        <span className="font-display font-black text-base text-studio-950 block">
+                          {driver.points} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+                        </span>
+                        <span className="text-[10px] text-studio-400">
+                          {driver.wins} {lang === 'vi' ? 'thắng' : 'wins'} · {driver.podiums} podium
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`);
+                        }}
+                        className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
+                        title={lang === 'vi' ? 'Xem hồ sơ tay đua' : 'View Driver Profile'}
+                      >
+                        <ArrowRight className="w-3.5 h-3.5 text-f1red" />
+                      </button>
                     </div>
                   </div>
                 );
@@ -289,12 +321,13 @@ export const HomeView: React.FC = () => {
                 return (
                   <div
                     key={c.teamId}
-                    className="flex items-center justify-between p-3 rounded-lg bg-studio-50 border hover:bg-studio-100/60 transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-studio-50 border hover:bg-studio-100/70 transition-all cursor-pointer group"
                     style={{ borderColor: `${teamColor}40` }}
+                    onClick={() => navigate(`/teams/${c.teamId}`)}
                   >
                     <div className="flex items-center gap-3">
                       <span
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs ${
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs shrink-0 ${
                           c.rank === 1
                             ? 'bg-amber-400 text-black shadow-xs'
                             : c.rank === 2
@@ -304,28 +337,36 @@ export const HomeView: React.FC = () => {
                       >
                         {c.rank}
                       </span>
-                      <div>
+                      <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <ConstructorLogo teamId={c.teamId} size="sm" />
-                          <span className="font-bold text-sm block" style={{ color: teamColor }}>
+                          <span
+                            className="font-bold text-sm block truncate"
+                            style={{ color: teamColor }}
+                          >
                             {c.teamName}
                           </span>
                         </div>
-                        <span className="text-xs text-studio-500">{c.engine} Power Unit</span>
+                        <span className="text-xs text-studio-500 mt-0.5 block truncate">
+                          {lang === 'vi' ? `Động cơ ${c.engine}` : `${c.engine} Power Unit`}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 shrink-0">
                       <div className="text-right">
-                        <span className="font-display font-black text-base text-f1red block">
-                          {c.points} PTS
+                        <span className="font-display font-black text-base text-studio-950 block">
+                          {c.points} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
                         </span>
                         <span className="text-[10px] text-studio-400">
-                          {c.wins} wins · {c.podiums} podiums
+                          {c.wins} {lang === 'vi' ? 'thắng' : 'wins'} · {c.podiums} podium
                         </span>
                       </div>
                       <button
-                        onClick={() => navigate(`/showroom?team=${c.teamId}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/showroom?team=${c.teamId}`);
+                        }}
                         className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
                         title={lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'}
                       >
