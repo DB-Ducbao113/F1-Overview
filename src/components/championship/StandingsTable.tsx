@@ -6,7 +6,7 @@ import { SeasonYear } from '../../types';
 import { t } from '../../i18n/translations';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
-import { Trophy, Award, ExternalLink, ShieldCheck, Clock, Zap } from 'lucide-react';
+import { Trophy, Award, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
 
 interface StandingsTableProps {
@@ -19,7 +19,6 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
   const strings = t[lang].championship;
 
   const rawStandings = getStandings(season);
-  const isCalculated = Boolean(calculatedStandings[season]);
   const activeDrivers = calculatedStandings[season]?.drivers || rawStandings.drivers;
   const activeConstructors = calculatedStandings[season]?.constructors || rawStandings.constructors;
   const isOngoing = rawStandings.status === 'ongoing';
@@ -63,17 +62,6 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>
                     {lang === 'vi' ? 'Kết quả chung cuộc chính thức' : 'Official Final Standings'}
-                  </span>
-                </span>
-              )}
-
-              {isCalculated && (
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                  <Zap className="w-3 h-3 text-amber-600 fill-amber-500/20" />
-                  <span>
-                    {lang === 'vi'
-                      ? 'Động: Tính từ Race Results'
-                      : 'Dynamic: Calculated from Race Results'}
                   </span>
                 </span>
               )}
