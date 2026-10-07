@@ -187,7 +187,7 @@ async function fetchAllRaces(endpoint) {
 }
 
 // ─── Generate standings.ts content for 2026 section ────────────────────────
-function generateDriverStandings(driverStandings) {
+function generateDriverStandings(driverStandings, driverPodiums = new Map()) {
   const lines = driverStandings.map((d) => {
     const driverId = mapDriverId(d.Driver.driverId);
     const code = d.Driver.code || d.Driver.familyName.slice(0, 3).toUpperCase();
@@ -195,17 +195,19 @@ function generateDriverStandings(driverStandings) {
     const teamId = mapTeamId(d.Constructors[0]?.constructorId);
     const teamName = d.Constructors[0]?.name || 'Constructor';
     const flag = DRIVER_FLAGS[d.Driver.driverId] || '🏁';
-    return `  { rank: ${d.position}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: 0, countryFlag: '${flag}' },`;
+    const podiums = driverPodiums.get(driverId) || 0;
+    return `  { rank: ${d.position}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: ${podiums}, countryFlag: '${flag}' },`;
   });
   return lines.join('\n');
 }
 
-function generateConstructorStandings(constructorStandings) {
+function generateConstructorStandings(constructorStandings, constructorPodiums = new Map()) {
   const lines = constructorStandings.map((c) => {
     const teamId = mapTeamId(c.Constructor.constructorId);
     const teamName = c.Constructor.name;
     const engine = ENGINE_MAP[teamId] || 'Hybrid Turbo V6';
-    return `  { rank: ${c.position}, teamId: '${teamId}', teamName: '${teamName}', points: ${c.points}, wins: ${c.wins}, podiums: 0, engine: '${engine}' },`;
+    const podiums = constructorPodiums.get(teamId) || 0;
+    return `  { rank: ${c.position}, teamId: '${teamId}', teamName: '${teamName}', points: ${c.points}, wins: ${c.wins}, podiums: ${podiums}, engine: '${engine}' },`;
   });
   return lines.join('\n');
 }
@@ -326,6 +328,26 @@ async function run() {
   console.log(`\n[Update 2026] Championship Leader: ${leaderName} (${leader.points} pts)`);
   console.log(`[Update 2026] Constructors Leader: ${leaderTeam} (${leaderTeamPts} pts)`);
 
+  // ─── Compute Podiums from Completed Grand Prix Races (P1, P2, P3 finishes) ───
+  const driverPodiums = new Map();
+  const constructorPodiums = new Map();
+  for (const race of races) {
+    const entries = race.Results || [];
+    for (const entry of entries) {
+      const pos = parseInt(entry.position, 10);
+      if (pos >= 1 && pos <= 3) {
+        const driverId = mapDriverId(entry.Driver?.driverId);
+        const teamId = mapTeamId(entry.Constructor?.constructorId);
+        if (driverId) {
+          driverPodiums.set(driverId, (driverPodiums.get(driverId) || 0) + 1);
+        }
+        if (teamId) {
+          constructorPodiums.set(teamId, (constructorPodiums.get(teamId) || 0) + 1);
+        }
+      }
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // UPDATE standings.ts (only the 2026 section)
   // ═══════════════════════════════════════════════════════════════════════════
@@ -337,7 +359,7 @@ async function run() {
     'export const DRIVER_STANDINGS_2026: DriverStanding[] = [',
   );
   const driverEnd = standingsContent.indexOf('];', driverStart) + 2;
-  const newDriverStandings = `export const DRIVER_STANDINGS_2026: DriverStanding[] = [\n${generateDriverStandings(driverStandings)}\n];`;
+  const newDriverStandings = `export const DRIVER_STANDINGS_2026: DriverStanding[] = [\n${generateDriverStandings(driverStandings, driverPodiums)}\n];`;
   standingsContent =
     standingsContent.slice(0, driverStart) + newDriverStandings + standingsContent.slice(driverEnd);
 
@@ -346,7 +368,7 @@ async function run() {
     'export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [',
   );
   const ctorEnd = standingsContent.indexOf('];', ctorStart) + 2;
-  const newCtorStandings = `export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [\n${generateConstructorStandings(constructorStandings)}\n];`;
+  const newCtorStandings = `export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [\n${generateConstructorStandings(constructorStandings, constructorPodiums)}\n];`;
   standingsContent =
     standingsContent.slice(0, ctorStart) + newCtorStandings + standingsContent.slice(ctorEnd);
 

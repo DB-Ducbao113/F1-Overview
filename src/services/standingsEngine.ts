@@ -59,7 +59,7 @@ export function recalculateStandingsFromRaces(
     };
   }
 
-  // For 2026 (ongoing season after 15 events):
+  // For 2026 (ongoing season after 16 events):
   // Initialize with official baseline standings (reflecting events 1-15)
   const driverMap = new Map<
     string,
@@ -115,10 +115,36 @@ export function recalculateStandingsFromRaces(
     });
   });
 
-  // Only races beyond round 15 that are not in the official baseline will contribute additional points
-  // (Rounds 1-15 are already included in the official base points above)
+  // Defensive guard: if baseline drivers have 0 recorded podiums (e.g. from an unpopulated source/cache),
+  // recover podium totals by tallying top-3 finishes across all available completed races.
+  const hasBasePodiums = baseDrivers.some((d) => (d.podiums || 0) > 0);
+  if (!hasBasePodiums && Array.isArray(races) && races.length > 0) {
+    const racePodiumsByDriver = new Map<string, number>();
+    const racePodiumsByTeam = new Map<string, number>();
+    races
+      .filter((r) => r && r.status === 'completed')
+      .forEach((r) => {
+        (r.entries || []).forEach((e) => {
+          if (e && e.position >= 1 && e.position <= 3) {
+            racePodiumsByDriver.set(e.driverId, (racePodiumsByDriver.get(e.driverId) || 0) + 1);
+            racePodiumsByTeam.set(e.teamId, (racePodiumsByTeam.get(e.teamId) || 0) + 1);
+          }
+        });
+      });
+    driverMap.forEach((driver, id) => {
+      const p = racePodiumsByDriver.get(id);
+      if (p !== undefined) driver.podiums = p;
+    });
+    constructorMap.forEach((team, id) => {
+      const p = racePodiumsByTeam.get(id);
+      if (p !== undefined) team.podiums = p;
+    });
+  }
+
+  // Only races beyond round 16 that are not in the official baseline will contribute additional points
+  // (Rounds 1-16 are already included in the official base points above)
   const additionalRaces = (Array.isArray(races) ? races : []).filter(
-    (r) => r && r.status === 'completed' && r.round > 15,
+    (r) => r && r.status === 'completed' && r.round > 16,
   );
 
   additionalRaces.forEach((race) => {
