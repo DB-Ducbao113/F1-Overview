@@ -550,7 +550,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
   },
   {
     round: 16,
-    grandPrix: 'Bahrain Grand Prix in Malaysia',
+    grandPrix: 'Malaysia Grand Prix',
     circuit: 'Sepang International Circuit',
     season: 2026,
     dataSource: 'Jolpica F1 API',

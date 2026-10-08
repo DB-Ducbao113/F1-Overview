@@ -66,22 +66,22 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
       id: 'fp1',
       nameVi: 'Luyện Tập 1 (FP1)',
       nameEn: 'Practice 1 (FP1)',
-      startIso: '2026-10-09T17:30:00+08:00',
-      endIso: '2026-10-09T18:30:00+08:00',
+      startIso: '2026-10-09T16:30:00+08:00',
+      endIso: '2026-10-09T17:30:00+08:00',
     },
     {
-      id: 'fp2',
-      nameVi: 'Luyện Tập 2 (FP2)',
-      nameEn: 'Practice 2 (FP2)',
-      startIso: '2026-10-09T21:00:00+08:00',
-      endIso: '2026-10-09T22:00:00+08:00',
+      id: 'sprintQualifying',
+      nameVi: 'Phân Hạng Sprint (Sprint Shootout)',
+      nameEn: 'Sprint Qualifying',
+      startIso: '2026-10-09T20:30:00+08:00',
+      endIso: '2026-10-09T21:14:00+08:00',
     },
     {
-      id: 'fp3',
-      nameVi: 'Luyện Tập 3 (FP3)',
-      nameEn: 'Practice 3 (FP3)',
-      startIso: '2026-10-10T17:30:00+08:00',
-      endIso: '2026-10-10T18:30:00+08:00',
+      id: 'sprint',
+      nameVi: 'Đua Nước Rút (Sprint Race)',
+      nameEn: 'Sprint Race',
+      startIso: '2026-10-10T17:00:00+08:00',
+      endIso: '2026-10-10T18:00:00+08:00',
     },
     {
       id: 'qualifying',
@@ -288,8 +288,8 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
               </div>
               <div className="grid grid-cols-5 text-[9px] text-center font-bold text-studio-400">
                 <span>FP1</span>
-                <span>FP2</span>
-                <span>FP3</span>
+                <span>S-QUALI</span>
+                <span>SPRINT</span>
                 <span>QUALI</span>
                 <span>RACE</span>
               </div>
@@ -388,28 +388,32 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
           )}
         </div>
 
-        {/* ── BOTTOM ROW: Weekend Sessions Cards (FP1, FP2, FP3, Quali, Race) ── */}
+        {/* ── BOTTOM ROW: Weekend Sessions Cards (FP1, Sprint Qualifying, Sprint, Quali, Race) ── */}
         <div className="pt-4 border-t border-studio-100 flex flex-wrap items-center justify-between gap-3 pl-2">
           <div className="flex items-center gap-2.5 flex-wrap">
             {/* FP1 */}
             <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
               <span className="text-[10px] uppercase font-bold text-studio-400 block">FP1</span>
               <span className="text-xs font-bold text-studio-900 block">09 Oct</span>
-              <span className="text-[10px] text-studio-500 font-mono">17:30 SGT</span>
+              <span className="text-[10px] text-studio-500 font-mono">16:30 SGT</span>
             </div>
 
-            {/* FP2 */}
+            {/* Sprint Qualifying */}
             <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">FP2</span>
+              <span className="text-[10px] uppercase font-bold text-studio-400 block">
+                {lang === 'vi' ? 'S-Quali' : 'S-Quali'}
+              </span>
               <span className="text-xs font-bold text-studio-900 block">09 Oct</span>
-              <span className="text-[10px] text-studio-500 font-mono">21:00 SGT</span>
+              <span className="text-[10px] text-studio-500 font-mono">20:30 SGT</span>
             </div>
 
-            {/* FP3 */}
+            {/* Sprint Race */}
             <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
+              <span className="text-[10px] uppercase font-bold text-amber-600 block">
+                {lang === 'vi' ? 'Sprint' : 'Sprint'}
+              </span>
               <span className="text-xs font-bold text-studio-900 block">10 Oct</span>
-              <span className="text-[10px] text-studio-500 font-mono">17:30 SGT</span>
+              <span className="text-[10px] font-bold text-amber-600 font-mono">17:00 SGT</span>
             </div>
 
             {/* Qualifying */}
@@ -436,7 +440,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
             onClick={() => navigate('/season/2026?tab=calendar')}
             className="px-4 py-2.5 rounded-xl border border-studio-300 hover:border-f1red text-studio-700 hover:text-f1red transition-colors text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer ml-auto"
           >
-            <span>{lang === 'vi' ? 'Lịch 24 Chặng Chi Tiết' : 'Full 24-Race Calendar'}</span>
+            <span>{lang === 'vi' ? 'Lịch 23 Chặng Chi Tiết' : 'Full 23-Race Calendar'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

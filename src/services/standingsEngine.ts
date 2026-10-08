@@ -41,6 +41,33 @@ const DRIVER_METADATA: Record<
   sargeant: { code: 'SAR', flag: '🇺🇸', teamId: 'williams', teamName: 'Williams Racing' },
 };
 
+// Authoritative locked team mapping to guarantee accuracy against corrupt/external entries
+export const LOCKED_DRIVERS: Record<string, { teamId: TeamId; teamName: string }> = {
+  piastri: { teamId: 'mclaren', teamName: 'McLaren' },
+  norris: { teamId: 'mclaren', teamName: 'McLaren' },
+  russell: { teamId: 'mercedes', teamName: 'Mercedes' },
+  antonelli: { teamId: 'mercedes', teamName: 'Mercedes' },
+  hamilton: { teamId: 'ferrari', teamName: 'Ferrari' },
+  leclerc: { teamId: 'ferrari', teamName: 'Ferrari' },
+  verstappen: { teamId: 'redbull', teamName: 'Red Bull' },
+  hadjar: { teamId: 'redbull', teamName: 'Red Bull' },
+  lawson: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
+  lindblad: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
+  tsunoda: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
+  gasly: { teamId: 'alpine', teamName: 'Alpine F1 Team' },
+  colapinto: { teamId: 'alpine', teamName: 'Alpine F1 Team' },
+  bearman: { teamId: 'haas', teamName: 'Haas F1 Team' },
+  ocon: { teamId: 'haas', teamName: 'Haas F1 Team' },
+  hulkenberg: { teamId: 'audi', teamName: 'Audi' },
+  bortoleto: { teamId: 'audi', teamName: 'Audi' },
+  alonso: { teamId: 'astonmartin', teamName: 'Aston Martin' },
+  stroll: { teamId: 'astonmartin', teamName: 'Aston Martin' },
+  sainz: { teamId: 'williams', teamName: 'Williams' },
+  albon: { teamId: 'williams', teamName: 'Williams' },
+  bottas: { teamId: 'cadillac', teamName: 'Cadillac F1 Team' },
+  perez: { teamId: 'cadillac', teamName: 'Cadillac F1 Team' },
+};
+
 /**
  * Recalculates Driver and Constructor Championship standings dynamically
  * directly from raw race classification entries.
@@ -90,12 +117,13 @@ export function recalculateStandingsFromRaces(
 
   // Initialize driverMap with existing official baseline standings
   baseDrivers.forEach((d) => {
+    const locked = LOCKED_DRIVERS[d.driverId];
     driverMap.set(d.driverId, {
       driverId: d.driverId,
       driverName: d.driverName,
       driverCode: d.driverCode,
-      teamId: d.teamId,
-      teamName: d.teamName,
+      teamId: locked?.teamId || d.teamId,
+      teamName: locked?.teamName || d.teamName,
       points: d.points,
       wins: d.wins,
       podiums: d.podiums,
@@ -153,26 +181,27 @@ export function recalculateStandingsFromRaces(
       if (!entry) return;
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
+      const locked = LOCKED_DRIVERS[entry.driverId];
       if (existingDriver) {
         existingDriver.points += (entry.points || 0) + (entry.sprintPoints || 0);
         if (entry.position === 1) existingDriver.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingDriver.podiums += 1;
-        existingDriver.teamId = entry.teamId;
-        existingDriver.teamName = entry.teamName;
+        existingDriver.teamId = locked?.teamId || entry.teamId;
+        existingDriver.teamName = locked?.teamName || entry.teamName;
         driverMap.set(entry.driverId, existingDriver);
       } else {
         const dMeta = DRIVER_METADATA[entry.driverId] || {
           code: entry.driverCode || 'F1',
           flag: '🏁',
-          teamId: entry.teamId,
-          teamName: entry.teamName,
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
         };
         driverMap.set(entry.driverId, {
           driverId: entry.driverId,
           driverName: entry.driverName,
           driverCode: dMeta.code,
-          teamId: entry.teamId,
-          teamName: entry.teamName,
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
           points: (entry.points || 0) + (entry.sprintPoints || 0),
           wins: entry.position === 1 ? 1 : 0,
           podiums: entry.position <= 3 ? 1 : 0,
@@ -209,10 +238,15 @@ export function recalculateStandingsFromRaces(
       if (b.wins !== a.wins) return b.wins - a.wins;
       return b.podiums - a.podiums;
     })
-    .map((item, idx) => ({
-      ...item,
-      rank: idx + 1,
-    }));
+    .map((item, idx) => {
+      const locked = LOCKED_DRIVERS[item.driverId];
+      return {
+        ...item,
+        teamId: locked?.teamId || item.teamId,
+        teamName: locked?.teamName || item.teamName,
+        rank: idx + 1,
+      };
+    });
 
   // Sort and rank constructors: Points DESC -> Wins DESC -> Podiums DESC
   const rankedConstructors: ConstructorStanding[] = Array.from(constructorMap.values())

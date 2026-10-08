@@ -13,32 +13,32 @@ export const F1NewsTicker: React.FC = () => {
       badge: lang === 'vi' ? 'SẮP DIỄN RA' : 'NEXT UP',
       text:
         lang === 'vi'
-          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 16:30 ICT (17:30 SGT)'
-          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 17:30 SGT (UTC+8)',
+          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 15:30 ICT (16:30 SGT)'
+          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 16:30 SGT (15:30 ICT)',
       link: '/season/2026?tab=calendar',
     },
     {
       badge: lang === 'vi' ? 'KẾT QUẢ' : 'LATEST',
       text:
         lang === 'vi'
-          ? 'CHẶNG 16 MONZA: LECLERC P1 · SCUDERIA FERRARI CHIẾN THẮNG'
-          : 'ROUND 16 MONZA: LECLERC P1 · SCUDERIA FERRARI TRIUMPH',
+          ? 'CHẶNG 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING CHIẾN THẮNG'
+          : 'ROUND 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING TRIUMPH',
       link: '/season/2026?tab=results',
     },
     {
       badge: lang === 'vi' ? 'TIẾN TRÌNH' : 'PROGRESS',
       text:
         lang === 'vi'
-          ? 'MÙA GIẢI F1 2026: 17 TRÊN TỔNG SỐ 24 CHẶNG ĐUA'
-          : '2026 FIA F1 SEASON: ROUND 17 OF 24 COMPLETED',
+          ? 'MÙA GIẢI F1 2026: 17 TRÊN TỔNG SỐ 23 CHẶNG ĐUA'
+          : '2026 FIA F1 SEASON: ROUND 17 OF 23 UPCOMING',
       link: '/season/2026?tab=calendar',
     },
     {
       badge: lang === 'vi' ? 'DẪN ĐẦU' : 'LEADER',
       text:
         lang === 'vi'
-          ? 'BẢNG XẾP HẠNG TAY ĐUA: VERSTAPPEN (RED BULL RACING) 313 ĐIỂM'
-          : 'DRIVERS CLASSIFICATION: VERSTAPPEN (RED BULL) 313 PTS',
+          ? 'BẢNG XẾP HẠNG TAY ĐUA: ANTONELLI (MERCEDES) 320 ĐIỂM'
+          : 'DRIVERS CLASSIFICATION: ANTONELLI (MERCEDES) 320 PTS',
       link: '/season/2026?tab=drivers',
     },
     {

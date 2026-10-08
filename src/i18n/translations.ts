@@ -16,7 +16,7 @@ export const t = {
     championship: {
       badge: 'Giải đua xe Công thức 1 FIA',
       title: 'Trung Tâm Giải Đấu',
-      desc: 'Theo dõi bảng xếp hạng tay đua, đội đua chính thức, lịch trình 24 chặng đua toàn cầu và diễn biến mùa giải Formula 1.',
+      desc: 'Theo dõi bảng xếp hạng tay đua, đội đua chính thức, lịch trình 23 chặng đua toàn cầu và diễn biến mùa giải Formula 1.',
       tabStandings: 'Bảng Xếp Hạng',
       tabCalendar: 'Lịch Thi Đấu',
       tabResults: 'Kết Quả Chặng',
@@ -59,7 +59,7 @@ export const t = {
     championship: {
       badge: 'FIA Formula One World Championship',
       title: 'Championship Hub',
-      desc: 'Follow official Driver and Constructor classifications, the full 24-round season calendar, and Grand Prix race classifications.',
+      desc: 'Follow official Driver and Constructor classifications, the full 23-round season calendar, and Grand Prix race classifications.',
       tabStandings: 'Standings',
       tabCalendar: 'Race Calendar',
       tabResults: 'Race Results',
