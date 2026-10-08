@@ -92,7 +92,8 @@ describe('CircuitStreetReview Component', () => {
 
 describe('CircuitRealWorldMap Component', () => {
   it('renders satellite map container with GPS coordinates and Google Maps link', async () => {
-    const { CircuitRealWorldMap, CIRCUIT_COORDINATES } = await import('./CircuitRealWorldMap');
+    const { CircuitRealWorldMap } = await import('./CircuitRealWorldMap');
+    const { CIRCUIT_COORDINATES } = await import('./circuitCoordinates');
     const circuit = getCircuitByRound(1)!;
 
     const html = renderToStaticMarkup(<CircuitRealWorldMap circuit={circuit} lang="en" />);
@@ -119,7 +120,8 @@ describe('OpenF1LiveMap Component', () => {
 
 describe('CircuitLiveRadar Component', () => {
   it('renders radar HUD with drivers, speed gauge, and playback controls', async () => {
-    const { CircuitLiveRadar, RADAR_DRIVERS } = await import('./CircuitLiveRadar');
+    const { CircuitLiveRadar } = await import('./CircuitLiveRadar');
+    const { RADAR_DRIVERS } = await import('./radarDrivers');
     const circuit = getCircuitByRound(1)!;
 
     const html = renderToStaticMarkup(<CircuitLiveRadar circuit={circuit} lang="en" />);

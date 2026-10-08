@@ -4,17 +4,8 @@ import { ExternalLink, Layers, Navigation, ZoomIn, ZoomOut, MapPin, Satellite, I
 import { generateCircuitGpsLayout } from '../../utils/circuitGpsHelper';
 import 'leaflet/dist/leaflet.css';
 
-export interface CircuitGeoCoords {
-  lat: number;
-  lng: number;
-  zoom: number;
-}
-
-/**
- * Authentic GPS coordinates for every FIA Formula 1 World Championship circuit
- */
-export { CIRCUIT_COORDINATES } from "./circuitCoordinates";
-import { CIRCUIT_COORDINATES } from "./circuitCoordinates";
+import { CIRCUIT_COORDINATES, CircuitGeoCoords } from './circuitCoordinates';
+export type { CircuitGeoCoords };
 
 
 interface CircuitRealWorldMapProps {

@@ -2,19 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { CircuitData } from '../../types/circuit';
 import { Play, Pause, Zap, Radio, FastForward, RotateCcw } from 'lucide-react';
 
-export interface DriverRadarItem {
-  id: string;
-  name: string;
-  shortName: string;
-  number: number;
-  team: string;
-  teamColor: string;
-  textColor: string;
-  baseOffsetSec: number; // initial gap in seconds
-}
-
-export { RADAR_DRIVERS } from "./radarDrivers";
-import { RADAR_DRIVERS } from "./radarDrivers";
+import { RADAR_DRIVERS, DriverRadarItem } from './radarDrivers';
+export type { DriverRadarItem };
 
 interface CircuitLiveRadarProps {
   circuit: CircuitData;

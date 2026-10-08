@@ -1,4 +1,8 @@
-import { CircuitGeoCoords } from './CircuitRealWorldMap';
+export interface CircuitGeoCoords {
+  lat: number;
+  lng: number;
+  zoom: number;
+}
 
 export const CIRCUIT_COORDINATES: Record<string, CircuitGeoCoords> = {
   'albert-park': { lat: -37.8497, lng: 144.968, zoom: 15 },
