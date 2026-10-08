@@ -10,9 +10,7 @@ import { AnimatedStandingsRow } from './AnimatedStandingsRow';
 import { useReveal } from '../../hooks/useReveal';
 import { SeasonYear } from '../../types';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
-import { ArrowRight, Trophy, Calendar, MapPin, ShieldCheck, Box } from 'lucide-react';
-import { ConstructorLogo } from '../common/ConstructorLogo';
-import { formatDateStr } from '../../utils/dateUtils';
+import { ArrowRight, Trophy, ShieldCheck, Box } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
 import { Card3DTilt } from '../common/Card3DTilt';
 

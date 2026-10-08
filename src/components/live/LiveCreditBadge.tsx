@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Radio } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
 
 interface LiveCreditBadgeProps {

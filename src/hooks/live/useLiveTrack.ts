@@ -14,7 +14,7 @@ export function useLiveTrack(
 
   const prevMapRef = useRef<Record<number, LiveCarPosition>>({});
   const targetMapRef = useRef<Record<number, LiveCarPosition>>({});
-  const lastPollTimeRef = useRef<number>(performance.now());
+  const lastPollTimeRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
 
   // 1. Poll proxy every 2000ms

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlagColor, LiveRaceControlMessage } from '../../lib/live/openf1-types';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { ShieldAlert, Flag, Bell } from 'lucide-react';
+import { Flag, Bell } from 'lucide-react';
 
 interface RaceControlFeedProps {
   activeFlag: FlagColor;

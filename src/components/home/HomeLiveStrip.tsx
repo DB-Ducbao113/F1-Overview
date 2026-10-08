@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLiveSession } from '../../hooks/live/useLiveSession';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { Radio, ArrowRight, Clock, RotateCcw } from 'lucide-react';
+import { Radio, ArrowRight } from 'lucide-react';
 
 export const HomeLiveStrip: React.FC = () => {
   const { lang } = useNavigationStore();

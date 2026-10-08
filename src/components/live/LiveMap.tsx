@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { LiveCarPosition, LiveState } from '../../lib/live/openf1-types';
 import { CIRCUITS_DATA } from '../../data/championship/circuitsData';
 import { getCircuitReviewPoints, TrackReviewPoint } from '../../data/championship/circuitReviewPoints';
@@ -12,11 +12,8 @@ import {
   Zap,
   Gauge,
   X,
-  Flag,
   Calendar,
-  Layers,
   ChevronRight,
-  ShieldAlert,
 } from 'lucide-react';
 
 interface LiveMapProps {
@@ -36,7 +33,7 @@ interface LiveMapProps {
 }
 
 export const LiveMap: React.FC<LiveMapProps> = ({
-  cars = [],
+  cars: _cars = [],
   circuitKey,
   circuitName = 'Circuit',
   selectedDriverNumber,
@@ -57,7 +54,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   const [selectedCorner, setSelectedCorner] = useState<TrackReviewPoint | null>(null);
 
   // SVG Track Path reference for precise mathematical length & point calculation
-  const pathRef = useRef<SVGPathElement>(null);
+  const [pathElement, setPathElement] = useState<SVGPathElement | null>(null);
   const [trackLength, setTrackLength] = useState<number>(0);
 
   // 1. Resolve Circuit Static Geometry
@@ -81,29 +78,20 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
   // Compute track length once SVG path mounts or changes
   useEffect(() => {
-    if (pathRef.current) {
+    if (pathElement) {
       try {
-        const len = pathRef.current.getTotalLength();
+        const len = pathElement.getTotalLength();
         if (len > 0) setTrackLength(len);
       } catch {
         // fallback
       }
     }
-  }, [circuit.svgPath]);
-
-  // Map timing row by driver_number for quick lookup (color, acronym, telemetry)
-  const timingMap = useMemo(() => {
-    const map = new Map<number, TimingRowWithGainLoss>();
-    for (const row of timingRows) {
-      map.set(row.driver_number, row);
-    }
-    return map;
-  }, [timingRows]);
+  }, [circuit.svgPath, pathElement]);
 
   // 2. Compute 20 Car Positions along the circuit's static SVG track
   // Guaranteed to stay 100% on the racing line, turning corners naturally at 60 FPS
   const svgCars = useMemo(() => {
-    if (timingRows.length === 0 || trackLength === 0 || !pathRef.current) {
+    if (timingRows.length === 0 || trackLength === 0 || !pathElement) {
       return [];
     }
 
@@ -119,7 +107,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
       let point = { x: 250, y: 180 };
       try {
-        point = pathRef.current!.getPointAtLength(distance);
+        point = pathElement.getPointAtLength(distance);
       } catch {
         // fallback
       }
@@ -141,7 +129,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
         telemetry: row.telemetry,
       };
     });
-  }, [timingRows, trackLength, replayOffsetSec]);
+  }, [timingRows, trackLength, replayOffsetSec, pathElement]);
 
   // Active highlighted car (either hovered or clicked)
   const activeCarNumber = hoveredDriver ?? selectedDriverNumber;
@@ -250,7 +238,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
 
           {/* ── Layer 4: Neon F1 Red Racing Line ── */}
           <path
-            ref={pathRef}
+            ref={setPathElement}
             id="circuit-track-line"
             d={circuit.svgPath}
             fill="none"

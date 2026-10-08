@@ -68,7 +68,7 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
 
   it('ensures every sprint round has full 5 sessions (FP1, Sprint Quali, Sprint, Qualifying, Race)', () => {
     const sprintRounds = CALENDAR_2026.filter((gp) => gp.hasSprint);
-    expect(sprintRounds.length).toBe(8);
+    expect(sprintRounds.length).toBe(9);
 
     sprintRounds.forEach((gp) => {
       expect(gp.sessions.fp1).toBeDefined();

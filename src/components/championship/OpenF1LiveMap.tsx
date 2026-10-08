@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   openF1Service,
   OpenF1Driver,
   OpenF1Location,
   OpenF1CarData,
-  OpenF1Position,
   OpenF1RaceControl,
   CURATED_REPLAY_RACES,
   CuratedReplayRace,
@@ -13,13 +12,8 @@ import {
   Play,
   Pause,
   RotateCcw,
-  FastForward,
   Radio,
   Flag,
-  Zap,
-  Activity,
-  ChevronRight,
-  ShieldAlert,
   ExternalLink,
 } from 'lucide-react';
 
@@ -44,7 +38,7 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
   const isVi = lang === 'vi';
 
   // Mode: Live vs Replay
-  const [mode, setMode] = useState<'live' | 'replay'>('replay');
+  const [mode] = useState<'live' | 'replay'>('replay');
   const [selectedRace, setSelectedRace] = useState<CuratedReplayRace>(CURATED_REPLAY_RACES[0]);
 
   // Session & Drivers metadata
@@ -64,15 +58,9 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
 
   // Calibration coordinate bounds
   const [bounds, setBounds] = useState<{ minX: number; maxX: number; minY: number; maxY: number } | null>(null);
-  const [trackPolyline, setTrackPolyline] = useState<string>('');
 
   // Drivers dynamic positions state
   const [driversState, setDriversState] = useState<Record<number, DriverRenderState>>({});
-  const driversStateRef = useRef<Record<number, DriverRenderState>>({});
-  driversStateRef.current = driversState;
-
-  const animationFrameRef = useRef<number | null>(null);
-  const lastPollTimeRef = useRef<number>(0);
 
   // Load drivers for active session
   useEffect(() => {

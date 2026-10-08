@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { CircuitData } from '../../types/circuit';
 import { ExternalLink, Layers, Navigation, ZoomIn, ZoomOut, MapPin, Satellite, Info } from 'lucide-react';
 import { generateCircuitGpsLayout } from '../../utils/circuitGpsHelper';
@@ -13,6 +13,7 @@ export interface CircuitGeoCoords {
 /**
  * Authentic GPS coordinates for every FIA Formula 1 World Championship circuit
  */
+export { CIRCUIT_COORDINATES } from "./circuitCoordinates";
 import { CIRCUIT_COORDINATES } from "./circuitCoordinates";
 
 
@@ -31,9 +32,7 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
 }) => {
   const isVi = lang === 'vi';
   const containerRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstanceRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tileLayerRef = useRef<any>(null);
 
   const [mapType, setMapType] = useState<'satellite' | 'street'>('satellite');
@@ -41,11 +40,15 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
   const [showLegend, setShowLegend] = useState<boolean>(true);
 
   // Look up coordinates with graceful fallback to Albert Park
-  const coords: CircuitGeoCoords = CIRCUIT_COORDINATES[circuit.id] || {
-    lat: -37.8497,
-    lng: 144.968,
-    zoom: 15,
-  };
+  const coords: CircuitGeoCoords = useMemo(
+    () =>
+      CIRCUIT_COORDINATES[circuit.id] || {
+        lat: -37.8497,
+        lng: 144.968,
+        zoom: 15,
+      },
+    [circuit.id]
+  );
 
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
   const osmUrl = `https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}#map=${coords.zoom}/${coords.lat}/${coords.lng}`;
@@ -258,6 +261,7 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
         mapInstanceRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [circuit, coords.lat, coords.lng, coords.zoom, isVi]);
 
   // Handle Map Type Switch (Satellite vs Street)

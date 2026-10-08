@@ -9,7 +9,6 @@ import { TimingTower } from './TimingTower';
 import { RaceControlFeed } from './RaceControlFeed';
 import { LiveCreditBadge } from './LiveCreditBadge';
 import {
-  SIMULATION_RACES,
   SimulationRaceConfig,
   getSimulationRace,
 } from '../../data/live/simulationRaces';
@@ -79,7 +78,7 @@ export const LiveCenter: React.FC = () => {
       : selectedReplayRace.circuitName;
 
   // 4. Telemetry & Track Hooks
-  const { cars: openF1Cars, sampledAt: trackSampledAt, loading: trackLoading } = useLiveTrack(
+  const { sampledAt: trackSampledAt } = useLiveTrack(
     activeSessionKey,
     mode === 'live' ? sessionData?.state === 'live' : false,
     replayAtTimestamp

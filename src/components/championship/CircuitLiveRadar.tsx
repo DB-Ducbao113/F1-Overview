@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { CircuitData } from '../../types/circuit';
 import { Play, Pause, Zap, Radio, FastForward, RotateCcw } from 'lucide-react';
 
@@ -13,6 +13,7 @@ export interface DriverRadarItem {
   baseOffsetSec: number; // initial gap in seconds
 }
 
+export { RADAR_DRIVERS } from "./radarDrivers";
 import { RADAR_DRIVERS } from "./radarDrivers";
 
 interface CircuitLiveRadarProps {
@@ -22,7 +23,7 @@ interface CircuitLiveRadarProps {
 
 export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lang }) => {
   const isVi = lang === 'vi';
-  const pathRef = useRef<SVGPathElement>(null);
+  const [pathElement, setPathElement] = useState<SVGPathElement | null>(null);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
@@ -40,17 +41,15 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
 
   // Measure SVG path total length on mount / change
   useEffect(() => {
-    if (typeof document === 'undefined') return;
-    if (pathRef.current) {
-      try {
-        const len = pathRef.current.getTotalLength();
-        if (len > 0) setPathTotalLength(len);
-      } catch {
-        // Fallback for mock environments
-        setPathTotalLength(1200);
-      }
+    if (!pathElement) return;
+    try {
+      const len = pathElement.getTotalLength();
+      if (len > 0) setPathTotalLength(len);
+    } catch {
+      // Fallback for mock environments
+      setPathTotalLength(1200);
     }
-  }, [circuit.svgPath]);
+  }, [circuit.svgPath, pathElement]);
 
   // Animation frame loop
   useEffect(() => {
@@ -71,7 +70,7 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
 
   // Calculate position and local physics for each driver
   const driversData = useMemo(() => {
-    if (!pathRef.current || pathTotalLength <= 0) {
+    if (!pathElement || pathTotalLength <= 0) {
       return RADAR_DRIVERS.map((d) => ({
         ...d,
         x: circuit.startFinish.x,
@@ -92,11 +91,11 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
       const normalizedFraction = progressFraction / baseLapDurationSec;
 
       const dist = normalizedFraction * pathTotalLength;
-      const pt = pathRef.current!.getPointAtLength(dist);
+      const pt = pathElement.getPointAtLength(dist);
 
       // Sample look-ahead point to compute heading and curvature
       const lookAheadDist = (dist + 8) % pathTotalLength;
-      const ptAhead = pathRef.current!.getPointAtLength(lookAheadDist);
+      const ptAhead = pathElement.getPointAtLength(lookAheadDist);
 
       // Curvature approximation: ratio of straight chord to path distance
       const chord = Math.hypot(ptAhead.x - pt.x, ptAhead.y - pt.y);
@@ -135,7 +134,7 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
         gapSec: d.baseOffsetSec,
       };
     });
-  }, [elapsedTime, pathTotalLength, baseLapDurationSec, circuit]);
+  }, [elapsedTime, pathTotalLength, baseLapDurationSec, circuit, pathElement]);
 
   const focusedDriver = useMemo(() => {
     return driversData.find((d) => d.id === selectedDriverId) || driversData[0];
@@ -236,7 +235,7 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
 
           {/* Asphalt main track line */}
           <path
-            ref={pathRef}
+            ref={setPathElement}
             d={circuit.svgPath}
             fill="none"
             stroke="#161922"

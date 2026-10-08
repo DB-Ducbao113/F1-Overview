@@ -145,7 +145,7 @@ export default async function handler(req: any, res: any) {
     sessionCache = { at: nowTs, data: payload };
     res.setHeader('X-Cache', 'MISS');
     return res.status(200).json(payload);
-  } catch (err: any) {
+  } catch {
     const isUpcomingSingapore = nowTs < new Date('2026-10-09T09:30:00.000Z').getTime();
     const fallbackPayload = isUpcomingSingapore
       ? {

@@ -56,7 +56,7 @@ const TimeCluster: React.FC<{ value: number; label: string }> = ({ value, label 
 export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> = ({ race }) => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
-  const [now, setNow] = useState<number>(Date.now());
+  const [now, setNow] = useState<number>(() => Date.now());
   const { data: liveSessionData } = useLiveSession();
 
   // Real schedule for Singapore GP 2026 (UTC+8 / SGT)
@@ -124,75 +124,63 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   }, []);
 
   // State Machine Evaluation: 'upcoming' | 'live' | 'finished'
-  const { state, activeSession, nextSession, timeDiffMs } = useMemo(() => {
-    // 0. Single Source of Truth check from Live Session API
-    const apiSession = liveSessionData?.session;
-    const isApiLive = liveSessionData?.state === 'live';
+  let state: 'live' | 'upcoming' | 'finished' = 'finished';
+  let activeSession: SessionTiming | null = null;
+  let nextSession: SessionTiming | null = null;
+  let timeDiffMs: number;
 
-    // 1. Check if ANY session is currently LIVE
-    if (isApiLive && apiSession) {
-      const matched = sessions.find(
-        (s) =>
-          s.id.toLowerCase() === (apiSession.session_name || '').toLowerCase() ||
-          s.nameEn.toLowerCase().includes((apiSession.session_name || '').toLowerCase())
-      ) || sessions[0];
-      return {
-        state: 'live' as const,
-        activeSession: matched,
-        nextSession: null,
-        timeDiffMs: 0,
-      };
-    }
+  // 0. Single Source of Truth check from Live Session API
+  const apiSession = liveSessionData?.session;
+  const isApiLive = liveSessionData?.state === 'live';
 
-    for (const s of sessions) {
+  if (isApiLive && apiSession) {
+    activeSession = sessions.find(
+      (s) =>
+        s.id.toLowerCase() === (apiSession.session_name || '').toLowerCase() ||
+        s.nameEn.toLowerCase().includes((apiSession.session_name || '').toLowerCase())
+    ) || sessions[0];
+    state = 'live';
+    nextSession = null;
+    timeDiffMs = 0;
+  } else {
+    const liveSessionFound = sessions.find((s) => {
       const startMs = new Date(s.startIso).getTime() - 30 * 60_000;
       const endMs = new Date(s.endIso).getTime() + 30 * 60_000;
-      if (now >= startMs && now <= endMs) {
-        return {
-          state: 'live' as const,
-          activeSession: s,
-          nextSession: null,
-          timeDiffMs: 0,
-        };
+      return now >= startMs && now <= endMs;
+    });
+
+    if (liveSessionFound) {
+      state = 'live';
+      activeSession = liveSessionFound;
+      nextSession = null;
+      timeDiffMs = 0;
+    } else {
+      const upcoming = sessions.find((s) => now < new Date(s.startIso).getTime());
+      if (upcoming) {
+        const targetStartMs =
+          liveSessionData?.state === 'upcoming' && apiSession?.date_start
+            ? new Date(apiSession.date_start).getTime()
+            : new Date(upcoming.startIso).getTime();
+        const diff = targetStartMs - now;
+        state = 'upcoming';
+        activeSession = null;
+        nextSession = upcoming;
+        timeDiffMs = Math.max(0, diff);
+      } else {
+        state = 'finished';
+        activeSession = null;
+        nextSession = null;
+        timeDiffMs = 0;
       }
     }
-
-    // 2. Otherwise find next upcoming session (now < start)
-    const upcoming = sessions.find((s) => now < new Date(s.startIso).getTime());
-    if (upcoming) {
-      // Synchronize with API target timestamp when available
-      const targetStartMs =
-        liveSessionData?.state === 'upcoming' && apiSession?.date_start
-          ? new Date(apiSession.date_start).getTime()
-          : new Date(upcoming.startIso).getTime();
-
-      const diff = targetStartMs - now;
-      return {
-        state: 'upcoming' as const,
-        activeSession: null,
-        nextSession: upcoming,
-        timeDiffMs: Math.max(0, diff),
-      };
-    }
-
-    // 3. All sessions completed
-    return {
-      state: 'finished' as const,
-      activeSession: null,
-      nextSession: null,
-      timeDiffMs: 0,
-    };
-  }, [sessions, now, liveSessionData]);
+  }
 
   // Compute Days, Hours, Minutes, Seconds for countdown
-  const { days, hours, minutes, seconds } = useMemo(() => {
-    const totalSecs = Math.floor(timeDiffMs / 1000);
-    const d = Math.floor(totalSecs / (3600 * 24));
-    const h = Math.floor((totalSecs % (3600 * 24)) / 3600);
-    const m = Math.floor((totalSecs % 3600) / 60);
-    const s = totalSecs % 60;
-    return { days: d, hours: h, minutes: m, seconds: s };
-  }, [timeDiffMs]);
+  const totalSecs = Math.floor(timeDiffMs / 1000);
+  const days = Math.floor(totalSecs / (3600 * 24));
+  const hours = Math.floor((totalSecs % (3600 * 24)) / 3600);
+  const minutes = Math.floor((totalSecs % 3600) / 60);
+  const seconds = totalSecs % 60;
 
   const isLive = state === 'live';
 

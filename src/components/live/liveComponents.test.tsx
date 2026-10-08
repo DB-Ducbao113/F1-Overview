@@ -4,7 +4,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { SessionBanner } from './SessionBanner';
 import { TimingTower } from './TimingTower';
 import { LiveMap } from './LiveMap';
-import { SIMULATION_RACES } from '../../data/live/simulationRaces';
 
 describe('Live Center Components - Mode System & Map/Tower states', () => {
   describe('SessionBanner Component', () => {
