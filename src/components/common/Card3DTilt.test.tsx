@@ -8,7 +8,7 @@ describe('Card3DTilt', () => {
     const html = renderToStaticMarkup(
       <Card3DTilt maxTilt={4} glareOpacity={0.15} className="custom-test-card">
         <div id="test-content">F1 Car Content</div>
-      </Card3DTilt>
+      </Card3DTilt>,
     );
 
     expect(html).toContain('custom-test-card');
@@ -21,7 +21,7 @@ describe('Card3DTilt', () => {
     const html = renderToStaticMarkup(
       <Card3DTilt>
         <span>Simple Child</span>
-      </Card3DTilt>
+      </Card3DTilt>,
     );
 
     expect(html).toContain('Simple Child');

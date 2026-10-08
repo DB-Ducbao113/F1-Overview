@@ -1,5 +1,14 @@
 import React from 'react';
-import { MousePointer, ZoomIn, ZoomOut, RotateCcw, Play, Pause, Compass, FileText } from 'lucide-react';
+import {
+  MousePointer,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Play,
+  Pause,
+  Compass,
+  FileText,
+} from 'lucide-react';
 import { CameraPreset } from './CameraController';
 
 interface ShowroomQuickHUDProps {
@@ -231,9 +240,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
                 aria-label={lang === 'vi' ? 'Bản Gốc 2D' : '2D Blueprint'}
               >
                 <FileText className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">
-                  {lang === 'vi' ? 'Bản Gốc 2D' : '2D CAD'}
-                </span>
+                <span className="hidden sm:inline">{lang === 'vi' ? 'Bản Gốc 2D' : '2D CAD'}</span>
               </button>
             )}
           </div>

@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 export function useAnimatedCounter(
   target: number,
   durationMs: number = 1200,
-  enabled: boolean = true
+  enabled: boolean = true,
 ): { value: number; isDone: boolean } {
   const [value, setValue] = useState<number>(enabled ? 0 : target);
   const [isDone, setIsDone] = useState<boolean>(!enabled);

@@ -61,6 +61,8 @@ export interface GrandPrixRound {
   laps: number;
   circuitLengthKm: number;
   raceDistanceKm: number;
+  /** UTC offset of the race venue in hours (e.g. Singapore = +8, London = +1 in BST) */
+  venueUtcOffset?: number;
   lapRecord?: {
     time: string;
     driver: string;

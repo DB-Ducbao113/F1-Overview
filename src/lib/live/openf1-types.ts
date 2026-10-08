@@ -45,11 +45,11 @@ export interface LiveTrackResponse {
 export type TyreCompound = 'SOFT' | 'MEDIUM' | 'HARD' | 'INTERMEDIATE' | 'WET' | 'UNKNOWN';
 
 export interface LiveDriverTelemetry {
-  speed: number;       // km/h (from /v1/car_data)
-  gear: number;        // 1-8
-  drs: boolean;        // true if DRS open (10, 12, 14 in raw telemetry)
-  throttle?: number;   // 0-100%
-  brake?: number;      // 0-100%
+  speed: number; // km/h (from /v1/car_data)
+  gear: number; // 1-8
+  drs: boolean; // true if DRS open (10, 12, 14 in raw telemetry)
+  throttle?: number; // 0-100%
+  brake?: number; // 0-100%
   rpm?: number;
 }
 
@@ -60,9 +60,9 @@ export interface LiveTimingRow {
   name_acronym: string;
   team_name: string;
   team_colour: string;
-  gap_to_leader: string | null;  // e.g. "+3.421" or "LEADER"
-  interval: string | null;       // e.g. "+0.312"
-  best_lap: string | null;       // e.g. "1:19.813"
+  gap_to_leader: string | null; // e.g. "+3.421" or "LEADER"
+  interval: string | null; // e.g. "+0.312"
+  best_lap: string | null; // e.g. "1:19.813"
   last_lap: string | null;
   in_pit: boolean;
   sectors: [string | null, string | null, string | null];
@@ -84,7 +84,8 @@ export interface LiveTimingResponse {
   };
 }
 
-export type FlagColor = 'GREEN' | 'YELLOW' | 'DOUBLE_YELLOW' | 'RED' | 'SAFETY_CAR' | 'VSC' | 'CLEAR';
+export type FlagColor =
+  'GREEN' | 'YELLOW' | 'DOUBLE_YELLOW' | 'RED' | 'SAFETY_CAR' | 'VSC' | 'CLEAR';
 
 export interface LiveRaceControlMessage {
   date: string;
@@ -106,7 +107,7 @@ export interface CircuitBounds {
   maxX: number;
   minY: number;
   maxY: number;
-  rotate?: number;   // degrees, if track needs rotation
+  rotate?: number; // degrees, if track needs rotation
   mirrorX?: boolean; // if track needs horizontal mirror
   mirrorY?: boolean;
 }

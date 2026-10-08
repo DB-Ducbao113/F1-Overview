@@ -136,7 +136,11 @@ export const HomeView: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Top 3 Drivers */}
-            <Card3DTilt maxTilt={3} glareOpacity={0.12} className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
+            <Card3DTilt
+              maxTilt={3}
+              glareOpacity={0.12}
+              className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4"
+            >
               <div className="flex items-center justify-between pb-3 border-b border-studio-100">
                 <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-amber-500" />{' '}
@@ -196,11 +200,17 @@ export const HomeView: React.FC = () => {
             </Card3DTilt>
 
             {/* Top 3 Constructors */}
-            <Card3DTilt maxTilt={3} glareOpacity={0.12} className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
+            <Card3DTilt
+              maxTilt={3}
+              glareOpacity={0.12}
+              className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4"
+            >
               <div className="flex items-center justify-between pb-3 border-b border-studio-100">
                 <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-f1red" />{' '}
-                  {lang === 'vi' ? 'Bảng Điểm Đội Đua (Top 3)' : 'Constructors Championship (Top 3)'}
+                  {lang === 'vi'
+                    ? 'Bảng Điểm Đội Đua (Top 3)'
+                    : 'Constructors Championship (Top 3)'}
                 </h3>
                 <span className="text-xs font-semibold text-studio-500">
                   {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
@@ -240,7 +250,9 @@ export const HomeView: React.FC = () => {
                               navigate(`/showroom?team=${c.teamId}`);
                             }}
                             className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
-                            title={lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'}
+                            title={
+                              lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'
+                            }
                           >
                             <Box className="w-3.5 h-3.5 text-f1red" />
                             <span className="hidden sm:inline">3D</span>
@@ -252,7 +264,6 @@ export const HomeView: React.FC = () => {
                 })}
               </div>
             </Card3DTilt>
-
           </div>
         </section>
       </div>

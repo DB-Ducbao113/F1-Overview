@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, RefreshCw, Calendar, MapPin, Radio, Film } from 'lucide-react';
 import { LiveState, OpenF1SessionRaw } from '../../lib/live/openf1-types';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { SIMULATION_RACES, SimulationRaceConfig, getSimulationRace } from '../../data/live/simulationRaces';
+import {
+  SIMULATION_RACES,
+  SimulationRaceConfig,
+  getSimulationRace,
+} from '../../data/live/simulationRaces';
 import { scheduleWallClockSecondTick, tabSync } from '../../lib/live/tabSync';
 
 export type LiveCenterMode = 'live' | 'replay';
@@ -189,7 +193,9 @@ export const SessionBanner: React.FC<SessionBannerProps> = ({
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 text-xs font-black tracking-wider uppercase">
                   <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
-                  <span>{isVi ? 'MÔ PHỎNG · DỮ LIỆU LỊCH SỬ' : 'SIMULATION · HISTORICAL DATA'}</span>
+                  <span>
+                    {isVi ? 'MÔ PHỎNG · DỮ LIỆU LỊCH SỬ' : 'SIMULATION · HISTORICAL DATA'}
+                  </span>
                 </div>
 
                 {/* Race Picker Dropdown */}
@@ -239,7 +245,9 @@ export const SessionBanner: React.FC<SessionBannerProps> = ({
               title={isVi ? 'Cập nhật trạng thái' : 'Refresh session state'}
               className="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-studio-300 hover:text-white border border-white/10 transition-all cursor-pointer"
             >
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-cyan-400' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-cyan-400' : ''}`}
+              />
             </button>
           )}
         </div>
@@ -255,7 +263,11 @@ export const SessionBanner: React.FC<SessionBannerProps> = ({
               className="p-2 rounded-lg bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/40 transition-all cursor-pointer flex items-center gap-1.5 font-bold text-xs"
               title={isReplayPlaying ? 'Tạm dừng mô phỏng' : 'Phát mô phỏng'}
             >
-              {isReplayPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              {isReplayPlaying ? (
+                <Pause className="w-3.5 h-3.5" />
+              ) : (
+                <Play className="w-3.5 h-3.5" />
+              )}
               <span>{isReplayPlaying ? (isVi ? 'Dừng' : 'Pause') : isVi ? 'Phát' : 'Play'}</span>
             </button>
 

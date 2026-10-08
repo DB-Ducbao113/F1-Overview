@@ -8,10 +8,7 @@ import { LiveMap } from './LiveMap';
 import { TimingTower } from './TimingTower';
 import { RaceControlFeed } from './RaceControlFeed';
 import { LiveCreditBadge } from './LiveCreditBadge';
-import {
-  SimulationRaceConfig,
-  getSimulationRace,
-} from '../../data/live/simulationRaces';
+import { SimulationRaceConfig, getSimulationRace } from '../../data/live/simulationRaces';
 import { useNavigationStore } from '../../store/useNavigationStore';
 
 export const LiveCenter: React.FC = () => {
@@ -36,7 +33,7 @@ export const LiveCenter: React.FC = () => {
 
   const selectedReplayRace: SimulationRaceConfig = useMemo(
     () => getSimulationRace(selectedReplayRaceId),
-    [selectedReplayRaceId]
+    [selectedReplayRaceId],
   );
 
   // Advance replay slider timer when playing
@@ -63,9 +60,7 @@ export const LiveCenter: React.FC = () => {
 
   // Active session and circuit identifiers based strictly on mode
   const activeSessionKey =
-    mode === 'live'
-      ? sessionData?.session?.session_key
-      : selectedReplayRace.sessionKey;
+    mode === 'live' ? sessionData?.session?.session_key : selectedReplayRace.sessionKey;
 
   const activeCircuitKey =
     mode === 'live'
@@ -81,18 +76,22 @@ export const LiveCenter: React.FC = () => {
   const { sampledAt: trackSampledAt } = useLiveTrack(
     activeSessionKey,
     mode === 'live' ? sessionData?.state === 'live' : false,
-    replayAtTimestamp
+    replayAtTimestamp,
   );
 
-  const { tower: openF1Tower, fastestLap: openF1FastestLap, loading: timingLoading } = useLiveTiming(
+  const {
+    tower: openF1Tower,
+    fastestLap: openF1FastestLap,
+    loading: timingLoading,
+  } = useLiveTiming(
     activeSessionKey,
     mode === 'live' ? sessionData?.state === 'live' : false,
-    replayAtTimestamp
+    replayAtTimestamp,
   );
 
   const { activeFlag, messages: controlMessages } = useLiveControl(
     activeSessionKey,
-    mode === 'live' ? sessionData?.state === 'live' : false
+    mode === 'live' ? sessionData?.state === 'live' : false,
   );
 
   // 5. Build Resolved Timing Tower Rows
@@ -112,15 +111,15 @@ export const LiveCenter: React.FC = () => {
     // Map curated drivers with slight dynamic speed & DRS variations according to replay offset
     return selectedReplayRace.drivers.map((d, idx) => {
       // Dynamic simulated speed curve based on lap section
-      const progress = ((replayOffsetSec / 85) + idx * 0.05) % 1;
+      const progress = (replayOffsetSec / 85 + idx * 0.05) % 1;
       const isStraight = progress < 0.25 || (progress > 0.55 && progress < 0.75);
       const isHairpin = progress > 0.4 && progress < 0.5;
 
       const dynamicSpeed = isStraight
         ? 310 + ((idx * 7 + Math.floor(replayOffsetSec)) % 25)
         : isHairpin
-        ? 85 + ((idx * 3) % 20)
-        : 220 + ((idx * 5) % 40);
+          ? 85 + ((idx * 3) % 20)
+          : 220 + ((idx * 5) % 40);
 
       const dynamicDrs = isStraight && idx > 0;
       const dynamicGear = isStraight ? 8 : isHairpin ? 2 : 6;
@@ -142,8 +141,7 @@ export const LiveCenter: React.FC = () => {
   }, [mode, sessionData?.state, openF1Tower, selectedReplayRace.drivers, replayOffsetSec]);
 
   // Fastest lap resolution
-  const resolvedFastestLap =
-    mode === 'live' ? openF1FastestLap : selectedReplayRace.fastestLap;
+  const resolvedFastestLap = mode === 'live' ? openF1FastestLap : selectedReplayRace.fastestLap;
 
   // Handle switching replay race with a brief skeleton loading phase
   const handleSelectReplayRace = (race: SimulationRaceConfig) => {

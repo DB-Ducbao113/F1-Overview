@@ -1426,7 +1426,13 @@ export function drawCoolingLouvres(
   ctx.save();
 
   // Helper: Draw horizontal slat group with longitudinal accent stripes and transverse ventilation slots
-  const drawHorizSlatBank = (x: number, y: number, w: number, h: number, verticalStripes = true) => {
+  const drawHorizSlatBank = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    verticalStripes = true,
+  ) => {
     ctx.fillStyle = cfg.baseColor;
     ctx.fillRect(x, y, w, h);
 
@@ -3238,7 +3244,13 @@ export function generateSuspensionMirrorsTexture(
     ctx.fillRect(w - 360, 600, 220, 10);
 
     // ── 2. Rear-View Mirrors (Left & Right Prominent Housings) ──
-    const drawMirrorHousing = (mx: number, my: number, mw: number, mh: number, isRight: boolean) => {
+    const drawMirrorHousing = (
+      mx: number,
+      my: number,
+      mw: number,
+      mh: number,
+      isRight: boolean,
+    ) => {
       // Mirror Aerodynamic Carbon Mounting Stalk
       ctx.fillStyle = '#0a0b0d';
       ctx.fillRect(isRight ? mx - 40 : mx + mw, my + mh * 0.35, 48, 22);

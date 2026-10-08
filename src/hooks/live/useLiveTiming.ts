@@ -8,7 +8,7 @@ export interface TimingRowWithGainLoss extends LiveTimingRow {
 export function useLiveTiming(
   sessionKey: number | null | undefined,
   enabled: boolean = true,
-  at?: string
+  at?: string,
 ) {
   const [tower, setTower] = useState<TimingRowWithGainLoss[]>([]);
   const [fastestLap, setFastestLap] = useState<LiveTimingResponse['fastest_lap'] | undefined>();

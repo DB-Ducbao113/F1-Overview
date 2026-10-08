@@ -61,11 +61,21 @@ export default async function handler(req: any, res: any) {
 
     // Parallel fetch core timing endpoints
     const [driversRes, posRes, intervalsRes, stintsRes, carDataRes] = await Promise.all([
-      fetch(`${OPENF1_BASE}/drivers?session_key=${sessionKey}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/position?session_key=${sessionKey}${dateFilter}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/intervals?session_key=${sessionKey}${dateFilter}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/stints?session_key=${sessionKey}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/car_data?session_key=${sessionKey}${dateFilter}`).then((r) => r.json()).catch(() => []),
+      fetch(`${OPENF1_BASE}/drivers?session_key=${sessionKey}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/position?session_key=${sessionKey}${dateFilter}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/intervals?session_key=${sessionKey}${dateFilter}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/stints?session_key=${sessionKey}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/car_data?session_key=${sessionKey}${dateFilter}`)
+        .then((r) => r.json())
+        .catch(() => []),
     ]);
 
     const drivers: any[] = Array.isArray(driversRes) ? driversRes : [];

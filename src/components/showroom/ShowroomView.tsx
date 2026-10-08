@@ -199,7 +199,11 @@ export const ShowroomView: React.FC = () => {
                 type="button"
                 onClick={() => setIsSchematicOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
-                title={lang === 'vi' ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe' : 'View original 2D CAD blueprint & color matrix'}
+                title={
+                  lang === 'vi'
+                    ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
+                    : 'View original 2D CAD blueprint & color matrix'
+                }
               >
                 <FileText className="w-3.5 h-3.5 text-amber-400" />
                 <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>

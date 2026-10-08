@@ -59,7 +59,7 @@ export function toSvg(
   x: number,
   y: number,
   bounds: CircuitBounds,
-  viewBox: ViewBoxConfig
+  viewBox: ViewBoxConfig,
 ): { cx: number; cy: number } {
   const pad = viewBox.pad ?? 40;
   const availW = Math.max(viewBox.w - pad * 2, 10);

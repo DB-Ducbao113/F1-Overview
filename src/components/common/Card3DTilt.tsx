@@ -43,7 +43,7 @@ export const Card3DTilt: React.FC<Card3DTiltProps> = ({
       const rotateY = ((x - centerX) / centerX) * maxTilt;
 
       setTransform(
-        `perspective(${perspective}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(${scale}, ${scale}, ${scale})`
+        `perspective(${perspective}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(${scale}, ${scale}, ${scale})`,
       );
 
       if (glare) {
@@ -55,7 +55,7 @@ export const Card3DTilt: React.FC<Card3DTiltProps> = ({
         });
       }
     },
-    [maxTilt, perspective, scale, glare, glareOpacity]
+    [maxTilt, perspective, scale, glare, glareOpacity],
   );
 
   const handleMouseEnter = () => {

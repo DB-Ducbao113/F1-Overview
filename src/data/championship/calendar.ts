@@ -17,6 +17,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 11, // AEDT
     laps: 58,
     circuitLengthKm: 5.278,
     raceDistanceKm: 306.124,
@@ -41,6 +42,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: true,
+    venueUtcOffset: 8, // CST
     laps: 56,
     circuitLengthKm: 5.451,
     raceDistanceKm: 305.256,
@@ -65,6 +67,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 9, // JST
     laps: 53,
     circuitLengthKm: 5.807,
     raceDistanceKm: 307.771,
@@ -89,6 +92,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: true,
+    venueUtcOffset: -4, // EDT
     laps: 57,
     circuitLengthKm: 5.412,
     raceDistanceKm: 308.484,
@@ -113,6 +117,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: true,
+    venueUtcOffset: -4, // EDT
     laps: 68,
     circuitLengthKm: 4.361,
     raceDistanceKm: 296.548,
@@ -137,6 +142,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 78,
     circuitLengthKm: 3.337,
     raceDistanceKm: 260.286,
@@ -161,6 +167,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 66,
     circuitLengthKm: 4.657,
     raceDistanceKm: 307.362,
@@ -185,6 +192,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 71,
     circuitLengthKm: 4.318,
     raceDistanceKm: 306.578,
@@ -209,6 +217,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: true,
+    venueUtcOffset: 1, // BST
     laps: 52,
     circuitLengthKm: 5.891,
     raceDistanceKm: 306.332,
@@ -233,6 +242,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 44,
     circuitLengthKm: 7.004,
     raceDistanceKm: 308.176,
@@ -257,6 +267,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 70,
     circuitLengthKm: 4.381,
     raceDistanceKm: 306.67,
@@ -281,6 +292,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: true,
+    venueUtcOffset: 2, // CEST
     laps: 72,
     circuitLengthKm: 4.259,
     raceDistanceKm: 306.648,
@@ -305,6 +317,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 53,
     circuitLengthKm: 5.793,
     raceDistanceKm: 307.029,
@@ -329,6 +342,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 2, // CEST
     laps: 57,
     circuitLengthKm: 5.474,
     raceDistanceKm: 312.018,
@@ -353,16 +367,17 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 4, // AZT
     laps: 51,
     circuitLengthKm: 6.003,
     raceDistanceKm: 306.049,
     lapRecord: { time: '1:43.009', driver: 'Charles Leclerc', year: 2019 },
     sessions: {
-      fp1: { name: 'Practice 1', dateStr: 'Thu 24 Sep', timeStr: '13:30 (AZT)', status: 'finished' },
-      fp2: { name: 'Practice 2', dateStr: 'Thu 24 Sep', timeStr: '17:00 (AZT)', status: 'finished' },
-      fp3: { name: 'Practice 3', dateStr: 'Fri 25 Sep', timeStr: '12:30 (AZT)', status: 'finished' },
-      qualifying: { name: 'Qualifying', dateStr: 'Fri 25 Sep', timeStr: '16:00 (AZT)', status: 'finished' },
-      race: { name: 'Grand Prix Race', dateStr: 'Sat 26 Sep', timeStr: '15:00 (AZT)', status: 'finished' },
+      fp1: { name: 'Practice 1', dateStr: 'Thu 24 Sep', timeStr: '13:30', status: 'finished' },
+      fp2: { name: 'Practice 2', dateStr: 'Thu 24 Sep', timeStr: '17:00', status: 'finished' },
+      fp3: { name: 'Practice 3', dateStr: 'Fri 25 Sep', timeStr: '12:30', status: 'finished' },
+      qualifying: { name: 'Qualifying', dateStr: 'Fri 25 Sep', timeStr: '16:00', status: 'finished' },
+      race: { name: 'Grand Prix Race', dateStr: 'Sat 26 Sep', timeStr: '15:00', status: 'finished' },
     },
   },
   {
@@ -378,6 +393,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'completed',
     hasSprint: false,
+    venueUtcOffset: 8, // MYT
     laps: 56,
     circuitLengthKm: 5.543,
     raceDistanceKm: 310.408,
@@ -402,6 +418,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: true,
+    venueUtcOffset: 8, // SGT
     laps: 62,
     circuitLengthKm: 4.940,
     raceDistanceKm: 306.143,
@@ -414,7 +431,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sun 11 Oct', timeStr: '20:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 18,
     name: 'United States Grand Prix',
     officialName: 'Formula 1 Pirelli United States Grand Prix 2026',
@@ -427,6 +444,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: true,
+    venueUtcOffset: -5, // CDT (UTC-5)
     laps: 56,
     circuitLengthKm: 5.513,
     raceDistanceKm: 308.405,
@@ -439,7 +457,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sun 25 Oct', timeStr: '14:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 19,
     name: 'Mexico City Grand Prix',
     officialName: 'Formula 1 Gran Premio de la Ciudad de México 2026',
@@ -452,6 +470,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: false,
+    venueUtcOffset: -6, // CST
     laps: 71,
     circuitLengthKm: 4.304,
     raceDistanceKm: 305.354,
@@ -464,7 +483,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sun 01 Nov', timeStr: '14:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 20,
     name: 'São Paulo Grand Prix',
     officialName: 'Formula 1 Lenovo Grande Prêmio de São Paulo 2026',
@@ -477,6 +496,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: true,
+    venueUtcOffset: -3, // BRT
     laps: 71,
     circuitLengthKm: 4.309,
     raceDistanceKm: 305.879,
@@ -489,7 +509,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sun 08 Nov', timeStr: '14:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 21,
     name: 'Las Vegas Grand Prix',
     officialName: 'Formula 1 Heineken Silver Las Vegas Grand Prix 2026',
@@ -502,6 +522,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: false,
+    venueUtcOffset: -8, // PST
     laps: 50,
     circuitLengthKm: 6.201,
     raceDistanceKm: 309.958,
@@ -514,7 +535,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sat 21 Nov', timeStr: '22:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 22,
     name: 'Qatar Grand Prix',
     officialName: 'Formula 1 Qatar Airways Qatar Grand Prix 2026',
@@ -527,6 +548,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: true,
+    venueUtcOffset: 3, // AST
     laps: 57,
     circuitLengthKm: 5.419,
     raceDistanceKm: 308.611,
@@ -539,7 +561,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
       race: { name: 'Race', dateStr: 'Sun 29 Nov', timeStr: '19:00', status: 'scheduled' },
     },
   },
-{
+  {
     round: 23,
     name: 'Abu Dhabi Grand Prix',
     officialName: 'Formula 1 Etihad Airways Abu Dhabi Grand Prix 2026',
@@ -552,6 +574,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     season: 2026,
     status: 'upcoming',
     hasSprint: false,
+    venueUtcOffset: 4, // GST
     laps: 58,
     circuitLengthKm: 5.281,
     raceDistanceKm: 306.183,

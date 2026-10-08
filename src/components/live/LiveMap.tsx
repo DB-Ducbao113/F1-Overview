@@ -1,7 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { LiveCarPosition, LiveState } from '../../lib/live/openf1-types';
 import { CIRCUITS_DATA } from '../../data/championship/circuitsData';
-import { getCircuitReviewPoints, TrackReviewPoint } from '../../data/championship/circuitReviewPoints';
+import {
+  getCircuitReviewPoints,
+  TrackReviewPoint,
+} from '../../data/championship/circuitReviewPoints';
 import { resolveCircuitId } from '../../data/live/simulationRaces';
 import { TimingRowWithGainLoss } from '../../hooks/live/useLiveTiming';
 import { useNavigationStore } from '../../store/useNavigationStore';
@@ -60,16 +63,13 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   // 1. Resolve Circuit Static Geometry
   const circuitId = useMemo(
     () => resolveCircuitId(circuitKey, circuitName),
-    [circuitKey, circuitName]
+    [circuitKey, circuitName],
   );
   const circuit = useMemo(
     () => CIRCUITS_DATA[circuitId] || CIRCUITS_DATA['albert-park'],
-    [circuitId]
+    [circuitId],
   );
-  const reviewPoints = useMemo(
-    () => getCircuitReviewPoints(circuit.id),
-    [circuit.id]
-  );
+  const reviewPoints = useMemo(() => getCircuitReviewPoints(circuit.id), [circuit.id]);
 
   // Reset selected corner when circuit changes
   useEffect(() => {
@@ -183,8 +183,8 @@ export const LiveMap: React.FC<LiveMapProps> = ({
                   : 'UPCOMING'
                 : 'LIVE'
               : isVi
-              ? 'MÔ PHỎNG'
-              : 'REPLAY'}
+                ? 'MÔ PHỎNG'
+                : 'REPLAY'}
           </div>
         </div>
 
@@ -289,7 +289,13 @@ export const LiveMap: React.FC<LiveMapProps> = ({
                 className="filter drop-shadow-sm"
               />
               {/* Outer pulsing ring */}
-              <circle r="12" fill="none" stroke="#ff1801" strokeWidth="2" className="animate-ping opacity-60" />
+              <circle
+                r="12"
+                fill="none"
+                stroke="#ff1801"
+                strokeWidth="2"
+                className="animate-ping opacity-60"
+              />
               <circle r="7" fill="#ffffff" stroke="#ff1801" strokeWidth="2.5" />
             </g>
           )}

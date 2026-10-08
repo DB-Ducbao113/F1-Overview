@@ -21,24 +21,14 @@ describe('SchematicComparisonModal Component', () => {
 
   it('renders nothing when isOpen is false', () => {
     const html = renderToStaticMarkup(
-      <SchematicComparisonModal
-        isOpen={false}
-        onClose={vi.fn()}
-        teamId="ferrari"
-        lang="vi"
-      />,
+      <SchematicComparisonModal isOpen={false} onClose={vi.fn()} teamId="ferrari" lang="vi" />,
     );
     expect(html).toBe('');
   });
 
   it('renders modal with CAD schematic image when isOpen is true', () => {
     const html = renderToStaticMarkup(
-      <SchematicComparisonModal
-        isOpen={true}
-        onClose={vi.fn()}
-        teamId="mercedes"
-        lang="vi"
-      />,
+      <SchematicComparisonModal isOpen={true} onClose={vi.fn()} teamId="mercedes" lang="vi" />,
     );
     expect(html).toContain('BẢN VẼ KỸ THUẬT CAD 2D');
     expect(html).toContain('/images/showroom/schematics/mercedes.jpg');
@@ -47,12 +37,7 @@ describe('SchematicComparisonModal Component', () => {
 
   it('supports English localization properly', () => {
     const html = renderToStaticMarkup(
-      <SchematicComparisonModal
-        isOpen={true}
-        onClose={vi.fn()}
-        teamId="mclaren"
-        lang="en"
-      />,
+      <SchematicComparisonModal isOpen={true} onClose={vi.fn()} teamId="mclaren" lang="en" />,
     );
     expect(html).toContain('2D CAD SCHEMATIC');
     expect(html).toContain('/images/showroom/schematics/mclaren.jpg');
@@ -63,12 +48,7 @@ describe('SchematicComparisonModal Component', () => {
     it(`renders schematic modal for ${teamId} without throwing`, () => {
       expect(() => {
         renderToStaticMarkup(
-          <SchematicComparisonModal
-            isOpen={true}
-            onClose={vi.fn()}
-            teamId={teamId}
-            lang="vi"
-          />,
+          <SchematicComparisonModal isOpen={true} onClose={vi.fn()} teamId={teamId} lang="vi" />,
         );
       }).not.toThrow();
     });

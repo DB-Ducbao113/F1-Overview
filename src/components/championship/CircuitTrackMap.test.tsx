@@ -73,9 +73,8 @@ describe('CircuitStreetReview Component', () => {
   });
 
   it('provides authentic Street View review checkpoints for all 24 circuits in the calendar', async () => {
-    const { CIRCUIT_REVIEW_POINTS, getCircuitReviewPoints } = await import(
-      '../../data/championship/circuitReviewPoints'
-    );
+    const { CIRCUIT_REVIEW_POINTS, getCircuitReviewPoints } =
+      await import('../../data/championship/circuitReviewPoints');
     for (let round = 1; round <= 24; round++) {
       const circuit = getCircuitByRound(round);
       if (!circuit) continue;

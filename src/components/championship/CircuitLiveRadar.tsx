@@ -76,7 +76,8 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
     return RADAR_DRIVERS.map((d) => {
       // Offset driver progress along lap
       const effectiveTime = elapsedTime - d.baseOffsetSec;
-      const progressFraction = ((effectiveTime % baseLapDurationSec) + baseLapDurationSec) % baseLapDurationSec;
+      const progressFraction =
+        ((effectiveTime % baseLapDurationSec) + baseLapDurationSec) % baseLapDurationSec;
       const normalizedFraction = progressFraction / baseLapDurationSec;
 
       const dist = normalizedFraction * pathTotalLength;
@@ -132,7 +133,8 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
   // Formatted lap timer
   const lapTimerFormatted = useMemo(() => {
     const effectiveTime = elapsedTime - focusedDriver.baseOffsetSec;
-    const currentLapSec = ((effectiveTime % baseLapDurationSec) + baseLapDurationSec) % baseLapDurationSec;
+    const currentLapSec =
+      ((effectiveTime % baseLapDurationSec) + baseLapDurationSec) % baseLapDurationSec;
     const minutes = Math.floor(currentLapSec / 60);
     const seconds = Math.floor(currentLapSec % 60);
     const millis = Math.floor((currentLapSec % 1) * 1000);
@@ -169,7 +171,11 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
             className="p-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-white transition-colors cursor-pointer"
             title={isPlaying ? (isVi ? 'Tạm dừng' : 'Pause') : isVi ? 'Tiếp tục' : 'Play'}
           >
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
+            {isPlaying ? (
+              <Pause className="w-3.5 h-3.5" />
+            ) : (
+              <Play className="w-3.5 h-3.5 text-emerald-400" />
+            )}
           </button>
 
           <button
@@ -427,9 +433,7 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
 
           {/* DRS Indicator */}
           <div className="p-2 rounded-lg bg-studio-950/80 border border-studio-850 flex flex-col items-center justify-center">
-            <span className="text-[9px] font-mono text-studio-400 uppercase font-bold">
-              DRS
-            </span>
+            <span className="text-[9px] font-mono text-studio-400 uppercase font-bold">DRS</span>
             <div
               className={`mt-1 px-2.5 py-0.5 rounded font-black text-xs font-mono tracking-wider transition-colors flex items-center gap-1 ${
                 focusedDriver.isDrs
@@ -437,11 +441,19 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
                   : 'bg-studio-800/80 text-studio-500 border border-studio-700/50'
               }`}
             >
-              <Zap className={`w-3 h-3 ${focusedDriver.isDrs ? 'text-emerald-400' : 'text-studio-600'}`} />
+              <Zap
+                className={`w-3 h-3 ${focusedDriver.isDrs ? 'text-emerald-400' : 'text-studio-600'}`}
+              />
               <span>{focusedDriver.isDrs ? 'ACTIVE' : 'CLOSED'}</span>
             </div>
             <span className="text-[9px] font-mono text-studio-500 mt-1">
-              {focusedDriver.isDrs ? (isVi ? 'Đang mở cánh' : 'Wing Open') : isVi ? 'Đóng cánh' : 'Wing Closed'}
+              {focusedDriver.isDrs
+                ? isVi
+                  ? 'Đang mở cánh'
+                  : 'Wing Open'
+                : isVi
+                  ? 'Đóng cánh'
+                  : 'Wing Closed'}
             </span>
           </div>
         </div>
@@ -462,10 +474,7 @@ export const CircuitLiveRadar: React.FC<CircuitLiveRadarProps> = ({ circuit, lan
                   : 'bg-studio-800/80 hover:bg-studio-700 text-studio-300'
               }`}
             >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: d.teamColor }}
-              />
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.teamColor }} />
               <span>{d.shortName}</span>
               <span className="text-[9px] opacity-70">
                 {d.gapSec === 0 ? 'P1' : `+${d.gapSec.toFixed(1)}s`}

@@ -8,55 +8,53 @@ interface RaceControlFeedProps {
   messages: LiveRaceControlMessage[];
 }
 
-const FLAG_CONFIG: Record<FlagColor, { label: string; bg: string; text: string; border: string }> = {
-  GREEN: {
-    label: 'GREEN FLAG · TRACK CLEAR',
-    bg: 'bg-emerald-500/15',
-    text: 'text-emerald-400',
-    border: 'border-emerald-500/30',
-  },
-  YELLOW: {
-    label: 'YELLOW FLAG · CAUTION',
-    bg: 'bg-yellow-500/15',
-    text: 'text-yellow-400',
-    border: 'border-yellow-500/40',
-  },
-  DOUBLE_YELLOW: {
-    label: 'DOUBLE YELLOW FLAG · SLOW DOWN',
-    bg: 'bg-yellow-500/25',
-    text: 'text-yellow-300',
-    border: 'border-yellow-500/60',
-  },
-  RED: {
-    label: 'RED FLAG · SESSION SUSPENDED',
-    bg: 'bg-red-500/20',
-    text: 'text-red-400',
-    border: 'border-red-500/50',
-  },
-  SAFETY_CAR: {
-    label: 'SAFETY CAR DEPLOYED',
-    bg: 'bg-amber-500/20',
-    text: 'text-amber-400',
-    border: 'border-amber-500/50',
-  },
-  VSC: {
-    label: 'VIRTUAL SAFETY CAR (VSC)',
-    bg: 'bg-amber-500/20',
-    text: 'text-amber-400',
-    border: 'border-amber-500/50',
-  },
-  CLEAR: {
-    label: 'TRACK STATUS: NORMAL',
-    bg: 'bg-white/5',
-    text: 'text-studio-300',
-    border: 'border-white/10',
-  },
-};
+const FLAG_CONFIG: Record<FlagColor, { label: string; bg: string; text: string; border: string }> =
+  {
+    GREEN: {
+      label: 'GREEN FLAG · TRACK CLEAR',
+      bg: 'bg-emerald-500/15',
+      text: 'text-emerald-400',
+      border: 'border-emerald-500/30',
+    },
+    YELLOW: {
+      label: 'YELLOW FLAG · CAUTION',
+      bg: 'bg-yellow-500/15',
+      text: 'text-yellow-400',
+      border: 'border-yellow-500/40',
+    },
+    DOUBLE_YELLOW: {
+      label: 'DOUBLE YELLOW FLAG · SLOW DOWN',
+      bg: 'bg-yellow-500/25',
+      text: 'text-yellow-300',
+      border: 'border-yellow-500/60',
+    },
+    RED: {
+      label: 'RED FLAG · SESSION SUSPENDED',
+      bg: 'bg-red-500/20',
+      text: 'text-red-400',
+      border: 'border-red-500/50',
+    },
+    SAFETY_CAR: {
+      label: 'SAFETY CAR DEPLOYED',
+      bg: 'bg-amber-500/20',
+      text: 'text-amber-400',
+      border: 'border-amber-500/50',
+    },
+    VSC: {
+      label: 'VIRTUAL SAFETY CAR (VSC)',
+      bg: 'bg-amber-500/20',
+      text: 'text-amber-400',
+      border: 'border-amber-500/50',
+    },
+    CLEAR: {
+      label: 'TRACK STATUS: NORMAL',
+      bg: 'bg-white/5',
+      text: 'text-studio-300',
+      border: 'border-white/10',
+    },
+  };
 
-export const RaceControlFeed: React.FC<RaceControlFeedProps> = ({
-  activeFlag,
-  messages,
-}) => {
+export const RaceControlFeed: React.FC<RaceControlFeedProps> = ({ activeFlag, messages }) => {
   const { lang } = useNavigationStore();
   const flagInfo = FLAG_CONFIG[activeFlag] || FLAG_CONFIG.CLEAR;
 
@@ -68,7 +66,9 @@ export const RaceControlFeed: React.FC<RaceControlFeedProps> = ({
       >
         <div className="flex items-center gap-2">
           <Flag className={`w-4 h-4 ${flagInfo.text}`} />
-          <span className={`font-mono font-black text-xs uppercase tracking-wider ${flagInfo.text}`}>
+          <span
+            className={`font-mono font-black text-xs uppercase tracking-wider ${flagInfo.text}`}
+          >
             {flagInfo.label}
           </span>
         </div>

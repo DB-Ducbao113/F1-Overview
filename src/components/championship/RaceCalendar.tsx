@@ -17,7 +17,7 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
 import { QualifyingClassificationModal } from './QualifyingClassificationModal';
-import { formatDateStr, formatSessionName } from '../../utils/dateUtils';
+import { formatDateStr, formatSessionName, toVietnamTime } from '../../utils/dateUtils';
 import { SeasonYear } from '../../types';
 import { Card3DTilt } from '../common/Card3DTilt';
 
@@ -28,8 +28,13 @@ export interface RaceCalendarProps {
 export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const { detailedResults, setActiveSubTab, selectedSeason, setSelectedSeason, setSelectedRaceRound } =
-    useChampionshipStore();
+  const {
+    detailedResults,
+    setActiveSubTab,
+    selectedSeason,
+    setSelectedSeason,
+    setSelectedRaceRound,
+  } = useChampionshipStore();
 
   const activeSeason: SeasonYear = season ?? selectedSeason ?? 2026;
   const calendar = getCalendarBySeason(activeSeason);
@@ -105,7 +110,11 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
 
   return (
     <div className="space-y-4">
-      <Card3DTilt maxTilt={2} glareOpacity={0.08} className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3">
+      <Card3DTilt
+        maxTilt={2}
+        glareOpacity={0.08}
+        className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3"
+      >
         <div>
           <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900">
             {isVi
@@ -149,7 +158,9 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
           const isNext = gp.round === nextRace?.round;
           const hasPracticeData = is2026 && Boolean(PRACTICE_RESULTS_2026[gp.round]);
           const finishedPracticeKeys = (['fp1', 'fp2', 'fp3'] as const).filter((key) => {
-            const session = gp.sessions[key] ?? (is2026 ? PRACTICE_RESULTS_2026[gp.round]?.sessions[key] : undefined);
+            const session =
+              gp.sessions[key] ??
+              (is2026 ? PRACTICE_RESULTS_2026[gp.round]?.sessions[key] : undefined);
             return session?.status === 'finished';
           });
           const hasFinishedPractice = finishedPracticeKeys.length > 0;
@@ -280,8 +291,12 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                       ? (['fp1', 'sprintQualifying', 'sprint', 'qualifying', 'race'] as const)
                       : (['fp1', 'fp2', 'fp3', 'qualifying', 'race'] as const)
                     ).map((key) => {
-                      const practiceDataForRound = is2026 ? PRACTICE_RESULTS_2026[gp.round] : undefined;
-                      const qualifyingDataForRound = is2026 ? QUALIFYING_RESULTS_2026[gp.round] : undefined;
+                      const practiceDataForRound = is2026
+                        ? PRACTICE_RESULTS_2026[gp.round]
+                        : undefined;
+                      const qualifyingDataForRound = is2026
+                        ? QUALIFYING_RESULTS_2026[gp.round]
+                        : undefined;
 
                       const isPracticeSession = key === 'fp1' || key === 'fp2' || key === 'fp3';
                       const isQualifyingSession =
@@ -432,7 +447,18 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                           <div className="flex items-center justify-between text-[11px] text-studio-600">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3 text-studio-400" />
-                              {session.timeStr}
+                              {!isFinished && gp.venueUtcOffset !== undefined
+                                ? (() => {
+                                    const vn = toVietnamTime(session.timeStr, gp.venueUtcOffset);
+                                    const dayLabel =
+                                      vn.dayShift === 1
+                                        ? ' (+1 ngày)'
+                                        : vn.dayShift === -1
+                                          ? ' (-1 ngày)'
+                                          : '';
+                                    return `${vn.time} (giờ VN)${dayLabel}`;
+                                  })()
+                                : session.timeStr}
                             </span>
                             <span className={`text-[9px] font-bold uppercase ${statusTextClass}`}>
                               {statusLabel}
@@ -443,7 +469,9 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                           {isFinishedPractice && (
                             <span className="text-[9px] text-sky-700 font-bold block pt-1 border-t border-sky-200/60 flex items-center gap-1">
                               <Timer className="w-2.5 h-2.5 text-sky-600" />
-                              {isVi ? `Xem BXH ${key.toUpperCase()}` : `View ${key.toUpperCase()} Table`}
+                              {isVi
+                                ? `Xem BXH ${key.toUpperCase()}`
+                                : `View ${key.toUpperCase()} Table`}
                             </span>
                           )}
 

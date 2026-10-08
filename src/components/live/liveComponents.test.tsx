@@ -36,7 +36,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
           onToggleReplayPlay={vi.fn()}
           replaySpeed={1}
           onReplaySpeedChange={vi.fn()}
-        />
+        />,
       );
 
       // Verify Live mode elements
@@ -64,7 +64,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
           onToggleReplayPlay={vi.fn()}
           replaySpeed={2}
           onReplaySpeedChange={vi.fn()}
-        />
+        />,
       );
 
       expect(html).toContain('MÔ PHỎNG · DỮ LIỆU LỊCH SỬ');
@@ -77,12 +77,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
 
   describe('TimingTower Component', () => {
     it('renders 10 skeleton shimmer rows when loading', () => {
-      const html = renderToStaticMarkup(
-        <TimingTower
-          tower={[]}
-          loading={true}
-        />
-      );
+      const html = renderToStaticMarkup(<TimingTower tower={[]} loading={true} />);
 
       expect(html).toContain('BẢNG XẾP HẠNG THỜI GIAN');
       expect(html).toContain('animate-pulse');
@@ -117,11 +112,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
       ];
 
       const html = renderToStaticMarkup(
-        <TimingTower
-          tower={mockRows}
-          loading={false}
-          selectedDriverNumber={4}
-        />
+        <TimingTower tower={mockRows} loading={false} selectedDriverNumber={4} />,
       );
 
       expect(html).toContain('VER');
@@ -141,7 +132,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
           circuitName="Albert Park, Melbourne"
           mode="replay"
           timingRows={[]}
-        />
+        />,
       );
 
       // Albert Park Circuit Name and SVG track elements
@@ -158,7 +149,7 @@ describe('Live Center Components - Mode System & Map/Tower states', () => {
           mode="live"
           liveState="upcoming"
           onSwitchToReplay={vi.fn()}
-        />
+        />,
       );
 
       expect(html).toContain('Chặng Đua Chưa Bắt Đầu');

@@ -39,12 +39,12 @@ export const HomeLiveStrip: React.FC = () => {
                   ? 'PHIÊN ĐUA ĐANG DIỄN RA'
                   : 'LIVE SESSION IN PROGRESS'
                 : state === 'upcoming'
-                ? lang === 'vi'
-                  ? 'CHẶNG ĐUA TIẾP THEO'
-                  : 'UPCOMING SESSION'
-                : lang === 'vi'
-                ? 'F1 LIVE CENTER'
-                : 'F1 LIVE CENTER'}
+                  ? lang === 'vi'
+                    ? 'CHẶNG ĐUA TIẾP THEO'
+                    : 'UPCOMING SESSION'
+                  : lang === 'vi'
+                    ? 'F1 LIVE CENTER'
+                    : 'F1 LIVE CENTER'}
             </span>
 
             <span className="text-studio-500 hidden sm:inline">|</span>
@@ -68,8 +68,8 @@ export const HomeLiveStrip: React.FC = () => {
                 ? 'Xem Trực Tiếp Live'
                 : 'Watch Live Now'
               : lang === 'vi'
-              ? 'Mở Live Center'
-              : 'Open Live Center'}
+                ? 'Mở Live Center'
+                : 'Open Live Center'}
           </span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>

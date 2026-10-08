@@ -69,8 +69,8 @@ export const F1NewsTicker: React.FC = () => {
                 ? 'Tạm dừng chạy chữ'
                 : 'Pause ticker'
               : lang === 'vi'
-              ? 'Tiếp tục chạy chữ'
-              : 'Resume ticker'
+                ? 'Tiếp tục chạy chữ'
+                : 'Resume ticker'
           }
           aria-label={isPlaying ? 'Pause feed' : 'Resume feed'}
         >
@@ -99,9 +99,7 @@ export const F1NewsTicker: React.FC = () => {
               <span className="text-studio-200 group-hover:text-white transition-colors">
                 {item.text}
               </span>
-              <span className="text-f1red font-black px-4 select-none tracking-widest">
-                ///
-              </span>
+              <span className="text-f1red font-black px-4 select-none tracking-widest">///</span>
             </div>
           ))}
         </div>

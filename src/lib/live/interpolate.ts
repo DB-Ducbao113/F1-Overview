@@ -14,7 +14,7 @@ export function lerp(start: number, end: number, t: number): number {
 export function interpolateCar(
   prev: LiveCarPosition | undefined,
   target: LiveCarPosition,
-  t: number
+  t: number,
 ): LiveCarPosition {
   if (!prev) {
     return target;
@@ -35,7 +35,7 @@ export function interpolateCar(
 export function interpolateFleet(
   prevMap: Record<number, LiveCarPosition>,
   targetMap: Record<number, LiveCarPosition>,
-  t: number
+  t: number,
 ): LiveCarPosition[] {
   return Object.values(targetMap).map((targetCar) => {
     const prevCar = prevMap[targetCar.driver_number];

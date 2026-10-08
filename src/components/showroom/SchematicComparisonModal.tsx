@@ -1,13 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import {
-  X,
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
-  Minimize2,
-  RotateCcw,
-} from 'lucide-react';
+import { X, ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
@@ -97,7 +90,15 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
               type="button"
               onClick={() => setIsFullscreen((prev) => !prev)}
               className="p-2 rounded-xl bg-studio-800/80 hover:bg-studio-700 text-studio-300 hover:text-white transition-colors cursor-pointer"
-              title={isFullscreen ? (lang === 'vi' ? 'Thu nhỏ cửa sổ' : 'Exit Fullscreen') : (lang === 'vi' ? 'Phóng to toàn màn hình' : 'Fullscreen')}
+              title={
+                isFullscreen
+                  ? lang === 'vi'
+                    ? 'Thu nhỏ cửa sổ'
+                    : 'Exit Fullscreen'
+                  : lang === 'vi'
+                    ? 'Phóng to toàn màn hình'
+                    : 'Fullscreen'
+              }
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -126,7 +127,9 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setZoomLevel((prev) => Math.max(0.75, Number((prev - 0.25).toFixed(2))))}
+              onClick={() =>
+                setZoomLevel((prev) => Math.max(0.75, Number((prev - 0.25).toFixed(2))))
+              }
               className="p-1.5 rounded-lg bg-studio-800 hover:bg-studio-700 text-studio-200 transition-colors cursor-pointer"
               title={lang === 'vi' ? 'Thu nhỏ' : 'Zoom Out'}
             >

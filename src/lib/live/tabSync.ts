@@ -50,7 +50,7 @@ class TabSyncManager {
       try {
         window.localStorage.setItem(
           'f1_tab_sync_msg',
-          JSON.stringify({ type, payload, timestamp: Date.now() })
+          JSON.stringify({ type, payload, timestamp: Date.now() }),
         );
       } catch {
         // Ignore storage errors

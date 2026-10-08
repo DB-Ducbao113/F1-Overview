@@ -55,15 +55,23 @@ export default async function handler(req: any, res: any) {
 
     // Parallel fetch core telemetry with minimal data window
     const [driversRes, posRes, flagRes] = await Promise.all([
-      fetch(`${OPENF1_BASE}/drivers?session_key=${sessionKey}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/position?session_key=${sessionKey}`).then((r) => r.json()).catch(() => []),
-      fetch(`${OPENF1_BASE}/race_control?session_key=${sessionKey}`).then((r) => r.json()).catch(() => []),
+      fetch(`${OPENF1_BASE}/drivers?session_key=${sessionKey}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/position?session_key=${sessionKey}`)
+        .then((r) => r.json())
+        .catch(() => []),
+      fetch(`${OPENF1_BASE}/race_control?session_key=${sessionKey}`)
+        .then((r) => r.json())
+        .catch(() => []),
     ]);
 
     // Fetch location window if date_window provided or fallback
     let locData = [];
     if (date_window) {
-      const locRes = await fetch(`${OPENF1_BASE}/location?session_key=${sessionKey}&${date_window}`);
+      const locRes = await fetch(
+        `${OPENF1_BASE}/location?session_key=${sessionKey}&${date_window}`,
+      );
       locData = await locRes.json().catch(() => []);
     }
 

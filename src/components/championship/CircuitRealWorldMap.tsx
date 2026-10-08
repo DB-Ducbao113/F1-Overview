@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { CircuitData } from '../../types/circuit';
-import { ExternalLink, Layers, Navigation, ZoomIn, ZoomOut, MapPin, Satellite, Info } from 'lucide-react';
+import {
+  ExternalLink,
+  Layers,
+  Navigation,
+  ZoomIn,
+  ZoomOut,
+  MapPin,
+  Satellite,
+  Info,
+} from 'lucide-react';
 import { generateCircuitGpsLayout } from '../../utils/circuitGpsHelper';
 import 'leaflet/dist/leaflet.css';
 
 import { CIRCUIT_COORDINATES, CircuitGeoCoords } from './circuitCoordinates';
 export type { CircuitGeoCoords };
-
 
 interface CircuitRealWorldMapProps {
   circuit: CircuitData;
@@ -38,7 +46,7 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
         lng: 144.968,
         zoom: 15,
       },
-    [circuit.id]
+    [circuit.id],
   );
 
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
@@ -182,8 +190,8 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
           ? turn.speedCategory === 'slow'
             ? 'Chậm'
             : turn.speedCategory === 'high'
-            ? 'Tốc độ cao'
-            : 'Trung bình'
+              ? 'Tốc độ cao'
+              : 'Trung bình'
           : turn.speedCategory;
 
         const turnPopup = `
@@ -291,12 +299,11 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
   };
 
   return (
-    <div className={`relative rounded-2xl bg-studio-950 border border-studio-800/80 overflow-hidden flex flex-col shadow-2xl ${className}`}>
+    <div
+      className={`relative rounded-2xl bg-studio-950 border border-studio-800/80 overflow-hidden flex flex-col shadow-2xl ${className}`}
+    >
       {/* Interactive Map Canvas Container */}
-      <div
-        ref={containerRef}
-        className={`w-full ${heightClass} z-0 bg-studio-950 relative`}
-      />
+      <div ref={containerRef} className={`w-full ${heightClass} z-0 bg-studio-950 relative`} />
 
       {/* Loading overlay while tiles initialize */}
       {!isMapReady && (
@@ -320,7 +327,9 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
                 ? 'bg-f1red text-white shadow-md'
                 : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
             }`}
-            title={isVi ? 'Ảnh vệ tinh thực tế độ nét cao (Esri)' : 'High-res Satellite View (Esri)'}
+            title={
+              isVi ? 'Ảnh vệ tinh thực tế độ nét cao (Esri)' : 'High-res Satellite View (Esri)'
+            }
           >
             <Satellite className="w-3 h-3" />
             <span>{isVi ? 'Vệ Tinh' : 'Satellite'}</span>

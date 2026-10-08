@@ -147,4 +147,3 @@ describe('F1CarTextures - Enhanced Component Textures & Livery Color Tokens', ()
     });
   });
 });
-

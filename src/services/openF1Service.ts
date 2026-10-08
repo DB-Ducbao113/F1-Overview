@@ -150,7 +150,10 @@ const CACHE_TTL_MS = 2000;
 class OpenF1Service {
   private baseUrl = 'https://api.openf1.org/v1';
 
-  private async fetchJson<T>(endpoint: string, queryParams: Record<string, string | number> = {}): Promise<T | null> {
+  private async fetchJson<T>(
+    endpoint: string,
+    queryParams: Record<string, string | number> = {},
+  ): Promise<T | null> {
     const query = new URLSearchParams();
     Object.entries(queryParams).forEach(([k, v]) => {
       if (v !== undefined && v !== null && v !== '') {
@@ -212,7 +215,7 @@ class OpenF1Service {
   async getLocationWindow(
     sessionKey: number,
     dateStartIso: string,
-    dateEndIso: string
+    dateEndIso: string,
   ): Promise<OpenF1Location[]> {
     const locations = await this.fetchJson<OpenF1Location[]>('location', {
       session_key: sessionKey,
@@ -228,7 +231,7 @@ class OpenF1Service {
   async getCarDataWindow(
     sessionKey: number,
     dateStartIso: string,
-    dateEndIso: string
+    dateEndIso: string,
   ): Promise<OpenF1CarData[]> {
     const carData = await this.fetchJson<OpenF1CarData[]>('car_data', {
       session_key: sessionKey,

@@ -5,7 +5,7 @@ import { interpolateFleet } from '../../lib/live/interpolate';
 export function useLiveTrack(
   sessionKey: number | null | undefined,
   enabled: boolean = true,
-  at?: string
+  at?: string,
 ) {
   const [cars, setCars] = useState<LiveCarPosition[]>([]);
   const [sampledAt, setSampledAt] = useState<string>('');
@@ -51,8 +51,9 @@ export function useLiveTrack(
         for (const car of data.cars) {
           newTargetMap[car.driver_number] = car;
           // Set prev to current target position or initial position
-          prevMapRef.current[car.driver_number] =
-            targetMapRef.current[car.driver_number] ?? { ...car };
+          prevMapRef.current[car.driver_number] = targetMapRef.current[car.driver_number] ?? {
+            ...car,
+          };
         }
         targetMapRef.current = newTargetMap;
         setLoading(false);

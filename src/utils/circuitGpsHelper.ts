@@ -88,8 +88,16 @@ export function sampleSvgPathPoints(svgPath: string, samplesPerCurve = 5): [numb
 
         for (let s = 1; s <= samplesPerCurve; s++) {
           const t = s / samplesPerCurve;
-          const px = (1 - t) * (1 - t) * (1 - t) * cursorX + 3 * (1 - t) * (1 - t) * t * c1x + 3 * (1 - t) * t * t * c2x + t * t * t * endX;
-          const py = (1 - t) * (1 - t) * (1 - t) * cursorY + 3 * (1 - t) * (1 - t) * t * c1y + 3 * (1 - t) * t * t * c2y + t * t * t * endY;
+          const px =
+            (1 - t) * (1 - t) * (1 - t) * cursorX +
+            3 * (1 - t) * (1 - t) * t * c1x +
+            3 * (1 - t) * t * t * c2x +
+            t * t * t * endX;
+          const py =
+            (1 - t) * (1 - t) * (1 - t) * cursorY +
+            3 * (1 - t) * (1 - t) * t * c1y +
+            3 * (1 - t) * t * t * c2y +
+            t * t * t * endY;
           points.push([px, py]);
         }
         cursorX = endX;
@@ -113,7 +121,7 @@ export function sampleSvgPathPoints(svgPath: string, samplesPerCurve = 5): [numb
  */
 export function generateCircuitGpsLayout(
   circuit: CircuitData,
-  center: CircuitGeoCoords
+  center: CircuitGeoCoords,
 ): CircuitGpsLayout {
   const sampledPoints = sampleSvgPathPoints(circuit.svgPath, 4);
 
@@ -200,7 +208,9 @@ export function generateCircuitGpsLayout(
       lng: coord[1],
       nameVi: cornerInfo?.nameVi || `Khúc cua Turn ${turnNum}`,
       nameEn: cornerInfo?.nameEn || `Turn ${turnNum}`,
-      speedCategory: cornerInfo?.speedCategory || (turnNum % 3 === 0 ? 'slow' : turnNum % 2 === 0 ? 'high' : 'medium'),
+      speedCategory:
+        cornerInfo?.speedCategory ||
+        (turnNum % 3 === 0 ? 'slow' : turnNum % 2 === 0 ? 'high' : 'medium'),
     });
   }
 
@@ -210,7 +220,7 @@ export function generateCircuitGpsLayout(
 
   drsZones.forEach((zone, idx) => {
     const step = Math.floor(trackPointCount / Math.max(1, drsZones.length));
-    const startIdx = (Math.floor(idx * step + step * 0.3)) % trackPointCount;
+    const startIdx = Math.floor(idx * step + step * 0.3) % trackPointCount;
     const length = Math.max(4, Math.floor(step * 0.45));
 
     const segmentCoords: [number, number][] = [];

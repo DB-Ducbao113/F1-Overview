@@ -21,7 +21,10 @@ export const F1StartLightsPreloader: React.FC = () => {
   useEffect(() => {
     // 1. Skip if already shown in this session
     try {
-      if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(PRELOADER_STORAGE_KEY) === 'true') {
+      if (
+        typeof sessionStorage !== 'undefined' &&
+        sessionStorage.getItem(PRELOADER_STORAGE_KEY) === 'true'
+      ) {
         return;
       }
     } catch {
@@ -51,7 +54,7 @@ export const F1StartLightsPreloader: React.FC = () => {
     timeouts.push(
       setTimeout(() => {
         dismiss();
-      }, 3000)
+      }, 3000),
     );
 
     const handleKeyDown = (e: KeyboardEvent) => {

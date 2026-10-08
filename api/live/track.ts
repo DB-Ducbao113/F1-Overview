@@ -59,7 +59,9 @@ export default async function handler(req: any, res: any) {
         driversCache.set(sKeyNum, driverNumbers);
       } else {
         // Fallback default grid numbers
-        driverNumbers = [1, 11, 16, 55, 63, 44, 4, 81, 14, 18, 10, 31, 23, 2, 22, 3, 77, 24, 20, 27];
+        driverNumbers = [
+          1, 11, 16, 55, 63, 44, 4, 81, 14, 18, 10, 31, 23, 2, 22, 3, 77, 24, 20, 27,
+        ];
       }
     }
 
@@ -93,7 +95,7 @@ export default async function handler(req: any, res: any) {
             // driver might not have location in this window
           }
           return { driverNumber, last: null };
-        })
+        }),
       );
 
       for (const { driverNumber, last } of batchResults) {

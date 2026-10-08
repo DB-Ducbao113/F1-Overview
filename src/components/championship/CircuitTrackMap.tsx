@@ -175,11 +175,7 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
         <div className="p-3.5 sm:p-5 flex flex-col md:flex-row items-stretch gap-4 sm:gap-6">
           {/* Left Canvas: Streamlined Corner Review Preview */}
           <div className="relative flex-1 rounded-xl overflow-hidden flex flex-col group">
-            <CircuitStreetReview
-              circuit={circuit}
-              lang={lang}
-              compact={true}
-            />
+            <CircuitStreetReview circuit={circuit} lang={lang} compact={true} />
           </div>
 
           {/* Right Info: Circuit Telemetry & Specs */}

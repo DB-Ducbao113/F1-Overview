@@ -21,20 +21,12 @@ export const LiveCreditBadge: React.FC<LiveCreditBadgeProps> = ({
         <span className="relative flex h-2 w-2">
           <span
             className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-              isCalibrating
-                ? 'bg-amber-400'
-                : isReplay
-                ? 'bg-cyan-400'
-                : 'bg-emerald-400'
+              isCalibrating ? 'bg-amber-400' : isReplay ? 'bg-cyan-400' : 'bg-emerald-400'
             }`}
           />
           <span
             className={`relative inline-flex rounded-full h-2 w-2 ${
-              isCalibrating
-                ? 'bg-amber-500'
-                : isReplay
-                ? 'bg-cyan-500'
-                : 'bg-emerald-500'
+              isCalibrating ? 'bg-amber-500' : isReplay ? 'bg-cyan-500' : 'bg-emerald-500'
             }`}
           />
         </span>
@@ -44,17 +36,15 @@ export const LiveCreditBadge: React.FC<LiveCreditBadgeProps> = ({
               ? 'Đang hiệu chuẩn đường đua'
               : 'Calibrating circuit bounds'
             : isReplay
-            ? lang === 'vi'
-              ? 'Chế độ Replay (Lưu trữ thực tế)'
-              : 'Replay Mode (Historical Archive)'
-            : lang === 'vi'
-              ? 'Live Telemetry Stream'
-              : 'Live Telemetry Stream'}
+              ? lang === 'vi'
+                ? 'Chế độ Replay (Lưu trữ thực tế)'
+                : 'Replay Mode (Historical Archive)'
+              : lang === 'vi'
+                ? 'Live Telemetry Stream'
+                : 'Live Telemetry Stream'}
         </span>
         <span className="text-studio-600">·</span>
-        <span className="text-studio-400">
-          {lang === 'vi' ? 'Độ trễ ~3s' : 'Latency ~3s'}
-        </span>
+        <span className="text-studio-400">{lang === 'vi' ? 'Độ trễ ~3s' : 'Latency ~3s'}</span>
         {sampledAt && (
           <span className="hidden sm:inline text-studio-500">
             ({new Date(sampledAt).toLocaleTimeString()})

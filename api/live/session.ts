@@ -11,7 +11,10 @@ let sessionCache: { at: number; data: any } | null = null;
 const TTL_MS = 30_000;
 
 // Official calendar schedule overrides to reconcile OpenF1 provisional/inconsistent offsets
-const SESSION_SCHEDULE_OVERRIDES: Record<number, { date_start: string; date_end: string; session_name?: string }> = {
+const SESSION_SCHEDULE_OVERRIDES: Record<
+  number,
+  { date_start: string; date_end: string; session_name?: string }
+> = {
   11378: {
     // Singapore GP 2026 FP1: Fri 09 Oct 17:30 SGT (UTC+8) -> 09:30 UTC
     date_start: '2026-10-09T09:30:00.000Z',

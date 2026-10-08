@@ -159,10 +159,10 @@ export const TimingTower: React.FC<TimingTowerProps> = ({
                   isSelected
                     ? 'bg-white/10 border-l-4 border-white shadow-inner font-semibold'
                     : flash === 'gain'
-                    ? 'bg-emerald-500/15 border-l-4 border-emerald-400'
-                    : flash === 'loss'
-                    ? 'bg-red-500/15 border-l-4 border-red-400'
-                    : 'hover:bg-white/5 border-l-4 border-transparent'
+                      ? 'bg-emerald-500/15 border-l-4 border-emerald-400'
+                      : flash === 'loss'
+                        ? 'bg-red-500/15 border-l-4 border-red-400'
+                        : 'hover:bg-white/5 border-l-4 border-transparent'
                 }`}
               >
                 {/* Position */}
@@ -173,7 +173,10 @@ export const TimingTower: React.FC<TimingTowerProps> = ({
                 {/* Gain / Loss Arrow */}
                 <div className="col-span-1 flex items-center justify-center font-mono text-[10px] font-bold">
                   {row.gainLoss > 0 ? (
-                    <span className="text-emerald-400 flex items-center" title={`+${row.gainLoss} pos`}>
+                    <span
+                      className="text-emerald-400 flex items-center"
+                      title={`+${row.gainLoss} pos`}
+                    >
                       <ArrowUp className="w-3 h-3" />
                     </span>
                   ) : row.gainLoss < 0 ? (

@@ -8,14 +8,7 @@ import {
   CURATED_REPLAY_RACES,
   CuratedReplayRace,
 } from '../../services/openF1Service';
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  Radio,
-  Flag,
-  ExternalLink,
-} from 'lucide-react';
+import { Play, Pause, RotateCcw, Radio, Flag, ExternalLink } from 'lucide-react';
 
 interface DriverRenderState {
   driver: OpenF1Driver;
@@ -43,7 +36,9 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
 
   // Session & Drivers metadata
   const [driversMap, setDriversMap] = useState<Record<number, OpenF1Driver>>({});
-  const [activeSessionKey, setActiveSessionKey] = useState<number>(CURATED_REPLAY_RACES[0].sessionKey);
+  const [activeSessionKey, setActiveSessionKey] = useState<number>(
+    CURATED_REPLAY_RACES[0].sessionKey,
+  );
   const [sessionTitle, setSessionTitle] = useState<string>(CURATED_REPLAY_RACES[0].name);
 
   // Playback state
@@ -57,7 +52,12 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
   const [focusedDriverNumber, setFocusedDriverNumber] = useState<number | null>(null);
 
   // Calibration coordinate bounds
-  const [bounds, setBounds] = useState<{ minX: number; maxX: number; minY: number; maxY: number } | null>(null);
+  const [bounds, setBounds] = useState<{
+    minX: number;
+    maxX: number;
+    minY: number;
+    maxY: number;
+  } | null>(null);
 
   // Drivers dynamic positions state
   const [driversState, setDriversState] = useState<Record<number, DriverRenderState>>({});
@@ -184,7 +184,14 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
     } catch {
       // Graceful error recovery
     }
-  }, [activeSessionKey, bounds, currentTimeOffsetSec, driversMap, mode, selectedRace.sampleStartTime]);
+  }, [
+    activeSessionKey,
+    bounds,
+    currentTimeOffsetSec,
+    driversMap,
+    mode,
+    selectedRace.sampleStartTime,
+  ]);
 
   // Polling loop (every 2 seconds) + scrubber advance
   useEffect(() => {
@@ -262,11 +269,12 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
 
       // Invert Y for SVG
       const projX = padding + normX * drawW + (drawW - (spanX / maxSpan) * drawW) / 2;
-      const projY = svgViewBoxHeight - (padding + normY * drawH + (drawH - (spanY / maxSpan) * drawH) / 2);
+      const projY =
+        svgViewBoxHeight - (padding + normY * drawH + (drawH - (spanY / maxSpan) * drawH) / 2);
 
       return { x: projX, y: projY };
     },
-    [bounds]
+    [bounds],
   );
 
   // Sorted Leaderboard
@@ -332,8 +340,8 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
                 latestFlag.flag === 'YELLOW'
                   ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
                   : latestFlag.flag === 'RED'
-                  ? 'bg-f1red/20 text-red-400 border-f1red/40 animate-pulse'
-                  : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                    ? 'bg-f1red/20 text-red-400 border-f1red/40 animate-pulse'
+                    : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
               }`}
             >
               <Flag className="w-3 h-3" />
@@ -367,7 +375,8 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
           <div
             className="absolute inset-0 opacity-10 pointer-events-none"
             style={{
-              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
+              backgroundImage:
+                'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
               backgroundSize: '24px 24px',
             }}
           />
@@ -472,7 +481,9 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
                   </span>
                   <span
                     className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold ${
-                      focusedDriver.drs ? 'bg-emerald-500/20 text-emerald-400' : 'bg-studio-800 text-studio-500'
+                      focusedDriver.drs
+                        ? 'bg-emerald-500/20 text-emerald-400'
+                        : 'bg-studio-800 text-studio-500'
                     }`}
                   >
                     DRS {focusedDriver.drs ? 'ON' : 'OFF'}
@@ -510,9 +521,7 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-studio-400 w-4">
-                      {d.position}
-                    </span>
+                    <span className="text-[10px] font-bold text-studio-400 w-4">{d.position}</span>
                     <span
                       className="w-1.5 h-3.5 rounded-full"
                       style={{ backgroundColor: teamColor }}
@@ -526,9 +535,7 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
                     <span className="text-[10px] text-studio-400">
                       {d.position === 1 ? 'LEADER' : `+${d.gapSec.toFixed(1)}s`}
                     </span>
-                    <span className="text-[10px] font-bold text-studio-300">
-                      {d.speed} km/h
-                    </span>
+                    <span className="text-[10px] font-bold text-studio-300">{d.speed} km/h</span>
                   </div>
                 </div>
               );

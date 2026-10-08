@@ -23,7 +23,7 @@ export function useReveal(threshold: number = 0.15) {
           observer.unobserve(el);
         }
       },
-      { threshold }
+      { threshold },
     );
 
     observer.observe(el);

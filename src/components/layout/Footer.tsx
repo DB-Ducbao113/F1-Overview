@@ -86,7 +86,10 @@ export const Footer: React.FC = React.memo(() => {
         </div>
 
         {/* ── D3. Footer Giant Text Reveal ── */}
-        <div ref={giantRef} className="pt-10 pb-6 border-t border-studio-800/80 overflow-hidden select-none">
+        <div
+          ref={giantRef}
+          className="pt-10 pb-6 border-t border-studio-800/80 overflow-hidden select-none"
+        >
           <div className="flex flex-wrap items-baseline justify-between gap-4 font-display font-black text-4xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tighter uppercase text-white/10 leading-none">
             {['GROUND', 'EFFECT', 'HUB'].map((word, wIdx) => (
               <span

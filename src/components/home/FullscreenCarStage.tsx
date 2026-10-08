@@ -581,9 +581,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                 title={car.name}
                 aria-label={`Select ${car.name}`}
                 className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  isActive
-                    ? 'w-7 h-2 bg-f1red shadow-xs'
-                    : 'w-2 h-2 bg-white/20 hover:bg-white/50'
+                  isActive ? 'w-7 h-2 bg-f1red shadow-xs' : 'w-2 h-2 bg-white/20 hover:bg-white/50'
                 }`}
               />
             );

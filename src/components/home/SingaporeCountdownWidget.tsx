@@ -24,10 +24,7 @@ interface SessionTiming {
 const AnimatedDigit: React.FC<{ digit: string }> = ({ digit }) => {
   return (
     <span className="relative inline-block overflow-hidden h-[1.15em] w-[0.62em] tabular-nums text-center">
-      <span
-        key={digit}
-        className="inline-block animate-digit-slide motion-reduce:animate-none"
-      >
+      <span key={digit} className="inline-block animate-digit-slide motion-reduce:animate-none">
         {digit}
       </span>
     </span>
@@ -61,43 +58,46 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
 
   // Real schedule for Singapore GP 2026 (UTC+8 / SGT)
   // 09 - 11 Oct 2026
-  const sessions: SessionTiming[] = useMemo(() => [
-    {
-      id: 'fp1',
-      nameVi: 'Luyện Tập 1 (FP1)',
-      nameEn: 'Practice 1 (FP1)',
-      startIso: '2026-10-09T16:30:00+08:00',
-      endIso: '2026-10-09T17:30:00+08:00',
-    },
-    {
-      id: 'sprintQualifying',
-      nameVi: 'Phân Hạng Sprint (Sprint Shootout)',
-      nameEn: 'Sprint Qualifying',
-      startIso: '2026-10-09T20:30:00+08:00',
-      endIso: '2026-10-09T21:14:00+08:00',
-    },
-    {
-      id: 'sprint',
-      nameVi: 'Đua Nước Rút (Sprint Race)',
-      nameEn: 'Sprint Race',
-      startIso: '2026-10-10T17:00:00+08:00',
-      endIso: '2026-10-10T18:00:00+08:00',
-    },
-    {
-      id: 'qualifying',
-      nameVi: 'Phân Hạng (Qualifying)',
-      nameEn: 'Qualifying Shootout',
-      startIso: '2026-10-10T21:00:00+08:00',
-      endIso: '2026-10-10T22:00:00+08:00',
-    },
-    {
-      id: 'race',
-      nameVi: 'Chặng Đua Chính (Grand Prix)',
-      nameEn: 'Grand Prix Race',
-      startIso: '2026-10-11T20:00:00+08:00',
-      endIso: '2026-10-11T22:00:00+08:00',
-    },
-  ], []);
+  const sessions: SessionTiming[] = useMemo(
+    () => [
+      {
+        id: 'fp1',
+        nameVi: 'Luyện Tập 1 (FP1)',
+        nameEn: 'Practice 1 (FP1)',
+        startIso: '2026-10-09T16:30:00+08:00',
+        endIso: '2026-10-09T17:30:00+08:00',
+      },
+      {
+        id: 'sprintQualifying',
+        nameVi: 'Phân Hạng Sprint (Sprint Shootout)',
+        nameEn: 'Sprint Qualifying',
+        startIso: '2026-10-09T20:30:00+08:00',
+        endIso: '2026-10-09T21:14:00+08:00',
+      },
+      {
+        id: 'sprint',
+        nameVi: 'Đua Nước Rút (Sprint Race)',
+        nameEn: 'Sprint Race',
+        startIso: '2026-10-10T17:00:00+08:00',
+        endIso: '2026-10-10T18:00:00+08:00',
+      },
+      {
+        id: 'qualifying',
+        nameVi: 'Phân Hạng (Qualifying)',
+        nameEn: 'Qualifying Shootout',
+        startIso: '2026-10-10T21:00:00+08:00',
+        endIso: '2026-10-10T22:00:00+08:00',
+      },
+      {
+        id: 'race',
+        nameVi: 'Chặng Đua Chính (Grand Prix)',
+        nameEn: 'Grand Prix Race',
+        startIso: '2026-10-11T20:00:00+08:00',
+        endIso: '2026-10-11T22:00:00+08:00',
+      },
+    ],
+    [],
+  );
 
   // Wall-clock synchronized tick (aligned strictly to :00.000 whole second boundary)
   useEffect(() => {
@@ -134,11 +134,12 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const isApiLive = liveSessionData?.state === 'live';
 
   if (isApiLive && apiSession) {
-    activeSession = sessions.find(
-      (s) =>
-        s.id.toLowerCase() === (apiSession.session_name || '').toLowerCase() ||
-        s.nameEn.toLowerCase().includes((apiSession.session_name || '').toLowerCase())
-    ) || sessions[0];
+    activeSession =
+      sessions.find(
+        (s) =>
+          s.id.toLowerCase() === (apiSession.session_name || '').toLowerCase() ||
+          s.nameEn.toLowerCase().includes((apiSession.session_name || '').toLowerCase()),
+      ) || sessions[0];
     state = 'live';
     nextSession = null;
     timeDiffMs = 0;
@@ -198,9 +199,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
         />
 
         {/* Left Color Accent Bar */}
-        <div
-          className="absolute top-0 left-0 w-2.5 h-full bg-f1red transition-colors duration-500"
-        />
+        <div className="absolute top-0 left-0 w-2.5 h-full bg-f1red transition-colors duration-500" />
 
         {/* ── TOP ROW: Grand Prix Identity & Live Action / Countdown ── */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 pl-2 relative z-10">
@@ -217,8 +216,8 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                 {isLive
                   ? '● LIVE RACING'
                   : lang === 'vi'
-                  ? `Chặng ${race.round} · Tuần Lễ Thi Đấu`
-                  : `Round ${race.round} · Active Race Weekend`}
+                    ? `Chặng ${race.round} · Tuần Lễ Thi Đấu`
+                    : `Round ${race.round} · Active Race Weekend`}
               </span>
               <span className="text-xs text-studio-500 font-semibold">{race.country}</span>
             </div>
@@ -267,8 +266,8 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                         isFinished
                           ? 'bg-f1red shadow-xs'
                           : isCurrent
-                          ? 'bg-f1red animate-pulse ring-2 ring-f1red/30'
-                          : 'bg-studio-200'
+                            ? 'bg-f1red animate-pulse ring-2 ring-f1red/30'
+                            : 'bg-studio-200'
                       }`}
                     />
                   );
@@ -360,7 +359,9 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                     {lang === 'vi' ? 'Chặng Đua Đã Kết Thúc' : 'Grand Prix Concluded'}
                   </span>
                   <span className="text-xs text-studio-500">
-                    {lang === 'vi' ? 'Đầy đủ kết quả đã được ghi nhận' : 'All race results archived'}
+                    {lang === 'vi'
+                      ? 'Đầy đủ kết quả đã được ghi nhận'
+                      : 'All race results archived'}
                   </span>
                 </div>
               </div>

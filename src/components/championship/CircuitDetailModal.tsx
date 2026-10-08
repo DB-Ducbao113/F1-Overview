@@ -58,7 +58,10 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   {circuit.city}, {circuit.country}
                 </span>
               </div>
-              <h2 id="circuit-modal-title" className="text-base sm:text-xl font-black font-display text-white mt-0.5">
+              <h2
+                id="circuit-modal-title"
+                className="text-base sm:text-xl font-black font-display text-white mt-0.5"
+              >
                 {circuit.circuitName}
               </h2>
             </div>
@@ -85,7 +88,9 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   <span>{isVi ? 'Review Khúc Cua' : 'Corner Review'}</span>
                 </span>
                 <span className="text-xs text-studio-400 font-medium hidden sm:inline">
-                  {isVi ? 'Góc cua · Tốc độ apex · Mẹo kỹ thuật' : 'Apex speed · Gear · Racing tips'}
+                  {isVi
+                    ? 'Góc cua · Tốc độ apex · Mẹo kỹ thuật'
+                    : 'Apex speed · Gear · Racing tips'}
                 </span>
               </div>
 
@@ -108,7 +113,9 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   <span className="text-[11px] font-normal text-studio-400">km</span>
                 </span>
                 <span className="text-[10px] text-studio-500 block mt-0.5">
-                  {isVi ? `${circuit.telemetry.lapsCount} vòng đua` : `${circuit.telemetry.lapsCount} laps`}
+                  {isVi
+                    ? `${circuit.telemetry.lapsCount} vòng đua`
+                    : `${circuit.telemetry.lapsCount} laps`}
                 </span>
               </div>
 
@@ -179,8 +186,8 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
                   </span>
                   <p className="text-[11px] text-studio-300">
                     {circuit.lapRecord.driver}{' '}
-                    <span className="text-studio-400 font-medium">({circuit.lapRecord.team})</span> ·{' '}
-                    <span className="text-amber-300 font-bold">{circuit.lapRecord.year}</span>
+                    <span className="text-studio-400 font-medium">({circuit.lapRecord.team})</span>{' '}
+                    · <span className="text-amber-300 font-bold">{circuit.lapRecord.year}</span>
                   </p>
                 </div>
               </div>

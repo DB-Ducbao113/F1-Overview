@@ -8,7 +8,7 @@ describe('F1PageTransition', () => {
     const html = renderToStaticMarkup(
       <F1PageTransition pathname="/championship">
         <div id="page-content">Championship Page</div>
-      </F1PageTransition>
+      </F1PageTransition>,
     );
 
     expect(html).toContain('id="page-content"');
@@ -19,7 +19,7 @@ describe('F1PageTransition', () => {
     const html = renderToStaticMarkup(
       <F1PageTransition pathname="/">
         <div>Home Page</div>
-      </F1PageTransition>
+      </F1PageTransition>,
     );
 
     expect(html).toContain('Home Page');

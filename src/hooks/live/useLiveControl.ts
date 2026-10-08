@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FlagColor, LiveRaceControlMessage, LiveControlResponse } from '../../lib/live/openf1-types';
+import {
+  FlagColor,
+  LiveRaceControlMessage,
+  LiveControlResponse,
+} from '../../lib/live/openf1-types';
 
-export function useLiveControl(
-  sessionKey: number | null | undefined,
-  enabled: boolean = true
-) {
+export function useLiveControl(sessionKey: number | null | undefined, enabled: boolean = true) {
   const [activeFlag, setActiveFlag] = useState<FlagColor>('CLEAR');
   const [messages, setMessages] = useState<LiveRaceControlMessage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

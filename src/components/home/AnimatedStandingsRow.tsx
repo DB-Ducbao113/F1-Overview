@@ -68,8 +68,8 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
             rank === 1
               ? 'bg-amber-400 text-black shadow-xs ring-2 ring-amber-400/30'
               : rank === 2
-              ? 'bg-studio-300 text-studio-900'
-              : 'bg-amber-700 text-white'
+                ? 'bg-studio-300 text-studio-900'
+                : 'bg-amber-700 text-white'
           }`}
         >
           {rank}
@@ -94,9 +94,7 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
             <div className="group-hover:scale-105 transition-transform duration-300 shrink-0">
               <ConstructorLogo teamId={teamId} size="sm" />
             </div>
-            <span className="text-xs font-semibold truncate text-studio-600 block">
-              {subName}
-            </span>
+            <span className="text-xs font-semibold truncate text-studio-600 block">{subName}</span>
           </div>
         </div>
       </div>
@@ -109,7 +107,10 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
               rank === 1 && isDone ? 'animate-champion-flash text-amber-500' : ''
             } ${isHovered ? 'animate-score-flicker' : ''}`}
           >
-            {animatedPoints} <span className="text-xs font-sans text-studio-500">{lang === 'vi' ? 'ĐIỂM' : 'PTS'}</span>
+            {animatedPoints}{' '}
+            <span className="text-xs font-sans text-studio-500">
+              {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+            </span>
           </span>
           <span className="text-[10px] text-studio-400 block mt-1">
             {wins} {lang === 'vi' ? 'thắng' : 'wins'} · {podiums} podium
