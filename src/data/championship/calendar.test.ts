@@ -1,5 +1,50 @@
 import { describe, it, expect } from 'vitest';
-import { CALENDAR_2026 } from './calendar';
+import { CALENDAR_2026, CALENDAR_2024, CALENDAR_2025, getCalendarBySeason } from './calendar';
+
+describe('Race Calendar Multi-Season Support', () => {
+  it('returns appropriate calendars per season via getCalendarBySeason', () => {
+    const cal2024 = getCalendarBySeason(2024);
+    expect(cal2024.length).toBe(24);
+    expect(cal2024[0].name).toBe('Bahrain Grand Prix');
+    expect(cal2024[0].season).toBe(2024);
+    expect(cal2024.every((gp) => gp.status === 'completed')).toBe(true);
+
+    const cal2025 = getCalendarBySeason(2025);
+    expect(cal2025.length).toBe(24);
+    expect(cal2025[0].name).toBe('Australian Grand Prix');
+    expect(cal2025[0].season).toBe(2025);
+    expect(cal2025.every((gp) => gp.status === 'completed')).toBe(true);
+
+    const cal2026 = getCalendarBySeason(2026);
+    expect(cal2026.length).toBe(23);
+    expect(cal2026[0].name).toBe('Australian Grand Prix');
+    expect(cal2026[0].season).toBe(2026);
+  });
+
+  it('verifies 2024 season has 6 sprint rounds with valid sessions', () => {
+    const sprints2024 = CALENDAR_2024.filter((gp) => gp.hasSprint);
+    expect(sprints2024.length).toBe(6);
+    sprints2024.forEach((gp) => {
+      expect(gp.sessions.fp1).toBeDefined();
+      expect(gp.sessions.sprintQualifying).toBeDefined();
+      expect(gp.sessions.sprint).toBeDefined();
+      expect(gp.sessions.qualifying).toBeDefined();
+      expect(gp.sessions.race).toBeDefined();
+    });
+  });
+
+  it('verifies 2025 season has 6 sprint rounds with valid sessions', () => {
+    const sprints2025 = CALENDAR_2025.filter((gp) => gp.hasSprint);
+    expect(sprints2025.length).toBe(6);
+    sprints2025.forEach((gp) => {
+      expect(gp.sessions.fp1).toBeDefined();
+      expect(gp.sessions.sprintQualifying).toBeDefined();
+      expect(gp.sessions.sprint).toBeDefined();
+      expect(gp.sessions.qualifying).toBeDefined();
+      expect(gp.sessions.race).toBeDefined();
+    });
+  });
+});
 
 describe('2026 Race Calendar Weekend Sessions Completeness', () => {
   it('ensures every non-sprint round has full 5 sessions (FP1, FP2, FP3, Qualifying, Race)', () => {
@@ -45,3 +90,4 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
     expect(r1.sessions.fp3?.status).toBe('finished');
   });
 });
+

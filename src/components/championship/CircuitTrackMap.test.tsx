@@ -53,8 +53,8 @@ describe('CircuitDetailModal Component', () => {
     expect(html).toContain('DRS 2');
     expect(html).toContain('DRS 3');
     expect(html).toContain('DRS 4');
-    expect(html).toContain('OpenF1 Live');
-    expect(html).toContain('Review Khúc Đường');
+    expect(html).toContain('Review Khúc Cua');
+    expect(html).toContain('TRACK STREET VIEW');
   });
 });
 
@@ -70,6 +70,23 @@ describe('CircuitStreetReview Component', () => {
     expect(html).toContain('Vạch Xuất Phát');
     expect(html).toContain('TỐC ĐỘ');
     expect(html).toContain('SỐ');
+  });
+
+  it('provides authentic Street View review checkpoints for all 24 circuits in the calendar', async () => {
+    const { CIRCUIT_REVIEW_POINTS, getCircuitReviewPoints } = await import(
+      '../../data/championship/circuitReviewPoints'
+    );
+    for (let round = 1; round <= 24; round++) {
+      const circuit = getCircuitByRound(round);
+      if (!circuit) continue;
+      const points = getCircuitReviewPoints(circuit.id);
+      expect(points.length).toBeGreaterThanOrEqual(2);
+      expect(CIRCUIT_REVIEW_POINTS[circuit.id]).toBeDefined();
+      expect(points[0].lat).toBeTypeOf('number');
+      expect(points[0].lng).toBeTypeOf('number');
+      expect(points[0].telemetry.speedKmh).toBeGreaterThan(0);
+      expect(points[0].descriptionVi.length).toBeGreaterThan(10);
+    }
   });
 });
 

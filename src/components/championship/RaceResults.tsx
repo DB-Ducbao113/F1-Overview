@@ -19,6 +19,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { RaceResult, SeasonYear } from '../../types';
+import { Card3DTilt } from '../common/Card3DTilt';
 
 interface RaceResultsProps {
   season: SeasonYear;
@@ -295,9 +296,11 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
       {viewMode === 'grid' && filteredResults.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredResults.map((res) => (
-            <div
+            <Card3DTilt
               key={res.round}
-              className="bg-white rounded-2xl border border-studio-200 shadow-subtle p-5 sm:p-6 space-y-4 hover:border-studio-300 hover:shadow-md transition-all flex flex-col"
+              maxTilt={3}
+              glareOpacity={0.12}
+              className="bg-white rounded-2xl border border-studio-200 shadow-subtle p-5 sm:p-6 space-y-4 hover:border-studio-300 hover:shadow-md transition-all flex flex-col h-full"
             >
               {/* Card Header */}
               <div className="flex items-start justify-between pb-3 border-b border-studio-100 gap-3">
@@ -482,7 +485,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                 <span>{lang === 'vi' ? 'Xem kết quả chi tiết' : 'View full classification'}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
-            </div>
+            </Card3DTilt>
           ))}
         </div>
       )}

@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { CircuitData } from '../../types/circuit';
-import { X, Trophy, MapPin, Compass, Activity, Zap, Radio, Globe, Camera } from 'lucide-react';
+import { X, Trophy, MapPin, Activity, Zap, Camera } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { CircuitRealWorldMap } from './CircuitRealWorldMap';
-import { OpenF1LiveMap } from './OpenF1LiveMap';
 import { CircuitStreetReview } from './CircuitStreetReview';
-
-type MapMode = 'review' | 'real' | 'openf1' | 'vector';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -17,7 +13,6 @@ interface CircuitDetailModalProps {
 export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit, onClose }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const [mapMode, setMapMode] = useState<MapMode>('review');
 
   // Prevent background scrolling and support Escape key
   useEffect(() => {
@@ -82,204 +77,25 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
         <div className="p-4 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           {/* Left Column (7 cols): Map + Essential Telemetry Grid */}
           <div className="lg:col-span-7 space-y-3.5">
-            {/* Header bar above map with 4-way Mode toggle */}
-            <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-studio-900/90 rounded-xl border border-studio-800 shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => setMapMode('review')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'review'
-                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-                  }`}
-                  title={isVi ? 'Xem ảnh chụp thực tế từng khúc đường' : 'Street View review of each track section'}
-                >
+            {/* Corner Review Section Header */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-f1red/20 text-f1red border border-f1red/40 flex items-center gap-1.5 shadow-xs">
                   <Camera className="w-3.5 h-3.5" />
-                  <span>{isVi ? '📸 Review Khúc Đường' : '📸 Track Review'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setMapMode('real')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'real'
-                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-                  }`}
-                  title={isVi ? 'Bản đồ thực tế chụp vệ tinh' : 'Real-world Satellite Map'}
-                >
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>{isVi ? '🛰️ Vệ Tinh' : '🛰️ Satellite'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setMapMode('openf1')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'openf1'
-                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-                  }`}
-                  title={isVi ? 'Live GPS xe đua thật từ OpenF1 API' : 'Real-time GPS tracker from OpenF1 API'}
-                >
-                  <Radio className={`w-3.5 h-3.5 ${mapMode === 'openf1' ? 'animate-pulse text-white' : ''}`} />
-                  <span>{isVi ? '🔴 OpenF1 Live' : '🔴 OpenF1 Live'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setMapMode('vector')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    mapMode === 'vector'
-                      ? 'bg-f1red text-white shadow-[0_0_12px_rgba(255,24,1,0.5)]'
-                      : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-                  }`}
-                  title={isVi ? 'Sơ đồ thiết kế vector' : 'Vector Track Schematic'}
-                >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>{isVi ? '🏎️ Vector' : '🏎️ Vector'}</span>
-                </button>
+                  <span>{isVi ? 'Review Khúc Cua' : 'Corner Review'}</span>
+                </span>
+                <span className="text-xs text-studio-400 font-medium hidden sm:inline">
+                  {isVi ? 'Góc cua · Tốc độ apex · Mẹo kỹ thuật' : 'Apex speed · Gear · Racing tips'}
+                </span>
               </div>
 
-              {mapMode === 'review' && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  PHOTO STREET VIEW
-                </span>
-              )}
-
-              {mapMode === 'real' && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                  SATELLITE & GPS
-                </span>
-              )}
-
-              {mapMode === 'openf1' && (
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-f1red/20 text-f1red border border-f1red/30 shadow-[0_0_8px_rgba(255,24,1,0.3)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-f1red animate-ping" />
-                  OPENF1 TELEMETRY
-                </span>
-              )}
+              <span className="text-[10px] font-mono text-studio-500 uppercase tracking-wider">
+                {circuit.circuitName}
+              </span>
             </div>
 
-            {/* Main Visual Track Map Display */}
-            {mapMode === 'review' && (
-              <CircuitStreetReview circuit={circuit} lang={lang} />
-            )}
-
-            {mapMode === 'real' && (
-              <CircuitRealWorldMap circuit={circuit} lang={lang} />
-            )}
-
-            {mapMode === 'openf1' && (
-              <OpenF1LiveMap lang={lang} />
-            )}
-
-            {mapMode === 'vector' && (
-              <div className="relative rounded-2xl bg-gradient-to-b from-studio-900 to-studio-950 border border-studio-800/80 p-3 sm:p-5 overflow-hidden flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px]">
-                {/* Background Grid Pattern */}
-                <div
-                  className="absolute inset-0 opacity-15 pointer-events-none"
-                  style={{
-                    backgroundImage:
-                      'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
-                    backgroundSize: '20px 20px',
-                  }}
-                />
-
-                {/* Glowing Track Path SVG */}
-                <div className="relative w-full max-w-[460px] aspect-[16/11] flex items-center justify-center">
-                  <svg
-                    viewBox={circuit.viewBox}
-                    className="w-full h-full filter drop-shadow-[0_0_14px_rgba(255,24,1,0.55)]"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    {/* Track shadow / background glow */}
-                    <path
-                      d={circuit.svgPath}
-                      fill="none"
-                      stroke="#ff1801"
-                      strokeWidth="20"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="opacity-25 blur-xs"
-                    />
-
-                    {/* Outer kerb border */}
-                    <path
-                      d={circuit.svgPath}
-                      fill="none"
-                      stroke="#ffffff"
-                      strokeWidth="14"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="opacity-85"
-                    />
-
-                    {/* Asphalt main track line */}
-                    <path
-                      d={circuit.svgPath}
-                      fill="none"
-                      stroke="#161922"
-                      strokeWidth="10"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Glowing speed vector line */}
-                    <path
-                      d={circuit.svgPath}
-                      fill="none"
-                      stroke="#ff1801"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeDasharray="16 4"
-                      className="animate-pulse"
-                    />
-
-                    {/* Start / Finish Marker */}
-                    <circle
-                      cx={circuit.startFinish.x}
-                      cy={circuit.startFinish.y}
-                      r="14"
-                      fill="#ff1801"
-                      className="opacity-60 animate-pulse"
-                    />
-                    <circle
-                      cx={circuit.startFinish.x}
-                      cy={circuit.startFinish.y}
-                      r="8"
-                      fill="#ffffff"
-                      stroke="#ff1801"
-                      strokeWidth="3.5"
-                    />
-                  </svg>
-
-                  {/* Start / Finish Tag Floating */}
-                  <div className="absolute top-2 left-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
-                    <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
-                    <span>{isVi ? 'Vạch Xuất Phát / Đích' : 'Start / Finish'}</span>
-                  </div>
-
-                  {/* Direction Indicator */}
-                  <div className="absolute top-2 right-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1.5 backdrop-blur-sm shadow-md">
-                    <Compass className="w-3 h-3 text-amber-400" />
-                    <span>
-                      {circuit.telemetry.direction === 'clockwise'
-                        ? isVi
-                          ? 'Thuận chiều kim đồng hồ ↻'
-                          : 'Clockwise ↻'
-                        : isVi
-                          ? 'Ngược chiều kim đồng hồ ↺'
-                          : 'Anti-clockwise ↺'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Streamlined Corner Review */}
+            <CircuitStreetReview circuit={circuit} lang={lang} />
 
             {/* Quick Telemetry Grid (4 cards) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">

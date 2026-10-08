@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { BrandLogo } from '../common/BrandLogo';
+import { useReveal } from '../../hooks/useReveal';
 
 export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const strings = t[lang].footer;
   const navStrings = t[lang].nav;
+  const { ref: giantRef, isRevealed } = useReveal(0.1);
 
   return (
     <footer className="bg-studio-950 text-white border-t border-studio-800 pt-16 pb-12 mt-auto">
@@ -80,6 +82,27 @@ export const Footer: React.FC = React.memo(() => {
                 All rights reserved to their respective copyright holders.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* ── D3. Footer Giant Text Reveal ── */}
+        <div ref={giantRef} className="pt-10 pb-6 border-t border-studio-800/80 overflow-hidden select-none">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 font-display font-black text-4xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tighter uppercase text-white/10 leading-none">
+            {['GROUND', 'EFFECT', 'HUB'].map((word, wIdx) => (
+              <span
+                key={word}
+                className="inline-flex overflow-hidden transition-all duration-700 ease-out group cursor-default"
+                style={{
+                  transform: isRevealed ? 'translateY(0)' : 'translateY(100%)',
+                  opacity: isRevealed ? 1 : 0,
+                  transitionDelay: `${wIdx * 120}ms`,
+                }}
+              >
+                <span className="relative inline-block group-hover:text-f1red transition-all duration-500 hover:scale-[1.02]">
+                  {word}
+                </span>
+              </span>
+            ))}
           </div>
         </div>
 

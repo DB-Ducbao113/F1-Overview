@@ -85,6 +85,7 @@ export interface CuratedReplayRace {
   id: string;
   name: string;
   circuitName: string;
+  circuitKey: number;
   sessionKey: number;
   year: number;
   dateStart: string;
@@ -100,6 +101,7 @@ export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
     id: 'melbourne-2024',
     name: 'Australian GP 2024',
     circuitName: 'Albert Park, Melbourne',
+    circuitKey: 10,
     sessionKey: 9488,
     year: 2024,
     dateStart: '2024-03-24T04:00:00+00:00',
@@ -110,6 +112,7 @@ export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
     id: 'monaco-2024',
     name: 'Monaco GP 2024',
     circuitName: 'Circuit de Monaco',
+    circuitKey: 22,
     sessionKey: 9523,
     year: 2024,
     dateStart: '2024-05-26T13:00:00+00:00',
@@ -120,6 +123,7 @@ export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
     id: 'suzuka-2024',
     name: 'Japanese GP 2024',
     circuitName: 'Suzuka International Racing Course',
+    circuitKey: 46,
     sessionKey: 9496,
     year: 2024,
     dateStart: '2024-04-07T05:00:00+00:00',
@@ -130,6 +134,7 @@ export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
     id: 'sakhir-2024',
     name: 'Bahrain GP 2024',
     circuitName: 'Bahrain International Circuit',
+    circuitKey: 63,
     sessionKey: 9472,
     year: 2024,
     dateStart: '2024-03-02T15:00:00+00:00',

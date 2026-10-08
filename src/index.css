@@ -348,13 +348,253 @@ canvas.r3f {
 @keyframes pulseGlowRed {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.08);
   }
   50% {
-    box-shadow: 0 0 16px 3px rgba(225, 6, 0, 0.7);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
   }
 }
 
 .animate-glow-red {
   animation: pulseGlowRed 2s infinite ease-in-out;
+}
+
+/* ─── LIVE HOME ENHANCEMENTS KEYFRAMES ─── */
+@keyframes digitSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(60%);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-digit-slide {
+  animation: digitSlide 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes colonPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.animate-colon-pulse {
+  animation: colonPulse 1s infinite ease-in-out;
+}
+
+@keyframes livePulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.animate-live-glow {
+  animation: livePulseGlow 1.6s infinite ease-in-out;
+}
+
+@keyframes kenBurnsSlow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-ken-burns {
+  animation: kenBurnsSlow 20s ease-in-out infinite alternate;
+}
+
+@keyframes speedLineDrift {
+  0% {
+    transform: translate(80%, -80%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.08;
+  }
+  80% {
+    opacity: 0.08;
+  }
+  100% {
+    transform: translate(-100%, 100%);
+    opacity: 0;
+  }
+}
+
+.animate-speed-drift-1 {
+  animation: speedLineDrift 9s linear infinite;
+}
+
+.animate-speed-drift-2 {
+  animation: speedLineDrift 12s linear infinite 3s;
+}
+
+.animate-speed-drift-3 {
+  animation: speedLineDrift 7.5s linear infinite 5s;
+}
+
+@keyframes tickerMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker-marquee {
+  animation: tickerMarquee 45s linear infinite !important;
+  will-change: transform;
+}
+
+.animate-ticker-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes championFlash {
+  0%, 100% {
+    color: inherit;
+    text-shadow: none;
+  }
+  50% {
+    color: #eab308;
+    text-shadow: 0 0 12px rgba(234, 179, 8, 0.8);
+  }
+}
+
+.animate-champion-flash {
+  animation: championFlash 0.35s ease-out 1;
+}
+
+@keyframes scanlineSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  35% {
+    transform: translateX(200%);
+    opacity: 1;
+  }
+  36%, 100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+
+.animate-scanline-sweep {
+  animation: scanlineSweep 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes digitalScoreFlicker {
+  0%, 100% { opacity: 1; }
+  30% { opacity: 0.4; }
+  60% { opacity: 0.85; }
+  80% { opacity: 0.5; }
+}
+
+.animate-score-flicker {
+  animation: digitalScoreFlicker 0.35s ease-in-out 1;
+}
+
+/* ── F1 Cinematic Scene & Page Transitions ── */
+@keyframes f1SpeedWipe {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(200%, 0, 0);
+    opacity: 0;
+  }
+}
+
+.animate-f1-speed-wipe {
+  animation: f1SpeedWipe 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes f1FlashTint {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.08;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-f1-flash-tint {
+  animation: f1FlashTint 0.38s ease-out forwards;
+}
+
+@keyframes f1DepthEnter {
+  0% {
+    opacity: 0;
+    transform: perspective(1200px) translate3d(0, 16px, -24px) scale(0.99);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: none; /* Reset transform to avoid trapping fixed descendants */
+  }
+}
+
+.animate-f1-depth-enter {
+  animation: f1DepthEnter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── 3D Interactive Card & Button Hover Depth ── */
+.hover-depth-3d {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+}
+
+.hover-depth-3d:hover {
+  transform: translate3d(0, -4px, 12px);
+  box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-digit-slide,
+  .animate-colon-pulse,
+  .animate-live-glow,
+  .animate-ken-burns,
+  .animate-speed-drift-1,
+  .animate-speed-drift-2,
+  .animate-speed-drift-3,
+  .animate-champion-flash,
+  .animate-scanline-sweep,
+  .animate-score-flicker,
+  .animate-f1-speed-wipe,
+  .animate-f1-flash-tint,
+  .animate-f1-depth-enter {
+    animation: none !important;
+    transition: none !important;
+  }
 }

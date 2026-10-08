@@ -2,6 +2,7 @@ export const t = {
   vi: {
     nav: {
       home: 'Trang chủ',
+      live: 'Live Center',
       championship: 'Giải đấu',
       collection: 'Showroom 3D',
       brandTitle: 'Ground Effect Hub',
@@ -44,6 +45,7 @@ export const t = {
   en: {
     nav: {
       home: 'Home',
+      live: 'Live Center',
       championship: 'Championship',
       collection: '3D Showroom',
       brandTitle: 'Ground Effect Hub',

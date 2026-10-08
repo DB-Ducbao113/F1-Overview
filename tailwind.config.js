@@ -49,8 +49,13 @@ export default {
         'line-grow': 'lineGrow 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both',
         'number-up': 'numberUp 0.6s ease-out both',
         'slide-in-right': 'slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both',
+        'ticker-marquee': 'tickerMarquee 45s linear infinite',
       },
       keyframes: {
+        tickerMarquee: {
+          '0%': { transform: 'translate3d(0, 0, 0)' },
+          '100%': { transform: 'translate3d(-50%, 0, 0)' },
+        },
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(24px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },

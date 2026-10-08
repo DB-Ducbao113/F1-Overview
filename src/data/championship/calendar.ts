@@ -1,4 +1,7 @@
-import { GrandPrixRound } from '../../types';
+import { GrandPrixRound, SeasonYear } from '../../types';
+import { CALENDAR_2024, CALENDAR_2025 } from './calendarHistorical';
+
+export { CALENDAR_2024, CALENDAR_2025 };
 
 export const CALENDAR_2026: GrandPrixRound[] = [
   {
@@ -562,3 +565,15 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     },
   }
 ];
+
+export const getCalendarBySeason = (season: SeasonYear): GrandPrixRound[] => {
+  switch (season) {
+    case 2024:
+      return CALENDAR_2024;
+    case 2025:
+      return CALENDAR_2025;
+    case 2026:
+    default:
+      return CALENDAR_2026;
+  }
+};

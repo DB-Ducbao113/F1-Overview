@@ -8,6 +8,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { Trophy, Award, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { Card3DTilt } from '../common/Card3DTilt';
 
 interface StandingsTableProps {
   season: SeasonYear;
@@ -39,7 +40,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
   return (
     <div className="space-y-6">
       {/* ── Status Banner (Ongoing vs Completed) ── */}
-      <div
+      <Card3DTilt
+        maxTilt={2}
+        glareOpacity={0.08}
         className={`p-4 sm:p-5 rounded-2xl border transition-all ${
           isOngoing
             ? 'bg-gradient-to-r from-emerald-50/60 via-white to-white border-emerald-200/80 shadow-xs border-l-4 border-l-emerald-500'
@@ -128,7 +131,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
             <ExternalLink className="w-3.5 h-3.5 text-studio-500" />
           </a>
         </div>
-      </div>
+      </Card3DTilt>
 
       {/* Category Toggle (Drivers vs Constructors) */}
       <div className="flex items-center gap-2 p-1 rounded-xl bg-white border border-studio-200 max-w-md shadow-xs">

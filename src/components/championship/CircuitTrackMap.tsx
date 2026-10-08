@@ -3,7 +3,8 @@ import { CircuitData } from '../../types/circuit';
 import { getCircuitByRound, findCircuitByName } from '../../data/championship/circuitsData';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { CircuitDetailModal } from './CircuitDetailModal';
-import { Maximize2, Trophy, Zap, Compass } from 'lucide-react';
+import { CircuitStreetReview } from './CircuitStreetReview';
+import { Maximize2, Trophy, Zap } from 'lucide-react';
 
 interface CircuitTrackMapProps {
   round?: number;
@@ -52,8 +53,8 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
           }}
           title={
             isVi
-              ? `Bấm để xem bản đồ chi tiết sơ đồ ${circuit.circuitName}`
-              : `Click to view ${circuit.circuitName} full track layout`
+              ? `Bấm để xem review chi tiết các khúc cua ${circuit.circuitName}`
+              : `Click to view ${circuit.circuitName} corner review`
           }
         >
           {/* F1 High-Tech Radar Glassmorphism Badge */}
@@ -73,9 +74,9 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
               <span className="w-1.5 h-1.5 rounded-full bg-f1red opacity-90 group-hover:animate-ping" />
             </div>
 
-            {/* Micro Badge: MAP / SƠ ĐỒ */}
+            {/* Micro Badge: REVIEW */}
             <span className="absolute bottom-0.5 right-1 text-[7px] sm:text-[8px] font-black uppercase tracking-wider text-studio-400 group-hover:text-f1red transition-colors select-none">
-              {isVi ? 'BẢN ĐỒ' : 'MAP'}
+              {isVi ? 'REVIEW' : 'CORNERS'}
             </span>
 
             {/* High-Visibility Multi-Layer Circuit SVG Silhouette */}
@@ -152,8 +153,8 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
                 setIsModalOpen(true);
               }}
               className="absolute top-0.5 right-0.5 p-0.5 sm:p-1 rounded bg-studio-950/85 hover:bg-f1red text-studio-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border border-studio-700/80 hover:border-f1red"
-              title={isVi ? 'Phóng to bản đồ' : 'Expand full map'}
-              aria-label="Expand circuit map"
+              title={isVi ? 'Xem review khúc cua' : 'Expand corner review'}
+              aria-label="Expand circuit corners review"
             >
               <Maximize2 className="w-2.5 h-2.5" />
             </button>
@@ -172,116 +173,13 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
         className={`rounded-xl sm:rounded-2xl bg-studio-950 text-white border border-studio-800 shadow-md overflow-hidden ${className}`}
       >
         <div className="p-3.5 sm:p-5 flex flex-col md:flex-row items-stretch gap-4 sm:gap-6">
-          {/* Left Canvas: SVG Track Map Display */}
-          <div className="relative flex-1 min-h-[190px] sm:min-h-[220px] rounded-xl bg-gradient-to-b from-studio-900/90 to-studio-950 border border-studio-800/80 p-3 sm:p-4 flex items-center justify-center overflow-hidden group">
-            {/* Background Grid Pattern */}
-            <div
-              className="absolute inset-0 opacity-15 pointer-events-none"
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
-                backgroundSize: '18px 18px',
-              }}
+          {/* Left Canvas: Streamlined Corner Review Preview */}
+          <div className="relative flex-1 rounded-xl overflow-hidden flex flex-col group">
+            <CircuitStreetReview
+              circuit={circuit}
+              lang={lang}
+              compact={true}
             />
-
-            {/* Glowing Track Path SVG */}
-            <div className="relative w-full max-w-[360px] aspect-4/3 flex items-center justify-center">
-              <svg
-                viewBox={circuit.viewBox}
-                className="w-full h-full filter drop-shadow-[0_0_8px_rgba(225,6,0,0.5)] transition-transform duration-300 group-hover:scale-102"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Track glow aura */}
-                <path
-                  d={circuit.svgPath}
-                  fill="none"
-                  stroke="#ff1801"
-                  strokeWidth="20"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="opacity-25 blur-xs"
-                />
-
-                {/* Outer kerb white border */}
-                <path
-                  d={circuit.svgPath}
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="13"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="opacity-80"
-                />
-
-                {/* Asphalt main track line */}
-                <path
-                  d={circuit.svgPath}
-                  fill="none"
-                  stroke="#161922"
-                  strokeWidth="9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                {/* High-visibility F1 Red Line */}
-                <path
-                  d={circuit.svgPath}
-                  fill="none"
-                  stroke="#ff1801"
-                  strokeWidth="4.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeDasharray="16 4"
-                />
-
-                {/* Start / Finish Point Marker Beacon */}
-                <circle
-                  cx={circuit.startFinish.x}
-                  cy={circuit.startFinish.y}
-                  r="12"
-                  fill="#ff1801"
-                  className="opacity-50 animate-pulse"
-                />
-                <circle
-                  cx={circuit.startFinish.x}
-                  cy={circuit.startFinish.y}
-                  r="7"
-                  fill="#ffffff"
-                  stroke="#ff1801"
-                  strokeWidth="3"
-                />
-              </svg>
-
-              {/* Start / Finish Tag Floating */}
-              <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded text-[9px] font-bold text-white flex items-center gap-1 backdrop-blur-xs shadow-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-f1red animate-pulse" />
-                <span>{isVi ? 'Vạch xuất phát' : 'Start / Finish'}</span>
-              </div>
-
-              {/* Direction Indicator */}
-              <div className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-studio-900/90 border border-studio-700/80 px-2 py-0.5 rounded text-[9px] font-bold text-studio-300 flex items-center gap-1 backdrop-blur-xs shadow-xs">
-                <Compass className="w-2.5 h-2.5 text-amber-400" />
-                <span>
-                  {circuit.telemetry.direction === 'clockwise'
-                    ? isVi
-                      ? 'Thuận kim đồng hồ ↻'
-                      : 'Clockwise ↻'
-                    : isVi
-                      ? 'Ngược kim đồng hồ ↺'
-                      : 'Anti-clockwise ↺'}
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Inspect Button Overlay */}
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-studio-800/80 hover:bg-f1red text-studio-300 hover:text-white border border-studio-700 hover:border-f1red transition-all cursor-pointer shadow-md flex items-center gap-1 text-[10px] font-bold"
-              title={isVi ? 'Xem toàn màn hình bản đồ' : 'Expand full map'}
-            >
-              <Maximize2 className="w-3 h-3" />
-              <span className="hidden sm:inline">{isVi ? 'Chi tiết' : 'Full Map'}</span>
-            </button>
           </div>
 
           {/* Right Info: Circuit Telemetry & Specs */}
@@ -290,7 +188,7 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="text-[10px] font-black uppercase tracking-wider text-f1red flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-f1red animate-ping" />
-                  {isVi ? 'Bản Đồ Đường Đua F1' : 'Circuit Track Layout'}
+                  {isVi ? 'Review Khúc Cua & Thông Số' : 'Corner Review & Telemetry'}
                 </span>
                 <span className="text-[10px] text-studio-400 font-bold">
                   {circuit.firstGrandPrixYear > 0 &&
@@ -386,7 +284,7 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
               className="w-full py-1.5 px-3 rounded-lg bg-studio-800 hover:bg-f1red text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-studio-700 hover:border-f1red"
             >
               <Maximize2 className="w-3.5 h-3.5" />
-              <span>{isVi ? 'Xem Chi Tiết Sơ Đồ & DRS' : 'View Full Circuit Map & DRS'}</span>
+              <span>{isVi ? 'Xem Toàn Bộ Review Khúc Cua' : 'View Full Corner Review'}</span>
             </button>
           </div>
         </div>

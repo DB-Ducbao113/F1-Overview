@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import {
   Link,
   Navigate,
@@ -11,11 +11,15 @@ import {
 } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import { F1StartLightsPreloader } from './components/common/F1StartLightsPreloader';
 import { useChampionshipStore } from './store/useChampionshipStore';
 import { useNavigationStore } from './store/useNavigationStore';
 import { SeasonYear, isSeasonYear } from './types';
 import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
 import { getCompleteRaceClassification } from './data/championship/raceClassificationHelper';
+
+import { F1SpeedStream } from './components/common/F1SpeedStream';
+import { F1PageTransition } from './components/common/F1PageTransition';
 
 const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
@@ -26,6 +30,9 @@ const ChampionshipView = lazy(() =>
   })),
 );
 
+const LiveCenter = lazy(() =>
+  import('./components/live/LiveCenter').then((m) => ({ default: m.LiveCenter })),
+);
 const ShowroomView = lazy(() =>
   import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
 );
@@ -144,23 +151,67 @@ export const App: React.FC = () => {
     };
   }, [syncSeasonData]);
 
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const currentScroll = window.scrollY;
+          const progress = docHeight > 0 ? Math.min(1, Math.max(0, currentScroll / docHeight)) : 0;
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname]);
+
   return (
-    <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white">
-      <Navbar />
+    <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white relative">
+      {/* ── A1. F1 Start Lights Preloader ── */}
+      <F1StartLightsPreloader />
+
+      {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
+      <F1SpeedStream />
+
+      {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div
-        key={`${location.pathname}-speedbar`}
-        className="fixed top-0 left-0 right-0 h-[2.5px] z-[60] pointer-events-none overflow-hidden"
-      >
-        <div className="w-full h-full bg-gradient-to-r from-transparent via-f1red to-yellow-400 animate-f1-speed-scan" />
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none z-[45] opacity-[0.035] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      <Navbar />
+
+      {/* ── D1. Scroll Progress Speed Strip ── */}
+      <div className="fixed top-0 left-0 right-0 h-[2.5px] z-[70] pointer-events-none bg-black/20 overflow-hidden">
+        <div
+          style={{
+            transform: `scaleX(${scrollProgress})`,
+            transformOrigin: 'left',
+          }}
+          className="w-full h-full bg-gradient-to-r from-f1red via-amber-400 to-yellow-300 transition-transform duration-75 ease-out"
+        />
       </div>
+
       <main className="flex-1 pt-16">
-        <div key={location.pathname} className="animate-page-enter">
+        <F1PageTransition pathname={location.pathname}>
           <Suspense fallback={<div className="min-h-[50vh]" />}>
             <Routes>
               <Route path="/" element={<HomeView />} />
+              <Route path="/live" element={<LiveCenter />} />
               <Route path="/season" element={<Navigate to="/season/2026" replace />} />
               <Route path="/championship" element={<Navigate to="/season/2026" replace />} />
               <Route path="/season/:year" element={<SeasonRoute />} />
@@ -176,7 +227,7 @@ export const App: React.FC = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-        </div>
+        </F1PageTransition>
       </main>
       <Footer />
     </div>
