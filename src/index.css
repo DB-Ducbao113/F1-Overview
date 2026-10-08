@@ -175,6 +175,81 @@ canvas.r3f {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   PODIUM CINEMATIC BRAND HERO
+   ───────────────────────────────────────────────────────────── */
+.podium-metal-text {
+  color: #ececec;
+  background: linear-gradient(
+    112deg,
+    #777 0%,
+    #f7f7f5 18%,
+    #858585 42%,
+    #fff 59%,
+    #6f6f72 82%,
+    #dedede 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.45px rgba(255, 255, 255, 0.35);
+  filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.95)) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.9));
+}
+
+.podium-copy {
+  isolation: isolate;
+}
+
+.podium-copy::before {
+  content: '';
+  position: absolute;
+  inset: -2rem -2.5rem;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.podium-copy-left::before {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 2, 4, 0.76) 0%,
+    rgba(2, 2, 4, 0.42) 68%,
+    transparent 100%
+  );
+}
+
+.podium-copy-right::before {
+  background: linear-gradient(
+    270deg,
+    rgba(2, 2, 4, 0.76) 0%,
+    rgba(2, 2, 4, 0.42) 68%,
+    transparent 100%
+  );
+}
+
+.podium-hero-image {
+  filter: brightness(1.08) contrast(1.03) saturate(1.05);
+  animation: podiumHeroReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes podiumHeroReveal {
+  from {
+    opacity: 0;
+    transform: scale(1.035);
+    filter: brightness(0.4) blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1.08) contrast(1.03) saturate(1.05) blur(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .podium-hero-image {
+    object-position: 50% 66%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    3D CAR ENTRANCE & KINETIC REVEAL ANIMATIONS
    ───────────────────────────────────────────────────────────── */
 @keyframes f1CarEntrance3D {

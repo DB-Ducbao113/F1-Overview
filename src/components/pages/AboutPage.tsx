@@ -44,7 +44,7 @@ export const AboutPage: React.FC = () => {
           </span>
         </div>
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-studio-950">
-          Ground Effect Hub
+          PODIUM — Effet de Sol
         </h1>
         <p className="mt-4 text-base sm:text-lg text-studio-600 max-w-3xl leading-relaxed">
           {isVi
@@ -69,7 +69,7 @@ export const AboutPage: React.FC = () => {
             <p className="mt-3 text-sm text-studio-300 leading-relaxed max-w-3xl">
               {isVi
                 ? 'Dự án được khởi xướng và phát triển độc lập bởi BaoBungBu xuất phát từ niềm đam mê sâu sắc với tốc độ, kỹ thuật chế tạo xe đua Formula 1 và đồ họa không gian ba chiều WebGL. Toàn bộ nền tảng được xây dựng với mục tiêu mang đến một góc nhìn trực quan, hiện đại và hoàn toàn miễn phí cho cộng đồng người hâm mộ thể thao tốc độ.'
-                : 'Ground Effect Hub was conceived and engineered independently by BaoBungBu, driven by a profound enthusiasm for modern Formula 1 engineering, aerodynamics, and real-time WebGL experiences. The hub is built as a 100% free, community-first tribute for motorsport enthusiasts.'}
+                : 'PODIUM — Effet de Sol was conceived and engineered independently by BaoBungBu, driven by a profound enthusiasm for modern Formula 1 engineering, aerodynamics, and real-time WebGL experiences. The hub is built as a 100% free, community-first tribute for motorsport enthusiasts.'}
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-studio-400 font-mono">
               <span className="flex items-center gap-1.5 text-f1red">
@@ -175,8 +175,8 @@ export const AboutPage: React.FC = () => {
         </div>
         <p className="text-sm text-studio-600 leading-relaxed mb-4">
           {isVi
-            ? 'Nhằm giải quyết dứt điểm các rủi ro liên quan đến bản quyền ảnh chụp từ bên thứ ba (Pinterest/báo chí), Ground Effect Hub đã và đang thay thế toàn bộ hình ảnh tay đua bằng các tác phẩm tranh poster nghệ thuật chuyển thể (Bespoke Transformative Fan Tribute Art). Mỗi poster là một tác phẩm đồ họa thể thao độc bản, kết hợp ánh sáng studio kịch tính, số hiệu và nhận diện phong cách của từng tay đua.'
-            : 'To respect intellectual property and eliminate reliance on unverified editorial wire photos, Ground Effect Hub features custom transformative fan tribute art posters for each driver. Each artwork combines high-impact typography, studio rim lighting, dynamic racing helmets, and motion-blurred cars to celebrate the sporting legends of the paddock.'}
+            ? 'Nhằm giải quyết dứt điểm các rủi ro liên quan đến bản quyền ảnh chụp từ bên thứ ba (Pinterest/báo chí), PODIUM — Effet de Sol đã và đang thay thế toàn bộ hình ảnh tay đua bằng các tác phẩm tranh poster nghệ thuật chuyển thể (Bespoke Transformative Fan Tribute Art). Mỗi poster là một tác phẩm đồ họa thể thao độc bản, kết hợp ánh sáng studio kịch tính, số hiệu và nhận diện phong cách của từng tay đua.'
+            : 'To respect intellectual property and eliminate reliance on unverified editorial wire photos, PODIUM — Effet de Sol features custom transformative fan tribute art posters for each driver. Each artwork combines high-impact typography, studio rim lighting, dynamic racing helmets, and motion-blurred cars to celebrate the sporting legends of the paddock.'}
         </p>
         <div className="flex flex-wrap gap-2 text-xs font-mono text-studio-500">
           <span className="px-2.5 py-1 rounded-md bg-studio-100 text-studio-700">
@@ -204,8 +204,8 @@ export const AboutPage: React.FC = () => {
         <div className="text-xs sm:text-sm text-studio-300 leading-relaxed space-y-4 font-mono">
           <p>
             {isVi
-              ? '1. TÍNH CHẤT PHI THƯƠNG MẠI: Ground Effect Hub là một dự án nghiên cứu công nghệ, giao lưu văn hóa và tôn vinh thể thao hoàn toàn phi thương mại (non-commercial, non-profit open fan tribute). Trang web không bán sản phẩm, không thu phí người dùng, không chạy quảng cáo thương mại và không tạo ra bất kỳ doanh thu nào.'
-              : '1. NON-COMMERCIAL STATUS: Ground Effect Hub is an independent, non-commercial, non-monetized educational showcase and technical fan tribute. The website does not sell products, charges no fees, hosts no advertisements, and generates zero commercial revenue.'}
+              ? '1. TÍNH CHẤT PHI THƯƠNG MẠI: PODIUM — Effet de Sol là một dự án nghiên cứu công nghệ, giao lưu văn hóa và tôn vinh thể thao hoàn toàn phi thương mại (non-commercial, non-profit open fan tribute). Trang web không bán sản phẩm, không thu phí người dùng, không chạy quảng cáo thương mại và không tạo ra bất kỳ doanh thu nào.'
+              : '1. NON-COMMERCIAL STATUS: PODIUM — Effet de Sol is an independent, non-commercial, non-monetized educational showcase and technical fan tribute. The website does not sell products, charges no fees, hosts no advertisements, and generates zero commercial revenue.'}
           </p>
           <p>
             {isVi

@@ -1,5 +1,5 @@
 /**
- * Tab Synchronization utility for Ground Effect Hub
+ * Tab synchronization utility for PODIUM — Effet de Sol
  * Synchronizes animations, timers, and live sessions across multiple browser tabs
  */
 

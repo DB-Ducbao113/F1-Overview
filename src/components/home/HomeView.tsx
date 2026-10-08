@@ -13,6 +13,7 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { ArrowRight, Trophy, ShieldCheck, Box } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
 import { Card3DTilt } from '../common/Card3DTilt';
+import { PodiumBrandHero } from './PodiumBrandHero';
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -63,12 +64,17 @@ export const HomeView: React.FC = () => {
 
   return (
     <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in">
-      {/* ── 0. F1 News Ticker: 36px Broadcast Marquee ── */}
+      {/* ── 0. PODIUM brand statement ── */}
+      <PodiumBrandHero />
+
+      {/* ── 0b. F1 News Ticker: 36px Broadcast Marquee ── */}
       <F1NewsTicker />
 
       <div className="space-y-16">
         {/* ── 1. Hero: Fullscreen Aerodynamic Car Stage (11 Teams) ── */}
-        <FullscreenCarStage />
+        <div id="official-grid" className="scroll-mt-16">
+          <FullscreenCarStage />
+        </div>
 
         {/* ── 1b. Live Strip: Real-time Telemetry Center Shortcut ── */}
         <HomeLiveStrip />
