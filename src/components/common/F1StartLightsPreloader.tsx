@@ -1,45 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-const PRELOADER_STORAGE_KEY = 'f1_start_lights_seen_v1';
-
 export const F1StartLightsPreloader: React.FC = () => {
   const [stage, setStage] = useState<number>(0); // 0: init, 1..5: lights on, 6: lights out, 7: unmount
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const dismiss = useCallback(() => {
-    try {
-      if (typeof sessionStorage !== 'undefined') {
-        sessionStorage.setItem(PRELOADER_STORAGE_KEY, 'true');
-      }
-    } catch {
-      // Ignore storage errors
-    }
     setStage(7);
     setTimeout(() => setIsVisible(false), 400);
   }, []);
 
   useEffect(() => {
-    // 1. Skip if already shown in this session
-    try {
-      if (
-        typeof sessionStorage !== 'undefined' &&
-        sessionStorage.getItem(PRELOADER_STORAGE_KEY) === 'true'
-      ) {
-        return;
-      }
-    } catch {
-      // Ignore
-    }
-
-    // 2. Skip if user prefers reduced motion
-    if (
+    const prefersReducedMotion =
       typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      return;
-    }
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     setIsVisible(true);
+
+    if (prefersReducedMotion) {
+      setStage(6);
+      const reducedMotionTimeout = setTimeout(dismiss, 900);
+      return () => clearTimeout(reducedMotionTimeout);
+    }
 
     // Sequence of 5 start lights
     const timeouts: any[] = [];
