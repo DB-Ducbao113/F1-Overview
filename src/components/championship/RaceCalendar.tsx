@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getCalendarBySeason } from '../../data/championship';
 import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
 import { QUALIFYING_RESULTS_2026 } from '../../data/championship/qualifyingResults2026';
+import openF1SessionResults from '../../data/championship/openF1SessionResults2026.json';
 import {
   Clock,
   MapPin,
@@ -19,7 +20,14 @@ import { PracticeClassificationModal } from './PracticeClassificationModal';
 import { QualifyingClassificationModal } from './QualifyingClassificationModal';
 import { formatDateStr, formatSessionName, toVietnamTime } from '../../utils/dateUtils';
 import { SeasonYear } from '../../types';
+import { GrandPrixQualifyingData } from '../../types/qualifying';
+import { GrandPrixPracticeData } from '../../types/practice';
 import { Card3DTilt } from '../common/Card3DTilt';
+
+const OPENF1_SESSION_RESULTS = openF1SessionResults as {
+  practice: Record<number, GrandPrixPracticeData>;
+  qualifying: Record<number, GrandPrixQualifyingData>;
+};
 
 export interface RaceCalendarProps {
   season?: SeasonYear;
@@ -79,11 +87,27 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
     }
   };
 
-  const activePracticeData =
-    is2026 && selectedPracticeRound ? PRACTICE_RESULTS_2026[selectedPracticeRound] : null;
+  const activePracticeData = (() => {
+    if (!is2026 || !selectedPracticeRound) return null;
+    const baseline = PRACTICE_RESULTS_2026[selectedPracticeRound];
+    const live = OPENF1_SESSION_RESULTS.practice[selectedPracticeRound];
+    if (!live) return baseline || null;
+    return {
+      ...(baseline || live),
+      sessions: { ...(baseline?.sessions || {}), ...live.sessions },
+    };
+  })();
 
-  const activeQualifyingData =
-    is2026 && selectedQualifyingRound ? QUALIFYING_RESULTS_2026[selectedQualifyingRound] : null;
+  const activeQualifyingData = (() => {
+    if (!is2026 || !selectedQualifyingRound) return null;
+    const baseline = QUALIFYING_RESULTS_2026[selectedQualifyingRound];
+    const live = OPENF1_SESSION_RESULTS.qualifying[selectedQualifyingRound];
+    if (!live) return baseline || null;
+    return {
+      ...(baseline || live),
+      sessions: { ...(baseline?.sessions || {}), ...live.sessions },
+    };
+  })();
 
   const handleGoToRaceResults = (round?: number, seasonYear: SeasonYear = activeSeason) => {
     setSelectedSeason(seasonYear);
@@ -156,11 +180,20 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
           const isCompleted = completedRounds.has(gp.round);
           const isCurrent = gp.status === 'current' && !isCompleted;
           const isNext = gp.round === nextRace?.round;
-          const hasPracticeData = is2026 && Boolean(PRACTICE_RESULTS_2026[gp.round]);
+          const staticPracticeData = is2026 ? PRACTICE_RESULTS_2026[gp.round] : undefined;
+          const livePracticeData = is2026 ? OPENF1_SESSION_RESULTS.practice[gp.round] : undefined;
+          const practiceDataForRound = livePracticeData
+            ? {
+                ...(staticPracticeData || livePracticeData),
+                sessions: {
+                  ...(staticPracticeData?.sessions || {}),
+                  ...livePracticeData.sessions,
+                },
+              }
+            : staticPracticeData;
+          const hasPracticeData = Boolean(practiceDataForRound);
           const finishedPracticeKeys = (['fp1', 'fp2', 'fp3'] as const).filter((key) => {
-            const session =
-              gp.sessions[key] ??
-              (is2026 ? PRACTICE_RESULTS_2026[gp.round]?.sessions[key] : undefined);
+            const session = practiceDataForRound?.sessions[key] ?? gp.sessions[key];
             return session?.status === 'finished';
           });
           const hasFinishedPractice = finishedPracticeKeys.length > 0;
@@ -291,12 +324,21 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                       ? (['fp1', 'sprintQualifying', 'sprint', 'qualifying', 'race'] as const)
                       : (['fp1', 'fp2', 'fp3', 'qualifying', 'race'] as const)
                     ).map((key) => {
-                      const practiceDataForRound = is2026
-                        ? PRACTICE_RESULTS_2026[gp.round]
-                        : undefined;
-                      const qualifyingDataForRound = is2026
+                      const staticQualifyingData = is2026
                         ? QUALIFYING_RESULTS_2026[gp.round]
                         : undefined;
+                      const liveQualifyingData = is2026
+                        ? OPENF1_SESSION_RESULTS.qualifying[gp.round]
+                        : undefined;
+                      const qualifyingDataForRound = liveQualifyingData
+                        ? {
+                            ...(staticQualifyingData || liveQualifyingData),
+                            sessions: {
+                              ...(staticQualifyingData?.sessions || {}),
+                              ...liveQualifyingData.sessions,
+                            },
+                          }
+                        : staticQualifyingData;
 
                       const isPracticeSession = key === 'fp1' || key === 'fp2' || key === 'fp3';
                       const isQualifyingSession =

@@ -15,7 +15,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "sync:2026": "node scripts/update-2026-data.js"
+    "sync:2026": "node scripts/update-2026-data.js",
+    "sync:sessions": "node scripts/sync-openf1-sessions.js"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",

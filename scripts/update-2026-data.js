@@ -381,6 +381,7 @@ async function run() {
   // ═══════════════════════════════════════════════════════════════════════════
   const standingsFile = path.join(__dirname, '..', 'src', 'data', 'championship', 'standings.ts');
   let standingsContent = fs.readFileSync(standingsFile, 'utf-8');
+  const originalStandingsContent = standingsContent;
 
   // Replace DRIVER_STANDINGS_2026
   const driverStart = standingsContent.indexOf(
@@ -441,12 +442,28 @@ async function run() {
   // ═══════════════════════════════════════════════════════════════════════════
   const resultsFile = path.join(__dirname, '..', 'src', 'data', 'championship', 'results.ts');
   let resultsContent = fs.readFileSync(resultsFile, 'utf-8');
+  const originalResultsContent = resultsContent;
 
   const rr26Start = resultsContent.indexOf('export const RACE_RESULTS_2026: RaceResult[] = [');
   const rr26End = resultsContent.indexOf('];', rr26Start) + 2;
   const newRaceResults = `export const RACE_RESULTS_2026: RaceResult[] = [\n${generateRaceResults(races)}\n];`;
   resultsContent =
     resultsContent.slice(0, rr26Start) + newRaceResults + resultsContent.slice(rr26End);
+
+  // Timestamps alone must not trigger a commit and Vercel deployment.
+  const withoutStandingsTimestamp = (content) =>
+    content.replace(/lastUpdated: '[^']*'/, "lastUpdated: '<timestamp>'");
+  if (
+    withoutStandingsTimestamp(standingsContent) ===
+    withoutStandingsTimestamp(originalStandingsContent)
+  ) {
+    standingsContent = originalStandingsContent;
+  }
+  const withoutResultTimestamps = (content) =>
+    content.replace(/dataUpdatedAt: '[^']*'/g, "dataUpdatedAt: '<timestamp>'");
+  if (withoutResultTimestamps(resultsContent) === withoutResultTimestamps(originalResultsContent)) {
+    resultsContent = originalResultsContent;
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // UPDATE standingsEngine.ts — change round cutoff
