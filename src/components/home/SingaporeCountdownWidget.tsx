@@ -80,8 +80,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const [now, setNow] = useState<number>(() => Date.now());
   const { data: liveSessionData } = useLiveSession();
 
-  // Real schedule for Singapore GP 2026 (UTC+8 / SGT)
-  // 09 - 11 Oct 2026
+  // Official Singapore schedule stored with its source offset; the UI always renders UTC+7.
   const sessions: SessionTiming[] = useMemo(
     () => [
       {
@@ -267,7 +266,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
               </span>
               <span className="text-studio-300">|</span>
               <span className="text-studio-500 font-mono text-[11px]">
-                {lang === 'vi' ? 'Giờ của bạn · ICT (UTC+7)' : 'Your time · ICT (UTC+7)'}
+                {lang === 'vi' ? 'Giờ Việt Nam (UTC+7)' : 'Vietnam time (UTC+7)'}
               </span>
             </div>
 
@@ -447,7 +446,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                   <span
                     className={`text-[10px] font-mono ${isRace ? 'text-studio-300' : 'text-studio-500'}`}
                   >
-                    {session.local.time} ICT
+                    {session.local.time} {lang === 'vi' ? 'giờ VN' : 'UTC+7'}
                   </span>
                 </div>
               );

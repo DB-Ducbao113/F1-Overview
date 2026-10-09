@@ -456,7 +456,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                                         : vn.dayShift === -1
                                           ? ' (-1 ngày)'
                                           : '';
-                                    return `${vn.time} (giờ VN)${dayLabel}`;
+                                    return `${vn.time} giờ Việt Nam${dayLabel}`;
                                   })()
                                 : session.timeStr}
                             </span>

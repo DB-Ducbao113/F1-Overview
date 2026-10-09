@@ -13,8 +13,8 @@ export const F1NewsTicker: React.FC = () => {
       badge: lang === 'vi' ? 'SẮP DIỄN RA' : 'NEXT UP',
       text:
         lang === 'vi'
-          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 15:30 ICT (16:30 SGT)'
-          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 16:30 SGT (15:30 ICT)',
+          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 15:30 GIỜ VIỆT NAM'
+          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 15:30 VIETNAM TIME',
       link: '/season/2026?tab=calendar',
     },
     {
