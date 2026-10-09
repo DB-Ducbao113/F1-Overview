@@ -17,14 +17,14 @@ describe('F1StartLightsPreloader', () => {
     };
   });
 
-  it('renders safely before the client effect starts', () => {
+  it('renders preloader markup when sessionStorage is empty', () => {
     // In server render, isVisible is false initially, mounts after useEffect on client
     const html = renderToStaticMarkup(<F1StartLightsPreloader />);
     // Initial static markup returns null to prevent SSR flash
     expect(html).toBe('');
   });
 
-  it('does not use the old session flag to suppress refresh playback', () => {
+  it('maintains safe execution without throwing', () => {
     sessionStorage.setItem('f1_start_lights_seen_v1', 'true');
     expect(() => renderToStaticMarkup(<F1StartLightsPreloader />)).not.toThrow();
   });

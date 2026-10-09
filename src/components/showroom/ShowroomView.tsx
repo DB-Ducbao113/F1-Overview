@@ -298,7 +298,7 @@ export const ShowroomView: React.FC = () => {
           <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
         </div>
 
-        {/* Top-left floating PODIUM team badge */}
+        {/* Top Left Floating Team Badge with Official Logo */}
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
           <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
             <div className="flex items-center gap-2">

@@ -135,4 +135,26 @@ const RAW_TEAMS_DATA: Record<TeamId, F1Team> = {
   },
 };
 
-export const TEAMS_DATA: Record<TeamId, F1Team> = RAW_TEAMS_DATA;
+const TEAM_IMAGES: Record<TeamId, string> = {
+  ferrari: '/images/teams/sf24.webp',
+  mclaren: '/images/teams/mcl38.webp',
+  redbull: '/images/teams/rb20.webp',
+  mercedes: '/images/teams/w15.webp',
+  astonmartin: '/images/teams/astonmartin.webp',
+  alpine: '/images/teams/alpine.webp',
+  racingbulls: '/images/teams/racingbulls.webp',
+  haas: '/images/teams/haas.webp',
+  williams: '/images/teams/williams.webp',
+  audi: '/images/teams/audi.webp',
+  cadillac: '/images/teams/cadillac.webp',
+};
+
+export const TEAMS_DATA: Record<TeamId, F1Team> = Object.fromEntries(
+  Object.entries(RAW_TEAMS_DATA).map(([id, team]) => [
+    id as TeamId,
+    {
+      ...team,
+      imageUrl: TEAM_IMAGES[id as TeamId] || `/images/teams/${id}.webp`,
+    },
+  ]),
+) as Record<TeamId, F1Team>;

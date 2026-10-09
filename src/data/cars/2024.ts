@@ -34,8 +34,8 @@ export const CARS_2024: CarSpec[] = [
       'Cỗ máy vô địch thế giới 2024 với thiết kế khí động học cách mạng Overbite inlet và kiểm soát luồng khí tinh tế của Adrian Newey.',
     descriptionEn:
       'The 2024 Constructors and Drivers World Championship machine featuring revolutionary overbite air intakes and masterful underfloor management.',
-    heroImage: '/images/podium-diffuser-hero-v2.webp',
-    studioImage: '/images/podium-diffuser-hero-v2.webp',
+    heroImage: '/images/teams/rb20.webp',
+    studioImage: '/images/teams/rb20.webp',
     has3DModel: true,
     model3DId: 'rb20',
   },
@@ -71,8 +71,8 @@ export const CARS_2024: CarSpec[] = [
       'Chiếc xe mang lại chức Vô địch Đội đua Thế giới 2024 cho McLaren với sự cân bằng hoàn hảo và tốc độ phát triển nâng cấp vượt bậc.',
     descriptionEn:
       'The car that secured the 2024 Constructors World Championship for McLaren through relentless development and aerodynamic balance.',
-    heroImage: '/images/podium-diffuser-hero-v2.webp',
-    studioImage: '/images/podium-diffuser-hero-v2.webp',
+    heroImage: '/images/teams/mcl38.webp',
+    studioImage: '/images/teams/mcl38.webp',
     has3DModel: true,
     model3DId: 'mcl38',
   },
@@ -109,8 +109,8 @@ export const CARS_2024: CarSpec[] = [
       'SF-24 hồi sinh phong độ ấn tượng của Ferrari tại Monza, Monaco và Austin với khả năng giữ lốp và độ đầm chắc khi vào cua gắt.',
     descriptionEn:
       'The SF-24 delivered iconic victories at Monaco and Monza, offering exceptional ride stability and superior tire management.',
-    heroImage: '/images/podium-diffuser-hero-v2.webp',
-    studioImage: '/images/podium-diffuser-hero-v2.webp',
+    heroImage: '/images/teams/sf24.webp',
+    studioImage: '/images/teams/sf24.webp',
     has3DModel: true,
     model3DId: 'sf24',
   },
@@ -147,8 +147,8 @@ export const CARS_2024: CarSpec[] = [
       'Bước ngoặt kỹ thuật của Mercedes với việc tái thiết lập khung gầm và hệ thống treo, giành chiến thắng lịch sử tại Silverstone và Spa.',
     descriptionEn:
       'A pivotal technical reset for Mercedes, ditching previous experimental concepts in favor of aerodynamic predictability.',
-    heroImage: '/images/podium-diffuser-hero-v2.webp',
-    studioImage: '/images/podium-diffuser-hero-v2.webp',
+    heroImage: '/images/teams/w15.webp',
+    studioImage: '/images/teams/w15.webp',
     has3DModel: true,
     model3DId: 'w15',
   },

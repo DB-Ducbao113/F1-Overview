@@ -186,7 +186,7 @@ export function drawMercedesStarfield(
   ctx.restore();
 }
 
-/** Original neon-green roundel decal */
+/** Official WhatsApp Neon Green Roundel Logo */
 export function drawWhatsAppLogo(
   ctx: CanvasRenderingContext2D,
   x: number,

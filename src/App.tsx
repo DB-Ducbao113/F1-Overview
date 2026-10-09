@@ -20,7 +20,6 @@ import { getCompleteRaceClassification } from './data/championship/raceClassific
 
 import { F1SpeedStream } from './components/common/F1SpeedStream';
 import { F1PageTransition } from './components/common/F1PageTransition';
-import { ConsentManager } from './components/privacy/ConsentManager';
 
 const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
@@ -56,12 +55,6 @@ const DriversDirectoryPage = lazy(() =>
 );
 const AboutPage = lazy(() =>
   import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
-);
-const PrivacyPolicyPage = lazy(() =>
-  import('./components/pages/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })),
-);
-const CookiePolicyPage = lazy(() =>
-  import('./components/pages/CookiePolicyPage').then((m) => ({ default: m.CookiePolicyPage })),
 );
 
 let lastAutoRaceSyncAt = 0;
@@ -232,15 +225,12 @@ export const App: React.FC = () => {
               <Route path="/teams" element={<TeamsDirectoryPage />} />
               <Route path="/drivers" element={<DriversDirectoryPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/privacy" element={<PrivacyPolicyPage />} />
-              <Route path="/cookies" element={<CookiePolicyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </F1PageTransition>
       </main>
       <Footer />
-      <ConsentManager />
     </div>
   );
 };

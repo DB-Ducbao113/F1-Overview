@@ -59,7 +59,7 @@ export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
                     : undefined
                 }
               >
-                {/* Original PODIUM team badge */}
+                {/* Official Team Logo Emblem */}
                 <ConstructorLogo teamId={id} size="sm" className="w-4 h-4 shrink-0" />
 
                 {/* Color swatch circle with split accent */}

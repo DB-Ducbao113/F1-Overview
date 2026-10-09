@@ -1,26 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+const PRELOADER_STORAGE_KEY = 'f1_start_lights_seen_v1';
+
 export const F1StartLightsPreloader: React.FC = () => {
   const [stage, setStage] = useState<number>(0); // 0: init, 1..5: lights on, 6: lights out, 7: unmount
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const dismiss = useCallback(() => {
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(PRELOADER_STORAGE_KEY, 'true');
+      }
+    } catch {
+      // Ignore storage errors
+    }
     setStage(7);
     setTimeout(() => setIsVisible(false), 400);
   }, []);
 
   useEffect(() => {
-    const prefersReducedMotion =
+    // 1. Skip if already shown in this session
+    try {
+      if (
+        typeof sessionStorage !== 'undefined' &&
+        sessionStorage.getItem(PRELOADER_STORAGE_KEY) === 'true'
+      ) {
+        return;
+      }
+    } catch {
+      // Ignore
+    }
+
+    // 2. Skip if user prefers reduced motion
+    if (
       typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
 
     setIsVisible(true);
-
-    if (prefersReducedMotion) {
-      setStage(6);
-      const reducedMotionTimeout = setTimeout(dismiss, 900);
-      return () => clearTimeout(reducedMotionTimeout);
-    }
 
     // Sequence of 5 start lights
     const timeouts: any[] = [];
@@ -59,7 +78,7 @@ export const F1StartLightsPreloader: React.FC = () => {
   return (
     <div
       role="dialog"
-      aria-label="PODIUM start lights"
+      aria-label="F1 Start Lights Preloader"
       className={`fixed inset-0 z-[100] bg-[#050508] flex flex-col items-center justify-center select-none transition-all duration-500 ${
         isFading ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
@@ -75,11 +94,11 @@ export const F1StartLightsPreloader: React.FC = () => {
 
       {/* Main Gantry Pod */}
       <div className="flex flex-col items-center space-y-8 max-w-md w-full px-4">
-        {/* PODIUM-owned start sequence */}
+        {/* FIA Official Tag */}
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
           <span className="font-display font-black text-xs sm:text-sm tracking-widest text-studio-400 uppercase">
-            PODIUM · RACE START SEQUENCE
+            FIA Formula 1 World Championship
           </span>
         </div>
 
