@@ -657,6 +657,42 @@ canvas.r3f {
   animation: f1DepthEnter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes lightsOutJolt {
+  0% {
+    opacity: 0;
+    transform: translate3d(-12px, 0, 0) scale(0.86) skewX(-8deg);
+  }
+  14% {
+    opacity: 1;
+    transform: translate3d(10px, -2px, 0) scale(1.14) skewX(6deg);
+  }
+  28% {
+    transform: translate3d(-8px, 2px, 0) scale(0.96) skewX(-4deg);
+  }
+  42% {
+    transform: translate3d(7px, -1px, 0) scale(1.08) skewX(3deg);
+  }
+  57% {
+    transform: translate3d(-5px, 1px, 0) scale(0.99) skewX(-2deg);
+  }
+  72% {
+    transform: translate3d(3px, 0, 0) scale(1.04) skewX(1deg);
+  }
+  86% {
+    transform: translate3d(-2px, 0, 0) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-lights-out-jolt {
+  animation: lightsOutJolt 0.58s steps(1, end) both;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
 /* ── 3D Interactive Card & Button Hover Depth ── */
 .hover-depth-3d {
   transition:
@@ -683,7 +719,8 @@ canvas.r3f {
   .animate-score-flicker,
   .animate-f1-speed-wipe,
   .animate-f1-flash-tint,
-  .animate-f1-depth-enter {
+  .animate-f1-depth-enter,
+  .animate-lights-out-jolt {
     animation: none !important;
     transition: none !important;
   }

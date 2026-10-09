@@ -94,7 +94,7 @@ export const F1StartLightsPreloader: React.FC = () => {
 
         <div className="flex h-10 items-center justify-center text-center" aria-live="polite">
           {isLightsOut ? (
-            <span className="font-display animate-pulse text-lg font-black uppercase italic tracking-wider text-white motion-reduce:animate-none sm:text-xl">
+            <span className="animate-lights-out-jolt font-display text-lg font-black uppercase italic tracking-wider text-white sm:text-xl">
               IT&apos;S LIGHTS OUT AND AWAY WE GO! 🏁
             </span>
           ) : stage > 0 && stage <= 5 ? (
