@@ -93,6 +93,32 @@ const DRIVER_ID_MAP = {
   arvid_lindblad: 'lindblad',
 };
 
+// The 2026 grid has 22 race seats. Reserve/test drivers must not leak into the directory.
+const ACTIVE_2026_DRIVER_IDS = new Set([
+  'antonelli',
+  'russell',
+  'hamilton',
+  'leclerc',
+  'norris',
+  'verstappen',
+  'piastri',
+  'hadjar',
+  'lawson',
+  'lindblad',
+  'gasly',
+  'colapinto',
+  'bearman',
+  'bortoleto',
+  'hulkenberg',
+  'ocon',
+  'alonso',
+  'sainz',
+  'albon',
+  'stroll',
+  'bottas',
+  'perez',
+]);
+
 function mapDriverId(jolpicaId) {
   return DRIVER_ID_MAP[jolpicaId] || jolpicaId;
 }
@@ -188,16 +214,18 @@ async function fetchAllRaces(endpoint) {
 
 // ─── Generate standings.ts content for 2026 section ────────────────────────
 function generateDriverStandings(driverStandings, driverPodiums = new Map()) {
-  const lines = driverStandings.map((d) => {
-    const driverId = mapDriverId(d.Driver.driverId);
-    const code = d.Driver.code || d.Driver.familyName.slice(0, 3).toUpperCase();
-    const name = `${d.Driver.givenName} ${d.Driver.familyName}`;
-    const teamId = mapTeamId(d.Constructors[0]?.constructorId);
-    const teamName = d.Constructors[0]?.name || 'Constructor';
-    const flag = DRIVER_FLAGS[d.Driver.driverId] || '🏁';
-    const podiums = driverPodiums.get(driverId) || 0;
-    return `  { rank: ${d.position}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: ${podiums}, countryFlag: '${flag}' },`;
-  });
+  const lines = driverStandings
+    .filter((d) => ACTIVE_2026_DRIVER_IDS.has(mapDriverId(d.Driver.driverId)))
+    .map((d, index) => {
+      const driverId = mapDriverId(d.Driver.driverId);
+      const code = d.Driver.code || d.Driver.familyName.slice(0, 3).toUpperCase();
+      const name = `${d.Driver.givenName} ${d.Driver.familyName}`;
+      const teamId = mapTeamId(d.Constructors[0]?.constructorId);
+      const teamName = d.Constructors[0]?.name || 'Constructor';
+      const flag = DRIVER_FLAGS[d.Driver.driverId] || '🏁';
+      const podiums = driverPodiums.get(driverId) || 0;
+      return `  { rank: ${index + 1}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: ${podiums}, countryFlag: '${flag}' },`;
+    });
   return lines.join('\n');
 }
 
@@ -359,6 +387,29 @@ async function run() {
     'export const DRIVER_STANDINGS_2026: DriverStanding[] = [',
   );
   const driverEnd = standingsContent.indexOf('];', driverStart) + 2;
+  const existingDriverSection = standingsContent.slice(driverStart, driverEnd);
+  const constructorStart = standingsContent.indexOf(
+    'export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [',
+  );
+  const constructorEnd = standingsContent.indexOf('];', constructorStart) + 2;
+  const existingConstructorSection = standingsContent.slice(constructorStart, constructorEnd);
+
+  // Jolpica can publish championship totals before all race classifications are available.
+  // In that partial state, preserve the last verified podium totals instead of writing zeros.
+  if (races.length < Number(roundAfter)) {
+    for (const match of existingDriverSection.matchAll(
+      /driverId: '([^']+)'[^\n]*podiums: (\d+)/g,
+    )) {
+      if (!driverPodiums.has(match[1])) driverPodiums.set(match[1], Number(match[2]));
+    }
+    for (const match of existingConstructorSection.matchAll(
+      /teamId: '([^']+)'[^\n]*podiums: (\d+)/g,
+    )) {
+      if (!constructorPodiums.has(match[1])) constructorPodiums.set(match[1], Number(match[2]));
+    }
+    console.log('  ⚠ Race classifications are incomplete; preserving verified podium totals.');
+  }
+
   const newDriverStandings = `export const DRIVER_STANDINGS_2026: DriverStanding[] = [\n${generateDriverStandings(driverStandings, driverPodiums)}\n];`;
   standingsContent =
     standingsContent.slice(0, driverStart) + newDriverStandings + standingsContent.slice(driverEnd);

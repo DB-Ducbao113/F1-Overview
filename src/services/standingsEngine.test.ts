@@ -4,6 +4,14 @@ import { recalculateStandingsFromRaces } from './standingsEngine';
 import { DetailedRaceResult } from '../types';
 
 describe('2026 Standings and Podiums Integrity', () => {
+  it('contains exactly the 22 active 2026 race seats', () => {
+    expect(DRIVER_STANDINGS_2026).toHaveLength(22);
+    expect(DRIVER_STANDINGS_2026.some((driver) => driver.driverId === 'tsunoda')).toBe(false);
+    expect(DRIVER_STANDINGS_2026.map((driver) => driver.rank)).toEqual(
+      Array.from({ length: 22 }, (_, index) => index + 1),
+    );
+  });
+
   it('should have positive podium counts for top drivers in 2026', () => {
     const antonelli = DRIVER_STANDINGS_2026.find((d) => d.driverId === 'antonelli');
     const russell = DRIVER_STANDINGS_2026.find((d) => d.driverId === 'russell');

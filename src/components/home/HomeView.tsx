@@ -240,7 +240,7 @@ export const HomeView: React.FC = () => {
                       <AnimatedStandingsRow
                         rank={c.rank}
                         name={c.teamName}
-                        subName={lang === 'vi' ? `Động cơ ${c.engine}` : `${c.engine} Power Unit`}
+                        subName=""
                         teamId={c.teamId}
                         teamColor={teamColor}
                         points={c.points}

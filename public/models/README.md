@@ -6,7 +6,7 @@
 
 ## Provenance required before public release
 
-The original runtime geometry is an exact Git blob match for `c42.glb` from:
+The source geometry before optimization is an exact Git blob match for `c42.glb` from:
 
 - Source: https://github.com/markste-in/c42
 - Author/maintainer: Mark Stein (`markste-in`, `mail@markste.in`)

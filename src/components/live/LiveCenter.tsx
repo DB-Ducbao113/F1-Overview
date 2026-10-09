@@ -176,8 +176,8 @@ export const LiveCenter: React.FC = () => {
               country_name: 'Singapore',
               country_code: 'SGP',
               location: 'Marina Bay',
-              date_start: '2026-10-09T09:30:00.000Z',
-              date_end: '2026-10-09T10:30:00.000Z',
+              date_start: '2026-10-09T08:30:00.000Z',
+              date_end: '2026-10-09T09:30:00.000Z',
               gmt_offset: '+08:00',
               year: 2026,
             }

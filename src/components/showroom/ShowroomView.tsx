@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, Environment } from '@react-three/drei';
+import { ContactShadows } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -239,7 +239,7 @@ export const ShowroomView: React.FC = () => {
                   {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
                 </h1>
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
-                  2026 SPEC
+                  {lang === 'vi' ? 'MẪU THAM CHIẾU' : 'REFERENCE MODEL'}
                 </span>
               </div>
             </div>
@@ -345,11 +345,11 @@ export const ShowroomView: React.FC = () => {
         >
           <Canvas
             shadows
-            dpr={[1, 1.5]}
+            dpr={[1, 1.25]}
             frameloop={isCanvasActive ? 'always' : 'never'}
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
             gl={{
-              antialias: true,
+              antialias: false,
               alpha: true,
               powerPreference: 'high-performance',
               toneMappingExposure: 1.05,
@@ -357,9 +357,6 @@ export const ShowroomView: React.FC = () => {
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
-            {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-            <Environment preset="city" />
-
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 

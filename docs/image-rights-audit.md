@@ -4,7 +4,7 @@ Status: **Cleaned**. All unverified Pinterest images previously located under `p
 
 The driver profiles now utilize native procedural SVG badges, official constructor insignias, and racing number typography instead of unverified photographic assets.
 
-The 3D model `public/models/c42.glb` remains in use as the base procedural showcase model.
+The optimized 3D model `public/models/c42.v2.glb` remains in use as the base procedural showcase model.
 
 | Directory / File Category      | Status       | Action Taken                                                             |
 | ------------------------------ | ------------ | ------------------------------------------------------------------------ |
@@ -13,4 +13,4 @@ The 3D model `public/models/c42.glb` remains in use as the base procedural showc
 | `public/images/teams/*`        | **Retained** | Low-res livery teaser thumbnails for team directory.                     |
 | `public/images/gallery/*`      | **Retained** | Action photography referenced in editorial gallery view.                 |
 | `public/images/og-preview.jpg` | **Verified** | Bespoke OpenGraph social preview asset.                                  |
-| `public/models/c42.glb`        | **Retained** | Real-time WebGL GLTF 3D vehicle chassis model.                           |
+| `public/models/c42.v2.glb`     | **Retained** | Meshopt-compressed real-time GLTF vehicle chassis model.                 |

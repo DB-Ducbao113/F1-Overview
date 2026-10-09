@@ -68,7 +68,7 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
 
   it('ensures every sprint round has full 5 sessions (FP1, Sprint Quali, Sprint, Qualifying, Race)', () => {
     const sprintRounds = CALENDAR_2026.filter((gp) => gp.hasSprint);
-    expect(sprintRounds.length).toBe(9);
+    expect(sprintRounds.length).toBe(6);
 
     sprintRounds.forEach((gp) => {
       expect(gp.sessions.fp1).toBeDefined();
@@ -77,6 +77,16 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
       expect(gp.sessions.qualifying).toBeDefined();
       expect(gp.sessions.race).toBeDefined();
     });
+  });
+
+  it('keeps Singapore round 17 as a complete sprint weekend', () => {
+    const singapore = CALENDAR_2026.find((gp) => gp.round === 17)!;
+    expect(singapore.hasSprint).toBe(true);
+    expect(singapore.sessions.fp1.timeStr).toBe('16:30');
+    expect(singapore.sessions.sprintQualifying?.timeStr).toBe('20:30');
+    expect(singapore.sessions.sprint?.timeStr).toBe('17:00');
+    expect(singapore.sessions.qualifying.timeStr).toBe('21:00');
+    expect(singapore.sessions.race.timeStr).toBe('20:00');
   });
 
   it('verifies round 1 (Albert Park) has all 3 practice sessions properly configured', () => {
@@ -90,4 +100,3 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
     expect(r1.sessions.fp3?.status).toBe('finished');
   });
 });
-

@@ -94,7 +94,7 @@ const POSTER_CARS: PosterCar[] = [
     watermark: 'RACING BULLS',
     color: '#1634cb',
     imageUrl: '/images/teams/racingbulls.webp',
-    drivers: 'Liam Lawson #30 · Arvid Lindblad #3',
+    drivers: 'Liam Lawson #30 · Arvid Lindblad #41',
   },
   {
     id: 'vf25',
@@ -315,8 +315,8 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
             <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
             <span>
               {lang === 'vi'
-                ? 'F1 2026 GRID · 11 ĐỘI ĐUA CHÍNH THỨC'
-                : 'F1 2026 GRID · 11 OFFICIAL CONSTRUCTORS'}
+                ? '11 ĐỘI ĐUA 2026 · HÌNH ẢNH LƯU TRỮ'
+                : '11 TEAMS FOR 2026 · ARCHIVE IMAGERY'}
             </span>
           </div>
 

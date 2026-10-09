@@ -53,7 +53,6 @@ export const LOCKED_DRIVERS: Record<string, { teamId: TeamId; teamName: string }
   hadjar: { teamId: 'redbull', teamName: 'Red Bull' },
   lawson: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
   lindblad: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
-  tsunoda: { teamId: 'racingbulls', teamName: 'RB F1 Team' },
   gasly: { teamId: 'alpine', teamName: 'Alpine F1 Team' },
   colapinto: { teamId: 'alpine', teamName: 'Alpine F1 Team' },
   bearman: { teamId: 'haas', teamName: 'Haas F1 Team' },

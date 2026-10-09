@@ -16,22 +16,22 @@ const SESSION_SCHEDULE_OVERRIDES: Record<
   { date_start: string; date_end: string; session_name?: string }
 > = {
   11378: {
-    // Singapore GP 2026 FP1: Fri 09 Oct 17:30 SGT (UTC+8) -> 09:30 UTC
-    date_start: '2026-10-09T09:30:00.000Z',
-    date_end: '2026-10-09T10:30:00.000Z',
+    // Singapore GP 2026 FP1: Fri 09 Oct 16:30 SGT (15:30 ICT)
+    date_start: '2026-10-09T08:30:00.000Z',
+    date_end: '2026-10-09T09:30:00.000Z',
     session_name: 'Practice 1',
   },
   11379: {
-    // Singapore GP 2026 FP2: Fri 09 Oct 21:00 SGT (UTC+8) -> 13:00 UTC
-    date_start: '2026-10-09T13:00:00.000Z',
-    date_end: '2026-10-09T14:00:00.000Z',
-    session_name: 'Practice 2',
+    // Sprint Qualifying: Fri 09 Oct 20:30 SGT (19:30 ICT)
+    date_start: '2026-10-09T12:30:00.000Z',
+    date_end: '2026-10-09T13:14:00.000Z',
+    session_name: 'Sprint Qualifying',
   },
   11383: {
-    // Singapore GP 2026 FP3: Sat 10 Oct 17:30 SGT (UTC+8) -> 09:30 UTC
-    date_start: '2026-10-10T09:30:00.000Z',
-    date_end: '2026-10-10T10:30:00.000Z',
-    session_name: 'Practice 3',
+    // Sprint: Sat 10 Oct 17:00 SGT (16:00 ICT)
+    date_start: '2026-10-10T09:00:00.000Z',
+    date_end: '2026-10-10T10:00:00.000Z',
+    session_name: 'Sprint',
   },
   11384: {
     // Singapore GP 2026 Qualifying: Sat 10 Oct 21:00 SGT (UTC+8) -> 13:00 UTC
@@ -149,7 +149,7 @@ export default async function handler(req: any, res: any) {
     res.setHeader('X-Cache', 'MISS');
     return res.status(200).json(payload);
   } catch {
-    const isUpcomingSingapore = nowTs < new Date('2026-10-09T09:30:00.000Z').getTime();
+    const isUpcomingSingapore = nowTs < new Date('2026-10-09T08:30:00.000Z').getTime();
     const fallbackPayload = isUpcomingSingapore
       ? {
           state: 'upcoming',
@@ -163,8 +163,8 @@ export default async function handler(req: any, res: any) {
             country_name: 'Singapore',
             country_code: 'SGP',
             location: 'Marina Bay',
-            date_start: '2026-10-09T09:30:00.000Z',
-            date_end: '2026-10-09T10:30:00.000Z',
+            date_start: '2026-10-09T08:30:00.000Z',
+            date_end: '2026-10-09T09:30:00.000Z',
             gmt_offset: '08:00:00',
             year: 2026,
           },

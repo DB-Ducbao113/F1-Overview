@@ -20,6 +20,30 @@ interface SessionTiming {
   endIso: string;
 }
 
+const ICT_DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+function formatIctSession(startIso: string, lang: 'vi' | 'en') {
+  const date = new Date(startIso);
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Bangkok',
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value || '';
+  const ictDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+
+  return {
+    day: lang === 'vi' ? ICT_DAY_LABELS[ictDate.getDay()] : value('weekday'),
+    date: `${value('day')}/${value('month')}`,
+    time: `${value('hour')}:${value('minute')}`,
+  };
+}
+
 // Single sliding digit component with zero layout shift
 const AnimatedDigit: React.FC<{ digit: string }> = ({ digit }) => {
   return (
@@ -184,6 +208,10 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const seconds = totalSecs % 60;
 
   const isLive = state === 'live';
+  const sessionCards = sessions.map((session) => ({
+    ...session,
+    local: formatIctSession(session.startIso, lang),
+  }));
 
   return (
     <section className="page-container select-none">
@@ -239,7 +267,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
               </span>
               <span className="text-studio-300">|</span>
               <span className="text-studio-500 font-mono text-[11px]">
-                {lang === 'vi' ? 'Giờ Singapore (UTC+8)' : 'Singapore Time (UTC+8)'}
+                {lang === 'vi' ? 'Giờ của bạn · ICT (UTC+7)' : 'Your time · ICT (UTC+7)'}
               </span>
             </div>
 
@@ -380,48 +408,50 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
         {/* ── BOTTOM ROW: Weekend Sessions Cards (FP1, Sprint Qualifying, Sprint, Quali, Race) ── */}
         <div className="pt-4 border-t border-studio-100 flex flex-wrap items-center justify-between gap-3 pl-2">
           <div className="flex items-center gap-2.5 flex-wrap">
-            {/* FP1 */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">FP1</span>
-              <span className="text-xs font-bold text-studio-900 block">09 Oct</span>
-              <span className="text-[10px] text-studio-500 font-mono">16:30 SGT</span>
-            </div>
-
-            {/* Sprint Qualifying */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-studio-400 block">
-                {lang === 'vi' ? 'S-Quali' : 'S-Quali'}
-              </span>
-              <span className="text-xs font-bold text-studio-900 block">09 Oct</span>
-              <span className="text-[10px] text-studio-500 font-mono">20:30 SGT</span>
-            </div>
-
-            {/* Sprint Race */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-amber-600 block">
-                {lang === 'vi' ? 'Sprint' : 'Sprint'}
-              </span>
-              <span className="text-xs font-bold text-studio-900 block">10 Oct</span>
-              <span className="text-[10px] font-bold text-amber-600 font-mono">17:00 SGT</span>
-            </div>
-
-            {/* Qualifying */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[85px] sm:min-w-[95px]">
-              <span className="text-[10px] uppercase font-bold text-f1red block">
-                {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
-              </span>
-              <span className="text-xs font-bold text-studio-900 block">10 Oct</span>
-              <span className="text-[10px] font-bold text-f1red font-mono">21:00 SGT</span>
-            </div>
-
-            {/* Grand Prix Race */}
-            <div className="p-2.5 sm:p-3 rounded-xl bg-studio-900 text-white text-center min-w-[95px] sm:min-w-[105px] shadow-sm">
-              <span className="text-[10px] uppercase font-bold text-amber-400 block">
-                Grand Prix
-              </span>
-              <span className="text-xs font-bold text-white block">11 Oct</span>
-              <span className="text-[10px] text-studio-300 font-mono">20:00 SGT</span>
-            </div>
+            {sessionCards.map((session) => {
+              const label =
+                session.id === 'fp1'
+                  ? 'FP1'
+                  : session.id === 'sprintQualifying'
+                    ? 'Sprint Quali'
+                    : session.id === 'sprint'
+                      ? 'Sprint'
+                      : session.id === 'qualifying'
+                        ? lang === 'vi'
+                          ? 'Phân hạng'
+                          : 'Qualifying'
+                        : 'Grand Prix';
+              const isRace = session.id === 'race';
+              const isSprint = session.id === 'sprint';
+              return (
+                <div
+                  key={session.id}
+                  className={`p-2.5 sm:p-3 rounded-xl border text-center min-w-[95px] sm:min-w-[105px] ${
+                    isRace
+                      ? 'bg-studio-900 border-studio-900 text-white shadow-sm'
+                      : 'bg-studio-50 border-studio-200'
+                  }`}
+                >
+                  <span
+                    className={`text-[10px] uppercase font-bold block ${
+                      isRace ? 'text-amber-400' : isSprint ? 'text-amber-600' : 'text-studio-400'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                  <span
+                    className={`text-xs font-bold block ${isRace ? 'text-white' : 'text-studio-900'}`}
+                  >
+                    {session.local.day} · {session.local.date}
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono ${isRace ? 'text-studio-300' : 'text-studio-500'}`}
+                  >
+                    {session.local.time} ICT
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Full Schedule Link */}

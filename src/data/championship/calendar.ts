@@ -443,7 +443,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     dates: '23 – 25 Oct 2026',
     season: 2026,
     status: 'upcoming',
-    hasSprint: true,
+    hasSprint: false,
     venueUtcOffset: -5, // CDT (UTC-5)
     laps: 56,
     circuitLengthKm: 5.513,
@@ -451,8 +451,8 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     lapRecord: { time: '1:36.169', driver: 'Charles Leclerc', year: 2019 },
     sessions: {
       fp1: { name: 'Practice 1', dateStr: 'Fri 23 Oct', timeStr: '12:30', status: 'scheduled' },
-      sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 23 Oct', timeStr: '16:30', status: 'scheduled' },
-      sprint: { name: 'Sprint Race', dateStr: 'Sat 24 Oct', timeStr: '13:00', status: 'scheduled' },
+      fp2: { name: 'Practice 2', dateStr: 'Fri 23 Oct', timeStr: '16:30', status: 'scheduled' },
+      fp3: { name: 'Practice 3', dateStr: 'Sat 24 Oct', timeStr: '13:00', status: 'scheduled' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 24 Oct', timeStr: '17:00', status: 'scheduled' },
       race: { name: 'Race', dateStr: 'Sun 25 Oct', timeStr: '14:00', status: 'scheduled' },
     },
@@ -495,7 +495,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     dates: '06 – 08 Nov 2026',
     season: 2026,
     status: 'upcoming',
-    hasSprint: true,
+    hasSprint: false,
     venueUtcOffset: -3, // BRT
     laps: 71,
     circuitLengthKm: 4.309,
@@ -503,8 +503,8 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     lapRecord: { time: '1:10.540', driver: 'Valtteri Bottas', year: 2018 },
     sessions: {
       fp1: { name: 'Practice 1', dateStr: 'Fri 06 Nov', timeStr: '11:30', status: 'scheduled' },
-      sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 06 Nov', timeStr: '15:30', status: 'scheduled' },
-      sprint: { name: 'Sprint Race', dateStr: 'Sat 07 Nov', timeStr: '11:00', status: 'scheduled' },
+      fp2: { name: 'Practice 2', dateStr: 'Fri 06 Nov', timeStr: '15:30', status: 'scheduled' },
+      fp3: { name: 'Practice 3', dateStr: 'Sat 07 Nov', timeStr: '11:00', status: 'scheduled' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 07 Nov', timeStr: '15:00', status: 'scheduled' },
       race: { name: 'Race', dateStr: 'Sun 08 Nov', timeStr: '14:00', status: 'scheduled' },
     },
@@ -547,7 +547,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     dates: '27 – 29 Nov 2026',
     season: 2026,
     status: 'upcoming',
-    hasSprint: true,
+    hasSprint: false,
     venueUtcOffset: 3, // AST
     laps: 57,
     circuitLengthKm: 5.419,
@@ -555,8 +555,8 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     lapRecord: { time: '1:24.319', driver: 'Max Verstappen', year: 2023 },
     sessions: {
       fp1: { name: 'Practice 1', dateStr: 'Fri 27 Nov', timeStr: '16:30', status: 'scheduled' },
-      sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 27 Nov', timeStr: '20:30', status: 'scheduled' },
-      sprint: { name: 'Sprint Race', dateStr: 'Sat 28 Nov', timeStr: '16:00', status: 'scheduled' },
+      fp2: { name: 'Practice 2', dateStr: 'Fri 27 Nov', timeStr: '20:30', status: 'scheduled' },
+      fp3: { name: 'Practice 3', dateStr: 'Sat 28 Nov', timeStr: '16:00', status: 'scheduled' },
       qualifying: { name: 'Qualifying', dateStr: 'Sat 28 Nov', timeStr: '20:00', status: 'scheduled' },
       race: { name: 'Race', dateStr: 'Sun 29 Nov', timeStr: '19:00', status: 'scheduled' },
     },

@@ -212,6 +212,7 @@ export const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<HomeView />} />
               <Route path="/live" element={<LiveCenter />} />
+              <Route path="/timing" element={<Navigate to="/live" replace />} />
               <Route path="/season" element={<Navigate to="/season/2026" replace />} />
               <Route path="/championship" element={<Navigate to="/season/2026" replace />} />
               <Route path="/season/:year" element={<SeasonRoute />} />

@@ -5,9 +5,9 @@ import { scheduleWallClockSecondTick } from './tabSync';
 describe('Countdown & Live Center Time Synchronization', () => {
   it('guarantees Singapore GP 2026 FP1 target timestamp consistency between calendar and API', () => {
     // Official schedule: Fri 09 Oct 2026, 17:30 SGT (UTC+8)
-    const homepageStartIso = '2026-10-09T17:30:00+08:00';
+    const homepageStartIso = '2026-10-09T16:30:00+08:00';
     // Normalized OpenF1 API timestamp (UTC)
-    const apiStartIso = '2026-10-09T09:30:00.000Z';
+    const apiStartIso = '2026-10-09T08:30:00.000Z';
 
     const homepageTargetMs = new Date(homepageStartIso).getTime();
     const apiTargetMs = new Date(apiStartIso).getTime();
@@ -17,7 +17,7 @@ describe('Countdown & Live Center Time Synchronization', () => {
   });
 
   it('computes identical countdown DD:HH:MM:SS values from identical target time', () => {
-    const targetMs = new Date('2026-10-09T09:30:00.000Z').getTime();
+    const targetMs = new Date('2026-10-09T08:30:00.000Z').getTime();
     const currentMs = new Date('2026-10-07T16:00:00.000Z').getTime();
     const diffMs = targetMs - currentMs;
 
@@ -48,8 +48,8 @@ describe('Countdown & Live Center Time Synchronization', () => {
       `${bannerSeconds.toString().padStart(2, '0')}s`,
     ].join(' ');
 
-    expect(hpFormat).toBe('01:17:30:00');
-    expect(bannerParts).toBe('01d 17h 30m 00s');
+    expect(hpFormat).toBe('01:16:30:00');
+    expect(bannerParts).toBe('01d 16h 30m 00s');
   });
 
   it('ensures all CuratedReplayRace entries have valid circuitKey and sessionKey', () => {
