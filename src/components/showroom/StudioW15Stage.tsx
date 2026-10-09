@@ -55,12 +55,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   return (
     <group position={[0, 0, 0]}>
       {/* ── Studio Ambient & Global Photometric Lighting ── */}
-      <ambientLight intensity={0.7} color="#f8fafc" />
+      <ambientLight intensity={1.05} color="#ffffff" />
 
       {/* Main Studio Key Light (High directional light casting crisp, soft car shadows) */}
       <directionalLight
         position={[6.0, 9.0, -4.5]}
-        intensity={1.9}
+        intensity={2.5}
         color="#ffffff"
         castShadow
         shadow-mapSize-width={1024}
@@ -68,11 +68,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
         shadow-bias={-0.0001}
       />
 
-      {/* Secondary Cool Fill Light (Softens contrast on the opposite flank) */}
-      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={0.95} color="#e2e8f0" />
+      {/* Neutral fill reveals the opposite flank without tinting the team livery.
+          Reuse the existing light: no extra shadow maps or render passes. */}
+      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={1.65} color="#f8fafc" />
 
       {/* Subtle Ground Bounce Light */}
-      <directionalLight position={[0, -2.5, 0]} intensity={0.3} color="#ffffff" />
+      <directionalLight position={[0, -2.5, 0]} intensity={0.45} color="#ffffff" />
 
       {/* ══════════════════════════════════════════════════════════════
           1. NORTH WALL (Back: z = +5.8) — Main Premiere Branding Wall

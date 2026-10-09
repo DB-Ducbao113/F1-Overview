@@ -352,7 +352,7 @@ export const ShowroomView: React.FC = () => {
               antialias: false,
               alpha: true,
               powerPreference: 'high-performance',
-              toneMappingExposure: 1.05,
+              toneMappingExposure: 1.2,
             }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
