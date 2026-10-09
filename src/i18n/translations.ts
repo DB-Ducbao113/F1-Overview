@@ -37,7 +37,7 @@ export const t = {
       colExplore: 'Khám Phá',
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
-        'Dự án fan không chính thức, độc lập và phi lợi nhuận; không liên kết, tài trợ hay được chứng thực bởi Formula 1 hoặc bất kỳ đội đua nào. Formula 1, F1, Grand Prix cùng các thương hiệu và tài sản trí tuệ liên quan thuộc quyền sở hữu của Formula One Licensing B.V. và các chủ sở hữu tương ứng.',
+        'Dự án độc lập, không chính thức; không liên kết, được tài trợ hay chứng thực bởi Formula 1 hoặc bất kỳ đội đua nào. Trang có thể dùng quảng cáo hoặc tài trợ được ghi rõ để trang trải vận hành. Formula 1, F1, Grand Prix và các nhãn hiệu liên quan thuộc chủ sở hữu tương ứng.',
       copyright:
         '© 2026 PODIUM — Effet de Sol · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
     },
@@ -80,7 +80,7 @@ export const t = {
       colExplore: 'Explore',
       colLegal: 'Attribution & Provenance',
       disclaimer:
-        'Unofficial, independent, non-commercial fan project; not affiliated with, sponsored by, or endorsed by Formula 1 or any team. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks belong to Formula One Licensing B.V. and their respective owners.',
+        'Unofficial, independent project; not affiliated with, sponsored by, or endorsed by Formula 1 or any team. The site may use clearly identified advertising or sponsorship to fund operations. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks belong to their respective owners.',
       copyright:
         '© 2026 PODIUM — Effet de Sol · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
     },

@@ -62,8 +62,7 @@ export const DriverDetailPage: React.FC = () => {
   const code = driver?.code ?? entry?.driverCode ?? 'DRV';
   const flag = driver?.flagEmoji ?? entry?.countryFlag ?? '';
   const country = driver?.country ?? '';
-  const resolvedImageUrl =
-    driver?.imageUrl || (driverId ? `/images/drivers/${driverId}.svg` : undefined);
+  const resolvedImageUrl = driver?.imageUrl;
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">

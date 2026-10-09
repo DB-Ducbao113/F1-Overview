@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
+import { useConsentStore } from '../../store/useConsentStore';
 
 export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const strings = t[lang].footer;
   const navStrings = t[lang].nav;
+  const openConsentSettings = useConsentStore((state) => state.openSettings);
   const navItems = [
     { to: '/', label: navStrings.home },
     { to: '/season/2026', label: navStrings.championship },
@@ -15,6 +17,8 @@ export const Footer: React.FC = React.memo(() => {
     { to: '/teams', label: lang === 'vi' ? 'Danh sách đội đua' : 'Teams' },
     { to: '/drivers', label: lang === 'vi' ? 'Danh sách tay đua' : 'Drivers' },
     { to: '/about', label: lang === 'vi' ? 'Về dự án' : 'About' },
+    { to: '/privacy', label: lang === 'vi' ? 'Quyền riêng tư' : 'Privacy' },
+    { to: '/cookies', label: lang === 'vi' ? 'Cookie' : 'Cookies' },
   ];
 
   return (
@@ -103,8 +107,7 @@ export const Footer: React.FC = React.memo(() => {
 
             <div className="border-l border-f1red/50 pl-5 text-[11px] font-light leading-5 text-white/45">
               <p className="mb-4 uppercase tracking-[0.08em] text-white/65">
-                Photography / LAT Images / DPPI / Motorsport Images / Red Bull Media House /
-                Official team press kits
+                Original PODIUM artwork / Procedural graphics / Open-source C42 geometry
               </p>
               <p>{strings.disclaimer}</p>
             </div>
@@ -120,7 +123,13 @@ export const Footer: React.FC = React.memo(() => {
           <p className="max-w-3xl text-[13px] font-medium normal-case leading-6 tracking-normal text-white/65 sm:text-sm">
             {strings.copyright}
           </p>
-          <div className="flex items-center gap-5 whitespace-nowrap">
+          <div className="flex flex-wrap items-center gap-5">
+            <button
+              onClick={openConsentSettings}
+              className="whitespace-nowrap text-white/60 transition-colors hover:text-white"
+            >
+              {lang === 'vi' ? 'Cài đặt quyền riêng tư' : 'Privacy settings'}
+            </button>
             <span>© MMXXVI</span>
             <span className="h-px w-8 bg-f1red" />
             <span>Designed by BaoBungBu</span>

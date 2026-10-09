@@ -78,7 +78,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = React.mem
 
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Official Vector Logo */}
+                  {/* Original PODIUM text badge */}
                   <ConstructorLogo teamId={teamId} size="sm" />
                   <span className="text-[10px] font-black uppercase tracking-widest text-studio-400 truncate">
                     {livery.fullName}
@@ -164,7 +164,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = React.mem
                 {/* Ambient Grid Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-transparent to-black/40 opacity-80 pointer-events-none" />
 
-                {/* Top Left: Official Constructor Logo Badge (e.g. McLaren Speedmark) */}
+                {/* Top Left: original PODIUM constructor text badge */}
                 <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
                   <ConstructorLogo teamId={teamId} badgeMode={true} size="sm" lang={lang} />
                 </div>
@@ -323,7 +323,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = React.mem
           </div>
         </aside>
 
-        {/* ── 3. High-Definition Fullscreen Lightbox Modal with Official Team Logo ── */}
+        {/* ── 3. High-definition fullscreen lightbox with PODIUM badge ── */}
         {isLightboxOpen && (
           <div
             role="dialog"
@@ -331,7 +331,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = React.mem
             className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6 animate-fade-in"
             onClick={() => setIsLightboxOpen(false)}
           >
-            {/* Lightbox Header Bar with Official Constructor Logo */}
+            {/* Lightbox header with original PODIUM badge */}
             <div
               className="flex items-center justify-between gap-4 pb-4 border-b border-studio-800"
               onClick={(e) => e.stopPropagation()}

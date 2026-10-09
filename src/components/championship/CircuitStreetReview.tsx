@@ -126,14 +126,14 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
           }`}
         >
           <img
-            src={activePoint.imageUrl}
+            src="/images/podium-diffuser-hero-v2.webp"
             alt={isVi ? activePoint.nameVi : activePoint.nameEn}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
             loading="lazy"
             onError={(e) => {
               const target = e.currentTarget;
-              if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
-                target.src = '/images/circuits/albert_park_pit_straight.webp';
+              if (!target.src.endsWith('/images/podium-diffuser-hero-v2.webp')) {
+                target.src = '/images/podium-diffuser-hero-v2.webp';
               }
             }}
           />
@@ -294,13 +294,13 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
           >
             <div className="relative w-full">
               <img
-                src={activePoint.imageUrl}
+                src="/images/podium-diffuser-hero-v2.webp"
                 alt={isVi ? activePoint.nameVi : activePoint.nameEn}
                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl border border-studio-800 shadow-2xl"
                 onError={(e) => {
                   const target = e.currentTarget;
-                  if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
-                    target.src = '/images/circuits/albert_park_pit_straight.webp';
+                  if (!target.src.endsWith('/images/podium-diffuser-hero-v2.webp')) {
+                    target.src = '/images/podium-diffuser-hero-v2.webp';
                   }
                 }}
               />

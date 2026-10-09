@@ -156,7 +156,7 @@ export const AboutPage: React.FC = () => {
         </section>
       </div>
 
-      {/* Card 3: Transformative Fan Tribute Art */}
+      {/* Card 3: Original visual system */}
       <section className="bg-white border border-studio-200 rounded-2xl p-6 sm:p-8 shadow-sm mb-12">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
@@ -164,53 +164,53 @@ export const AboutPage: React.FC = () => {
           </div>
           <div>
             <h3 className="font-display text-xl font-bold uppercase text-studio-900">
-              {isVi ? 'Bộ sưu tập Nghệ thuật Chuyển thể' : 'Bespoke Transformative Art Archive'}
+              {isVi ? 'Hệ hình ảnh nguyên bản PODIUM' : 'Original PODIUM Visual System'}
             </h3>
             <p className="text-xs text-studio-500 font-mono">
               {isVi
-                ? 'Tránh vi phạm bản quyền phóng viên báo chí'
-                : 'Replacing unverified press imagery with original fan art'}
+                ? 'Không sử dụng ảnh báo chí chưa có giấy phép'
+                : 'No unlicensed press photography'}
             </p>
           </div>
         </div>
         <p className="text-sm text-studio-600 leading-relaxed mb-4">
           {isVi
-            ? 'Nhằm giải quyết dứt điểm các rủi ro liên quan đến bản quyền ảnh chụp từ bên thứ ba (Pinterest/báo chí), PODIUM — Effet de Sol đã và đang thay thế toàn bộ hình ảnh tay đua bằng các tác phẩm tranh poster nghệ thuật chuyển thể (Bespoke Transformative Fan Tribute Art). Mỗi poster là một tác phẩm đồ họa thể thao độc bản, kết hợp ánh sáng studio kịch tính, số hiệu và nhận diện phong cách của từng tay đua.'
-            : 'To respect intellectual property and eliminate reliance on unverified editorial wire photos, PODIUM — Effet de Sol features custom transformative fan tribute art posters for each driver. Each artwork combines high-impact typography, studio rim lighting, dynamic racing helmets, and motion-blurred cars to celebrate the sporting legends of the paddock.'}
+            ? 'PODIUM đã loại bỏ ảnh tay đua, ảnh xe và logo đội không có hồ sơ giấy phép rõ ràng. Giao diện hiện dùng logo PODIUM, badge chữ, màu nhận diện dữ liệu và đồ họa khí động học được dựng riêng; tên đội và tay đua chỉ được dùng để trình bày thông tin thể thao.'
+            : 'PODIUM has removed driver photos, car images, and team logos without clear licensing records. The interface now uses the PODIUM logo, text badges, data colors, and original aerodynamic graphics; team and driver names are referenced only to present sporting information.'}
         </p>
         <div className="flex flex-wrap gap-2 text-xs font-mono text-studio-500">
           <span className="px-2.5 py-1 rounded-md bg-studio-100 text-studio-700">
-            🎨 Transformative Fan Tribute
+            🎨 Original PODIUM graphics
           </span>
           <span className="px-2.5 py-1 rounded-md bg-studio-100 text-studio-700">
             🏎️ 11 Teams / 22 Drivers
           </span>
           <span className="px-2.5 py-1 rounded-md bg-studio-100 text-studio-700">
-            ⚡ 8K High Impact Style
+            ⚡ Procedural visual system
           </span>
         </div>
       </section>
 
-      {/* Legal Disclaimer & Fair Use */}
+      {/* Legal Disclaimer */}
       <section className="bg-studio-950 text-white rounded-2xl p-6 sm:p-10 border border-studio-800 shadow-xl mb-10">
         <div className="flex items-center gap-3 text-f1red mb-5">
           <ShieldAlert className="w-6 h-6" />
           <h2 className="font-display text-lg sm:text-xl font-black uppercase tracking-wider text-white">
             {isVi
               ? 'Tuyên bố Bản quyền & Miễn trừ Trách nhiệm'
-              : 'Legal Disclaimer & Fair Use Notice'}
+              : 'Legal Disclaimer & Rights Notice'}
           </h2>
         </div>
         <div className="text-xs sm:text-sm text-studio-300 leading-relaxed space-y-4 font-mono">
           <p>
             {isVi
-              ? '1. TÍNH CHẤT PHI THƯƠNG MẠI: PODIUM — Effet de Sol là một dự án nghiên cứu công nghệ, giao lưu văn hóa và tôn vinh thể thao hoàn toàn phi thương mại (non-commercial, non-profit open fan tribute). Trang web không bán sản phẩm, không thu phí người dùng, không chạy quảng cáo thương mại và không tạo ra bất kỳ doanh thu nào.'
-              : '1. NON-COMMERCIAL STATUS: PODIUM — Effet de Sol is an independent, non-commercial, non-monetized educational showcase and technical fan tribute. The website does not sell products, charges no fees, hosts no advertisements, and generates zero commercial revenue.'}
+              ? '1. TÍNH ĐỘC LẬP & NGUỒN KINH PHÍ: PODIUM — Effet de Sol là dự án dữ liệu và trải nghiệm đua xe độc lập. Trang có thể sử dụng quảng cáo, tài trợ hoặc liên kết giới thiệu để trang trải chi phí vận hành. Các nguồn kinh phí này không chi phối dữ liệu, nội dung biên tập và không thể hiện sự bảo trợ của Formula 1 hay bất kỳ đội đua nào.'
+              : '1. INDEPENDENCE & FUNDING: PODIUM — Effet de Sol is an independent motorsport data and experience project. The site may use advertising, sponsorships, or affiliate links to cover operating costs. Funding does not control editorial data or imply endorsement by Formula 1 or any team.'}
           </p>
           <p>
             {isVi
-              ? '2. BẢN QUYỀN VÀ NHÃN HIỆU: Formula 1, F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các biểu trưng liên quan là tài sản trí tuệ độc quyền được đăng ký bảo hộ của Formula One Licensing B.V. và Liên đoàn Ô tô Quốc tế (FIA). Tên gọi các đội đua, tay đua và logo xuất hiện trong ứng dụng được sử dụng thuần túy nhằm mục đích đưa tin thể thao, tra cứu thông tin lịch sử và xác thực kỹ thuật theo nguyên tắc Fair Use.'
-              : '2. TRADEMARKS & RIGHTS: FORMULA 1, F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V. All team names, constructor trademarks, and driver identifiers are referenced strictly under fair use doctrine for informational, statistical, and historical appreciation.'}
+              ? '2. BẢN QUYỀN VÀ NHÃN HIỆU: Formula 1, F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX và các nhãn hiệu liên quan thuộc chủ sở hữu tương ứng. PODIUM chỉ nhắc đến tên đội, tay đua và sự kiện để đưa tin và trình bày dữ liệu; không sử dụng logo chính thức hoặc ảnh báo chí chưa có giấy phép.'
+              : '2. TRADEMARKS & RIGHTS: FORMULA 1, F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and related marks belong to their respective owners. PODIUM references team, driver, and event names for reporting and data presentation; it does not use official logos or unlicensed press photography.'}
           </p>
           <p>
             {isVi

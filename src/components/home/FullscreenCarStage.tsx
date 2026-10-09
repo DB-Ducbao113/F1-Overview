@@ -27,7 +27,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'ferrari',
     watermark: 'FERRARI',
     color: '#dc0000',
-    imageUrl: '/images/teams/sf24.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Charles Leclerc #16 · Lewis Hamilton #44',
   },
   {
@@ -38,7 +38,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mclaren',
     watermark: 'MCLAREN',
     color: '#ff8000',
-    imageUrl: '/images/teams/mcl38.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Lando Norris #4 · Oscar Piastri #81',
   },
   {
@@ -49,7 +49,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'redbull',
     watermark: 'RED BULL',
     color: '#050f26',
-    imageUrl: '/images/teams/rb20.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Max Verstappen #1 · Isack Hadjar #6',
   },
   {
@@ -60,7 +60,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mercedes',
     watermark: 'MERCEDES',
     color: '#c8ccce',
-    imageUrl: '/images/teams/w15.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'George Russell #63 · Kimi Antonelli #12',
   },
   {
@@ -71,7 +71,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'astonmartin',
     watermark: 'ASTON MARTIN',
     color: '#00594f',
-    imageUrl: '/images/teams/astonmartin.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Fernando Alonso #14 · Lance Stroll #18',
   },
   {
@@ -82,7 +82,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'alpine',
     watermark: 'ALPINE',
     color: '#0090ff',
-    imageUrl: '/images/teams/alpine.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Pierre Gasly #10 · Franco Colapinto #43',
   },
   {
@@ -93,7 +93,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
     color: '#1634cb',
-    imageUrl: '/images/teams/racingbulls.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Liam Lawson #30 · Arvid Lindblad #41',
   },
   {
@@ -104,7 +104,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'haas',
     watermark: 'HAAS',
     color: '#e5e7eb',
-    imageUrl: '/images/teams/haas.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Esteban Ocon #31 · Oliver Bearman #87',
   },
   {
@@ -115,7 +115,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'williams',
     watermark: 'WILLIAMS',
     color: '#002447',
-    imageUrl: '/images/teams/williams.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Carlos Sainz #55 · Alex Albon #23',
   },
   {
@@ -126,7 +126,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'audi',
     watermark: 'AUDI F1',
     color: '#c4c8cc',
-    imageUrl: '/images/teams/audi.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
   {
@@ -137,7 +137,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'cadillac',
     watermark: 'CADILLAC',
     color: '#d4af37',
-    imageUrl: '/images/teams/cadillac.webp',
+    imageUrl: '/images/podium-diffuser-hero-v2.webp',
     drivers: 'Sergio Pérez #11 · Valtteri Bottas #77',
   },
 ];

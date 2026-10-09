@@ -459,12 +459,4 @@ const RAW_DRIVERS_DATA: Record<string, F1Driver> = {
   },
 };
 
-export const DRIVERS_DATA: Record<string, F1Driver> = Object.fromEntries(
-  Object.entries(RAW_DRIVERS_DATA).map(([id, driver]) => [
-    id,
-    {
-      ...driver,
-      imageUrl: driver.imageUrl || `/images/drivers/${id}.webp`,
-    },
-  ]),
-);
+export const DRIVERS_DATA: Record<string, F1Driver> = RAW_DRIVERS_DATA;
