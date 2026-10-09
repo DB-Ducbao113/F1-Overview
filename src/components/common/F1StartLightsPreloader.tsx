@@ -19,10 +19,7 @@ export const F1StartLightsPreloader: React.FC = () => {
     const timeouts: number[] = [];
     [1, 2, 3, 4, 5].forEach((light, index) => {
       timeouts.push(
-        window.setTimeout(
-          () => setStage(light),
-          START_LIGHT_TIMING.lightIntervalMs * (index + 1),
-        ),
+        window.setTimeout(() => setStage(light), START_LIGHT_TIMING.lightIntervalMs * (index + 1)),
       );
     });
     timeouts.push(window.setTimeout(() => setStage(6), START_LIGHT_TIMING.lightsOutMs));
