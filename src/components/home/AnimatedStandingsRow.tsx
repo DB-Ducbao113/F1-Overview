@@ -6,7 +6,7 @@ import { ConstructorLogo } from '../common/ConstructorLogo';
 interface AnimatedStandingsRowProps {
   rank: number;
   name: string;
-  subName: string;
+  subName?: string;
   flag?: string;
   teamId: TeamId;
   teamColor: string;
@@ -90,12 +90,16 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <div className="group-hover:scale-105 transition-transform duration-300 shrink-0">
-              <ConstructorLogo teamId={teamId} size="sm" />
+          {subName && (
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="group-hover:scale-105 transition-transform duration-300 shrink-0">
+                <ConstructorLogo teamId={teamId} size="sm" />
+              </div>
+              <span className="text-xs font-semibold truncate text-studio-600 block">
+                {subName}
+              </span>
             </div>
-            <span className="text-xs font-semibold truncate text-studio-600 block">{subName}</span>
-          </div>
+          )}
         </div>
       </div>
 
