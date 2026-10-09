@@ -1,31 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
 import { F1StartLightsPreloader } from './F1StartLightsPreloader';
+import { START_LIGHT_TIMING } from './startLightsTiming';
 
 describe('F1StartLightsPreloader', () => {
-  beforeEach(() => {
-    let store: Record<string, string> = {};
-    (globalThis as any).sessionStorage = {
-      getItem: (key: string) => store[key] || null,
-      setItem: (key: string, val: string) => {
-        store[key] = val;
-      },
-      clear: () => {
-        store = {};
-      },
-    };
-  });
-
-  it('renders preloader markup when sessionStorage is empty', () => {
-    // In server render, isVisible is false initially, mounts after useEffect on client
+  it('renders immediately on every fresh App mount without a storage gate', () => {
     const html = renderToStaticMarkup(<F1StartLightsPreloader />);
-    // Initial static markup returns null to prevent SSR flash
-    expect(html).toBe('');
+    expect(html).toContain('F1 Start Lights Preloader');
+    expect(html).toContain('PREPARING GRID...');
+    expect(html.match(/data-testid="start-light"/g)).toHaveLength(10);
   });
 
-  it('maintains safe execution without throwing', () => {
-    sessionStorage.setItem('f1_start_lights_seen_v1', 'true');
-    expect(() => renderToStaticMarkup(<F1StartLightsPreloader />)).not.toThrow();
+  it('completes the normal sequence at exactly five seconds', () => {
+    expect(START_LIGHT_TIMING.lightIntervalMs * 5).toBe(2500);
+    expect(START_LIGHT_TIMING.lightsOutMs).toBe(4000);
+    expect(START_LIGHT_TIMING.fadeStartMs + START_LIGHT_TIMING.fadeDurationMs).toBe(5000);
+    expect(START_LIGHT_TIMING.totalMs).toBe(5000);
   });
 });
