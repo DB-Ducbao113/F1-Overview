@@ -215,6 +215,7 @@ export const DriverDetailPage: React.FC = () => {
                     <img
                       src={resolvedImageUrl}
                       alt={name}
+                      decoding="async"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                       }}

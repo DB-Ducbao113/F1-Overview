@@ -464,7 +464,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = Object.fromEntries(
     id,
     {
       ...driver,
-      imageUrl: driver.imageUrl || `/images/drivers/${id}.jpg`,
+      imageUrl: driver.imageUrl || `/images/drivers/${id}.webp`,
     },
   ]),
 );

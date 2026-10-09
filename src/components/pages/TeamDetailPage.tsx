@@ -173,6 +173,7 @@ export const TeamDetailPage: React.FC = () => {
                         <img
                           src={team.imageUrl}
                           alt={seasonProfile.fullName}
+                          decoding="async"
                           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-studio-950 via-studio-950/20 to-transparent" />

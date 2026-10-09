@@ -18,7 +18,7 @@ const heightByVariant: Record<LogoVariant, Record<LogoSize, string>> = {
 const sourceByVariant: Record<LogoVariant, string> = {
   full: '/logo/logo.png',
   compact: '/logo/logo-compact.png',
-  mark: '/logo/favicon.png',
+  mark: '/logo/icon-192.png',
 };
 
 /** Official raster artwork; PNG preserves the original metallic and glow treatment. */

@@ -106,7 +106,7 @@ export const AboutPage: React.FC = () => {
               </p>
               <p>
                 {isVi
-                  ? 'Nhận diện và màu sắc của 11 đội đua được chiếu động bằng Canvas Procedural Texture Generator và hệ thống Shaders PBR. Nhờ đó, người dùng chỉ cần tải một file hình học 3D duy nhất (~18 MB) thay vì 11 file độc lập cồng kềnh (>200 MB).'
+                  ? 'Nhận diện và màu sắc của 11 đội đua được chiếu động bằng Canvas Procedural Texture Generator và hệ thống Shaders PBR. Nhờ đó, người dùng chỉ cần tải một file hình học 3D tối ưu (~2,4 MB) thay vì 11 file độc lập cồng kềnh (>200 MB).'
                   : 'Liveries and textures for all 11 teams are procedurally synthesized via an in-memory canvas engine and custom PBR shaders, cutting network transfer from >200 MB down to a single compact asset.'}
               </p>
             </div>
@@ -216,6 +216,11 @@ export const AboutPage: React.FC = () => {
             {isVi
               ? '3. TÁC GIẢ & LIÊN HỆ: Nền tảng được tạo ra bởi BaoBungBu. Nếu bạn là chủ sở hữu quyền tác giả của bất kỳ tư liệu nào và có yêu cầu điều chỉnh, xin vui lòng liên hệ trực tiếp với chúng tôi để được giải quyết nhanh chóng trên tinh thần hợp tác và tôn trọng bản quyền.'
               : '3. AUTHORSHIP & CONTACT: Curated and maintained by BaoBungBu. If you are a rightsholder with questions or modification requests regarding any referenced material, please reach out directly for immediate assistance in full respect of copyright.'}
+          </p>
+          <p>
+            {isVi
+              ? '4. NGUỒN MÔ HÌNH 3D: Hình học xe C42 được chuyển thể từ model mã nguồn mở của Mark Stein (markste-in/c42), phát hành theo giấy phép WTFPL v2. Phiên bản trên website đã được nén Meshopt, loại bỏ texture gốc và phủ bộ nhận diện tạo bằng thủ tục.'
+              : '4. 3D MODEL SOURCE: The C42 car geometry is adapted from the open-source model by Mark Stein (markste-in/c42), released under the WTFPL v2 license. The website version is Meshopt-compressed, has its original textures removed, and uses procedurally generated liveries.'}
           </p>
         </div>
       </section>

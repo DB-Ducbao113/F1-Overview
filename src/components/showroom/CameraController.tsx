@@ -36,7 +36,7 @@ const PRESET_VIEWS: Record<
 > = {
   // ── 1. Toàn Cảnh 4 Vách Triển Lãm (Cinematic Panoramas: Car + Illuminated Wall) ──
   pano_branding: {
-    // Vách Logo (Sau xe): Góc 3/4 trước xe nhìn về toàn bộ vách Logo (chuẩn cadillac.jpg)
+    // Vách Logo (Sau xe): Góc 3/4 trước xe nhìn về toàn bộ vách Logo (chuẩn cadillac.webp)
     pos: [3.3, 1.45, -3.2],
     target: [0, 1.4, 2.2],
   },

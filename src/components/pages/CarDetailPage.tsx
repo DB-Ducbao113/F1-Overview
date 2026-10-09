@@ -86,6 +86,7 @@ export const CarDetailPage: React.FC = () => {
             <img
               src={car.heroImage}
               alt={car.name}
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover opacity-55"
               onError={(event) => {
                 event.currentTarget.style.display = 'none';

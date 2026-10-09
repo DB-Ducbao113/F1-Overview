@@ -100,9 +100,10 @@ export function createTeamBackdropTexture(
   const HEIGHT = 1024;
 
   const canvas = document.createElement('canvas');
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  canvas.width = WIDTH / 2;
+  canvas.height = HEIGHT / 2;
   const ctx = canvas.getContext('2d');
+  ctx?.scale(0.5, 0.5);
 
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
   const label = TEAM_BACKDROP_LABEL[teamId] || {
@@ -292,9 +293,10 @@ export function createTechnicalBackdropTexture(
   const HEIGHT = 1024;
 
   const canvas = document.createElement('canvas');
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  canvas.width = WIDTH / 2;
+  canvas.height = HEIGHT / 2;
   const ctx = canvas.getContext('2d');
+  ctx?.scale(0.5, 0.5);
 
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
   const livery = getTeam3DLivery(teamId);
@@ -491,9 +493,10 @@ export function createDriversWallTexture(
   const HEIGHT = 1024;
 
   const canvas = document.createElement('canvas');
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  canvas.width = WIDTH / 2;
+  canvas.height = HEIGHT / 2;
   const ctx = canvas.getContext('2d');
+  ctx?.scale(0.5, 0.5);
 
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
   const history = TEAM_HISTORY_DATA[teamId] || TEAM_HISTORY_DATA.ferrari;
@@ -720,9 +723,10 @@ export function createAchievementsWallTexture(
   const HEIGHT = 1024;
 
   const canvas = document.createElement('canvas');
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  canvas.width = WIDTH / 2;
+  canvas.height = HEIGHT / 2;
   const ctx = canvas.getContext('2d');
+  ctx?.scale(0.5, 0.5);
 
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
   const history = TEAM_HISTORY_DATA[teamId] || TEAM_HISTORY_DATA.ferrari;

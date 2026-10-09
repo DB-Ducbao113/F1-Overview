@@ -27,7 +27,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'ferrari',
     watermark: 'FERRARI',
     color: '#dc0000',
-    imageUrl: '/images/teams/sf24.jpg',
+    imageUrl: '/images/teams/sf24.webp',
     drivers: 'Charles Leclerc #16 · Lewis Hamilton #44',
   },
   {
@@ -38,7 +38,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mclaren',
     watermark: 'MCLAREN',
     color: '#ff8000',
-    imageUrl: '/images/teams/mcl38.jpg',
+    imageUrl: '/images/teams/mcl38.webp',
     drivers: 'Lando Norris #4 · Oscar Piastri #81',
   },
   {
@@ -49,7 +49,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'redbull',
     watermark: 'RED BULL',
     color: '#050f26',
-    imageUrl: '/images/teams/rb20.jpg',
+    imageUrl: '/images/teams/rb20.webp',
     drivers: 'Max Verstappen #1 · Isack Hadjar #6',
   },
   {
@@ -60,7 +60,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mercedes',
     watermark: 'MERCEDES',
     color: '#c8ccce',
-    imageUrl: '/images/teams/w15.jpg',
+    imageUrl: '/images/teams/w15.webp',
     drivers: 'George Russell #63 · Kimi Antonelli #12',
   },
   {
@@ -71,7 +71,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'astonmartin',
     watermark: 'ASTON MARTIN',
     color: '#00594f',
-    imageUrl: '/images/teams/astonmartin.jpg',
+    imageUrl: '/images/teams/astonmartin.webp',
     drivers: 'Fernando Alonso #14 · Lance Stroll #18',
   },
   {
@@ -82,7 +82,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'alpine',
     watermark: 'ALPINE',
     color: '#0090ff',
-    imageUrl: '/images/teams/alpine.jpg',
+    imageUrl: '/images/teams/alpine.webp',
     drivers: 'Pierre Gasly #10 · Franco Colapinto #43',
   },
   {
@@ -93,7 +93,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
     color: '#1634cb',
-    imageUrl: '/images/teams/racingbulls.jpg',
+    imageUrl: '/images/teams/racingbulls.webp',
     drivers: 'Liam Lawson #30 · Arvid Lindblad #3',
   },
   {
@@ -104,7 +104,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'haas',
     watermark: 'HAAS',
     color: '#e5e7eb',
-    imageUrl: '/images/teams/haas.jpg',
+    imageUrl: '/images/teams/haas.webp',
     drivers: 'Esteban Ocon #31 · Oliver Bearman #87',
   },
   {
@@ -115,7 +115,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'williams',
     watermark: 'WILLIAMS',
     color: '#002447',
-    imageUrl: '/images/teams/williams.jpg',
+    imageUrl: '/images/teams/williams.webp',
     drivers: 'Carlos Sainz #55 · Alex Albon #23',
   },
   {
@@ -126,7 +126,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'audi',
     watermark: 'AUDI F1',
     color: '#c4c8cc',
-    imageUrl: '/images/teams/audi.jpg',
+    imageUrl: '/images/teams/audi.webp',
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
   {
@@ -137,7 +137,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'cadillac',
     watermark: 'CADILLAC',
     color: '#d4af37',
-    imageUrl: '/images/teams/cadillac.jpg',
+    imageUrl: '/images/teams/cadillac.webp',
     drivers: 'Sergio Pérez #11 · Valtteri Bottas #77',
   },
 ];
@@ -419,6 +419,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                         : 'brightness-[0.35]'
                     }`}
                     loading="lazy"
+                    decoding="async"
                   />
 
                   {/* Gradient Overlay & Ambient Tint */}
@@ -436,37 +437,27 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                     }`}
                   />
 
-                  {/* Accent Line Indicator & Constructor Logo */}
-                  <div className="z-10 flex flex-col items-center gap-2">
+                  {/* Accent Line Indicator */}
+                  <div className="z-10 flex flex-col items-center">
                     <div
                       className={`rounded-full shadow-sm transition-all duration-300 ${
                         !isAnyActive ? 'w-2 h-7 group-hover:h-10' : 'w-1.5 h-8 group-hover:h-12'
                       }`}
                       style={{ backgroundColor: car.color }}
                     />
-                    <ConstructorLogo
-                      teamId={car.teamId}
-                      size="sm"
-                      className={`transition-all ${
-                        !isAnyActive
-                          ? 'w-6 h-6 opacity-95 group-hover:scale-110'
-                          : 'w-4 h-4 opacity-75 group-hover:opacity-100'
-                      }`}
-                    />
                   </div>
 
-                  {/* Typography: When all 11 teams are showing evenly vs when squeezed */}
+                  {/* Centered constructor mark replaces the hard-to-read vertical car name */}
                   <div className="z-10 flex flex-col items-center justify-center flex-1 my-auto">
-                    <span
-                      className={`font-display font-black uppercase text-white/90 group-hover:text-white tracking-[0.2em] whitespace-nowrap [writing-mode:vertical-rl] rotate-180 transition-all duration-300 ${
-                        !isAnyActive ? 'text-[14px] lg:text-[16px]' : 'text-[12px] lg:text-[13px]'
+                    <ConstructorLogo
+                      teamId={car.teamId}
+                      size="lg"
+                      className={`rounded-xl border border-white/10 bg-black/25 p-1.5 backdrop-blur-sm shadow-[0_8px_24px_rgba(0,0,0,0.55)] transition-all duration-300 group-hover:border-white/30 group-hover:bg-black/45 ${
+                        !isAnyActive
+                          ? 'scale-100 opacity-100 group-hover:scale-110'
+                          : 'scale-[0.68] opacity-85 group-hover:scale-75 group-hover:opacity-100'
                       }`}
-                      style={{
-                        textShadow: '0 2px 10px rgba(0,0,0,0.85)',
-                      }}
-                    >
-                      {car.shortName}
-                    </span>
+                    />
                   </div>
 
                   {/* Bottom Indicator & Driver badge when wide */}
@@ -509,14 +500,16 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                   {/* ── MASSIVE UNCROPPED FULL CAR PRESENTATION ── */}
                   <div className="relative z-10 w-full flex-1 flex items-center justify-center my-auto">
                     <div className="relative w-full h-[300px] sm:h-[390px] lg:h-[450px] flex items-center justify-center">
-                      <img
-                        src={car.imageUrl}
-                        alt={car.name}
-                        className={`max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out ${
-                          isExpanded ? 'animate-ken-burns' : ''
-                        }`}
-                        loading="eager"
-                      />
+                      {isExpanded && (
+                        <img
+                          src={car.imageUrl}
+                          alt={car.name}
+                          className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out animate-ken-burns"
+                          loading="eager"
+                          decoding="async"
+                          fetchPriority="high"
+                        />
+                      )}
 
                       {/* Glowing Underfloor Light Floor Reflection */}
                       <div

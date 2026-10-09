@@ -177,6 +177,7 @@ export const SchematicComparisonModal: React.FC<SchematicComparisonModalProps> =
                 alt={lang === 'vi' ? livery.schematicTitleVi : livery.schematicTitleEn}
                 className="max-h-[68vh] w-auto object-contain rounded-xl shadow-2xl select-none"
                 loading="eager"
+                decoding="async"
               />
             </div>
 

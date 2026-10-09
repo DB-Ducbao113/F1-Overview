@@ -26,7 +26,12 @@ export function createUVTexture(
   if (ctx) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    draw(ctx, width, height);
+    // The livery artwork was authored on canvases twice this resolution.
+    // Keep that logical coordinate system while rasterizing to a smaller GPU texture.
+    ctx.save();
+    ctx.scale(0.5, 0.5);
+    draw(ctx, width * 2, height * 2);
+    ctx.restore();
   }
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 16;
@@ -672,7 +677,7 @@ export function generateNoseTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
     const noseBaseColor = livery.noseColor || livery.bodyColor || '#e8002d';
     // 1. Full-canvas forward monocoque & nose cone paint coat with subtle composite weave (100% surface coverage)
     drawCarbonWeave(ctx, w, h, noseBaseColor, 0.08);
@@ -1554,7 +1559,7 @@ export function generateBodyworkTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
     const bodyBaseColor = livery.bodyColor || livery.sidepodColor || '#e8002d';
 
     // 1. Full-canvas main bodywork paint coat with subtle composite weave (100% surface coverage)
@@ -2267,7 +2272,7 @@ export function generateWingsTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
     const wingBaseColor = livery.wingColor || '#0a0b0e';
     const aeroPaint = livery.bodyColor || '#e8002d';
     const accentPaint = livery.accentColor || '#ffffff';
@@ -3075,7 +3080,7 @@ export function generateWingsTexture(
  * FIA Jabroc composite center reference plank, and machined golden titanium skid blocks.
  */
 export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     // Base structural carbon fiber
     drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
 
@@ -3204,7 +3209,7 @@ export function generateSuspensionMirrorsTexture(
   teamId: TeamId,
   livery: Team3DLivery,
 ): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     // Base structural carbon weave for suspension arms
     drawCarbonWeave(ctx, w, h, '#0d0f14');
 
@@ -3346,7 +3351,7 @@ export function generateDiffuserRainLightTexture(
   teamId: TeamId,
   livery: Team3DLivery,
 ): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     // Base structural carbon weave
     drawCarbonWeave(ctx, w, h, '#08090c');
 
@@ -3497,7 +3502,7 @@ export function generateDiffuserRainLightTexture(
  * pushbuttons and dials, and team-colored 6-point racing safety harness with alloy buckle.
  */
 export function generateCockpitTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     // Monocoque carbon cockpit tub & black Alcantara
     drawCarbonWeave(ctx, w, h, '#111317');
 
@@ -3687,7 +3692,7 @@ export function generateHaloTexture(
   livery: Team3DLivery,
   sponsors?: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     const haloPaint = livery.haloColor || livery.bodyColor || '#e8002d';
     const accentColor = livery.accentColor || '#ffffff';
 
@@ -4020,7 +4025,7 @@ export function drawTeamAeroWheelCover(
       ctx.arc(cx, cy, 239, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Iconic Modena Canary Yellow Concentric Speed Ring (matches sf24.jpg 1:1!)
+      // Iconic Modena Canary Yellow Concentric Speed Ring (matches sf24.webp 1:1!)
       ctx.strokeStyle = '#ffdf00'; // Modena Racing Yellow
       ctx.lineWidth = 9;
       ctx.beginPath();
@@ -4394,7 +4399,7 @@ export function generateWheelTexture(
   _sponsors?: TeamSponsorConfig,
   baseImage?: CanvasImageSource | null,
 ): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     const primaryHex = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
     const secondaryHex = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
     const coverHex = livery.wheelCoverColor || '#121417';

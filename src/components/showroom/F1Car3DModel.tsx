@@ -33,13 +33,14 @@ const MODEL_SCALE = 0.105;
 const RealF1CarMesh: React.FC<{
   teamId: TeamId;
 }> = ({ teamId }) => {
-  const { scene } = useGLTF('/models/c42.glb');
+  const { scene } = useGLTF('/models/c42.v2.glb');
   const livery = getTeam3DLivery(teamId);
   const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
 
   // Clone scene hierarchy and apply procedural aerodynamic flap elevation ("lồi lên")
-  const clonedScene = useMemo(() => {
+  const { clonedScene, clonedGeometries } = useMemo(() => {
     const cloned = scene.clone(true);
+    const disposableGeometries: THREE.BufferGeometry[] = [];
 
     // Procedural aerodynamic flap tilt & lift:
     // Elevates the rear DRS top flap to an aggressive high-downforce attack angle matching real F1 cars,
@@ -50,6 +51,7 @@ const RealF1CarMesh: React.FC<{
         (child.material?.name || child.name || '').toLowerCase().includes('005')
       ) {
         child.geometry = child.geometry.clone();
+        disposableGeometries.push(child.geometry);
         const pos = child.geometry.attributes.position;
         if (pos) {
           const px0 = -17.4;
@@ -87,8 +89,17 @@ const RealF1CarMesh: React.FC<{
       }
     });
 
-    return cloned;
+    return { clonedScene: cloned, clonedGeometries: disposableGeometries };
   }, [scene]);
+
+  // Only dispose geometry cloned by this component. Geometry retained in the
+  // useGLTF cache is shared and must stay alive for later showroom visits.
+  useEffect(
+    () => () => {
+      clonedGeometries.forEach((geometry) => geometry.dispose());
+    },
+    [clonedGeometries],
+  );
 
   // Keep references to original pristine GLTF materials (so tire textures stay sharp)
   const originalMaterialsRef = useRef<Map<string, any>>(new Map());
@@ -137,7 +148,7 @@ const RealF1CarMesh: React.FC<{
   );
 
   // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
-  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.png');
+  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
 
   // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
   const wheelTex = useMemo(
@@ -385,4 +396,4 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
 };
 
 // Preload the model asset
-useGLTF.preload('/models/c42.glb');
+useGLTF.preload('/models/c42.v2.glb');

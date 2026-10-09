@@ -43,3 +43,6 @@ scratch/
 .eslintcache
 .prettiercache
 .vite/
+
+# Local source assets (not shipped or committed)
+source-assets/

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { ContactShadows, Environment } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
@@ -30,6 +30,30 @@ interface WebGLFallbackProps {
   primaryColor: string;
   lang: 'vi' | 'en';
 }
+
+const WebGLContextGuard: React.FC<{
+  onContextStateChange: (isLost: boolean) => void;
+}> = ({ onContextStateChange }) => {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const handleLost = (event: Event) => {
+      event.preventDefault();
+      onContextStateChange(true);
+    };
+    const handleRestored = () => onContextStateChange(false);
+
+    canvas.addEventListener('webglcontextlost', handleLost);
+    canvas.addEventListener('webglcontextrestored', handleRestored);
+    return () => {
+      canvas.removeEventListener('webglcontextlost', handleLost);
+      canvas.removeEventListener('webglcontextrestored', handleRestored);
+    };
+  }, [gl, onContextStateChange]);
+
+  return null;
+};
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -114,6 +138,32 @@ export const ShowroomView: React.FC = () => {
 
   // 2D CAD Blueprint & Component Comparison Modal
   const [isSchematicOpen, setIsSchematicOpen] = useState<boolean>(false);
+  const showroomStageRef = useRef<HTMLDivElement | null>(null);
+  const [isStageVisible, setIsStageVisible] = useState(true);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(
+    () => typeof document === 'undefined' || document.visibilityState === 'visible',
+  );
+  const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+
+  useEffect(() => {
+    const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    const stage = showroomStageRef.current;
+    if (!stage || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStageVisible(entry.isIntersecting),
+      { rootMargin: '160px 0px', threshold: 0.01 },
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+
+  const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
 
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
@@ -230,7 +280,10 @@ export const ShowroomView: React.FC = () => {
       </div>
 
       {/* ── 3D Interactive Showroom Canvas Stage ── */}
-      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none">
+      <div
+        ref={showroomStageRef}
+        className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none"
+      >
         {/* Dynamic Studio Ambient Spotlight & Team Accent Halo */}
         <div
           className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
@@ -292,14 +345,18 @@ export const ShowroomView: React.FC = () => {
         >
           <Canvas
             shadows
+            dpr={[1, 1.5]}
+            frameloop={isCanvasActive ? 'always' : 'never'}
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
             gl={{
               antialias: true,
               alpha: true,
+              powerPreference: 'high-performance',
               toneMappingExposure: 1.05,
             }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
+            <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
             {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
             <Environment preset="city" />
 
@@ -324,6 +381,8 @@ export const ShowroomView: React.FC = () => {
               scale={10}
               blur={2.0}
               far={4.5}
+              frames={1}
+              resolution={256}
               color="#000000"
             />
 
@@ -339,6 +398,17 @@ export const ShowroomView: React.FC = () => {
             />
           </Canvas>
         </ErrorBoundary>
+
+        {isWebGLContextLost && (
+          <div className="absolute inset-0 z-30">
+            <ShowroomWebGLFallback
+              teamName={team.name}
+              carModelName={livery.carModelName}
+              primaryColor={team.primaryColor}
+              lang={lang}
+            />
+          </div>
+        )}
 
         {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
         <ShowroomQuickHUD

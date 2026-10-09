@@ -31,7 +31,7 @@ describe('SchematicComparisonModal Component', () => {
       <SchematicComparisonModal isOpen={true} onClose={vi.fn()} teamId="mercedes" lang="vi" />,
     );
     expect(html).toContain('BẢN VẼ KỸ THUẬT CAD 2D');
-    expect(html).toContain('/images/showroom/schematics/mercedes.jpg');
+    expect(html).toContain('/images/showroom/schematics/mercedes.webp');
     expect(html).toContain('MERC-W15-AERO-8K');
   });
 
@@ -40,7 +40,7 @@ describe('SchematicComparisonModal Component', () => {
       <SchematicComparisonModal isOpen={true} onClose={vi.fn()} teamId="mclaren" lang="en" />,
     );
     expect(html).toContain('2D CAD SCHEMATIC');
-    expect(html).toContain('/images/showroom/schematics/mclaren.jpg');
+    expect(html).toContain('/images/showroom/schematics/mclaren.webp');
     expect(html).toContain('MCL-38-CFD-8K');
   });
 

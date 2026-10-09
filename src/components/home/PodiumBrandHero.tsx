@@ -15,11 +15,12 @@ export const PodiumBrandHero: React.FC = () => {
       aria-labelledby="podium-hero-title"
     >
       <img
-        src="/images/podium-diffuser-hero-v2.png"
+        src="/images/podium-diffuser-hero-v2.webp"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover object-[50%_60%] podium-hero-image"
         fetchPriority="high"
+        decoding="async"
       />
 
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,4,6,0.28)_0%,rgba(4,4,6,0.01)_38%,rgba(4,4,6,0.08)_72%,rgba(4,4,6,0.72)_100%)]" />

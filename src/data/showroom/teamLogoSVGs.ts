@@ -8,7 +8,7 @@ import { TeamId } from '../../types';
 export const TEAM_LOGO_SVG_STRINGS: Record<TeamId, string> = {
   cadillac: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 6.8 24 10.4" width="360" height="156">
     <defs>
-      <!-- Luxury Imperial Champagne Gold Gradient matching cadillac.jpg -->
+      <!-- Luxury Imperial Champagne Gold Gradient matching cadillac.webp -->
       <linearGradient id="cadGold" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="#FFF9DE"/>
         <stop offset="25%" stop-color="#E5C158"/>

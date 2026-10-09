@@ -182,7 +182,7 @@ export const App: React.FC = () => {
       <F1StartLightsPreloader />
 
       {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
-      <F1SpeedStream />
+      {!location.pathname.startsWith('/showroom') && <F1SpeedStream />}
 
       {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div

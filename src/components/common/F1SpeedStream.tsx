@@ -16,6 +16,7 @@ export const F1SpeedStream: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
@@ -65,7 +66,11 @@ export const F1SpeedStream: React.FC = () => {
     let lastTime = performance.now();
 
     const render = (time: number) => {
-      const dt = Math.min(32, time - lastTime) / 16;
+      if (time - lastTime < 1000 / 30) {
+        animId = requestAnimationFrame(render);
+        return;
+      }
+      const dt = Math.min(50, time - lastTime) / 16;
       lastTime = time;
 
       ctx.clearRect(0, 0, width, height);

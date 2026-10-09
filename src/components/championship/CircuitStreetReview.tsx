@@ -132,8 +132,8 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
             loading="lazy"
             onError={(e) => {
               const target = e.currentTarget;
-              if (target.src !== '/images/circuits/albert_park_pit_straight.jpg') {
-                target.src = '/images/circuits/albert_park_pit_straight.jpg';
+              if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
+                target.src = '/images/circuits/albert_park_pit_straight.webp';
               }
             }}
           />
@@ -299,8 +299,8 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl border border-studio-800 shadow-2xl"
                 onError={(e) => {
                   const target = e.currentTarget;
-                  if (target.src !== '/images/circuits/albert_park_pit_straight.jpg') {
-                    target.src = '/images/circuits/albert_park_pit_straight.jpg';
+                  if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
+                    target.src = '/images/circuits/albert_park_pit_straight.webp';
                   }
                 }}
               />

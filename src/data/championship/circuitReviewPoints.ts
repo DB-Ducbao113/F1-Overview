@@ -41,7 +41,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 300 },
       lat: -37.8497,
       lng: 144.968,
-      imageUrl: '/images/circuits/albert_park_pit_straight.jpg',
+      imageUrl: '/images/circuits/albert_park_pit_straight.webp',
       telemetry: { gear: 8, speedKmh: 330, brakingDistanceM: 65, gForceLateral: 1.2 },
       descriptionVi:
         'Đoạn đường thẳng xuất phát dài, nơi 20 chiếc xe F1 dàn hàng trên vạch xuất phát và tăng tốc từ 0 lên hơn 320 km/h trước khi dồn vào khúc cua Turn 1.',
@@ -61,7 +61,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 95, y: 240 },
       lat: -37.8465,
       lng: 144.965,
-      imageUrl: '/images/circuits/albert_park_turn_1.jpg',
+      imageUrl: '/images/circuits/albert_park_turn_1.webp',
       telemetry: { gear: 3, speedKmh: 145, brakingDistanceM: 95, gForceLateral: 4.5 },
       descriptionVi:
         'Khu vực phanh gấp căng thẳng nhất vòng đua: xe giảm tốc đột ngột từ 320 km/h xuống 145 km/h trong chưa đầy 100m. Điểm nóng của các pha tranh chấp ngay sau pha xuất phát.',
@@ -81,7 +81,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 110, y: 190 },
       lat: -37.843,
       lng: 144.967,
-      imageUrl: '/images/circuits/albert_park_turn_1.jpg',
+      imageUrl: '/images/circuits/albert_park_turn_1.webp',
       telemetry: { gear: 2, speedKmh: 105, brakingDistanceM: 85, gForceLateral: 3.8 },
       descriptionVi:
         'Góc cua vuông 90 độ phanh nặng sau đoạn DRS thứ 2. Thường xuyên chứng kiến các pha lách trong (dive-bomb) táo bạo.',
@@ -101,7 +101,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 215, y: 55 },
       lat: -37.8445,
       lng: 144.976,
-      imageUrl: '/images/circuits/albert_park_lakeside.jpg',
+      imageUrl: '/images/circuits/albert_park_lakeside.webp',
       telemetry: { gear: 7, speedKmh: 280, brakingDistanceM: 0, gForceLateral: 3.9 },
       descriptionVi:
         'Đoạn chạy men theo bờ hồ tuyệt đẹp, chiếc xe F1 gầm rú ở số 7 với vận tốc gần 300 km/h trong không gian cây xanh của công viên Albert Park.',
@@ -121,7 +121,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 355, y: 75 },
       lat: -37.8485,
       lng: 144.978,
-      imageUrl: '/images/circuits/albert_park_turn_1.jpg',
+      imageUrl: '/images/circuits/albert_park_turn_1.webp',
       telemetry: { gear: 6, speedKmh: 240, brakingDistanceM: 50, gForceLateral: 4.4 },
       descriptionVi:
         'Khúc cua chuyển hướng trái - phải ở tốc độ rất cao (240 km/h). Chiếc xe F1 phải nhảy lên gờ kerb để rút ngắn quỹ đạo.',
@@ -141,7 +141,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 370, y: 315 },
       lat: -37.852,
       lng: 144.972,
-      imageUrl: '/images/circuits/albert_park_pit_straight.jpg',
+      imageUrl: '/images/circuits/albert_park_pit_straight.webp',
       telemetry: { gear: 3, speedKmh: 120, brakingDistanceM: 70, gForceLateral: 3.6 },
       descriptionVi:
         'Khúc cua cuối cùng khép lại 1 vòng đua Albert Park. Lối rẽ vào Pit Lane nằm ở bên phải ngay trước khúc cua này.',
