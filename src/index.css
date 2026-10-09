@@ -660,26 +660,26 @@ canvas.r3f {
 @keyframes lightsOutJolt {
   0% {
     opacity: 0;
-    transform: translate3d(-12px, 0, 0) scale(0.86) skewX(-8deg);
+    transform: translate3d(-24px, 0, 0) scale(0.82) skewX(-10deg);
   }
   14% {
     opacity: 1;
-    transform: translate3d(10px, -2px, 0) scale(1.14) skewX(6deg);
+    transform: translate3d(20px, -3px, 0) scale(1.18) skewX(8deg);
   }
   28% {
-    transform: translate3d(-8px, 2px, 0) scale(0.96) skewX(-4deg);
+    transform: translate3d(-17px, 3px, 0) scale(0.94) skewX(-6deg);
   }
   42% {
-    transform: translate3d(7px, -1px, 0) scale(1.08) skewX(3deg);
+    transform: translate3d(14px, -2px, 0) scale(1.1) skewX(5deg);
   }
   57% {
-    transform: translate3d(-5px, 1px, 0) scale(0.99) skewX(-2deg);
+    transform: translate3d(-11px, 2px, 0) scale(0.97) skewX(-4deg);
   }
   72% {
-    transform: translate3d(3px, 0, 0) scale(1.04) skewX(1deg);
+    transform: translate3d(8px, -1px, 0) scale(1.06) skewX(3deg);
   }
   86% {
-    transform: translate3d(-2px, 0, 0) scale(1.01);
+    transform: translate3d(-5px, 1px, 0) scale(1.02) skewX(-1deg);
   }
   100% {
     opacity: 1;
