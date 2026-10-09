@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, Home, Box, Radio } from 'lucide-react';
+import { Menu, X, Trophy, Home, Box } from 'lucide-react';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
 
 export const Navbar: React.FC = React.memo(() => {
@@ -16,12 +16,6 @@ export const Navbar: React.FC = React.memo(() => {
   const NAV_ITEMS = useMemo(
     () => [
       { id: 'home', path: '/', label: strings.home, icon: <Home className="w-4 h-4" /> },
-      {
-        id: 'live',
-        path: '/live',
-        label: strings.live,
-        icon: <Radio className="w-4 h-4 text-f1red animate-pulse" />,
-      },
       {
         id: 'championship',
         path: '/season/2026',
@@ -71,14 +65,12 @@ export const Navbar: React.FC = React.memo(() => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
-                  : item.id === 'live'
-                    ? location.pathname === '/live'
-                    : item.id === 'championship'
-                      ? location.pathname.startsWith('/season') ||
-                        location.pathname.startsWith('/teams') ||
-                        location.pathname.startsWith('/drivers')
-                      : location.pathname.startsWith('/showroom') ||
-                        location.pathname.startsWith('/gallery');
+                  : item.id === 'championship'
+                    ? location.pathname.startsWith('/season') ||
+                      location.pathname.startsWith('/teams') ||
+                      location.pathname.startsWith('/drivers')
+                    : location.pathname.startsWith('/showroom') ||
+                      location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}
@@ -152,14 +144,12 @@ export const Navbar: React.FC = React.memo(() => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
-                  : item.id === 'live'
-                    ? location.pathname === '/live'
-                    : item.id === 'championship'
-                      ? location.pathname.startsWith('/season') ||
-                        location.pathname.startsWith('/teams') ||
-                        location.pathname.startsWith('/drivers')
-                      : location.pathname.startsWith('/showroom') ||
-                        location.pathname.startsWith('/gallery');
+                  : item.id === 'championship'
+                    ? location.pathname.startsWith('/season') ||
+                      location.pathname.startsWith('/teams') ||
+                      location.pathname.startsWith('/drivers')
+                    : location.pathname.startsWith('/showroom') ||
+                      location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}

@@ -21,8 +21,9 @@ describe('F1NewsTicker Component', () => {
     // Contains Singapore GP headline
     expect(html).toContain('SINGAPORE GP');
 
-    // Contains Live Center headline
-    expect(html).toContain('LIVE CENTER');
+    // Retired Live Center must not be advertised.
+    expect(html).not.toContain('LIVE CENTER');
+    expect(html).not.toContain('/LIVE');
   });
 
   it('renders interactive play/pause button', () => {

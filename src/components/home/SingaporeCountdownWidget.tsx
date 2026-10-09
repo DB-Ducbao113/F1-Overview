@@ -5,7 +5,6 @@ import { GrandPrixRound } from '../../types';
 import { MapPin, Calendar, ArrowRight, Radio, Trophy, CheckCircle2 } from 'lucide-react';
 import { formatDateStr } from '../../utils/dateUtils';
 import { scheduleWallClockSecondTick, tabSync } from '../../lib/live/tabSync';
-import { useLiveSession } from '../../hooks/live/useLiveSession';
 import { Card3DTilt } from '../common/Card3DTilt';
 
 interface SingaporeCountdownWidgetProps {
@@ -78,7 +77,6 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
   const [now, setNow] = useState<number>(() => Date.now());
-  const { data: liveSessionData } = useLiveSession();
 
   // Official Singapore schedule stored with its source offset; the UI always renders UTC+7.
   const sessions: SessionTiming[] = useMemo(
@@ -152,24 +150,11 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   let nextSession: SessionTiming | null = null;
   let timeDiffMs: number;
 
-  // 0. Single Source of Truth check from Live Session API
-  const apiSession = liveSessionData?.session;
-  const isApiLive = liveSessionData?.state === 'live';
-
-  if (isApiLive && apiSession) {
-    activeSession =
-      sessions.find(
-        (s) =>
-          s.id.toLowerCase() === (apiSession.session_name || '').toLowerCase() ||
-          s.nameEn.toLowerCase().includes((apiSession.session_name || '').toLowerCase()),
-      ) || sessions[0];
-    state = 'live';
-    nextSession = null;
-    timeDiffMs = 0;
-  } else {
+  // Calendar status only; this widget does not consume a live data feed.
+  {
     const liveSessionFound = sessions.find((s) => {
-      const startMs = new Date(s.startIso).getTime() - 30 * 60_000;
-      const endMs = new Date(s.endIso).getTime() + 30 * 60_000;
+      const startMs = new Date(s.startIso).getTime();
+      const endMs = new Date(s.endIso).getTime();
       return now >= startMs && now <= endMs;
     });
 
@@ -181,10 +166,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
     } else {
       const upcoming = sessions.find((s) => now < new Date(s.startIso).getTime());
       if (upcoming) {
-        const targetStartMs =
-          liveSessionData?.state === 'upcoming' && apiSession?.date_start
-            ? new Date(apiSession.date_start).getTime()
-            : new Date(upcoming.startIso).getTime();
+        const targetStartMs = new Date(upcoming.startIso).getTime();
         const diff = targetStartMs - now;
         state = 'upcoming';
         activeSession = null;
@@ -322,17 +304,17 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                 </div>
                 <p className="text-xs text-studio-600 font-medium">
                   {lang === 'vi'
-                    ? 'Phiên thi đấu đang diễn ra theo thời gian thực'
-                    : 'Session currently active on circuit'}
+                    ? 'Phiên đang diễn ra theo lịch · Kết quả cập nhật sau phiên'
+                    : 'Scheduled session in progress · Results available after the session'}
                 </p>
               </div>
 
               <button
-                onClick={() => navigate('/live')}
+                onClick={() => navigate('/season/2026?tab=results')}
                 className="group flex items-center gap-2 px-5 py-3 rounded-full bg-studio-950 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-md cursor-pointer shrink-0"
               >
                 <Radio className="w-4 h-4 text-white animate-pulse" />
-                <span>{lang === 'vi' ? 'Xem Trực Tiếp' : 'Watch Live'}</span>
+                <span>{lang === 'vi' ? 'Xem kết quả' : 'View results'}</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>

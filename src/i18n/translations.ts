@@ -2,7 +2,6 @@ export const t = {
   vi: {
     nav: {
       home: 'Trang chủ',
-      live: 'Live Center',
       championship: 'Giải đấu',
       collection: 'Showroom 3D',
       brandTitle: 'PODIUM',
@@ -33,7 +32,7 @@ export const t = {
       engine: 'Động cơ',
     },
     footer: {
-      desc: 'PODIUM — Effet de Sol: nền tảng mô phỏng kỹ thuật 3D, dữ liệu chặng đua thời gian thực và không gian lưu trữ di sản Formula 1.',
+      desc: 'PODIUM — Effet de Sol: nền tảng mô phỏng kỹ thuật 3D, kết quả chặng đua sau phiên và không gian lưu trữ di sản Formula 1.',
       colExplore: 'Khám Phá',
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
@@ -45,7 +44,6 @@ export const t = {
   en: {
     nav: {
       home: 'Home',
-      live: 'Live Center',
       championship: 'Championship',
       collection: '3D Showroom',
       brandTitle: 'PODIUM',
@@ -76,7 +74,7 @@ export const t = {
       engine: 'Power Unit',
     },
     footer: {
-      desc: 'PODIUM — Effet de Sol: an interactive 3D engineering platform, real-time championship telemetry, and Formula 1 heritage archive.',
+      desc: 'PODIUM — Effet de Sol: an interactive 3D engineering platform, published post-session results, and Formula 1 heritage archive.',
       colExplore: 'Explore',
       colLegal: 'Attribution & Provenance',
       disclaimer:

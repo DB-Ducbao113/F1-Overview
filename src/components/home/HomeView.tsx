@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
 import { FullscreenCarStage } from './FullscreenCarStage';
-import { HomeLiveStrip } from './HomeLiveStrip';
 import { SingaporeCountdownWidget } from './SingaporeCountdownWidget';
 import { F1NewsTicker } from '../common/F1NewsTicker';
 import { AnimatedStandingsRow } from './AnimatedStandingsRow';
@@ -76,10 +75,7 @@ export const HomeView: React.FC = () => {
           <FullscreenCarStage />
         </div>
 
-        {/* ── 1b. Live Strip: Real-time Telemetry Center Shortcut ── */}
-        <HomeLiveStrip />
-
-        {/* ── 2. Singapore GP Countdown & Live Action Hub ── */}
+        {/* ── 2. Race weekend countdown ── */}
         <SingaporeCountdownWidget race={nextRace} />
 
         {/* ── 3. Championship Standings (Official Verified Data) ── */}

@@ -30,9 +30,6 @@ const ChampionshipView = lazy(() =>
   })),
 );
 
-const LiveCenter = lazy(() =>
-  import('./components/live/LiveCenter').then((m) => ({ default: m.LiveCenter })),
-);
 const ShowroomView = lazy(() =>
   import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
 );
@@ -211,8 +208,13 @@ export const App: React.FC = () => {
           <Suspense fallback={<div className="min-h-[50vh]" />}>
             <Routes>
               <Route path="/" element={<HomeView />} />
-              <Route path="/live" element={<LiveCenter />} />
-              <Route path="/timing" element={<Navigate to="/live" replace />} />
+              {['/live', '/archive', '/timing'].map((path) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={<Navigate to="/season/2026?tab=results" replace />}
+                />
+              ))}
               <Route path="/season" element={<Navigate to="/season/2026" replace />} />
               <Route path="/championship" element={<Navigate to="/season/2026" replace />} />
               <Route path="/season/:year" element={<SeasonRoute />} />

@@ -41,14 +41,6 @@ export const F1NewsTicker: React.FC = () => {
           : 'DRIVERS CLASSIFICATION: ANTONELLI (MERCEDES) 320 PTS',
       link: '/season/2026?tab=drivers',
     },
-    {
-      badge: 'LIVE CENTER',
-      text:
-        lang === 'vi'
-          ? 'THEO DÕI TỌA ĐỘ XE 60FPS VÀ DỮ LIỆU VIỄN TRẮC OPENF1 TẠI /LIVE'
-          : 'TRACK MAP 60FPS & REAL OPENF1 TELEMETRY READY AT /LIVE',
-      link: '/live',
-    },
   ];
 
   return (
