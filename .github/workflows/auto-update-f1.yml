@@ -44,9 +44,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Sync completed sessions from OpenF1
+      - name: Sync completed sessions from F1 live timing
         if: steps.check_ready.outputs.ready == 'true'
-        continue-on-error: true
         run: node scripts/sync-openf1-sessions.js
 
       - name: Sync 2026 Season Data from Jolpica
