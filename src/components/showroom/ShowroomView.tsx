@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
-import { ContactShadows, Environment } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { ContactShadows } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
@@ -11,6 +11,7 @@ import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
+import { SchematicComparisonModal } from './SchematicComparisonModal';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -20,7 +21,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
-import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 
 interface WebGLFallbackProps {
@@ -29,6 +30,30 @@ interface WebGLFallbackProps {
   primaryColor: string;
   lang: 'vi' | 'en';
 }
+
+const WebGLContextGuard: React.FC<{
+  onContextStateChange: (isLost: boolean) => void;
+}> = ({ onContextStateChange }) => {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const handleLost = (event: Event) => {
+      event.preventDefault();
+      onContextStateChange(true);
+    };
+    const handleRestored = () => onContextStateChange(false);
+
+    canvas.addEventListener('webglcontextlost', handleLost);
+    canvas.addEventListener('webglcontextrestored', handleRestored);
+    return () => {
+      canvas.removeEventListener('webglcontextlost', handleLost);
+      canvas.removeEventListener('webglcontextrestored', handleRestored);
+    };
+  }, [gl, onContextStateChange]);
+
+  return null;
+};
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -111,6 +136,35 @@ export const ShowroomView: React.FC = () => {
   const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
+  // 2D CAD Blueprint & Component Comparison Modal
+  const [isSchematicOpen, setIsSchematicOpen] = useState<boolean>(false);
+  const showroomStageRef = useRef<HTMLDivElement | null>(null);
+  const [isStageVisible, setIsStageVisible] = useState(true);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(
+    () => typeof document === 'undefined' || document.visibilityState === 'visible',
+  );
+  const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+
+  useEffect(() => {
+    const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    const stage = showroomStageRef.current;
+    if (!stage || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStageVisible(entry.isIntersecting),
+      { rootMargin: '160px 0px', threshold: 0.01 },
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+
+  const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
+
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
   }, []);
@@ -185,12 +239,26 @@ export const ShowroomView: React.FC = () => {
                   {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
                 </h1>
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
-                  2026 SPEC
+                  {lang === 'vi' ? 'MẪU THAM CHIẾU' : 'REFERENCE MODEL'}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <button
+                type="button"
+                onClick={() => setIsSchematicOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                title={
+                  lang === 'vi'
+                    ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
+                    : 'View original 2D CAD blueprint & color matrix'
+                }
+              >
+                <FileText className="w-3.5 h-3.5 text-amber-400" />
+                <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={scrollToDossier}
@@ -212,7 +280,10 @@ export const ShowroomView: React.FC = () => {
       </div>
 
       {/* ── 3D Interactive Showroom Canvas Stage ── */}
-      <div className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none">
+      <div
+        ref={showroomStageRef}
+        className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none"
+      >
         {/* Dynamic Studio Ambient Spotlight & Team Accent Halo */}
         <div
           className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
@@ -257,6 +328,7 @@ export const ShowroomView: React.FC = () => {
             lang={lang}
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
           />
         </div>
 
@@ -273,17 +345,18 @@ export const ShowroomView: React.FC = () => {
         >
           <Canvas
             shadows
+            dpr={[1, 1.25]}
+            frameloop={isCanvasActive ? 'always' : 'never'}
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
             gl={{
-              antialias: true,
+              antialias: false,
               alpha: true,
-              toneMappingExposure: 1.05,
+              powerPreference: 'high-performance',
+              toneMappingExposure: 1.2,
             }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
-            {/* Photorealistic Studio Reflections for Metallic & Carbon Surfaces */}
-            <Environment preset="city" />
-
+            <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 
@@ -305,6 +378,8 @@ export const ShowroomView: React.FC = () => {
               scale={10}
               blur={2.0}
               far={4.5}
+              frames={1}
+              resolution={256}
               color="#000000"
             />
 
@@ -321,6 +396,17 @@ export const ShowroomView: React.FC = () => {
           </Canvas>
         </ErrorBoundary>
 
+        {isWebGLContextLost && (
+          <div className="absolute inset-0 z-30">
+            <ShowroomWebGLFallback
+              teamName={team.name}
+              carModelName={livery.carModelName}
+              primaryColor={team.primaryColor}
+              lang={lang}
+            />
+          </div>
+        )}
+
         {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
         <ShowroomQuickHUD
           enableWheelZoom={enableWheelZoom}
@@ -332,6 +418,7 @@ export const ShowroomView: React.FC = () => {
           cameraPreset={cameraPreset}
           onSelectPreset={handleSelectPreset}
           lang={lang}
+          onOpenSchematic={() => setIsSchematicOpen(true)}
         />
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
@@ -344,6 +431,15 @@ export const ShowroomView: React.FC = () => {
           }}
           onSelectHotspot={handleSelectHotspot}
           lang={lang}
+        />
+
+        {/* ── Interactive 2D CAD Blueprint & Component Livery Comparison Modal ── */}
+        <SchematicComparisonModal
+          isOpen={isSchematicOpen}
+          onClose={() => setIsSchematicOpen(false)}
+          teamId={selectedTeamId}
+          lang={lang}
+          onFocusPart={handleSelectPreset}
         />
       </div>
 

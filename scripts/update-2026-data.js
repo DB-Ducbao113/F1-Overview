@@ -93,6 +93,32 @@ const DRIVER_ID_MAP = {
   arvid_lindblad: 'lindblad',
 };
 
+// The 2026 grid has 22 race seats. Reserve/test drivers must not leak into the directory.
+const ACTIVE_2026_DRIVER_IDS = new Set([
+  'antonelli',
+  'russell',
+  'hamilton',
+  'leclerc',
+  'norris',
+  'verstappen',
+  'piastri',
+  'hadjar',
+  'lawson',
+  'lindblad',
+  'gasly',
+  'colapinto',
+  'bearman',
+  'bortoleto',
+  'hulkenberg',
+  'ocon',
+  'alonso',
+  'sainz',
+  'albon',
+  'stroll',
+  'bottas',
+  'perez',
+]);
+
 function mapDriverId(jolpicaId) {
   return DRIVER_ID_MAP[jolpicaId] || jolpicaId;
 }
@@ -187,25 +213,29 @@ async function fetchAllRaces(endpoint) {
 }
 
 // ─── Generate standings.ts content for 2026 section ────────────────────────
-function generateDriverStandings(driverStandings) {
-  const lines = driverStandings.map((d) => {
-    const driverId = mapDriverId(d.Driver.driverId);
-    const code = d.Driver.code || d.Driver.familyName.slice(0, 3).toUpperCase();
-    const name = `${d.Driver.givenName} ${d.Driver.familyName}`;
-    const teamId = mapTeamId(d.Constructors[0]?.constructorId);
-    const teamName = d.Constructors[0]?.name || 'Constructor';
-    const flag = DRIVER_FLAGS[d.Driver.driverId] || '🏁';
-    return `  { rank: ${d.position}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: 0, countryFlag: '${flag}' },`;
-  });
+function generateDriverStandings(driverStandings, driverPodiums = new Map()) {
+  const lines = driverStandings
+    .filter((d) => ACTIVE_2026_DRIVER_IDS.has(mapDriverId(d.Driver.driverId)))
+    .map((d, index) => {
+      const driverId = mapDriverId(d.Driver.driverId);
+      const code = d.Driver.code || d.Driver.familyName.slice(0, 3).toUpperCase();
+      const name = `${d.Driver.givenName} ${d.Driver.familyName}`;
+      const teamId = mapTeamId(d.Constructors[0]?.constructorId);
+      const teamName = d.Constructors[0]?.name || 'Constructor';
+      const flag = DRIVER_FLAGS[d.Driver.driverId] || '🏁';
+      const podiums = driverPodiums.get(driverId) || 0;
+      return `  { rank: ${index + 1}, driverId: '${driverId}', driverName: '${name}', driverCode: '${code}', teamId: '${teamId}', teamName: '${teamName}', points: ${d.points}, wins: ${d.wins}, podiums: ${podiums}, countryFlag: '${flag}' },`;
+    });
   return lines.join('\n');
 }
 
-function generateConstructorStandings(constructorStandings) {
+function generateConstructorStandings(constructorStandings, constructorPodiums = new Map()) {
   const lines = constructorStandings.map((c) => {
     const teamId = mapTeamId(c.Constructor.constructorId);
     const teamName = c.Constructor.name;
     const engine = ENGINE_MAP[teamId] || 'Hybrid Turbo V6';
-    return `  { rank: ${c.position}, teamId: '${teamId}', teamName: '${teamName}', points: ${c.points}, wins: ${c.wins}, podiums: 0, engine: '${engine}' },`;
+    const podiums = constructorPodiums.get(teamId) || 0;
+    return `  { rank: ${c.position}, teamId: '${teamId}', teamName: '${teamName}', points: ${c.points}, wins: ${c.wins}, podiums: ${podiums}, engine: '${engine}' },`;
   });
   return lines.join('\n');
 }
@@ -326,18 +356,62 @@ async function run() {
   console.log(`\n[Update 2026] Championship Leader: ${leaderName} (${leader.points} pts)`);
   console.log(`[Update 2026] Constructors Leader: ${leaderTeam} (${leaderTeamPts} pts)`);
 
+  // ─── Compute Podiums from Completed Grand Prix Races (P1, P2, P3 finishes) ───
+  const driverPodiums = new Map();
+  const constructorPodiums = new Map();
+  for (const race of races) {
+    const entries = race.Results || [];
+    for (const entry of entries) {
+      const pos = parseInt(entry.position, 10);
+      if (pos >= 1 && pos <= 3) {
+        const driverId = mapDriverId(entry.Driver?.driverId);
+        const teamId = mapTeamId(entry.Constructor?.constructorId);
+        if (driverId) {
+          driverPodiums.set(driverId, (driverPodiums.get(driverId) || 0) + 1);
+        }
+        if (teamId) {
+          constructorPodiums.set(teamId, (constructorPodiums.get(teamId) || 0) + 1);
+        }
+      }
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // UPDATE standings.ts (only the 2026 section)
   // ═══════════════════════════════════════════════════════════════════════════
   const standingsFile = path.join(__dirname, '..', 'src', 'data', 'championship', 'standings.ts');
   let standingsContent = fs.readFileSync(standingsFile, 'utf-8');
+  const originalStandingsContent = standingsContent;
 
   // Replace DRIVER_STANDINGS_2026
   const driverStart = standingsContent.indexOf(
     'export const DRIVER_STANDINGS_2026: DriverStanding[] = [',
   );
   const driverEnd = standingsContent.indexOf('];', driverStart) + 2;
-  const newDriverStandings = `export const DRIVER_STANDINGS_2026: DriverStanding[] = [\n${generateDriverStandings(driverStandings)}\n];`;
+  const existingDriverSection = standingsContent.slice(driverStart, driverEnd);
+  const constructorStart = standingsContent.indexOf(
+    'export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [',
+  );
+  const constructorEnd = standingsContent.indexOf('];', constructorStart) + 2;
+  const existingConstructorSection = standingsContent.slice(constructorStart, constructorEnd);
+
+  // Jolpica can publish championship totals before all race classifications are available.
+  // In that partial state, preserve the last verified podium totals instead of writing zeros.
+  if (races.length < Number(roundAfter)) {
+    for (const match of existingDriverSection.matchAll(
+      /driverId: '([^']+)'[^\n]*podiums: (\d+)/g,
+    )) {
+      if (!driverPodiums.has(match[1])) driverPodiums.set(match[1], Number(match[2]));
+    }
+    for (const match of existingConstructorSection.matchAll(
+      /teamId: '([^']+)'[^\n]*podiums: (\d+)/g,
+    )) {
+      if (!constructorPodiums.has(match[1])) constructorPodiums.set(match[1], Number(match[2]));
+    }
+    console.log('  ⚠ Race classifications are incomplete; preserving verified podium totals.');
+  }
+
+  const newDriverStandings = `export const DRIVER_STANDINGS_2026: DriverStanding[] = [\n${generateDriverStandings(driverStandings, driverPodiums)}\n];`;
   standingsContent =
     standingsContent.slice(0, driverStart) + newDriverStandings + standingsContent.slice(driverEnd);
 
@@ -346,7 +420,7 @@ async function run() {
     'export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [',
   );
   const ctorEnd = standingsContent.indexOf('];', ctorStart) + 2;
-  const newCtorStandings = `export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [\n${generateConstructorStandings(constructorStandings)}\n];`;
+  const newCtorStandings = `export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [\n${generateConstructorStandings(constructorStandings, constructorPodiums)}\n];`;
   standingsContent =
     standingsContent.slice(0, ctorStart) + newCtorStandings + standingsContent.slice(ctorEnd);
 
@@ -368,12 +442,28 @@ async function run() {
   // ═══════════════════════════════════════════════════════════════════════════
   const resultsFile = path.join(__dirname, '..', 'src', 'data', 'championship', 'results.ts');
   let resultsContent = fs.readFileSync(resultsFile, 'utf-8');
+  const originalResultsContent = resultsContent;
 
   const rr26Start = resultsContent.indexOf('export const RACE_RESULTS_2026: RaceResult[] = [');
   const rr26End = resultsContent.indexOf('];', rr26Start) + 2;
   const newRaceResults = `export const RACE_RESULTS_2026: RaceResult[] = [\n${generateRaceResults(races)}\n];`;
   resultsContent =
     resultsContent.slice(0, rr26Start) + newRaceResults + resultsContent.slice(rr26End);
+
+  // Timestamps alone must not trigger a commit and Vercel deployment.
+  const withoutStandingsTimestamp = (content) =>
+    content.replace(/lastUpdated: '[^']*'/, "lastUpdated: '<timestamp>'");
+  if (
+    withoutStandingsTimestamp(standingsContent) ===
+    withoutStandingsTimestamp(originalStandingsContent)
+  ) {
+    standingsContent = originalStandingsContent;
+  }
+  const withoutResultTimestamps = (content) =>
+    content.replace(/dataUpdatedAt: '[^']*'/g, "dataUpdatedAt: '<timestamp>'");
+  if (withoutResultTimestamps(resultsContent) === withoutResultTimestamps(originalResultsContent)) {
+    resultsContent = originalResultsContent;
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // UPDATE standingsEngine.ts — change round cutoff

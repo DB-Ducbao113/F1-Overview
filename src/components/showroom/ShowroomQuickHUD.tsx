@@ -1,5 +1,14 @@
 import React from 'react';
-import { MousePointer, ZoomIn, ZoomOut, RotateCcw, Play, Pause, Compass } from 'lucide-react';
+import {
+  MousePointer,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Play,
+  Pause,
+  Compass,
+  FileText,
+} from 'lucide-react';
 import { CameraPreset } from './CameraController';
 
 interface ShowroomQuickHUDProps {
@@ -12,6 +21,7 @@ interface ShowroomQuickHUDProps {
   cameraPreset?: CameraPreset | null;
   onSelectPreset?: (preset: CameraPreset) => void;
   lang: 'vi' | 'en';
+  onOpenSchematic?: () => void;
 }
 
 /**
@@ -30,6 +40,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
     cameraPreset,
     onSelectPreset,
     lang,
+    onOpenSchematic,
   }) => {
     const PANO_CYCLE: { id: CameraPreset; labelVi: string; labelEn: string; code: string }[] = [
       { id: 'pano_branding', labelVi: 'Vách Logo', labelEn: 'Launch Wall', code: 'LOGO' },
@@ -214,6 +225,24 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden md:inline">{lang === 'vi' ? 'Mặc Định' : 'Reset'}</span>
             </button>
+
+            {/* Compare with Original 2D Schematic */}
+            {onOpenSchematic && (
+              <button
+                type="button"
+                onClick={onOpenSchematic}
+                className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-gradient-to-r from-red-600/30 to-amber-500/20 text-amber-300 hover:text-white hover:from-red-600/50 hover:to-amber-500/40 border border-amber-500/50 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                title={
+                  lang === 'vi'
+                    ? 'So sánh xe 3D với Bản Vẽ Kỹ Thuật CAD 2D Gốc & Bảng màu'
+                    : 'Compare 3D car with Original 2D CAD Blueprint & Color Matrix'
+                }
+                aria-label={lang === 'vi' ? 'Bản Gốc 2D' : '2D Blueprint'}
+              >
+                <FileText className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">{lang === 'vi' ? 'Bản Gốc 2D' : '2D CAD'}</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

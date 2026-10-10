@@ -168,10 +168,10 @@ function buildPracticeResults1To15(): Record<number, GrandPrixPracticeData> {
 
 export const PRACTICE_RESULTS_2026: Record<number, GrandPrixPracticeData> = {
   ...buildPracticeResults1To15(),
-  // Round 16: Sepang International Circuit, Malaysia (Bahrain GP relocating to Sepang in 2026 calendar)
+  // Round 16: Sepang International Circuit, Malaysia (Malaysia Grand Prix 2026)
   16: {
     round: 16,
-    grandPrix: 'Bahrain Grand Prix (Sepang, Malaysia)',
+    grandPrix: 'Malaysia Grand Prix',
     season: 2026,
     circuit: 'Sepang International Circuit',
     sessions: {

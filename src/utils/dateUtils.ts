@@ -157,3 +157,35 @@ export function formatSessionName(name: string | undefined, lang: string): strin
   if (lang !== 'vi') return name;
   return SESSION_NAME_MAP_VI[name] || name;
 }
+
+/**
+ * Convert a local venue time string "HH:MM" to Vietnam time (UTC+7).
+ * @param timeStr  Local time at the race venue, e.g. "20:00"
+ * @param venueUtcOffset  UTC offset of the venue in hours, e.g. +8 for Singapore
+ * @returns Formatted Vietnam time string, e.g. "19:00" (with "+1 ngày" / "-1 ngày" if day boundary crossed)
+ */
+export function toVietnamTime(
+  timeStr: string,
+  venueUtcOffset: number,
+): { time: string; dayShift: number } {
+  const match = timeStr.match(/^(\d{1,2}):(\d{2})/);
+  if (!match) return { time: timeStr, dayShift: 0 };
+
+  const localHour = parseInt(match[1], 10);
+  const localMin = parseInt(match[2], 10);
+
+  // Convert to UTC then to UTC+7
+  const utcMinutes = localHour * 60 + localMin - venueUtcOffset * 60;
+  const vnMinutes = utcMinutes + 7 * 60;
+
+  // Normalise to 0–1440 range and track day shift
+  const normalised = ((vnMinutes % 1440) + 1440) % 1440;
+  const dayShift = vnMinutes < 0 ? -1 : vnMinutes >= 1440 ? 1 : 0;
+
+  const h = Math.floor(normalised / 60)
+    .toString()
+    .padStart(2, '0');
+  const m = (normalised % 60).toString().padStart(2, '0');
+
+  return { time: `${h}:${m}`, dayShift };
+}

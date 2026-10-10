@@ -26,7 +26,12 @@ export function createUVTexture(
   if (ctx) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    draw(ctx, width, height);
+    // The livery artwork was authored on canvases twice this resolution.
+    // Keep that logical coordinate system while rasterizing to a smaller GPU texture.
+    ctx.save();
+    ctx.scale(0.5, 0.5);
+    draw(ctx, width * 2, height * 2);
+    ctx.restore();
   }
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 16;
@@ -49,19 +54,23 @@ export function drawCarbonWeave(
   w: number,
   h: number,
   baseColor = '#101216',
+  weaveOpacity = 0.14,
 ) {
+  // 1. Fill base tone
   ctx.fillStyle = baseColor;
   ctx.fillRect(0, 0, w, h);
 
+  // 2. Microscopic twill weave pattern using subtle translucent lighting/shadow offsets
+  // so underlying team paint colors are 100% preserved with rich saturation
   const patternCanvas = document.createElement('canvas');
   patternCanvas.width = 8;
   patternCanvas.height = 8;
   const pctx = patternCanvas.getContext('2d');
   if (pctx) {
-    pctx.fillStyle = '#17191e';
+    pctx.fillStyle = `rgba(255, 255, 255, ${weaveOpacity * 0.65})`;
     pctx.fillRect(0, 0, 4, 4);
     pctx.fillRect(4, 4, 4, 4);
-    pctx.fillStyle = '#0a0b0d';
+    pctx.fillStyle = `rgba(0, 0, 0, ${weaveOpacity * 1.4})`;
     pctx.fillRect(4, 0, 4, 4);
     pctx.fillRect(0, 4, 4, 4);
     const pattern = ctx.createPattern(patternCanvas, 'repeat');
@@ -668,9 +677,19 @@ export function generateNoseTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
+    const noseBaseColor = livery.noseColor || livery.bodyColor || '#e8002d';
+    // 1. Full-canvas forward monocoque & nose cone paint coat with subtle composite weave (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, noseBaseColor, 0.08);
+
+    // Subtle 3D aerodynamic depth shading across outer nose flanks and monocoque roots
+    const flankShade = ctx.createLinearGradient(0, 0, 0, h);
+    flankShade.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+    flankShade.addColorStop(0.25, 'rgba(0, 0, 0, 0.0)');
+    flankShade.addColorStop(0.75, 'rgba(0, 0, 0, 0.0)');
+    flankShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.25)');
+    ctx.fillStyle = flankShade;
+    ctx.fillRect(0, 0, w, h);
 
     // Helper: Draw horizontal tapering nose cone spine
     const drawSpine = (fill: string | CanvasGradient) => {
@@ -685,12 +704,14 @@ export function generateNoseTexture(
     };
 
     if (teamId === 'mercedes') {
-      // 1. Polished Silver Arrow Metallic Nose Gradient (Transitioning from bright silver tip into deep obsidian black near cockpit)
-      const silverNoseGrad = ctx.createLinearGradient(60, 0, 1280, 0);
+      // 1. Polished Silver Arrow Metallic Nose Gradient (Seamless transition across entire forward monocoque)
+      const silverNoseGrad = ctx.createLinearGradient(0, 0, 1400, 0);
       silverNoseGrad.addColorStop(0, '#edf0f2'); // Pure polished silver tip
       silverNoseGrad.addColorStop(0.35, '#9aa2ab'); // Brushed aluminum transition
       silverNoseGrad.addColorStop(0.75, '#22262c'); // Metallic charcoal
       silverNoseGrad.addColorStop(1.0, '#0a0b0d'); // Deep obsidian black cockpit surround
+      ctx.fillStyle = silverNoseGrad;
+      ctx.fillRect(0, 0, w, h);
 
       drawSpine(silverNoseGrad);
 
@@ -1288,12 +1309,249 @@ export function generateNoseTexture(
 }
 
 /**
+ * 2.1 SIDEPOD COOLING LOUVRES & VENTILATION GILLS ("Phần rãnh rãnh")
+ * Accurately covers the sidepod upper decks and cooling extraction louvre vents across Primitive 1 (Default_OBJ.004).
+ * Delivers signature constructor paint, aerodynamic speed gradients, team accent stripes,
+ * and engineered slat extraction slots with realistic shadow depth for all 11 Formula 1 teams.
+ */
+export function drawCoolingLouvres(
+  ctx: CanvasRenderingContext2D,
+  teamId: TeamId,
+  livery: Team3DLivery,
+) {
+  interface LouvreConfig {
+    baseColor: string;
+    deckGradStart: string;
+    deckGradEnd: string;
+    accentColor: string;
+    accentSecondary: string;
+    slatShadow: string;
+  }
+
+  const configs: Record<TeamId, LouvreConfig> = {
+    mercedes: {
+      baseColor: '#0a0b0d', // Obsidian Black
+      deckGradStart: '#1b1e24',
+      deckGradEnd: '#090a0d',
+      accentColor: '#00a19c', // Petronas Emerald Turquoise
+      accentSecondary: '#00f5d4', // Electric Glowing Mint Cyan
+      slatShadow: 'rgba(0, 0, 0, 0.55)',
+    },
+    ferrari: {
+      baseColor: '#e8002d', // Scuderia Rosso Corsa
+      deckGradStart: '#ff1a3d',
+      deckGradEnd: '#cc0026',
+      accentColor: '#ffdf00', // Modena Racing Yellow
+      accentSecondary: '#ffffff', // Italian Racing White
+      slatShadow: 'rgba(60, 0, 10, 0.55)',
+    },
+    redbull: {
+      baseColor: '#030a1c', // Matte Deep Navy Blue
+      deckGradStart: '#081438',
+      deckGradEnd: '#020612',
+      accentColor: '#ffce00', // Red Bull Racing Sunburst Yellow
+      accentSecondary: '#ed1a3b', // Racing Crimson Red
+      slatShadow: 'rgba(0, 2, 10, 0.65)',
+    },
+    mclaren: {
+      baseColor: '#ff8000', // Papaya Orange
+      deckGradStart: '#ff991a',
+      deckGradEnd: '#e66000',
+      accentColor: '#141619', // Anthracite Carbon
+      accentSecondary: '#47a1ff', // Chrome Sky Blue
+      slatShadow: 'rgba(50, 18, 0, 0.55)',
+    },
+    astonmartin: {
+      baseColor: '#00594f', // British Racing Green
+      deckGradStart: '#006e62',
+      deckGradEnd: '#00473e',
+      accentColor: '#cedc00', // Fluorescent AMR Racing Lime
+      accentSecondary: '#ffffff',
+      slatShadow: 'rgba(0, 30, 25, 0.55)',
+    },
+    alpine: {
+      baseColor: '#0078d0', // Alpine Metallic Blue
+      deckGradStart: '#0d8cf0',
+      deckGradEnd: '#005fa8',
+      accentColor: '#fd4bc7', // BWT Flamingo Pink
+      accentSecondary: '#ffffff',
+      slatShadow: 'rgba(0, 20, 60, 0.55)',
+    },
+    williams: {
+      baseColor: '#001f54', // Heritage Royal Navy Blue
+      deckGradStart: '#003380',
+      deckGradEnd: '#001438',
+      accentColor: '#00a3e0', // Electric Cyan Blue (matches 2D reference photo)
+      accentSecondary: '#00d2ff', // Light Cyan highlight
+      slatShadow: 'rgba(0, 10, 40, 0.6)',
+    },
+    racingbulls: {
+      baseColor: '#1434cb', // Royal Electric Blue
+      deckGradStart: '#1f44eb',
+      deckGradEnd: '#0b2094',
+      accentColor: '#ffffff', // Visa Dynamic White
+      accentSecondary: '#00d632', // Cash App Neon Racing Green
+      slatShadow: 'rgba(5, 15, 60, 0.6)',
+    },
+    audi: {
+      baseColor: '#0d0e11', // Stealth Carbon Black
+      deckGradStart: '#181b22',
+      deckGradEnd: '#07080a',
+      accentColor: '#52ff00', // High-Voltage Fluo Neon Green
+      accentSecondary: '#80ff44',
+      slatShadow: 'rgba(0, 0, 0, 0.65)',
+    },
+    haas: {
+      baseColor: '#f8fafc', // Clean Racing White
+      deckGradStart: '#ffffff',
+      deckGradEnd: '#e2e8f0',
+      accentColor: '#e10600', // Haas Scarlet Red
+      accentSecondary: '#121417', // Carbon Black
+      slatShadow: 'rgba(20, 20, 25, 0.45)',
+    },
+    cadillac: {
+      baseColor: '#0a0b0d', // Satin Obsidian Black
+      deckGradStart: '#181920',
+      deckGradEnd: '#050507',
+      accentColor: '#d4af37', // Luxury Racing Gold
+      accentSecondary: '#f3e5ab', // Champagne Metallic Gold
+      slatShadow: 'rgba(0, 0, 0, 0.65)',
+    },
+  };
+
+  const cfg = configs[teamId] || {
+    baseColor: livery.bodyColor || '#141619',
+    deckGradStart: livery.sidepodColor || livery.bodyColor || '#1f2329',
+    deckGradEnd: livery.bodyColor || '#0a0b0d',
+    accentColor: livery.accentColor || '#ffffff',
+    accentSecondary: livery.highlightColor || '#ffdf00',
+    slatShadow: 'rgba(0, 0, 0, 0.55)',
+  };
+
+  ctx.save();
+
+  // Helper: Draw horizontal slat group with longitudinal accent stripes and transverse ventilation slots
+  const drawHorizSlatBank = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    verticalStripes = true,
+  ) => {
+    ctx.fillStyle = cfg.baseColor;
+    ctx.fillRect(x, y, w, h);
+
+    if (verticalStripes) {
+      // Team accent speed stripes along the bank
+      const stripeY = y + Math.floor(h * 0.42);
+      ctx.fillStyle = cfg.accentColor;
+      ctx.fillRect(x, stripeY, w, 14);
+      ctx.fillStyle = cfg.accentSecondary;
+      ctx.fillRect(x, stripeY + 14, w, 6);
+    }
+
+    // Engineered slat extraction grooves
+    ctx.fillStyle = cfg.slatShadow;
+    for (let sx = x; sx < x + w; sx += 16) {
+      ctx.fillRect(sx, y, 4, h);
+    }
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    for (let sx = x; sx < x + w; sx += 16) {
+      ctx.fillRect(sx + 4, y, 2, h);
+    }
+  };
+
+  // Helper: Draw vertical slat group with transverse accent stripes and longitudinal ventilation slots
+  const drawVertSlatBank = (x: number, y: number, w: number, h: number, horizStripes = true) => {
+    ctx.fillStyle = cfg.baseColor;
+    ctx.fillRect(x, y, w, h);
+
+    if (horizStripes) {
+      const stripeX = x + Math.floor(w * 0.42);
+      ctx.fillStyle = cfg.accentColor;
+      ctx.fillRect(stripeX, y, 14, h);
+      ctx.fillStyle = cfg.accentSecondary;
+      ctx.fillRect(stripeX + 14, y, 6, h);
+    }
+
+    ctx.fillStyle = cfg.slatShadow;
+    for (let sy = y; sy < y + h; sy += 16) {
+      ctx.fillRect(x, sy, w, 4);
+    }
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    for (let sy = y; sy < y + h; sy += 16) {
+      ctx.fillRect(x, sy + 4, w, 2);
+    }
+  };
+
+  // 1. LEFT SIDEPOD UPPER DECK PANEL (Island 1: X: 80..300, Y: 280..1000)
+  const leftDeckGrad = ctx.createLinearGradient(80, 280, 300, 1000);
+  leftDeckGrad.addColorStop(0, cfg.deckGradStart);
+  leftDeckGrad.addColorStop(1, cfg.deckGradEnd);
+  ctx.fillStyle = leftDeckGrad;
+  ctx.fillRect(80, 280, 220, 720);
+
+  // Aerodynamic speed accent pinstripe along left deck
+  ctx.fillStyle = cfg.accentColor;
+  ctx.fillRect(172, 280, 14, 720);
+  ctx.fillStyle = cfg.accentSecondary;
+  ctx.fillRect(186, 280, 6, 720);
+
+  // 2. RIGHT SIDEPOD UPPER DECK PANEL (Island 2: X: 1620..1800, Y: 1220..1920)
+  const rightDeckGrad = ctx.createLinearGradient(1620, 1220, 1800, 1920);
+  rightDeckGrad.addColorStop(0, cfg.deckGradStart);
+  rightDeckGrad.addColorStop(1, cfg.deckGradEnd);
+  ctx.fillStyle = rightDeckGrad;
+  ctx.fillRect(1620, 1220, 180, 700);
+
+  ctx.fillStyle = cfg.accentColor;
+  ctx.fillRect(1692, 1220, 14, 700);
+  ctx.fillStyle = cfg.accentSecondary;
+  ctx.fillRect(1706, 1220, 6, 700);
+
+  // 3. LEFT COOLING LOUVRE EXTRACTION GILLS & SLAT CLUSTERS
+  drawVertSlatBank(1800, 460, 248, 1120);
+  drawHorizSlatBank(950, 120, 720, 280);
+  drawHorizSlatBank(1200, 440, 220, 220);
+  drawHorizSlatBank(1330, 820, 160, 160);
+  drawHorizSlatBank(310, 820, 150, 90);
+  drawVertSlatBank(1600, 1850, 80, 140);
+  drawVertSlatBank(1140, 790, 50, 60, false);
+  drawHorizSlatBank(960, 570, 120, 80, false);
+
+  // 4. RIGHT COOLING LOUVRE EXTRACTION GILLS & SLAT CLUSTERS
+  drawHorizSlatBank(180, 60, 920, 200);
+  drawHorizSlatBank(1080, 180, 540, 220);
+  drawVertSlatBank(1780, 820, 120, 620);
+  drawHorizSlatBank(1260, 820, 480, 80);
+  drawVertSlatBank(730, 1180, 50, 280, false);
+  drawVertSlatBank(1840, 160, 60, 240, false);
+  drawVertSlatBank(1910, 560, 138, 220, false);
+  drawHorizSlatBank(1920, 2000, 128, 48, false);
+  drawHorizSlatBank(180, 560, 340, 280);
+  drawVertSlatBank(440, 760, 80, 140, false);
+  drawVertSlatBank(560, 1210, 90, 140, false);
+  drawHorizSlatBank(700, 440, 140, 80, false);
+  drawVertSlatBank(130, 980, 70, 100, false);
+  drawVertSlatBank(10, 840, 40, 60, false);
+  drawVertSlatBank(990, 1520, 50, 100, false);
+  drawHorizSlatBank(0, 320, 70, 70, false);
+  drawVertSlatBank(0, 760, 70, 140, false);
+  drawHorizSlatBank(1020, 1140, 70, 80, false);
+  drawHorizSlatBank(630, 1910, 80, 80, false);
+  drawHorizSlatBank(310, 1980, 140, 70, false);
+
+  ctx.restore();
+}
+
+/**
  * 2. MAIN BODYWORK: SIDEPODS, ENGINE COVER, SHARK FIN & AIRBOX (Default_OBJ.004 / Image_1.png)
  * UV mapped precisely to Primitive 1 in C42 GLTF.
  * Features:
  *  - Airbox roll-hoop intake cowl (Y: 0..120): Team signature airbox (Red INEOS, Yellow Red Bull, Duracell copper)
  *  - Left sidepod & engine cover (X: 150..1450, Y: 1550..2048): Dynamic sweeping ribbon, bold white title sponsors
  *  - Right sidepod flank (X: 728..1012, Y: 770..1620): Vertical sidepod flank with team branding
+ *  - Sidepod cooling louvres & upper decks: Signature team paint, aerodynamic gradients & ventilation slats
  *  - Engine cover starfield & logos (X: 950..1850, Y: 450..1500)
  */
 export function generateBodyworkTexture(
@@ -1301,9 +1559,34 @@ export function generateBodyworkTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, livery.bodyColor || '#0a0b0d');
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
+    const bodyBaseColor = livery.bodyColor || livery.sidepodColor || '#e8002d';
+
+    // 1. Full-canvas main bodywork paint coat with subtle composite weave (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, bodyBaseColor, 0.08);
+
+    // Subtle 3D aerodynamic shading gradient across engine cover & sidepod decks
+    const aeroShade = ctx.createLinearGradient(0, 0, 0, h);
+    aeroShade.addColorStop(0, 'rgba(0, 0, 0, 0.15)');
+    aeroShade.addColorStop(0.3, 'rgba(255, 255, 255, 0.04)');
+    aeroShade.addColorStop(0.7, 'rgba(0, 0, 0, 0.0)');
+    aeroShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.22)');
+    ctx.fillStyle = aeroShade;
+    ctx.fillRect(0, 0, w, h);
+
+    if (teamId === 'mercedes') {
+      // Silver Arrow metallic gradient transitioning smoothly into obsidian black
+      const mercBodyGrad = ctx.createLinearGradient(0, 0, 1600, 0);
+      mercBodyGrad.addColorStop(0, '#c8ccd0');
+      mercBodyGrad.addColorStop(0.35, '#4a525d');
+      mercBodyGrad.addColorStop(0.75, '#14171d');
+      mercBodyGrad.addColorStop(1.0, '#0a0b0d');
+      ctx.fillStyle = mercBodyGrad;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // 2. Team-Specific Sidepod Cooling Louvres & Vents ("Phần rãnh rãnh")
+    drawCoolingLouvres(ctx, teamId, livery);
 
     if (teamId === 'mercedes') {
       // 1. Airbox Roll-Hoop Intake Cowl (Top Edge Y: 0..120): INEOS Burgundy Red
@@ -1989,9 +2272,32 @@ export function generateWingsTexture(
   livery: Team3DLivery,
   _sponsors: TeamSponsorConfig,
 ): THREE.CanvasTexture {
-  return createUVTexture(2048, 2048, (ctx, w, h) => {
-    // 1. Carbon fiber base weave
-    drawCarbonWeave(ctx, w, h, '#0a0b0d');
+  return createUVTexture(1024, 1024, (ctx, w, h) => {
+    const wingBaseColor = livery.wingColor || '#0a0b0e';
+    const aeroPaint = livery.bodyColor || '#e8002d';
+    const accentPaint = livery.accentColor || '#ffffff';
+
+    // 1. Carbon fiber base weave for aerodynamic wing structure
+    drawCarbonWeave(ctx, w, h, wingBaseColor, 0.16);
+
+    // 2. Front Wing Flap Assembly (UV rows Y: 40..460 and Y: 1720..2020 which map to Front Wing in Primitive 10)
+    // Coated with team signature aerodynamic paint and cascade accent stripes
+    ctx.fillStyle = aeroPaint;
+    ctx.fillRect(0, 40, w, 220);
+    ctx.fillRect(0, 1740, w, 180);
+
+    // Aerodynamic highlight speedline along front wing flaps
+    ctx.fillStyle = accentPaint;
+    ctx.fillRect(0, 260, w, 14);
+    ctx.fillRect(0, 1920, w, 14);
+
+    // Aerodynamic shading between flap cascades
+    const fwShade = ctx.createLinearGradient(0, 40, 0, 260);
+    fwShade.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+    fwShade.addColorStop(0.5, 'rgba(0, 0, 0, 0.0)');
+    fwShade.addColorStop(1.0, 'rgba(0, 0, 0, 0.35)');
+    ctx.fillStyle = fwShade;
+    ctx.fillRect(0, 40, w, 220);
 
     // Helper: Draw graphics horizontally across a rear wing element
     const drawFlapBranding = (
@@ -2770,11 +3076,677 @@ export function generateWingsTexture(
 
 /**
  * 4. AERODYNAMIC UNDERFLOOR & CHASSIS (Default_OBJ.001 / Image_3.png)
- * Pure procedural carbon fiber twill weave with zero misplaced sponsor decals or bleed.
+ * Features authentic carbon fiber weave, colored longitudinal floor edge fences,
+ * FIA Jabroc composite center reference plank, and machined golden titanium skid blocks.
  */
 export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
+    // Base structural carbon fiber
     drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
+
+    ctx.save();
+
+    // ── 1. Longitudinal Venturi Tunnel Inflow Channels ──
+    const gradLeft = ctx.createLinearGradient(0, 0, w * 0.45, 0);
+    gradLeft.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
+    gradLeft.addColorStop(0.5, 'rgba(255, 255, 255, 0.03)');
+    gradLeft.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+    ctx.fillStyle = gradLeft;
+    ctx.fillRect(80, 60, w * 0.38, h - 120);
+
+    const gradRight = ctx.createLinearGradient(w * 0.55, 0, w, 0);
+    gradRight.addColorStop(0, 'rgba(0, 0, 0, 0.4)');
+    gradRight.addColorStop(0.5, 'rgba(255, 255, 255, 0.03)');
+    gradRight.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
+    ctx.fillStyle = gradRight;
+    ctx.fillRect(w * 0.54, 60, w * 0.38, h - 120);
+
+    // ── 2. Team-Colored Outer Floor Edge Wings & Longitudinal Fences ──
+    const edgeColor = livery.floorEdgeAccentColor || livery.accentColor || '#ff0033';
+    const highlightColor = livery.highlightColor || '#ffffff';
+
+    // Left Floor Edge Speedlines
+    ctx.fillStyle = edgeColor;
+    ctx.fillRect(16, 80, 24, h - 160);
+    ctx.fillStyle = highlightColor;
+    ctx.fillRect(44, 100, 8, h - 200);
+
+    // Right Floor Edge Speedlines
+    ctx.fillStyle = edgeColor;
+    ctx.fillRect(w - 40, 80, 24, h - 160);
+    ctx.fillStyle = highlightColor;
+    ctx.fillRect(w - 52, 100, 8, h - 200);
+
+    // Floor edge vortex shedder tooth cuts (FIA 2026 ground-effect slits)
+    ctx.fillStyle = '#050608';
+    for (let y = 140; y < h - 160; y += 48) {
+      ctx.fillRect(12, y, 12, 18);
+      ctx.fillRect(w - 24, y, 12, 18);
+    }
+
+    // ── 3. Central FIA Jabroc Beechwood Reference Skid Plank ──
+    const plankX = Math.round(w * 0.45);
+    const plankW = Math.round(w * 0.1);
+    const plankY = 80;
+    const plankH = h - 160;
+
+    // Natural Amber Beechwood Jabroc laminate gradient
+    const plankGrad = ctx.createLinearGradient(plankX, 0, plankX + plankW, 0);
+    plankGrad.addColorStop(0, '#593a1c');
+    plankGrad.addColorStop(0.2, '#7a5229');
+    plankGrad.addColorStop(0.5, '#8c6032');
+    plankGrad.addColorStop(0.8, '#7a5229');
+    plankGrad.addColorStop(1, '#503318');
+    ctx.fillStyle = plankGrad;
+    ctx.fillRect(plankX, plankY, plankW, plankH);
+
+    // Wood composite striations / grain
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+    ctx.lineWidth = 1;
+    for (let x = plankX + 6; x < plankX + plankW; x += 8) {
+      ctx.beginPath();
+      ctx.moveTo(x, plankY);
+      ctx.lineTo(x, plankY + plankH);
+      ctx.stroke();
+    }
+
+    // ── 4. Machined Golden Titanium Skid Blocks (Front & Rear FIA Wear Indicators) ──
+    const drawSkidBlock = (bx: number, by: number, bw: number, bh: number) => {
+      // Gold titanium plate
+      const goldGrad = ctx.createLinearGradient(bx, by, bx + bw, by + bh);
+      goldGrad.addColorStop(0, '#f5d061');
+      goldGrad.addColorStop(0.5, '#d4af37');
+      goldGrad.addColorStop(1, '#9b7d20');
+      ctx.fillStyle = goldGrad;
+      ctx.fillRect(bx, by, bw, bh);
+
+      // Bevel & border
+      ctx.strokeStyle = '#fae596';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, by, bw, bh);
+
+      // Hex fastener insets
+      ctx.fillStyle = '#22252a';
+      const insetOffsets = [
+        [bx + 12, by + bh * 0.5],
+        [bx + bw * 0.5, by + bh * 0.5],
+        [bx + bw - 12, by + bh * 0.5],
+      ];
+      insetOffsets.forEach(([fx, fy]) => {
+        ctx.beginPath();
+        ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+    };
+
+    // Forward skid block
+    drawSkidBlock(plankX + 6, plankY + 20, plankW - 12, 34);
+    // Rearward skid block
+    drawSkidBlock(plankX + 6, plankY + plankH - 54, plankW - 12, 34);
+
+    // Laser-engraved FIA Reference Identification
+    ctx.font = 'bold 12px "Courier New", monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.textAlign = 'center';
+    ctx.fillText('FIA REF PLANK 10.0mm', w * 0.5, plankY + plankH * 0.5);
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillStyle = edgeColor;
+    ctx.fillText(`${teamId.toUpperCase()} GROUND EFFECT AERO`, w * 0.5, plankY + plankH * 0.5 + 24);
+
+    ctx.restore();
+  });
+}
+
+/**
+ * 5. SUSPENSION WISHBONES, PUSHRODS & REAR-VIEW MIRRORS (Default_OBJ.003 / Image_0.png)
+ * Gives mirror housings authentic team livery paint, aerodynamic pinstripes,
+ * tinted reflection mirror glass, and titanium rod ends on carbon wishbones.
+ */
+export function generateSuspensionMirrorsTexture(
+  teamId: TeamId,
+  livery: Team3DLivery,
+): THREE.CanvasTexture {
+  return createUVTexture(512, 512, (ctx, w, h) => {
+    // Base structural carbon weave for suspension arms
+    drawCarbonWeave(ctx, w, h, '#0d0f14');
+
+    ctx.save();
+
+    const mirrorPaint = livery.mirrorColor || livery.bodyColor || '#e8002d';
+    const mirrorAccent = livery.mirrorAccentColor || livery.accentColor || '#ffffff';
+
+    // ── 1. Titanium Spherical Bearings & Rod End Studs ──
+    const drawTitaniumBearing = (x: number, y: number, r: number) => {
+      const grad = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, 2, x, y, r);
+      grad.addColorStop(0, '#f8fafc');
+      grad.addColorStop(0.4, '#c4c9ce');
+      grad.addColorStop(0.8, '#64748b');
+      grad.addColorStop(1, '#334155');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Golden center pin
+      ctx.fillStyle = '#d4af37';
+      ctx.beginPath();
+      ctx.arc(x, y, r * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
+    // Draw suspension mount bearings
+    drawTitaniumBearing(160, 520, 24);
+    drawTitaniumBearing(240, 680, 20);
+    drawTitaniumBearing(w - 160, 520, 24);
+    drawTitaniumBearing(w - 240, 680, 20);
+
+    // Suspension Pushrod Team-Colored Aerodynamic Bands
+    ctx.fillStyle = mirrorAccent;
+    ctx.fillRect(140, 600, 220, 10);
+    ctx.fillRect(w - 360, 600, 220, 10);
+
+    // ── 2. Rear-View Mirrors (Left & Right Prominent Housings) ──
+    const drawMirrorHousing = (
+      mx: number,
+      my: number,
+      mw: number,
+      mh: number,
+      isRight: boolean,
+    ) => {
+      // Mirror Aerodynamic Carbon Mounting Stalk
+      ctx.fillStyle = '#0a0b0d';
+      ctx.fillRect(isRight ? mx - 40 : mx + mw, my + mh * 0.35, 48, 22);
+
+      // Main Outer Mirror Shell (Team Primary Color)
+      const shellGrad = ctx.createLinearGradient(mx, my, mx, my + mh);
+      shellGrad.addColorStop(0, mirrorPaint);
+      shellGrad.addColorStop(0.8, mirrorPaint);
+      shellGrad.addColorStop(1, '#050608');
+      ctx.fillStyle = shellGrad;
+
+      ctx.beginPath();
+      ctx.roundRect(mx, my, mw, mh, 28);
+      ctx.fill();
+
+      // Glossy Top Specular Highlight
+      const specGrad = ctx.createLinearGradient(mx, my, mx, my + mh * 0.45);
+      specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+      specGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+      ctx.fillStyle = specGrad;
+      ctx.beginPath();
+      ctx.roundRect(mx + 6, my + 6, mw - 12, mh * 0.4, 20);
+      ctx.fill();
+
+      // Team Livery Aero Trim / Pinstripe
+      ctx.fillStyle = mirrorAccent;
+      ctx.fillRect(mx + 16, my + mh - 26, mw - 32, 8);
+
+      // Mirror Glass Cavity & Horizon Reflection Glass
+      const glassX = mx + 20;
+      const glassY = my + 20;
+      const glassW = mw - 40;
+      const glassH = mh - 60;
+
+      // Dark Bezel
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.roundRect(glassX - 4, glassY - 4, glassW + 8, glassH + 8, 14);
+      ctx.fill();
+
+      // Reflective Glass Face with Studio Horizon Gradient
+      const glassGrad = ctx.createLinearGradient(glassX, glassY, glassX, glassY + glassH);
+      glassGrad.addColorStop(0, '#cce3f5'); // Bright sky/studio softbox reflection
+      glassGrad.addColorStop(0.48, '#e2eef9');
+      glassGrad.addColorStop(0.5, '#2b394d'); // Sharp horizon line
+      glassGrad.addColorStop(1, '#131b26'); // Dark tarmac ground
+      ctx.fillStyle = glassGrad;
+      ctx.beginPath();
+      ctx.roundRect(glassX, glassY, glassW, glassH, 10);
+      ctx.fill();
+
+      // Specular streak across mirror glass
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(glassX + 15, glassY + glassH - 8);
+      ctx.lineTo(glassX + glassW - 15, glassY + 8);
+      ctx.stroke();
+    };
+
+    // Render Left Mirror Housing
+    drawMirrorHousing(100, 140, 320, 180, false);
+    // Render Right Mirror Housing
+    drawMirrorHousing(w - 420, 140, 320, 180, true);
+
+    // 3. C42 3D Model Cockpit Mirror Shells (UV cluster at U: 510..600, V: 380..460)
+    // Guarantees 3D model mirrors are fully coated in official team mirror livery paint
+    const c42MirrorGrad = ctx.createLinearGradient(510, 380, 600, 460);
+    c42MirrorGrad.addColorStop(0, mirrorPaint);
+    c42MirrorGrad.addColorStop(0.85, mirrorPaint);
+    c42MirrorGrad.addColorStop(1.0, '#06080a');
+    ctx.fillStyle = c42MirrorGrad;
+    ctx.beginPath();
+    ctx.roundRect(510, 380, 90, 80, 16);
+    ctx.fill();
+
+    // Mirror housing accent trim & top specular highlight
+    ctx.fillStyle = mirrorAccent;
+    ctx.fillRect(510, 450, 90, 6);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.fillRect(520, 386, 70, 8);
+
+    ctx.restore();
+  });
+}
+
+/**
+ * 6. REAR AERO DEFLECTORS, BEAM WING & DIFFUSER (Default_OBJ.009 / Image_4.png)
+ * Features high-intensity FIA 24-LED Ruby Red rain light + ERS status indicators,
+ * heat-blued titanium/Inconel exhaust tailpipe, and team-colored diffuser strakes.
+ */
+export function generateDiffuserRainLightTexture(
+  teamId: TeamId,
+  livery: Team3DLivery,
+): THREE.CanvasTexture {
+  return createUVTexture(512, 512, (ctx, w, h) => {
+    // Base structural carbon weave
+    drawCarbonWeave(ctx, w, h, '#08090c');
+
+    ctx.save();
+
+    const strakeColor = livery.diffuserAccentColor || livery.accentColor || '#ff0033';
+    const rainLightColor = livery.rainLightColor || '#ff0033';
+
+    // ── 1. Vertical Diffuser Aerodynamic Strakes with Team Livery Edges ──
+    const strakePositions = [140, 280, w - 280, w - 140];
+    strakePositions.forEach((sx) => {
+      // Strake body shadow
+      ctx.fillStyle = '#020304';
+      ctx.fillRect(sx - 14, 120, 28, h - 240);
+
+      // Glowing team accent edge
+      ctx.fillStyle = strakeColor;
+      ctx.fillRect(sx - 4, 120, 8, h - 240);
+
+      // Golden titanium skid shoe at bottom tip
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(sx - 6, h - 160, 12, 30);
+    });
+
+    // ── 2. Inconel & Titanium Heat-Treated Central Exhaust Tailpipe ──
+    const exCx = Math.round(w * 0.5);
+    const exCy = 230;
+    const exR = 86;
+
+    // Outer Thermal Heat Discoloration Halo (Titanium heat-bluing effect)
+    const heatGlow = ctx.createRadialGradient(exCx, exCy, exR * 0.6, exCx, exCy, exR + 28);
+    heatGlow.addColorStop(0, '#e6a100'); // Heat gold
+    heatGlow.addColorStop(0.35, '#9d32d4'); // Scorched purple
+    heatGlow.addColorStop(0.7, '#1d4ed8'); // Anodized royal blue
+    heatGlow.addColorStop(1, 'rgba(10, 12, 16, 0.0)');
+    ctx.fillStyle = heatGlow;
+    ctx.beginPath();
+    ctx.arc(exCx, exCy, exR + 28, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inconel exhaust pipe wall
+    const pipeGrad = ctx.createRadialGradient(
+      exCx - exR * 0.3,
+      exCy - exR * 0.3,
+      exR * 0.2,
+      exCx,
+      exCy,
+      exR,
+    );
+    pipeGrad.addColorStop(0, '#cbd5e1');
+    pipeGrad.addColorStop(0.7, '#64748b');
+    pipeGrad.addColorStop(0.9, '#334155');
+    pipeGrad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = pipeGrad;
+    ctx.beginPath();
+    ctx.arc(exCx, exCy, exR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner dark exhaust gas orifice
+    const boreGrad = ctx.createRadialGradient(exCx, exCy, 10, exCx, exCy, exR * 0.75);
+    boreGrad.addColorStop(0, '#000000');
+    boreGrad.addColorStop(0.8, '#0a0b0d');
+    boreGrad.addColorStop(1, '#1e2229');
+    ctx.fillStyle = boreGrad;
+    ctx.beginPath();
+    ctx.arc(exCx, exCy, exR * 0.75, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ── 3. Central FIA Impact Structure & 24-LED Ruby Rain Light ──
+    const rlX = Math.round(w * 0.5 - 130);
+    const rlY = 540;
+    const rlW = 260;
+    const rlH = 180;
+
+    // Carbon Impact Structure Mount
+    ctx.fillStyle = '#050608';
+    ctx.beginPath();
+    ctx.roundRect(rlX - 16, rlY - 16, rlW + 32, rlH + 32, 20);
+    ctx.fill();
+    ctx.strokeStyle = '#222630';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // FIA Light Enclosure Bezel
+    ctx.fillStyle = '#101216';
+    ctx.beginPath();
+    ctx.roundRect(rlX, rlY, rlW, rlH, 14);
+    ctx.fill();
+
+    // 4 Rows x 6 Columns = 24 FIA Ultra-Bright Ruby LEDs
+    const rows = 4;
+    const cols = 6;
+    const gapX = rlW / (cols + 1);
+    const gapY = rlH / (rows + 1);
+
+    for (let r = 1; r <= rows; r++) {
+      for (let c = 1; c <= cols; c++) {
+        const lx = rlX + c * gapX;
+        const ly = rlY + r * gapY;
+
+        // Is this an ERS Green indicator LED? (Bottom left and bottom right corners)
+        const isErsLed = r === rows && (c === 1 || c === cols);
+        const ledColor = isErsLed ? '#00ff66' : rainLightColor;
+        const glowColor = isErsLed ? 'rgba(0, 255, 102, 0.45)' : 'rgba(255, 0, 51, 0.55)';
+
+        // LED Glow Halo
+        const glow = ctx.createRadialGradient(lx, ly, 2, lx, ly, 16);
+        glow.addColorStop(0, glowColor);
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(lx, ly, 16, 0, Math.PI * 2);
+        ctx.fill();
+
+        // LED Reflector cup
+        ctx.fillStyle = '#1c1f26';
+        ctx.beginPath();
+        ctx.arc(lx, ly, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Intense glowing diode core
+        ctx.fillStyle = ledColor;
+        ctx.beginPath();
+        ctx.arc(lx, ly, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Specular diode apex
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(lx - 1.5, ly - 1.5, 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // FIA Homologation Label
+    ctx.font = 'bold 9px "Courier New", monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.textAlign = 'center';
+    ctx.fillText('FIA HOMOLOGATED RAIN LIGHT · TYPE-RL24', w * 0.5, rlY + rlH + 26);
+
+    ctx.restore();
+  });
+}
+
+/**
+ * 7. COCKPIT INTERIOR & STEERING WHEEL (Default_OBJ.002 / Image_2.png)
+ * Features PCU-8D OLED digital telemetry display with RPM LEDs, colorful cockpit
+ * pushbuttons and dials, and team-colored 6-point racing safety harness with alloy buckle.
+ */
+export function generateCockpitTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
+  return createUVTexture(512, 512, (ctx, w, h) => {
+    // Monocoque carbon cockpit tub & black Alcantara
+    drawCarbonWeave(ctx, w, h, '#111317');
+
+    ctx.save();
+
+    const harnessColor = livery.seatbeltColor || livery.accentColor || '#e8002d';
+
+    // ── 1. 6-Point Racing Safety Harness (Shoulder & Lap Belts) ──
+    const drawHarnessStrap = (bx: number, by: number, bw: number, bh: number) => {
+      // Main woven strap webbing
+      ctx.fillStyle = harnessColor;
+      ctx.fillRect(bx, by, bw, bh);
+
+      // Subtle longitudinal webbing weave texture
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.lineWidth = 2;
+      for (let x = bx + 6; x < bx + bw; x += 8) {
+        ctx.beginPath();
+        ctx.moveTo(x, by);
+        ctx.lineTo(x, by + bh);
+        ctx.stroke();
+      }
+
+      // High-strength double edge border stitching
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(bx + 2, by + 4, bw - 4, bh - 8);
+      ctx.setLineDash([]);
+
+      // FIA Homologation Manufacturer Patch
+      const patchY = by + Math.round(bh * 0.35);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(bx + 8, patchY, bw - 16, 42);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('SABELT', bx + bw * 0.5, patchY + 18);
+      ctx.font = '8px sans-serif';
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillText('FIA 8853-2016', bx + bw * 0.5, patchY + 34);
+    };
+
+    // Left & Right shoulder harness straps
+    drawHarnessStrap(180, 520, 90, 440);
+    drawHarnessStrap(w - 270, 520, 90, 440);
+
+    // Central Magnesium Alloy Quick-Release Rotary Buckle
+    const bckCx = Math.round(w * 0.5);
+    const bckCy = 800;
+    const bckR = 52;
+
+    const buckleGrad = ctx.createRadialGradient(bckCx - 15, bckCy - 15, 6, bckCx, bckCy, bckR);
+    buckleGrad.addColorStop(0, '#f1f5f9');
+    buckleGrad.addColorStop(0.5, '#94a3b8');
+    buckleGrad.addColorStop(0.9, '#475569');
+    buckleGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = buckleGrad;
+    ctx.beginPath();
+    ctx.arc(bckCx, bckCy, bckR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Center release lever with yellow safety indicator
+    ctx.fillStyle = '#facc15';
+    ctx.beginPath();
+    ctx.roundRect(bckCx - 14, bckCy - 28, 28, 56, 8);
+    ctx.fill();
+
+    // ── 2. PCU-8D F1 Steering Wheel Console (Upper Center Zone) ──
+    const swX = Math.round(w * 0.5 - 240);
+    const swY = 60;
+    const swW = 480;
+    const swH = 380;
+
+    // Ergonomic Steering Wheel Carbon Shell
+    ctx.fillStyle = '#0a0b0e';
+    ctx.beginPath();
+    ctx.roundRect(swX, swY, swW, swH, 32);
+    ctx.fill();
+    ctx.strokeStyle = '#1e2430';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // Textured Alcantara Handgrips on Left & Right Sides
+    ctx.fillStyle = '#181b22';
+    ctx.beginPath();
+    ctx.roundRect(swX + 8, swY + 40, 56, swH - 80, 16);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(swX + swW - 64, swY + 40, 56, swH - 80, 16);
+    ctx.fill();
+
+    // ── 3. High-Resolution LCD Telemetry Screen ──
+    const scrX = swX + 80;
+    const scrY = swY + 70;
+    const scrW = swW - 160;
+    const scrH = 200;
+
+    // Bezel & Screen Glass
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(scrX - 6, scrY - 6, scrW + 12, scrH + 12);
+    ctx.fillStyle = '#050a14';
+    ctx.fillRect(scrX, scrY, scrW, scrH);
+
+    // RPM Shift Light LEDs (5 Green + 5 Amber + 5 Blue)
+    const ledCount = 15;
+    const ledGap = scrW / (ledCount + 1);
+    for (let i = 1; i <= ledCount; i++) {
+      const lx = scrX + i * ledGap;
+      const ly = scrY - 18;
+      let col = '#00ff66'; // Green (1-5)
+      if (i > 5 && i <= 10) col = '#ff3300'; // Amber/Red (6-10)
+      if (i > 10) col = '#00bfff'; // Blue (11-15)
+
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(lx, ly, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(lx - 1.5, ly - 1.5, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Telemetry Readouts
+    // Gear indicator: Large bold white "8"
+    ctx.font = 'bold 74px "Arial Black", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText('8', scrX + scrW * 0.5, scrY + 95);
+
+    // Speed indicator: "332 KM/H"
+    ctx.font = 'bold 22px monospace';
+    ctx.fillStyle = '#00f0ff';
+    ctx.fillText('332 KM/H', scrX + scrW * 0.5, scrY + 130);
+
+    // Delta time: Neon lime green "-0.245"
+    ctx.font = 'bold 18px monospace';
+    ctx.fillStyle = '#00ff66';
+    ctx.fillText('DELTA  -0.245', scrX + scrW * 0.5, scrY + 160);
+
+    // Battery / ERS Deployment bar (Cyan)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(scrX + 24, scrY + 175, scrW - 48, 12);
+    ctx.fillStyle = '#00f0ff';
+    ctx.fillRect(scrX + 24, scrY + 175, (scrW - 48) * 0.88, 12);
+
+    // ── 4. Vibrant Multi-Colored Cockpit Pushbuttons ──
+    const drawF1Button = (bx: number, by: number, label: string, color: string) => {
+      // Button bezel
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(bx, by, 18, 0, Math.PI * 2);
+      ctx.fill();
+      // Colored button cap
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(bx, by, 14, 0, Math.PI * 2);
+      ctx.fill();
+      // Button text
+      ctx.font = 'bold 9px sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, bx, by);
+    };
+
+    drawF1Button(swX + 100, swY + 310, 'DRS', '#10b981'); // Emerald Green DRS
+    drawF1Button(swX + 160, swY + 310, 'RAD', '#f59e0b'); // Amber Radio
+    drawF1Button(swX + swW - 160, swY + 310, 'PIT', '#ef4444'); // Red Pit Limiter
+    drawF1Button(swX + swW - 100, swY + 310, 'OT', '#8b5cf6'); // Purple Overtake
+
+    ctx.restore();
+  });
+}
+
+/**
+ * 8. TITANIUM HALO SAFETY CELL (Default_OBJ.008 / Image_8.png)
+ * Features authentic Grade 5 titanium structure, aerodynamic upper fairing
+ * in team livery color, sponsor branding and official FIA safety crest.
+ */
+export function generateHaloTexture(
+  teamId: TeamId,
+  livery: Team3DLivery,
+  sponsors?: TeamSponsorConfig,
+): THREE.CanvasTexture {
+  return createUVTexture(512, 512, (ctx, w, h) => {
+    const haloPaint = livery.haloColor || livery.bodyColor || '#e8002d';
+    const accentColor = livery.accentColor || '#ffffff';
+
+    // 1. Full-canvas team livery paint coat across entire halo safety ring (100% surface coverage)
+    drawCarbonWeave(ctx, w, h, haloPaint, 0.08);
+
+    // Aerodynamic lighting & curvature depth gradient across halo structure
+    const archGrad = ctx.createLinearGradient(0, 0, 0, h);
+    archGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+    archGrad.addColorStop(0.25, 'rgba(255, 255, 255, 0.0)');
+    archGrad.addColorStop(0.75, 'rgba(0, 0, 0, 0.0)');
+    archGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0.35)');
+    ctx.fillStyle = archGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.save();
+
+    // Specular Highlight on Upper Halo Arch
+    const specGrad = ctx.createLinearGradient(0, 120, 0, 240);
+    specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+    specGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+    ctx.fillStyle = specGrad;
+    ctx.fillRect(80, 120, w - 160, 120);
+
+    // Team Accent Aero Trim Along Boundary
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(80, 480, w - 160, 14);
+
+    // ── 2. Titanium Center Pillar Mount Structure ──
+    const cpGrad = ctx.createLinearGradient(w * 0.4, 0, w * 0.6, 0);
+    cpGrad.addColorStop(0, '#64748b');
+    cpGrad.addColorStop(0.5, '#e2e8f0');
+    cpGrad.addColorStop(1, '#475569');
+    ctx.fillStyle = cpGrad;
+    ctx.fillRect(w * 0.44, 520, w * 0.12, 420);
+
+    // Center structural ribs
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(w * 0.44, 520, w * 0.12, 420);
+
+    // ── 3. Sponsor Branding / Official FIA Certification Mark ──
+    const sponsorName = sponsors?.primarySponsor || livery.teamName;
+    ctx.font = 'bold 36px "Arial Black", sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(sponsorName.toUpperCase(), w * 0.5, 300);
+
+    // FIA Standard 8869-2018 Homologation Tag
+    ctx.font = 'bold 12px "Courier New", monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.fillText('FIA STANDARD 8869-2018 · TITANIUM GRADE 5 · CP47', w * 0.5, 360);
+
+    ctx.restore();
   });
 }
 
@@ -3053,7 +4025,7 @@ export function drawTeamAeroWheelCover(
       ctx.arc(cx, cy, 239, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Iconic Modena Canary Yellow Concentric Speed Ring (matches sf24.jpg 1:1!)
+      // Iconic Modena Canary Yellow Concentric Speed Ring (matches sf24.webp 1:1!)
       ctx.strokeStyle = '#ffdf00'; // Modena Racing Yellow
       ctx.lineWidth = 9;
       ctx.beginPath();
@@ -3427,7 +4399,7 @@ export function generateWheelTexture(
   _sponsors?: TeamSponsorConfig,
   baseImage?: CanvasImageSource | null,
 ): THREE.CanvasTexture {
-  return createUVTexture(1024, 1024, (ctx, w, h) => {
+  return createUVTexture(512, 512, (ctx, w, h) => {
     const primaryHex = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
     const secondaryHex = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
     const coverHex = livery.wheelCoverColor || '#121417';

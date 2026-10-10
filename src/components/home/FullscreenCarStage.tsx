@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
@@ -27,7 +27,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'ferrari',
     watermark: 'FERRARI',
     color: '#dc0000',
-    imageUrl: '/images/teams/sf24.jpg',
+    imageUrl: '/images/teams/sf24.webp',
     drivers: 'Charles Leclerc #16 · Lewis Hamilton #44',
   },
   {
@@ -38,7 +38,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mclaren',
     watermark: 'MCLAREN',
     color: '#ff8000',
-    imageUrl: '/images/teams/mcl38.jpg',
+    imageUrl: '/images/teams/mcl38.webp',
     drivers: 'Lando Norris #4 · Oscar Piastri #81',
   },
   {
@@ -49,7 +49,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'redbull',
     watermark: 'RED BULL',
     color: '#050f26',
-    imageUrl: '/images/teams/rb20.jpg',
+    imageUrl: '/images/teams/rb20.webp',
     drivers: 'Max Verstappen #1 · Isack Hadjar #6',
   },
   {
@@ -60,7 +60,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mercedes',
     watermark: 'MERCEDES',
     color: '#c8ccce',
-    imageUrl: '/images/teams/w15.jpg',
+    imageUrl: '/images/teams/w15.webp',
     drivers: 'George Russell #63 · Kimi Antonelli #12',
   },
   {
@@ -71,7 +71,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'astonmartin',
     watermark: 'ASTON MARTIN',
     color: '#00594f',
-    imageUrl: '/images/teams/astonmartin.jpg',
+    imageUrl: '/images/teams/astonmartin.webp',
     drivers: 'Fernando Alonso #14 · Lance Stroll #18',
   },
   {
@@ -82,7 +82,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'alpine',
     watermark: 'ALPINE',
     color: '#0090ff',
-    imageUrl: '/images/teams/alpine.jpg',
+    imageUrl: '/images/teams/alpine.webp',
     drivers: 'Pierre Gasly #10 · Franco Colapinto #43',
   },
   {
@@ -93,8 +93,8 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
     color: '#1634cb',
-    imageUrl: '/images/teams/racingbulls.jpg',
-    drivers: 'Liam Lawson #30 · Arvid Lindblad #3',
+    imageUrl: '/images/teams/racingbulls.webp',
+    drivers: 'Liam Lawson #30 · Arvid Lindblad #41',
   },
   {
     id: 'vf25',
@@ -104,7 +104,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'haas',
     watermark: 'HAAS',
     color: '#e5e7eb',
-    imageUrl: '/images/teams/haas.jpg',
+    imageUrl: '/images/teams/haas.webp',
     drivers: 'Esteban Ocon #31 · Oliver Bearman #87',
   },
   {
@@ -115,7 +115,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'williams',
     watermark: 'WILLIAMS',
     color: '#002447',
-    imageUrl: '/images/teams/williams.jpg',
+    imageUrl: '/images/teams/williams.webp',
     drivers: 'Carlos Sainz #55 · Alex Albon #23',
   },
   {
@@ -126,7 +126,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'audi',
     watermark: 'AUDI F1',
     color: '#c4c8cc',
-    imageUrl: '/images/teams/audi.jpg',
+    imageUrl: '/images/teams/audi.webp',
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
   {
@@ -137,10 +137,52 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'cadillac',
     watermark: 'CADILLAC',
     color: '#d4af37',
-    imageUrl: '/images/teams/cadillac.jpg',
+    imageUrl: '/images/teams/cadillac.webp',
     drivers: 'Sergio Pérez #11 · Valtteri Bottas #77',
   },
 ];
+
+const MagneticButton: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}> = ({ children, className, onClick }) => {
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const dx = (e.clientX - centerX) * 0.22;
+    const dy = (e.clientY - centerY) * 0.22;
+    setOffset({
+      x: Math.max(-6, Math.min(6, dx)),
+      y: Math.max(-6, Math.min(6, dy)),
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setOffset({ x: 0, y: 0 });
+  };
+
+  return (
+    <button
+      ref={btnRef}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `translate(${offset.x}px, ${offset.y}px)`,
+        transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+      }}
+      className={className}
+    >
+      {children}
+    </button>
+  );
+};
 
 export const FullscreenCarStage: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -151,17 +193,130 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const isAnyActive = activeIndex !== null;
 
+  // Hero Cursor Glow State (A3)
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const [heroCursor, setHeroCursor] = useState<{ x: number; y: number; visible: boolean }>({
+    x: 0,
+    y: 0,
+    visible: false,
+  });
+
+  const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    setHeroCursor({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      visible: true,
+    });
+  };
+
+  const handleHeroMouseLeave = () => {
+    setHeroCursor((prev) => ({ ...prev, visible: false }));
+  };
+
+  // 3D Tilt State on active panel (A4)
+  const [tilt, setTilt] = useState<{
+    rotateX: number;
+    rotateY: number;
+    glareX: number;
+    glareY: number;
+  } | null>(null);
+
+  const handleActivePanelMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotX = ((centerY - y) / centerY) * 5; // max 5 deg
+    const rotY = ((x - centerX) / centerX) * 5;
+    setTilt({
+      rotateX: rotX,
+      rotateY: rotY,
+      glareX: (x / rect.width) * 100,
+      glareY: (y / rect.height) * 100,
+    });
+  };
+
+  const handleActivePanelMouseLeave = () => {
+    setTilt(null);
+  };
+
+  // Auto-rotate references (Plan 2.2)
+  const idleTimeoutRef = useRef<number | null>(null);
+  const rotateIntervalRef = useRef<number | null>(null);
+  const isUserInteractingRef = useRef<boolean>(false);
+
+  const startAutoRotate = useCallback(() => {
+    if (rotateIntervalRef.current) clearInterval(rotateIntervalRef.current);
+    rotateIntervalRef.current = window.setInterval(() => {
+      if (isUserInteractingRef.current) return;
+      setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % POSTER_CARS.length));
+    }, 5000);
+  }, []);
+
+  const stopAutoRotate = useCallback(() => {
+    isUserInteractingRef.current = true;
+    if (rotateIntervalRef.current) clearInterval(rotateIntervalRef.current);
+    if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+
+    // After 8s of inactivity, resume auto-rotate
+    idleTimeoutRef.current = window.setTimeout(() => {
+      isUserInteractingRef.current = false;
+      startAutoRotate();
+    }, 8000);
+  }, [startAutoRotate]);
+
+  useEffect(() => {
+    // Initial 8s delay before auto-rotate starts
+    idleTimeoutRef.current = window.setTimeout(startAutoRotate, 8000);
+
+    return () => {
+      if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+      if (rotateIntervalRef.current) clearInterval(rotateIntervalRef.current);
+    };
+  }, [startAutoRotate]);
+
   return (
-    <div className="relative w-full bg-[#050508] text-white pt-6 pb-10 overflow-hidden select-none border-b border-studio-800">
+    <div
+      ref={heroRef}
+      onMouseMove={handleHeroMouseMove}
+      onMouseLeave={handleHeroMouseLeave}
+      className="relative w-full bg-[#050508] text-white pt-6 pb-10 overflow-hidden select-none border-b border-studio-800"
+    >
+      {/* ── A3. Cursor Glow trên nền Hero Đen ── */}
+      {heroCursor.visible && (
+        <div
+          aria-hidden="true"
+          className="absolute pointer-events-none z-[1] transition-opacity duration-200"
+          style={{
+            top: heroCursor.y - 250,
+            left: heroCursor.x - 250,
+            width: 500,
+            height: 500,
+            background:
+              'radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 45%, transparent 70%)',
+          }}
+        />
+      )}
+
+      {/* ── Ambient Speed-Lines on Dark Hero Background (Plan 2.3) ── */}
+      <div className="absolute inset-y-0 right-0 w-2/3 pointer-events-none overflow-hidden z-0 motion-reduce:hidden">
+        <div className="absolute top-1/4 right-1/4 w-[2px] h-[35vh] bg-gradient-to-b from-transparent via-white to-transparent transform -rotate-45 animate-speed-drift-1" />
+        <div className="absolute top-1/3 right-1/2 w-[1.5px] h-[40vh] bg-gradient-to-b from-transparent via-white to-transparent transform -rotate-45 animate-speed-drift-2" />
+        <div className="absolute top-1/2 right-1/6 w-[2px] h-[30vh] bg-gradient-to-b from-transparent via-white to-transparent transform -rotate-45 animate-speed-drift-3" />
+      </div>
+
       {/* ── Top Header Controls & Badges ── */}
-      <div className="page-container mb-6 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+      <div className="page-container mb-6 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 relative z-10">
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-bold uppercase tracking-widest text-f1red">
             <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />
             <span>
               {lang === 'vi'
-                ? 'F1 2026 GRID · 11 ĐỘI ĐUA CHÍNH THỨC'
-                : 'F1 2026 GRID · 11 OFFICIAL CONSTRUCTORS'}
+                ? '11 ĐỘI ĐUA 2026 · HÌNH ẢNH LƯU TRỮ'
+                : '11 TEAMS FOR 2026 · ARCHIVE IMAGERY'}
             </span>
           </div>
 
@@ -170,34 +325,39 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
           </h1>
         </div>
 
-        {/* Action CTAs */}
+        {/* ── A2. Magnetic Action CTAs ── */}
         <div className="flex items-center gap-3 shrink-0 flex-wrap">
-          <button
+          <MagneticButton
             onClick={() => {
               navigate('/showroom');
             }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-f1red/90 shadow-lg hover:shadow-f1red/30 transition-all hover:scale-105 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-f1red/90 shadow-lg hover:shadow-f1red/30 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{lang === 'vi' ? 'Khám Phá Showroom 3D' : 'Explore 3D Showroom'}</span>
-          </button>
+          </MagneticButton>
 
-          <button
+          <MagneticButton
             onClick={() => {
               navigate('/season/2026');
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md cursor-pointer"
           >
             <Trophy className="w-3.5 h-3.5 text-amber-400" />
             <span>{strings.viewStandings}</span>
-          </button>
+          </MagneticButton>
         </div>
       </div>
 
       {/* ── 11-Car Interactive Multi-Slice Poster Canvas ── */}
-      <div className="page-container">
+      <div className="page-container relative z-10">
         <div
-          onMouseLeave={() => setActiveIndex(null)}
+          onMouseLeave={() => {
+            setActiveIndex(null);
+            stopAutoRotate();
+          }}
+          onMouseEnter={stopAutoRotate}
+          onTouchStart={stopAutoRotate}
           className="relative w-full h-[560px] sm:h-[640px] lg:h-[700px] rounded-3xl overflow-hidden bg-[#07070b] border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-row"
         >
           {POSTER_CARS.map((car, idx) => {
@@ -206,18 +366,43 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
             return (
               <div
                 key={car.id}
-                onMouseEnter={() => setActiveIndex(idx)}
+                onMouseEnter={() => {
+                  stopAutoRotate();
+                  setActiveIndex(idx);
+                }}
+                onMouseMove={isExpanded ? handleActivePanelMouseMove : undefined}
+                onMouseLeave={() => {
+                  if (isExpanded) handleActivePanelMouseLeave();
+                }}
                 onClick={() => {
+                  stopAutoRotate();
                   setActiveIndex(activeIndex === idx ? null : idx);
                 }}
                 style={{
                   flex: isExpanded ? 12 : 1,
-                  transition: 'flex 450ms cubic-bezier(0.25, 1, 0.5, 1)',
+                  transition:
+                    isExpanded && tilt
+                      ? 'flex 450ms cubic-bezier(0.25, 1, 0.5, 1)'
+                      : 'flex 450ms cubic-bezier(0.25, 1, 0.5, 1), transform 500ms cubic-bezier(0.22, 1, 0.36, 1)',
+                  transform:
+                    isExpanded && tilt
+                      ? `perspective(1000px) rotateX(${tilt.rotateX.toFixed(2)}deg) rotateY(${tilt.rotateY.toFixed(2)}deg)`
+                      : 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
                 }}
                 className={`relative h-full overflow-hidden cursor-pointer select-none group border-r border-white/10 last:border-r-0 min-w-[28px] sm:min-w-[32px] ${
                   isExpanded ? 'z-20 shadow-2xl' : 'z-10 hover:brightness-125'
                 }`}
               >
+                {/* ── A4. Glare Beam Overlay on 3D Tilt ── */}
+                {isExpanded && tilt && (
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none z-30 transition-opacity duration-300"
+                    style={{
+                      background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.08) 0%, transparent 60%)`,
+                    }}
+                  />
+                )}
                 {/* ── 1. COLLAPSED VIEW (SLICE / RIBBON STATE) ── */}
                 <div
                   className={`absolute inset-0 flex flex-col justify-between items-center py-6 px-1 transition-opacity duration-300 pointer-events-none ${
@@ -234,6 +419,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                         : 'brightness-[0.35]'
                     }`}
                     loading="lazy"
+                    decoding="async"
                   />
 
                   {/* Gradient Overlay & Ambient Tint */}
@@ -251,37 +437,27 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                     }`}
                   />
 
-                  {/* Accent Line Indicator & Constructor Logo */}
-                  <div className="z-10 flex flex-col items-center gap-2">
+                  {/* Accent Line Indicator */}
+                  <div className="z-10 flex flex-col items-center">
                     <div
                       className={`rounded-full shadow-sm transition-all duration-300 ${
                         !isAnyActive ? 'w-2 h-7 group-hover:h-10' : 'w-1.5 h-8 group-hover:h-12'
                       }`}
                       style={{ backgroundColor: car.color }}
                     />
-                    <ConstructorLogo
-                      teamId={car.teamId}
-                      size="sm"
-                      className={`transition-all ${
-                        !isAnyActive
-                          ? 'w-6 h-6 opacity-95 group-hover:scale-110'
-                          : 'w-4 h-4 opacity-75 group-hover:opacity-100'
-                      }`}
-                    />
                   </div>
 
-                  {/* Typography: When all 11 teams are showing evenly vs when squeezed */}
+                  {/* Centered constructor mark replaces the hard-to-read vertical car name */}
                   <div className="z-10 flex flex-col items-center justify-center flex-1 my-auto">
-                    <span
-                      className={`font-display font-black uppercase text-white/90 group-hover:text-white tracking-[0.2em] whitespace-nowrap [writing-mode:vertical-rl] rotate-180 transition-all duration-300 ${
-                        !isAnyActive ? 'text-[14px] lg:text-[16px]' : 'text-[12px] lg:text-[13px]'
+                    <ConstructorLogo
+                      teamId={car.teamId}
+                      size="lg"
+                      className={`rounded-xl border border-white/10 bg-black/25 p-1.5 backdrop-blur-sm shadow-[0_8px_24px_rgba(0,0,0,0.55)] transition-all duration-300 group-hover:border-white/30 group-hover:bg-black/45 ${
+                        !isAnyActive
+                          ? 'scale-100 opacity-100 group-hover:scale-110'
+                          : 'scale-[0.68] opacity-85 group-hover:scale-75 group-hover:opacity-100'
                       }`}
-                      style={{
-                        textShadow: '0 2px 10px rgba(0,0,0,0.85)',
-                      }}
-                    >
-                      {car.shortName}
-                    </span>
+                    />
                   </div>
 
                   {/* Bottom Indicator & Driver badge when wide */}
@@ -324,12 +500,16 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                   {/* ── MASSIVE UNCROPPED FULL CAR PRESENTATION ── */}
                   <div className="relative z-10 w-full flex-1 flex items-center justify-center my-auto">
                     <div className="relative w-full h-[300px] sm:h-[390px] lg:h-[450px] flex items-center justify-center">
-                      <img
-                        src={car.imageUrl}
-                        alt={car.name}
-                        className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out"
-                        loading="eager"
-                      />
+                      {isExpanded && (
+                        <img
+                          src={car.imageUrl}
+                          alt={car.name}
+                          className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out animate-ken-burns"
+                          loading="eager"
+                          decoding="async"
+                          fetchPriority="high"
+                        />
+                      )}
 
                       {/* Glowing Underfloor Light Floor Reflection */}
                       <div
@@ -376,6 +556,27 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                   </div>
                 </div>
               </div>
+            );
+          })}
+        </div>
+
+        {/* ── 11 Indicator Dots (Plan 2.2) ── */}
+        <div className="flex items-center justify-center gap-2 mt-4 select-none">
+          {POSTER_CARS.map((car, idx) => {
+            const isActive = activeIndex === idx;
+            return (
+              <button
+                key={car.id}
+                onClick={() => {
+                  stopAutoRotate();
+                  setActiveIndex(idx);
+                }}
+                title={car.name}
+                aria-label={`Select ${car.name}`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  isActive ? 'w-7 h-2 bg-f1red shadow-xs' : 'w-2 h-2 bg-white/20 hover:bg-white/50'
+                }`}
+              />
             );
           })}
         </div>

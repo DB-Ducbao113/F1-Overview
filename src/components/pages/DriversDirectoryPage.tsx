@@ -135,6 +135,8 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                         <img
                           src={portraitUrl}
                           alt={driver.driverName}
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}

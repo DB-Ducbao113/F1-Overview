@@ -45,6 +45,13 @@ export interface Team3DLivery {
   wheelSecondaryColor?: string;
   wheelRimColor?: string;
   wheelPirelliCompound?: 'soft' | 'medium' | 'hard';
+  // Dedicated Component Detail & Livery Color Tokens (Mirrors, Floor edges, Cockpit, Diffuser)
+  mirrorColor?: string;
+  mirrorAccentColor?: string;
+  floorEdgeAccentColor?: string;
+  seatbeltColor?: string;
+  diffuserAccentColor?: string;
+  rainLightColor?: string;
   // Engineering highlights
   aeroPhilosophyVi: string;
   aeroPhilosophyEn: string;
@@ -64,7 +71,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Scuderia Ferrari HP',
     carModelName: 'Ferrari SF-24 / SF-26',
     shortCarName: 'SF-26',
-    carImage: '/images/teams/sf24.jpg',
+    carImage: '/images/teams/sf24.webp',
     powerUnit: 'Ferrari 066/12 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Scuderia Ferrari (Maranello, Italy)',
     engineOutput: '1,050+ HP · 15,000 RPM · >52% Hiệu suất nhiệt',
@@ -95,6 +102,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffdf00', // Modena Yellow concentric speed ring
     wheelRimColor: '#e8002d', // Scuderia Red rim edge
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#e8002d', // Scuderia Rosso Corsa mirrors
+    mirrorAccentColor: '#ffdf00', // Modena Racing Yellow aero accent
+    floorEdgeAccentColor: '#ffdf00', // Modena Yellow floor edge stripe
+    seatbeltColor: '#e8002d', // Sabelt Scuderia Red racing harness
+    diffuserAccentColor: '#ffdf00', // Modena Yellow diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Hốc gió dạng bồn tắm (Bathtub downwash sidepods) dẫn luồng khí áp suất cao ép sát eo xe xuống thẳng sàn sau và bộ khuếch tán.',
     aeroPhilosophyEn:
@@ -103,7 +116,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Ferrari 066/12 nổi danh với công nghệ buồng đốt phụ TJI, giải phóng công suất vượt 1050 mã lực kết hợp mô-tơ MGU-K thế hệ mới.',
     powertrainNoteEn:
       'The Ferrari 066/12 power unit excels with Turbulent Jet Ignition (TJI) combustion delivering 1050+ combined horsepower with responsive MGU-K hybrid recovery.',
-    schematicImage: '/images/showroom/schematics/ferrari.jpg',
+    schematicImage: '/images/showroom/schematics/ferrari.webp',
     schematicCode: 'FER-SF26-AERO-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Scuderia Ferrari (Project 674)',
     schematicTitleEn: 'Scuderia Ferrari SF-26 8K Aerodynamic CAD Schematic',
@@ -113,9 +126,9 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamId: 'mercedes',
     teamName: 'Mercedes',
     fullName: 'Mercedes-AMG PETRONAS Formula One Team',
-    carModelName: 'Mercedes-AMG F1 W15 / W17 E Performance',
+    carModelName: 'Mercedes-AMG F1 W15 · 2024 reference model',
     shortCarName: 'W15',
-    carImage: '/images/teams/w15.jpg',
+    carImage: '/images/teams/w15.webp',
     powerUnit: 'Mercedes-AMG M15 E Performance 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Mercedes-AMG High Performance Powertrains (Brixworth, UK)',
     engineOutput: '1,050+ HP · Brixworth Hybrid Power · 350kW MGU-K',
@@ -152,6 +165,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#c8ccd0', // Mercedes Silver concentric speed ring
     wheelRimColor: '#c8ccd0', // Silver Arrow rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#c8ccd0', // Silver Arrow mirror housing
+    mirrorAccentColor: '#00a19c', // Petronas Turquoise aero stripe
+    floorEdgeAccentColor: '#00a19c', // Petronas Emerald Turquoise floor edge
+    seatbeltColor: '#00a19c', // Petronas Teal racing harness
+    diffuserAccentColor: '#00a19c', // Petronas Turquoise diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý khí động học tinh gọn với rãnh dẫn khí sườn dốc (Undercut Channel) và cánh gió trước đa tầng triệt tiêu nhiễu động bánh xe.',
     aeroPhilosophyEn:
@@ -160,7 +179,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Mercedes-AMG M15 huyền thoại về độ ổn định và hiệu suất thu hồi nhiệt năng MGU-H, thống trị kỷ nguyên động cơ Turbo Hybrid.',
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit setting the benchmark in thermodynamic efficiency and sustained hybrid energy harvesting across full race distances.',
-    schematicImage: '/images/showroom/schematics/mercedes.jpg',
+    schematicImage: '/images/showroom/schematics/mercedes.webp',
     schematicCode: 'MERC-W15-AERO-8K',
     schematicTitleVi: 'Bản vẽ kỹ thuật khí động học 8K Mercedes-AMG F1 W15',
     schematicTitleEn: 'Mercedes-AMG F1 W15 8K Aerodynamic Blueprint',
@@ -172,7 +191,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'McLaren Formula 1 Team',
     carModelName: 'McLaren MCL38 / MCL40',
     shortCarName: 'MCL38',
-    carImage: '/images/teams/mcl.jpg',
+    carImage: '/images/teams/mcl38.webp',
     powerUnit: 'Mercedes-AMG M15 E Performance 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Mercedes-AMG High Performance Powertrains (Customer Unit)',
     engineOutput: '1,050+ HP · 15,000 RPM · Hệ truyền động Carbon 8 cấp',
@@ -203,6 +222,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#47c7fc', // Google Chrome / Stealth Blue accent
     wheelRimColor: '#ff8000', // Papaya rim edge
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#ff8000', // Papaya Orange mirror housing
+    mirrorAccentColor: '#47c7fc', // Chrome Cyan aero accent
+    floorEdgeAccentColor: '#ff8000', // Papaya Orange floor edge
+    seatbeltColor: '#ff8000', // Sabelt Papaya Orange racing harness
+    diffuserAccentColor: '#ff8000', // Papaya Orange diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Hệ thống hốc gió hớt gầm sâu nhất đoàn đua (Extreme Undercut) và sàn xe Venturi tối ưu lực ép khi vào các góc cua tốc độ cao.',
     aeroPhilosophyEn:
@@ -211,7 +236,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Tích hợp hoàn hảo khối động cơ Mercedes-AMG M15 với bộ làm mát nội bộ siêu gọn do đội ngũ kỹ sư tại Woking tự phát triển.',
     powertrainNoteEn:
       'Seamlessly packaged Mercedes-AMG M15 power unit paired with bespoke Woking-engineered compact cooling architecture.',
-    schematicImage: '/images/showroom/schematics/mclaren.jpg',
+    schematicImage: '/images/showroom/schematics/mclaren.webp',
     schematicCode: 'MCL-38-CFD-8K',
     schematicTitleVi: 'Sơ đồ CFD & Khí động học 8K McLaren Racing MCL38',
     schematicTitleEn: 'McLaren Racing MCL38 8K CFD Aerodynamics Schematic',
@@ -223,7 +248,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Oracle Red Bull Racing',
     carModelName: 'Red Bull Racing RB20 / RB22',
     shortCarName: 'RB20',
-    carImage: '/images/teams/rb20.jpg',
+    carImage: '/images/teams/rb20.webp',
     powerUnit: 'Honda RBPTH002 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Red Bull Powertrains / Honda HRC',
     engineOutput: '1,050+ HP · Động cơ Honda HRC vô địch thế giới',
@@ -254,6 +279,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ed1a3b', // Bull Racing Red inner ring
     wheelRimColor: '#ffce00', // Golden rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#0c192c', // Matte Midnight Navy mirror housing
+    mirrorAccentColor: '#ffce00', // Red Bull Sunburst Yellow aero stripe
+    floorEdgeAccentColor: '#ed1a3b', // Bull Racing Red floor edge
+    seatbeltColor: '#ed1a3b', // Red Bull Sabelt Red harness
+    diffuserAccentColor: '#ffce00', // Sunburst Yellow diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Tuyệt tác khí động học với các hốc hút gió sườn đảo ngược (Overbite Inlet) và hệ thống treo trước Pull-rod chống chúi đầu khi phanh gấp.',
     aeroPhilosophyEn:
@@ -262,7 +293,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Honda RBPTH002 mang lại khả năng phân bổ mô-men xoắn tức thời và độ bền cơ học đã giành nhiều danh hiệu vô địch thế giới liên tiếp.',
     powertrainNoteEn:
       'Honda RBPTH002 power unit delivers instantaneous torque deployment, surgical driveability and proven championship-winning endurance.',
-    schematicImage: '/images/showroom/schematics/redbull.jpg',
+    schematicImage: '/images/showroom/schematics/redbull.webp',
     schematicCode: 'RBR-RB20-01-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Oracle Red Bull Racing RB20',
     schematicTitleEn: 'Oracle Red Bull Racing RB20-01 8K CAD Schematic',
@@ -274,7 +305,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Aston Martin Aramco Formula One Team',
     carModelName: 'Aston Martin AMR25 / AMR26',
     shortCarName: 'AMR25',
-    carImage: '/images/teams/astonmartin.jpg',
+    carImage: '/images/teams/astonmartin.webp',
     powerUnit: 'Mercedes-AMG M15 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Mercedes-AMG HPP (Silverstone Customer)',
     engineOutput: '1,050+ HP · Hệ thống treo khí động học Mercedes',
@@ -305,6 +336,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#006f62', // Racing Green inner accent
     wheelRimColor: '#cedc00', // Lime rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#006f62', // British Racing Green mirror housing
+    mirrorAccentColor: '#cedc00', // Fluorescent Lime Essence aero accent
+    floorEdgeAccentColor: '#cedc00', // Lime Essence floor edge
+    seatbeltColor: '#cedc00', // Lime Essence racing harness
+    diffuserAccentColor: '#cedc00', // Lime Essence diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Máng trượt khí động học sườn xe sâu hút không khí dồn về phía sau kết hợp cánh sau DRS tối ưu lực cản tại đường thẳng.',
     aeroPhilosophyEn:
@@ -313,7 +350,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Sử dụng động cơ và hộp số Mercedes-AMG đặt trong khung gầm do đội ngũ kỹ sư tại đại bản doanh công nghệ cao Silverstone thiết kế.',
     powertrainNoteEn:
       'Mercedes-AMG powerplant housed within an ultra-stiff carbon cell developed inside the new state-of-the-art Silverstone AMR campus.',
-    schematicImage: '/images/showroom/schematics/astonmartin.jpg',
+    schematicImage: '/images/showroom/schematics/astonmartin.webp',
     schematicCode: 'AMR-24-SILVERSTONE-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Aston Martin AMR24 / AMR25',
     schematicTitleEn: 'Aston Martin Aramco AMR24 / AMR25 8K CAD Blueprint',
@@ -325,7 +362,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'BWT Alpine Formula One Team',
     carModelName: 'Alpine A525 / A526',
     shortCarName: 'A525',
-    carImage: '/images/teams/alpine.jpg',
+    carImage: '/images/teams/alpine.webp',
     powerUnit: 'Renault E-Tech RE25 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Alpine Racing (Viry-Châtillon, France)',
     engineOutput: '1,020+ HP · 15,000 RPM · Khung gầm Enstone Carbon',
@@ -356,6 +393,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#0090ff', // Alpine Blue speed ring
     wheelRimColor: '#0090ff', // Alpine Blue rim flange
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#0090ff', // Alpine Metallic Blue mirror housing
+    mirrorAccentColor: '#fd4bc7', // BWT Flamingo Pink aero accent
+    floorEdgeAccentColor: '#fd4bc7', // BWT Pink floor edge stripe
+    seatbeltColor: '#0090ff', // Alpine Blue racing harness
+    diffuserAccentColor: '#fd4bc7', // BWT Pink diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Cấu trúc thân xe gọn gàng với triết lý tối giản hóa bề mặt ướt khí động và mũi xe dẹt hạ thấp trọng tâm quán tính.',
     aeroPhilosophyEn:
@@ -364,7 +407,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Renault E-Tech phát triển tại Viry-Châtillon kết hợp bộ phận pin hồi lưu năng lượng điện phục vụ tăng tốc tức thì.',
     powertrainNoteEn:
       'Renault E-Tech hybrid unit engineered at Viry-Châtillon tuned for punchy corner-exit electrical deployment.',
-    schematicImage: '/images/showroom/schematics/alpine.jpg',
+    schematicImage: '/images/showroom/schematics/alpine.webp',
     schematicCode: 'ALP-A525-TECH-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K BWT Alpine A525 Renault E-Tech',
     schematicTitleEn: 'BWT Alpine F1 Team A525 8K CAD Aero Blueprint',
@@ -376,14 +419,14 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Visa Cash App RB Formula One Team',
     carModelName: 'Racing Bulls VCARB 02 / 03',
     shortCarName: 'VCARB 02',
-    carImage: '/images/teams/racingbulls.jpg',
+    carImage: '/images/teams/racingbulls.webp',
     powerUnit: 'Honda RBPTH002 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Red Bull Powertrains / Honda HRC',
     engineOutput: '1,050+ HP · Honda HRC · Hệ thống treo Red Bull',
     base: 'Faenza, Italy',
     teamPrincipal: 'Laurent Mekies',
-    driversVi: 'Liam Lawson #30 · Arvid Lindblad #3',
-    driversEn: 'Liam Lawson #30 · Arvid Lindblad #3',
+    driversVi: 'Liam Lawson #30 · Arvid Lindblad #41',
+    driversEn: 'Liam Lawson #30 · Arvid Lindblad #41',
     bodyColor: '#1434cb', // Royal Electric Metallic Blue
     noseColor: '#1434cb',
     engineCoverColor: '#1434cb',
@@ -407,6 +450,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#d90429', // Racing Red inner ring
     wheelRimColor: '#ffffff', // White rim flange
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#1434cb', // Royal Electric Blue mirror housing
+    mirrorAccentColor: '#ffffff', // Crisp Pure White aero accent
+    floorEdgeAccentColor: '#ffffff', // Clean White floor edge stripe
+    seatbeltColor: '#1434cb', // Royal Blue racing harness
+    diffuserAccentColor: '#d90429', // Orlen Racing Red diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thừa hưởng cấu trúc hình học hệ thống treo và khí động học tương đồng với cỗ máy vô địch RB20 của đội mẹ Red Bull Racing.',
     aeroPhilosophyEn:
@@ -415,7 +464,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Trang bị khối động cơ Honda RBPTH002 cùng hệ thống thu hồi năng lượng hybrid đồng nhất với Oracle Red Bull Racing.',
     powertrainNoteEn:
       'Powered by the championship-winning Honda RBPTH002 hybrid unit alongside matched Red Bull transmission components.',
-    schematicImage: '/images/showroom/schematics/racingbulls.jpg',
+    schematicImage: '/images/showroom/schematics/racingbulls.webp',
     schematicCode: 'VCARB-01-FAENZA-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Visa Cash App RB VCARB 01',
     schematicTitleEn: 'Visa Cash App RB 01 8K Chassis & Aero Schematic',
@@ -427,7 +476,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'MoneyGram Haas F1 Team',
     carModelName: 'Haas VF-25 / VF-26',
     shortCarName: 'VF-25',
-    carImage: '/images/teams/haas.jpg',
+    carImage: '/images/teams/haas.webp',
     powerUnit: 'Ferrari 066/12 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Scuderia Ferrari (Maranello Customer)',
     engineOutput: '1,050+ HP · Hộp số & Hệ thống treo Ferrari',
@@ -458,6 +507,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // Clean White racing ring
     wheelRimColor: '#ffffff', // White BBS rim edge
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#ffffff', // Racing White mirror housing
+    mirrorAccentColor: '#e10600', // Haas Racing Red aero accent
+    floorEdgeAccentColor: '#e10600', // MoneyGram Red floor edge stripe
+    seatbeltColor: '#e10600', // Haas Racing Red harness
+    diffuserAccentColor: '#e10600', // Haas Red diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý khí động học theo trường phái Downwash của Ferrari, tối ưu hóa việc dẫn gió làm mát và giải quyết hiện tượng thoái hóa lốp.',
     aeroPhilosophyEn:
@@ -466,7 +521,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Sử dụng toàn bộ cụm động cơ đốt trong, mô-tơ MGU-K và hộp số 8 cấp được cung cấp trực tiếp từ đại bản doanh Maranello của Ferrari.',
     powertrainNoteEn:
       'Propelled by Ferrari’s works 066/12 hybrid powertrain and rear-end mechanical assembly straight from Maranello.',
-    schematicImage: '/images/showroom/schematics/haas.jpg',
+    schematicImage: '/images/showroom/schematics/haas.webp',
     schematicCode: 'HAAS-VF24-SPEC-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K MoneyGram Haas VF-24 / VF-25',
     schematicTitleEn: 'MoneyGram Haas F1 Team VF-24 8K Chassis Schematic',
@@ -478,7 +533,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Williams Racing',
     carModelName: 'Williams FW47 / FW48',
     shortCarName: 'FW47',
-    carImage: '/images/teams/williams.jpg',
+    carImage: '/images/teams/williams.webp',
     powerUnit: 'Mercedes-AMG M15 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Mercedes-AMG HPP (Grove Customer)',
     engineOutput: '1,050+ HP · Hệ thống truyền động Mercedes 8 cấp',
@@ -509,6 +564,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // White aerodynamic ring
     wheelRimColor: '#00a3e0', // Electric Blue rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#001f54', // Williams Deep Navy mirror housing
+    mirrorAccentColor: '#00a3e0', // Electric Cyan aero accent
+    floorEdgeAccentColor: '#00a3e0', // Electric Cyan floor edge stripe
+    seatbeltColor: '#005aff', // Williams Heritage Blue harness
+    diffuserAccentColor: '#00a3e0', // Electric Cyan diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thân xe thiết kế cho tốc độ đường thẳng vượt trội, kết hợp sàn xe thế hệ mới giảm độ nhạy cảm trước gió tạt ngang góc cua.',
     aeroPhilosophyEn:
@@ -517,7 +578,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Động cơ Mercedes-AMG M15 cung cấp sức kéo uy mãnh và độ tin cậy cơ học cao giúp đội đua Grove cạnh tranh vị trí top đầu.',
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit delivering relentless torque delivery and unmatched mechanical reliability for the Grove team.',
-    schematicImage: '/images/showroom/schematics/williams.jpg',
+    schematicImage: '/images/showroom/schematics/williams.webp',
     schematicCode: 'WIL-FW46-GROVE-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Williams Racing FW46 / FW47',
     schematicTitleEn: 'Williams Racing FW46 8K CAD Chassis & Aero Flow Blueprint',
@@ -529,7 +590,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Audi Formula One Team (Stake Sauber)',
     carModelName: 'Audi F1 R26 / Sauber C44',
     shortCarName: 'C44',
-    carImage: '/images/teams/audi.jpg',
+    carImage: '/images/teams/audi.webp',
     powerUnit: 'Ferrari 066/12 / Audi Sport F1 Power Unit',
     powerUnitSupplier: 'Audi Motorsport / Sauber Motorsport',
     engineOutput: '1,050+ HP · Khung gầm Carbon Hinwil',
@@ -560,6 +621,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#c4c9ce', // Titanium Silver concentric ring
     wheelRimColor: '#c4c9ce', // Titanium Silver rim flange
     wheelPirelliCompound: 'soft',
+    mirrorColor: '#0d0e11', // Stealth Carbon mirror housing
+    mirrorAccentColor: '#52ff00', // Fluo Racing Green aero accent
+    floorEdgeAccentColor: '#52ff00', // Fluo Racing Green floor edge stripe
+    seatbeltColor: '#52ff00', // Neon Green racing harness
+    diffuserAccentColor: '#52ff00', // Fluo Green diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Triết lý "Vorsprung durch Technik": Thiết kế khí động học sắc bén nguyên khối phát triển song song tại Hinwil và Neuburg.',
     aeroPhilosophyEn:
@@ -568,7 +635,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Cột mốc lịch sử khi Audi tự nghiên cứu và chế tạo toàn bộ khối động cơ Turbo Hybrid tại Neuburg phục vụ kỷ nguyên F1.',
     powertrainNoteEn:
       'Audi’s historic all-new factory power unit engineered from the ground up at the Competence Center Motorsport in Neuburg.',
-    schematicImage: '/images/showroom/schematics/audi.jpg',
+    schematicImage: '/images/showroom/schematics/audi.webp',
     schematicCode: 'AUDI-R26-NEUBURG-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Audi F1 Team (Neuburg Spec)',
     schematicTitleEn: 'Audi Sport F1 Power Unit & Aero 8K Schematic (RS F1-01)',
@@ -580,7 +647,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     fullName: 'Cadillac Formula 1 Team',
     carModelName: 'Cadillac MAC-26',
     shortCarName: 'MAC-26',
-    carImage: '/images/teams/cadillac.jpg',
+    carImage: '/images/teams/cadillac.webp',
     powerUnit: 'Ferrari 066/12 / GM F1 Twin-Turbo V6 Hybrid',
     powerUnitSupplier: 'General Motors / Cadillac Racing',
     engineOutput: '1,050+ HP · Hợp tác động cơ Maranello & GM',
@@ -611,6 +678,12 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     wheelSecondaryColor: '#ffffff', // Pure White concentric ring
     wheelRimColor: '#cda851', // Champagne Gold BBS rim lip
     wheelPirelliCompound: 'medium',
+    mirrorColor: '#0a0b0d', // Satin Obsidian Black mirror housing
+    mirrorAccentColor: '#cda851', // Imperial Champagne Gold aero accent
+    floorEdgeAccentColor: '#cda851', // Champagne Gold floor edge stripe
+    seatbeltColor: '#cda851', // Cadillac Racing Gold harness
+    diffuserAccentColor: '#cda851', // Champagne Gold diffuser strakes
+    rainLightColor: '#ff0033', // FIA Ruby Red Rain Light
     aeroPhilosophyVi:
       'Thiết kế khí động học mang đậm phong cách cơ bắp Mỹ với cánh gió trước hình khiên và hốc gió tản nhiệt cỡ lớn.',
     aeroPhilosophyEn:
@@ -619,7 +692,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
       'Khởi đầu với sự kết hợp động cơ Ferrari và dần chuyển giao công nghệ sang động cơ GM F1 Twin-Turbo tự phát triển.',
     powertrainNoteEn:
       'Debuting with proven Maranello hybrid power while developing GM’s dedicated American factory F1 power unit.',
-    schematicImage: '/images/showroom/schematics/cadillac.jpg',
+    schematicImage: '/images/showroom/schematics/cadillac.webp',
     schematicCode: 'CAD-MAC26-USA-8K',
     schematicTitleVi: 'Sơ đồ CAD khí động học 8K Cadillac F1 Team MAC-26',
     schematicTitleEn: 'Cadillac F1 Chassis & Aerodynamic 8K Schematic (MAC-26)',

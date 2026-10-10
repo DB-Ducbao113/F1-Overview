@@ -24,16 +24,42 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/jolpica/, ''),
         headers: { 'User-Agent': 'F1-Hub/1.0' },
       },
+      '/api/openf1': {
+        target: 'https://api.openf1.org/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openf1/, ''),
+        headers: { 'User-Agent': 'F1-Overview/1.0' },
+      },
     },
   },
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
-          'vendor-react': ['react', 'react-dom', 'react-router-dom', 'zustand'],
-          'vendor-icons': ['lucide-react'],
+        manualChunks(id) {
+          const moduleId = id.replace(/\\/g, '/');
+          if (moduleId.includes('vite/preload-helper')) {
+            return 'vendor-core';
+          }
+          if (
+            moduleId.includes('/node_modules/three/') ||
+            moduleId.includes('/node_modules/three-stdlib/') ||
+            moduleId.includes('/node_modules/@react-three/')
+          ) {
+            return 'vendor-three';
+          }
+          if (
+            moduleId.includes('/node_modules/react/') ||
+            moduleId.includes('/node_modules/react-dom/') ||
+            moduleId.includes('/node_modules/react-router') ||
+            moduleId.includes('/node_modules/scheduler/') ||
+            moduleId.includes('/node_modules/zustand/')
+          ) {
+            return 'vendor-react';
+          }
+          if (moduleId.includes('/node_modules/lucide-react/')) {
+            return 'vendor-icons';
+          }
         },
       },
     },

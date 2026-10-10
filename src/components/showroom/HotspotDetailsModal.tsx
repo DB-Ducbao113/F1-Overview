@@ -215,7 +215,7 @@ export const HotspotDetailsModal: React.FC<HotspotDetailsModalProps> = React.mem
                   {lang === 'vi' ? closeUpData.titleVi : closeUpData.titleEn}
                 </span>
                 <span className="font-mono text-[10px] text-f1red font-bold shrink-0">
-                  {livery.shortCarName} · 2026 SPEC
+                  {livery.shortCarName} · 3D REFERENCE
                 </span>
               </div>
             </div>

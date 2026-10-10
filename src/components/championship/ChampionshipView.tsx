@@ -237,12 +237,14 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
           </div>
         </div>
 
-        {/* Content Render based on Subtab */}
-        {activeSubTab === 'standings' && <StandingsTable season={season} />}
-        {activeSubTab === 'calendar' && <RaceCalendar />}
-        {activeSubTab === 'results' && <RaceResults season={season} />}
-        {activeSubTab === 'teams' && <TeamsDirectoryPage initialSeason={season} hideHeader />}
-        {activeSubTab === 'drivers' && <DriversDirectoryPage initialSeason={season} hideHeader />}
+        {/* Content Render based on Subtab with 3D Depth Entrance */}
+        <div key={activeSubTab} className="animate-f1-depth-enter">
+          {activeSubTab === 'standings' && <StandingsTable season={season} />}
+          {activeSubTab === 'calendar' && <RaceCalendar season={season} />}
+          {activeSubTab === 'results' && <RaceResults season={season} />}
+          {activeSubTab === 'teams' && <TeamsDirectoryPage initialSeason={season} hideHeader />}
+          {activeSubTab === 'drivers' && <DriversDirectoryPage initialSeason={season} hideHeader />}
+        </div>
       </div>
 
       {/* Floating Toast Notification */}

@@ -2,9 +2,9 @@ name: Auto Update F1 2026 Data
 
 on:
   schedule:
-    # Run every 4 hours Wednesday through Sunday (days 3,4,5,6,0 in UTC)
-    # Mondays (1) and Tuesdays (2) have no race activity, so they are excluded
-    - cron: '0 */4 * * 3,4,5,6,0'
+    # Check completed race-weekend sessions every 15 minutes (UTC Thu-Sun).
+    # Builds are skipped unless the API snapshot or championship data changed.
+    - cron: '*/15 * * * 4,5,6,0'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
     inputs:
       force:
@@ -30,7 +30,7 @@ jobs:
       - name: Check project readiness
         id: check_ready
         run: |
-          if [ ! -f "package.json" ] || [ ! -f "scripts/update-2026-data.js" ]; then
+          if [ ! -f "package.json" ] || [ ! -f "scripts/update-2026-data.js" ] || [ ! -f "scripts/sync-openf1-sessions.js" ]; then
             echo "Project scaffold not yet merged to this branch. Skipping auto-update."
             echo "ready=false" >> $GITHUB_OUTPUT
           else
@@ -44,11 +44,12 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
+      - name: Sync completed sessions from OpenF1
         if: steps.check_ready.outputs.ready == 'true'
-        run: npm ci
+        continue-on-error: true
+        run: node scripts/sync-openf1-sessions.js
 
-      - name: Sync 2026 Season Data from Jolpica API
+      - name: Sync 2026 Season Data from Jolpica
         if: steps.check_ready.outputs.ready == 'true'
         run: |
           if [ "${{ inputs.force }}" = "true" ]; then
@@ -57,12 +58,27 @@ jobs:
             node scripts/update-2026-data.js
           fi
 
-      - name: Verify build with updated data
+      - name: Detect new API data
         if: steps.check_ready.outputs.ready == 'true'
+        id: data_changes
+        run: |
+          if git diff --quiet -- src/data/championship/ src/services/ src/store/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No new F1 data. Skipping install, build and deploy."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install dependencies
+        if: steps.data_changes.outputs.changed == 'true'
+        run: npm ci
+
+      - name: Verify build with updated data
+        if: steps.data_changes.outputs.changed == 'true'
         run: npm run build
 
       - name: Commit and push changes
-        if: steps.check_ready.outputs.ready == 'true'
+        if: steps.data_changes.outputs.changed == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -71,7 +87,7 @@ jobs:
             echo "No new F1 data changes detected."
           else
             echo "New F1 data detected! Committing and pushing..."
-            git commit -m "chore(data): auto-update 2026 F1 race & standings [skip ci]"
+            git commit -m "chore(data): auto-update 2026 F1 race & standings"
             # Attempt push, but handle protected branch gracefully if direct push is forbidden
             if ! git push origin HEAD; then
               echo "::warning::Direct push to branch failed. Please verify branch protection rules or configure a personal access token (PAT) with bypass rights."

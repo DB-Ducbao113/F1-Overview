@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { CALENDAR_2026 } from '../../data/championship';
+import { getCalendarBySeason } from '../../data/championship';
 import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
 import { QUALIFYING_RESULTS_2026 } from '../../data/championship/qualifyingResults2026';
+import openF1SessionResults from '../../data/championship/openF1SessionResults2026.json';
 import {
   Clock,
   MapPin,
@@ -17,21 +18,45 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
 import { QualifyingClassificationModal } from './QualifyingClassificationModal';
-import { formatDateStr, formatSessionName } from '../../utils/dateUtils';
+import { formatDateStr, formatSessionName, toVietnamTime } from '../../utils/dateUtils';
 import { SeasonYear } from '../../types';
+import { GrandPrixQualifyingData } from '../../types/qualifying';
+import { GrandPrixPracticeData } from '../../types/practice';
+import { Card3DTilt } from '../common/Card3DTilt';
 
-export const RaceCalendar: React.FC = React.memo(() => {
+const OPENF1_SESSION_RESULTS = openF1SessionResults as {
+  practice: Record<number, GrandPrixPracticeData>;
+  qualifying: Record<number, GrandPrixQualifyingData>;
+};
+
+export interface RaceCalendarProps {
+  season?: SeasonYear;
+}
+
+export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season }) => {
   const { lang } = useNavigationStore();
   const isVi = lang === 'vi';
-  const { detailedResults, setActiveSubTab, setSelectedSeason, setSelectedRaceRound } =
-    useChampionshipStore();
-  const seasonResults = detailedResults[2026] || [];
+  const {
+    detailedResults,
+    setActiveSubTab,
+    selectedSeason,
+    setSelectedSeason,
+    setSelectedRaceRound,
+  } = useChampionshipStore();
+
+  const activeSeason: SeasonYear = season ?? selectedSeason ?? 2026;
+  const calendar = getCalendarBySeason(activeSeason);
+  const is2026 = activeSeason === 2026;
+
+  const seasonResults = detailedResults[activeSeason] || [];
   const completedRounds = new Set([
-    ...CALENDAR_2026.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
+    ...calendar.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
     ...seasonResults.filter((race) => race.status === 'completed').map((race) => race.round),
   ]);
-  const nextRace = CALENDAR_2026.find((gp) => !completedRounds.has(gp.round));
-  const [expandedRound, setExpandedRound] = useState<number | null>(nextRace?.round ?? 16);
+  const nextRace = calendar.find((gp) => !completedRounds.has(gp.round));
+  const sprintCount = calendar.filter((gp) => gp.hasSprint).length;
+  // Default to Round 1 so track map is immediately visible above the fold without any scrolling
+  const [expandedRound, setExpandedRound] = useState<number | null>(1);
 
   // State cho Practice Modal
   const [selectedPracticeRound, setSelectedPracticeRound] = useState<number | null>(null);
@@ -46,45 +71,84 @@ export const RaceCalendar: React.FC = React.memo(() => {
   >('qualifying');
 
   const toggleExpand = (round: number) => {
-    setExpandedRound(expandedRound === round ? null : round);
+    const isOpening = expandedRound !== round;
+    setExpandedRound(isOpening ? round : null);
+
+    // Auto-scroll the newly expanded race directly into view so user never needs to scroll down
+    if (isOpening) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          const targetEl = document.getElementById(`calendar-round-${round}`);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 50);
+      });
+    }
   };
 
-  const activePracticeData = selectedPracticeRound
-    ? PRACTICE_RESULTS_2026[selectedPracticeRound]
-    : null;
+  const activePracticeData = (() => {
+    if (!is2026 || !selectedPracticeRound) return null;
+    const baseline = PRACTICE_RESULTS_2026[selectedPracticeRound];
+    const live = OPENF1_SESSION_RESULTS.practice[selectedPracticeRound];
+    if (!live) return baseline || null;
+    return {
+      ...(baseline || live),
+      sessions: { ...(baseline?.sessions || {}), ...live.sessions },
+    };
+  })();
 
-  const activeQualifyingData = selectedQualifyingRound
-    ? QUALIFYING_RESULTS_2026[selectedQualifyingRound]
-    : null;
+  const activeQualifyingData = (() => {
+    if (!is2026 || !selectedQualifyingRound) return null;
+    const baseline = QUALIFYING_RESULTS_2026[selectedQualifyingRound];
+    const live = OPENF1_SESSION_RESULTS.qualifying[selectedQualifyingRound];
+    if (!live) return baseline || null;
+    return {
+      ...(baseline || live),
+      sessions: { ...(baseline?.sessions || {}), ...live.sessions },
+    };
+  })();
 
-  const handleGoToRaceResults = (_round?: number, seasonYear: SeasonYear = 2026) => {
+  const handleGoToRaceResults = (round?: number, seasonYear: SeasonYear = activeSeason) => {
     setSelectedSeason(seasonYear);
-    setSelectedRaceRound(null);
+    if (round) {
+      setSelectedRaceRound(round);
+    } else {
+      setSelectedRaceRound(null);
+    }
     setActiveSubTab('results');
   };
 
   const handleJumpToNextRace = () => {
     if (!nextRace) return;
     setExpandedRound(nextRace.round);
-    const targetEl = document.getElementById(`calendar-round-${nextRace.round}`);
-    if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const targetEl = document.getElementById(`calendar-round-${nextRace.round}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    });
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3">
+      <Card3DTilt
+        maxTilt={2}
+        glareOpacity={0.08}
+        className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3"
+      >
         <div>
           <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900">
             {isVi
-              ? 'Lịch Thi Đấu Giải Vô Địch Formula 1 2026'
-              : '2026 FIA Formula 1 World Championship Calendar'}
+              ? `Lịch Thi Đấu Giải Vô Địch Formula 1 ${activeSeason}`
+              : `${activeSeason} FIA Formula 1 World Championship Calendar`}
           </h3>
           <p className="text-xs text-studio-500 font-medium">
             {isVi
-              ? `${completedRounds.size} / ${CALENDAR_2026.length} chặng đã đua · 6 Cuối Tuần Đua Sprint`
-              : `${completedRounds.size} / ${CALENDAR_2026.length} rounds completed · 6 Sprint Weekends`}
+              ? `${completedRounds.size} / ${calendar.length} chặng đã đua · ${sprintCount} Cuối Tuần Đua Sprint`
+              : `${completedRounds.size} / ${calendar.length} rounds completed · ${sprintCount} Sprint Weekends`}
           </p>
         </div>
         {nextRace ? (
@@ -108,17 +172,28 @@ export const RaceCalendar: React.FC = React.memo(() => {
             {isVi ? 'Mùa giải hoàn tất' : 'Season complete'}
           </span>
         )}
-      </div>
+      </Card3DTilt>
 
       <div className="grid grid-cols-1 gap-3">
-        {CALENDAR_2026.map((gp) => {
+        {calendar.map((gp) => {
           const isExpanded = expandedRound === gp.round;
           const isCompleted = completedRounds.has(gp.round);
           const isCurrent = gp.status === 'current' && !isCompleted;
           const isNext = gp.round === nextRace?.round;
-          const hasPracticeData = Boolean(PRACTICE_RESULTS_2026[gp.round]);
+          const staticPracticeData = is2026 ? PRACTICE_RESULTS_2026[gp.round] : undefined;
+          const livePracticeData = is2026 ? OPENF1_SESSION_RESULTS.practice[gp.round] : undefined;
+          const practiceDataForRound = livePracticeData
+            ? {
+                ...(staticPracticeData || livePracticeData),
+                sessions: {
+                  ...(staticPracticeData?.sessions || {}),
+                  ...livePracticeData.sessions,
+                },
+              }
+            : staticPracticeData;
+          const hasPracticeData = Boolean(practiceDataForRound);
           const finishedPracticeKeys = (['fp1', 'fp2', 'fp3'] as const).filter((key) => {
-            const session = gp.sessions[key] ?? PRACTICE_RESULTS_2026[gp.round]?.sessions[key];
+            const session = practiceDataForRound?.sessions[key] ?? gp.sessions[key];
             return session?.status === 'finished';
           });
           const hasFinishedPractice = finishedPracticeKeys.length > 0;
@@ -131,7 +206,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
             <div
               key={gp.round}
               id={`calendar-round-${gp.round}`}
-              className={`rounded-xl border transition-all scroll-mt-24 ${
+              className={`rounded-xl border transition-all scroll-mt-24 hover-depth-3d ${
                 isCurrent || (isNext && hasPracticeData)
                   ? 'bg-white border-f1red shadow-md ring-1 ring-f1red/20'
                   : isNext
@@ -206,7 +281,7 @@ export const RaceCalendar: React.FC = React.memo(() => {
                 </div>
 
                 {/* Circuit & Date */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3 sm:gap-6">
                   <div className="text-right hidden sm:block">
                     <span className="font-bold text-xs text-studio-900 block">
                       {formatDateStr(gp.dates, lang)}
@@ -245,16 +320,53 @@ export const RaceCalendar: React.FC = React.memo(() => {
 
                   {/* Sessions grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-                    {Object.entries(gp.sessions).map(([key, session]) => {
-                      if (!session) return null;
-                      const practiceDataForRound = PRACTICE_RESULTS_2026[gp.round];
-                      const qualifyingDataForRound = QUALIFYING_RESULTS_2026[gp.round];
+                    {(gp.hasSprint
+                      ? (['fp1', 'sprintQualifying', 'sprint', 'qualifying', 'race'] as const)
+                      : (['fp1', 'fp2', 'fp3', 'qualifying', 'race'] as const)
+                    ).map((key) => {
+                      const staticQualifyingData = is2026
+                        ? QUALIFYING_RESULTS_2026[gp.round]
+                        : undefined;
+                      const liveQualifyingData = is2026
+                        ? OPENF1_SESSION_RESULTS.qualifying[gp.round]
+                        : undefined;
+                      const qualifyingDataForRound = liveQualifyingData
+                        ? {
+                            ...(staticQualifyingData || liveQualifyingData),
+                            sessions: {
+                              ...(staticQualifyingData?.sessions || {}),
+                              ...liveQualifyingData.sessions,
+                            },
+                          }
+                        : staticQualifyingData;
 
                       const isPracticeSession = key === 'fp1' || key === 'fp2' || key === 'fp3';
                       const isQualifyingSession =
                         key === 'qualifying' || key === 'sprintQualifying';
                       const isSprintSession = key === 'sprint';
                       const isRaceSession = key === 'race';
+
+                      let session = gp.sessions[key];
+                      if (
+                        !session &&
+                        isPracticeSession &&
+                        practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3']
+                      ) {
+                        const pSession =
+                          practiceDataForRound.sessions[key as 'fp1' | 'fp2' | 'fp3']!;
+                        session = {
+                          name:
+                            key === 'fp1'
+                              ? 'Practice 1'
+                              : key === 'fp2'
+                                ? 'Practice 2'
+                                : 'Practice 3',
+                          dateStr: pSession.dateStr,
+                          timeStr: key === 'fp1' ? '12:30' : key === 'fp2' ? '16:00' : '12:30',
+                          status: pSession.status,
+                        };
+                      }
+                      if (!session) return null;
 
                       const practiceSession = isPracticeSession
                         ? practiceDataForRound?.sessions[key as 'fp1' | 'fp2' | 'fp3']
@@ -377,7 +489,18 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           <div className="flex items-center justify-between text-[11px] text-studio-600">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3 text-studio-400" />
-                              {session.timeStr}
+                              {!isFinished && gp.venueUtcOffset !== undefined
+                                ? (() => {
+                                    const vn = toVietnamTime(session.timeStr, gp.venueUtcOffset);
+                                    const dayLabel =
+                                      vn.dayShift === 1
+                                        ? ' (+1 ngày)'
+                                        : vn.dayShift === -1
+                                          ? ' (-1 ngày)'
+                                          : '';
+                                    return `${vn.time} giờ Việt Nam${dayLabel}`;
+                                  })()
+                                : session.timeStr}
                             </span>
                             <span className={`text-[9px] font-bold uppercase ${statusTextClass}`}>
                               {statusLabel}
@@ -388,7 +511,9 @@ export const RaceCalendar: React.FC = React.memo(() => {
                           {isFinishedPractice && (
                             <span className="text-[9px] text-sky-700 font-bold block pt-1 border-t border-sky-200/60 flex items-center gap-1">
                               <Timer className="w-2.5 h-2.5 text-sky-600" />
-                              {isVi ? 'Xem BXH Practice' : 'View Practice Table'}
+                              {isVi
+                                ? `Xem BXH ${key.toUpperCase()}`
+                                : `View ${key.toUpperCase()} Table`}
                             </span>
                           )}
 

@@ -11,7 +11,7 @@ export interface BrandLogoProps {
 }
 
 /**
- * Bespoke Ground Effect Aerodynamic Brand Mark for Ground Effect Hub.
+ * Legacy bespoke aerodynamic mark retained for backwards compatibility.
  * Features a multi-element downforce aerofoil and Venturi underfloor tunnel vortex.
  * 100% custom, original racing engineering icon with ZERO trademark infringement.
  */

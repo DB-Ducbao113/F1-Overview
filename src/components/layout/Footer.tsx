@@ -2,93 +2,128 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { BrandLogo } from '../common/BrandLogo';
+import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
 
 export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const strings = t[lang].footer;
   const navStrings = t[lang].nav;
+  const navItems = [
+    { to: '/', label: navStrings.home },
+    { to: '/season/2026', label: navStrings.championship },
+    { to: '/showroom', label: navStrings.collection },
+    { to: '/teams', label: lang === 'vi' ? 'Danh sách đội đua' : 'Teams' },
+    { to: '/drivers', label: lang === 'vi' ? 'Danh sách tay đua' : 'Drivers' },
+    { to: '/about', label: lang === 'vi' ? 'Về dự án' : 'About' },
+  ];
 
   return (
-    <footer className="bg-studio-950 text-white border-t border-studio-800 pt-16 pb-12 mt-auto">
-      <div className="page-container">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          {/* Brand Info */}
-          <div className="md:col-span-2">
-            <div className="mb-4">
-              <BrandLogo size="md" variant="full" theme="dark" showSub={false} />
-            </div>
-            <p className="text-sm text-studio-400 font-light leading-relaxed max-w-md mb-6">
-              {strings.desc}
-            </p>
-            <p className="text-xs text-studio-500 font-light leading-relaxed max-w-lg">
-              {strings.disclaimer}
-            </p>
-          </div>
+    <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-[#070709] text-white">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-60">
+        <div className="absolute left-[7%] top-0 h-px w-40 bg-f1red" />
+        <div className="absolute right-[9%] top-24 h-px w-56 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+        <div className="absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-f1red/[0.04] blur-3xl" />
+      </div>
 
-          {/* Navigation Links */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-studio-300 mb-4">
-              {strings.colExplore}
-            </h4>
-            <ul className="space-y-2.5 text-xs text-studio-400 font-medium">
-              <li>
-                <Link to="/" className="hover:text-f1red transition-colors">
-                  {navStrings.home}
-                </Link>
-              </li>
-              <li>
-                <Link to="/season/2026" className="hover:text-f1red transition-colors">
-                  {navStrings.championship}
-                </Link>
-              </li>
-              <li>
-                <Link to="/showroom" className="hover:text-f1red transition-colors">
-                  {navStrings.collection}
-                </Link>
-              </li>
-              <li>
-                <Link to="/teams" className="hover:text-f1red transition-colors">
-                  {lang === 'vi' ? 'Danh sách đội đua' : 'Teams'}
-                </Link>
-              </li>
-              <li>
-                <Link to="/drivers" className="hover:text-f1red transition-colors">
-                  {lang === 'vi' ? 'Danh sách tay đua' : 'Drivers'}
-                </Link>
-              </li>
-            </ul>
-            <Link
-              to="/about"
-              className="inline-block mt-4 text-xs text-studio-400 hover:text-f1red transition-colors"
-            >
-              {lang === 'vi' ? 'Về dự án' : 'About'}
-            </Link>
-          </div>
-
-          {/* Legal & Provenance */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-studio-300 mb-4">
-              {strings.colLegal}
-            </h4>
-            <div className="space-y-2 text-xs text-studio-400 leading-relaxed font-light">
-              <p>
-                Photography: LAT Images, DPPI, Motorsport Images, Red Bull Media House, Official F1
-                Team Press Kits.
-              </p>
-              <p className="text-studio-500">
-                All rights reserved to their respective copyright holders.
-              </p>
-            </div>
-          </div>
+      <div className="page-container relative py-14 md:py-20">
+        <div className="mb-12 flex items-center justify-between border-b border-white/10 pb-5 text-[9px] font-semibold uppercase tracking-[0.34em] text-white/35">
+          <span>PDM / Archive 026</span>
+          <span className="hidden sm:inline">Aerodynamics · Telemetry · Heritage</span>
+          <span>43° N / 12° E</span>
         </div>
 
-        {/* Bottom Line */}
-        <div className="border-t border-studio-800/80 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-studio-500">
-          <p>{strings.copyright}</p>
-          <div className="flex items-center gap-4">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>2026 Ground Effect Hub · By BaoBungBu</span>
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
+          <section className="lg:col-span-5 lg:pr-10">
+            <OfficialBrandLogo size="lg" variant="full" />
+            <p className="mt-9 font-display text-[clamp(2.7rem,4.5vw,5.2rem)] font-semibold uppercase italic leading-[0.82] tracking-[-0.055em] text-white">
+              {lang === 'vi' ? (
+                <>
+                  Chính xác
+                  <br />
+                  <span className="text-white/30">trong chuyển động.</span>
+                </>
+              ) : (
+                <>
+                  Precision
+                  <br />
+                  <span className="text-white/30">in motion.</span>
+                </>
+              )}
+            </p>
+            <div className="mt-8 flex items-start gap-5">
+              <span className="mt-2 h-px w-12 shrink-0 bg-f1red" />
+              <p className="max-w-md text-[13px] font-light leading-6 text-white/55">
+                {strings.desc}
+              </p>
+            </div>
+          </section>
+
+          <nav className="lg:col-span-3" aria-label={strings.colExplore}>
+            <div className="mb-5 flex items-center gap-3">
+              <span className="font-display text-3xl italic text-f1red">01</span>
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.34em] text-white/35">Index</p>
+                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+                  {strings.colExplore}
+                </h3>
+              </div>
+            </div>
+            <ul className="border-t border-white/10">
+              {navItems.map((item, index) => (
+                <li key={item.to} className="border-b border-white/10">
+                  <Link
+                    to={item.to}
+                    className="group flex items-center justify-between py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/55 transition-colors hover:text-white"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="font-display text-[10px] italic text-white/20 transition-colors group-hover:text-f1red">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      {item.label}
+                    </span>
+                    <span className="translate-x-0 text-f1red opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
+                      ↗
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <section className="lg:col-span-4 lg:pl-8">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="font-display text-3xl italic text-f1red">02</span>
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.34em] text-white/35">Provenance</p>
+                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+                  {strings.colLegal}
+                </h3>
+              </div>
+            </div>
+
+            <div className="border-l border-f1red/50 pl-5 text-[11px] font-light leading-5 text-white/45">
+              <p className="mb-4 uppercase tracking-[0.08em] text-white/65">
+                Photography / LAT Images / DPPI / Motorsport Images / Red Bull Media House /
+                Official team press kits
+              </p>
+              <p>{strings.disclaimer}</p>
+            </div>
+
+            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-white/45">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+              Independent digital archive
+            </div>
+          </section>
+        </div>
+
+        <div className="mt-16 flex flex-col gap-5 border-t border-white/10 pt-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+          <p className="max-w-3xl text-[13px] font-medium normal-case leading-6 tracking-normal text-white/65 sm:text-sm">
+            {strings.copyright}
+          </p>
+          <div className="flex items-center gap-5 whitespace-nowrap">
+            <span>© MMXXVI</span>
+            <span className="h-px w-8 bg-f1red" />
+            <span>Designed by BaoBungBu</span>
           </div>
         </div>
       </div>

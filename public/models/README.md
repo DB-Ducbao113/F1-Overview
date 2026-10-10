@@ -1,15 +1,23 @@
-# F1 3D Models Directory (Thư mục Mô hình 3D Xe F1)
+# 3D model inventory
 
-Đặt các file mô hình 3D định dạng `.glb` hoặc `.gltf` của 4 chiếc xe vào thư mục này với tên tương ứng:
+- Runtime asset: `c42.v2.glb`
+- Size: approximately 2.1 MiB
+- Usage: one shared geometry model; constructor liveries are generated procedurally at runtime.
 
-1. `rb20.glb` — Red Bull Racing RB20 (hoặc RB19)
-2. `sf24.glb` — Scuderia Ferrari SF-24 (hoặc F1-75)
-3. `mcl38.glb` — McLaren MCL38 (hoặc MCL36)
-4. `w15.glb` — Mercedes-AMG F1 W15 (hoặc W13)
+## Provenance required before public release
 
-### Nguồn tải model F1 3D miễn phí (Free 3D F1 Models):
-- **Sketchfab**: Tìm kiếm "Formula 1 2024" hoặc "F1 2022 ground effect" (chọn filter downloadable, định dạng glTF/glb).
-- **GitHub**: Nhiều repo F1 Three.js mã nguồn mở cung cấp sẵn file `.glb` đã tối ưu hóa.
+The source geometry before optimization is an exact Git blob match for `c42.glb` from:
 
-### Tính năng tải model trực tiếp trên Web:
-Trang web cũng tích hợp sẵn nút bấm **"Nạp file 3D (.glb)"** ngay trên thanh công cụ để bạn có thể chọn bất kỳ file `.glb` nào từ máy tính để xem trực tiếp lập tức!
+- Source: https://github.com/markste-in/c42
+- Author/maintainer: Mark Stein (`markste-in`, `mail@markste.in`)
+- Original commit: `6c87b04a9c2738e33c1167801e9d9c164e7b0035`
+- Original Git blob: `d5eb8a4c16a1cd6bf84a265e4614d5b2905d4c35`
+- License: WTFPL v2 (`LICENSE.md` in the source repository)
+- Original asset: `c42.glb`, 18,320,948 bytes
+
+The repository states that its files are based on the AR model presented by Alfa
+Romeo. Team names, liveries, and trademarks remain the property of their respective
+owners and are not granted by the open-source code/model license.
+
+The optimization process (Meshopt/WebP conversion and removal of embedded textures)
+does not change or replace the original model license.

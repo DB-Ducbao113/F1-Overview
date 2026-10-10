@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
 import { FullscreenCarStage } from './FullscreenCarStage';
+import { SingaporeCountdownWidget } from './SingaporeCountdownWidget';
+import { F1NewsTicker } from '../common/F1NewsTicker';
+import { AnimatedStandingsRow } from './AnimatedStandingsRow';
+import { useReveal } from '../../hooks/useReveal';
 import { SeasonYear } from '../../types';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
-import { ArrowRight, Trophy, Calendar, MapPin, ShieldCheck, Box } from 'lucide-react';
-import { ConstructorLogo } from '../common/ConstructorLogo';
-import { formatDateStr } from '../../utils/dateUtils';
+import { ArrowRight, Trophy, ShieldCheck, Box } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { Card3DTilt } from '../common/Card3DTilt';
+import { PodiumBrandHero } from './PodiumBrandHero';
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -17,6 +21,7 @@ export const HomeView: React.FC = () => {
 
   // Standings Season selector on Homepage (syncs with store, defaults to 2026)
   const [standingsSeason, setStandingsSeason] = useState<SeasonYear>(selectedSeason || 2026);
+  const { ref: standingsRef, isRevealed: standingsRevealed } = useReveal(0.15);
 
   // Show the active race weekend, or the next scheduled round.
   const detailedResultsRaw = useChampionshipStore((state) => state.detailedResults?.[2026]);
@@ -57,330 +62,212 @@ export const HomeView: React.FC = () => {
   }, [calculatedStandings, currentStandings, standingsSeason]);
 
   return (
-    <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in space-y-16">
-      {/* ── 1. Hero: Fullscreen Aerodynamic Car Stage (11 Teams) ── */}
-      <FullscreenCarStage />
+    <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in">
+      {/* ── 0. PODIUM brand statement ── */}
+      <PodiumBrandHero />
 
-      {/* ── 2. Next Race Weekend Widget ── */}
-      <section className="page-container">
-        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-studio-200 shadow-subtle flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-8 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-2 h-full bg-f1red" />
+      {/* ── 0b. F1 News Ticker: 36px Broadcast Marquee ── */}
+      <F1NewsTicker />
 
-          {/* Left Info */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-f1red/10 text-f1red text-[11px] font-bold uppercase tracking-wider animate-pulse">
+      <div className="space-y-16">
+        {/* ── 1. Hero: Fullscreen Aerodynamic Car Stage (11 Teams) ── */}
+        <div id="official-grid" className="scroll-mt-16">
+          <FullscreenCarStage />
+        </div>
+
+        {/* ── 2. Race weekend countdown ── */}
+        <SingaporeCountdownWidget race={nextRace} />
+
+        {/* ── 3. Championship Standings (Official Verified Data) ── */}
+        <section ref={standingsRef} className="page-container space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-f1red block mb-1">
+                FIA Formula 1 World Championship
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-wide text-studio-950">
                 {lang === 'vi'
-                  ? `Chặng ${nextRace.round} · Tuần Lễ Thi Đấu`
-                  : `Round ${nextRace.round} · Active Race Weekend`}
-              </span>
-              <span className="text-xs text-studio-500 font-semibold">{nextRace.country}</span>
+                  ? `Bảng Xếp Hạng Điểm Số (${standingsSeason})`
+                  : `Championship Standings (${standingsSeason})`}
+              </h2>
             </div>
 
-            <h2 className="font-display text-2xl sm:text-3xl font-black uppercase text-studio-950">
-              {nextRace.name}
-            </h2>
-
-            <div className="flex flex-wrap items-center gap-4 text-xs text-studio-600 font-medium">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-f1red" /> {nextRace.circuit}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-f1red" /> {formatDateStr(nextRace.dates, lang)}
-              </span>
-              <span className="text-studio-400">|</span>
-              <span>
-                {nextRace.laps} {lang === 'vi' ? 'Vòng' : 'Laps'} ({nextRace.raceDistanceKm} km)
-              </span>
-            </div>
-          </div>
-
-          {/* Sessions Preview */}
-          <div className="flex items-center gap-3 flex-wrap">
-            {nextRace?.sessions?.fp3 && (
-              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-                <span className="text-[10px] uppercase font-bold text-studio-400 block">FP3</span>
-                <span className="text-xs font-bold text-studio-900 block">
-                  {formatDateStr(nextRace.sessions.fp3.dateStr, lang)}
-                </span>
-                <span className="text-[10px] text-studio-500">{nextRace.sessions.fp3.timeStr}</span>
-              </div>
-            )}
-            {nextRace?.sessions?.sprintQualifying && (
-              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-                <span className="text-[10px] uppercase font-bold text-amber-600 block">
-                  {lang === 'vi' ? 'Sprint Phân Hạng' : 'Sprint Shootout'}
-                </span>
-                <span className="text-xs font-bold text-studio-900 block">
-                  {formatDateStr(nextRace.sessions.sprintQualifying.dateStr, lang)}
-                </span>
-                <span className="text-[10px] text-studio-500">
-                  {nextRace.sessions.sprintQualifying.timeStr}
-                </span>
-              </div>
-            )}
-            {nextRace?.sessions?.sprint && (
-              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-                <span className="text-[10px] uppercase font-bold text-amber-600 block">
-                  Sprint Race
-                </span>
-                <span className="text-xs font-bold text-studio-900 block">
-                  {formatDateStr(nextRace.sessions.sprint.dateStr, lang)}
-                </span>
-                <span className="text-[10px] text-studio-500">
-                  {nextRace.sessions.sprint.timeStr}
-                </span>
-              </div>
-            )}
-            {nextRace?.sessions?.qualifying && (
-              <div className="p-3 rounded-xl bg-studio-50 border border-studio-200 text-center min-w-[90px]">
-                <span className="text-[10px] uppercase font-bold text-studio-400 block">
-                  {lang === 'vi' ? 'Phân hạng' : 'Qualifying'}
-                </span>
-                <span className="text-xs font-bold text-studio-900 block">
-                  {formatDateStr(nextRace.sessions.qualifying.dateStr, lang)}
-                </span>
-                <span className="text-[10px] font-bold text-f1red">
-                  {nextRace.sessions.qualifying.timeStr}
-                </span>
-              </div>
-            )}
-            {nextRace?.sessions?.race && (
-              <div className="p-3 rounded-xl bg-studio-900 text-white text-center min-w-[90px] shadow-sm">
-                <span className="text-[10px] uppercase font-bold text-amber-400 block">
-                  Grand Prix
-                </span>
-                <span className="text-xs font-bold text-white block">
-                  {formatDateStr(nextRace.sessions.race.dateStr, lang)}
-                </span>
-                <span className="text-[10px] text-studio-300">
-                  {nextRace.sessions.race.timeStr}
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={() => {
-                navigate('/season/2026');
-              }}
-              className="p-3 rounded-xl border border-studio-300 hover:border-f1red text-studio-700 hover:text-f1red transition-colors text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ml-2 cursor-pointer"
-            >
-              <span>{lang === 'vi' ? 'Lịch Chi Tiết' : 'Full Schedule'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3. Championship Standings (Official Verified Data) ── */}
-      <section className="page-container space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-f1red block mb-1">
-              FIA Formula 1 World Championship
-            </span>
-            <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-wide text-studio-950">
-              {lang === 'vi'
-                ? `Bảng Xếp Hạng Điểm Số (${standingsSeason})`
-                : `Championship Standings (${standingsSeason})`}
-            </h2>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Season Switcher on Home */}
-            <div className="flex items-center bg-white p-1 rounded-xl border border-studio-200 shadow-xs">
-              {([2026, 2025, 2024] as SeasonYear[]).map((season) => (
-                <button
-                  key={season}
-                  onClick={() => setStandingsSeason(season)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    standingsSeason === season
-                      ? 'bg-f1red text-white shadow-xs font-black'
-                      : 'text-studio-600 hover:text-studio-950'
-                  }`}
-                >
-                  <span>{season}</span>
-                  {season === 2026 && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => {
-                navigate(`/season/${standingsSeason}`);
-              }}
-              className="text-xs font-bold uppercase tracking-wider text-f1red hover:underline flex items-center gap-1 shrink-0"
-            >
-              <span>{lang === 'vi' ? 'Xem đầy đủ BXH' : 'View Full Standings'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Top 3 Drivers */}
-          <div className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-studio-100">
-              <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-amber-500" />{' '}
-                {lang === 'vi' ? 'Bảng Điểm Tay Đua (Top 3)' : 'Drivers Championship (Top 3)'}
-              </h3>
-              <span className="text-xs font-semibold text-studio-500">
-                {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {topDrivers.map((driver) => {
-                const driverColor = getTeamTextColor(driver.teamId, false);
-                return (
-                  <div
-                    key={driver.driverId}
-                    className="flex items-center justify-between p-3 rounded-xl bg-studio-50 border hover:bg-studio-100/70 transition-all cursor-pointer group"
-                    style={{ borderColor: `${driverColor}40` }}
-                    onClick={() =>
-                      navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`)
-                    }
+            <div className="flex items-center gap-3">
+              {/* Season Switcher on Home with Sliding Pill Indicator */}
+              <div className="relative flex items-center bg-white p-1 rounded-xl border border-studio-200 shadow-xs w-48 sm:w-56">
+                <div
+                  className="absolute top-1 bottom-1 rounded-lg bg-f1red shadow-xs transition-all duration-300 ease-out pointer-events-none"
+                  style={{
+                    width: 'calc((100% - 8px) / 3)',
+                    left: `calc(4px + ${[2026, 2025, 2024].indexOf(standingsSeason)} * ((100% - 8px) / 3))`,
+                  }}
+                />
+                {([2026, 2025, 2024] as SeasonYear[]).map((season) => (
+                  <button
+                    key={season}
+                    onClick={() => setStandingsSeason(season)}
+                    className={`relative z-10 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-1 flex-1 ${
+                      standingsSeason === season
+                        ? 'text-white font-black'
+                        : 'text-studio-600 hover:text-studio-950'
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <span>{season}</span>
+                    {season === 2026 && (
                       <span
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs shrink-0 ${
-                          driver.rank === 1
-                            ? 'bg-amber-400 text-black shadow-xs'
-                            : driver.rank === 2
-                              ? 'bg-studio-300 text-studio-900'
-                              : 'bg-amber-700 text-white'
-                        }`}
-                      >
-                        {driver.rank}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-bold text-sm block" style={{ color: driverColor }}>
-                            {driver.driverName}
-                          </span>
-                          <span className="text-xs" title={driver.countryFlag}>
-                            {driver.countryFlag}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <ConstructorLogo teamId={driver.teamId} size="sm" />
-                          <span
-                            className="text-xs font-semibold truncate"
-                            style={{ color: driverColor }}
-                          >
-                            {driver.teamName}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          standingsSeason === 2026 ? 'bg-white' : 'bg-emerald-400'
+                        } animate-pulse`}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
-                        <span className="font-display font-black text-base text-studio-950 block">
-                          {driver.points} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
-                        </span>
-                        <span className="text-[10px] text-studio-400">
-                          {driver.wins} {lang === 'vi' ? 'thắng' : 'wins'} · {driver.podiums} podium
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`);
-                        }}
-                        className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
-                        title={lang === 'vi' ? 'Xem hồ sơ tay đua' : 'View Driver Profile'}
-                      >
-                        <ArrowRight className="w-3.5 h-3.5 text-f1red" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+              <button
+                onClick={() => {
+                  navigate(`/season/${standingsSeason}`);
+                }}
+                className="text-xs font-bold uppercase tracking-wider text-f1red hover:underline flex items-center gap-1 shrink-0"
+              >
+                <span>{lang === 'vi' ? 'Xem đầy đủ BXH' : 'View Full Standings'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
-          {/* Top 3 Constructors */}
-          <div className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-studio-100">
-              <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-f1red" />{' '}
-                {lang === 'vi' ? 'Bảng Điểm Đội Đua (Top 3)' : 'Constructors Championship (Top 3)'}
-              </h3>
-              <span className="text-xs font-semibold text-studio-500">
-                {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
-              </span>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Top 3 Drivers */}
+            <Card3DTilt
+              maxTilt={3}
+              glareOpacity={0.12}
+              className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-studio-100">
+                <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-amber-500" />{' '}
+                  {lang === 'vi' ? 'Bảng Điểm Tay Đua (Top 3)' : 'Drivers Championship (Top 3)'}
+                </h3>
+                <span className="text-xs font-semibold text-studio-500">
+                  {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
+                </span>
+              </div>
 
-            <div className="space-y-3">
-              {topConstructors.map((c) => {
-                const teamColor = getTeamTextColor(c.teamId, false);
-                return (
-                  <div
-                    key={c.teamId}
-                    className="flex items-center justify-between p-3 rounded-xl bg-studio-50 border hover:bg-studio-100/70 transition-all cursor-pointer group"
-                    style={{ borderColor: `${teamColor}40` }}
-                    onClick={() => navigate(`/teams/${c.teamId}`)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs shrink-0 ${
-                          c.rank === 1
-                            ? 'bg-amber-400 text-black shadow-xs'
-                            : c.rank === 2
-                              ? 'bg-studio-300 text-studio-900'
-                              : 'bg-amber-700 text-white'
-                        }`}
-                      >
-                        {c.rank}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <ConstructorLogo teamId={c.teamId} size="sm" />
-                          <span
-                            className="font-bold text-sm block truncate"
-                            style={{ color: teamColor }}
+              <div key={`drivers-${standingsSeason}`} className="space-y-3 animate-fade-in">
+                {topDrivers.map((driver, idx) => {
+                  const driverColor = getTeamTextColor(driver.teamId, false);
+                  return (
+                    <div
+                      key={driver.driverId}
+                      style={{
+                        transitionDelay: `${idx * 80}ms`,
+                        opacity: standingsRevealed ? 1 : 0,
+                        transform: standingsRevealed ? 'translateY(0)' : 'translateY(16px)',
+                        transitionProperty: 'opacity, transform',
+                        transitionDuration: '500ms',
+                      }}
+                    >
+                      <AnimatedStandingsRow
+                        rank={driver.rank}
+                        name={driver.driverName}
+                        subName={driver.teamName}
+                        flag={driver.countryFlag}
+                        teamId={driver.teamId}
+                        teamColor={driverColor}
+                        points={driver.points}
+                        wins={driver.wins}
+                        podiums={driver.podiums}
+                        inView={standingsRevealed}
+                        lang={lang}
+                        onClick={() =>
+                          navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`)
+                        }
+                        actionButton={
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/drivers/${driver.driverId}?season=${standingsSeason}`);
+                            }}
+                            className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
+                            title={lang === 'vi' ? 'Xem hồ sơ tay đua' : 'View Driver Profile'}
                           >
-                            {c.teamName}
-                          </span>
-                        </div>
-                        <span className="text-xs text-studio-500 mt-0.5 block truncate">
-                          {lang === 'vi' ? `Động cơ ${c.engine}` : `${c.engine} Power Unit`}
-                        </span>
-                      </div>
+                            <ArrowRight className="w-3.5 h-3.5 text-f1red" />
+                          </button>
+                        }
+                      />
                     </div>
+                  );
+                })}
+              </div>
+            </Card3DTilt>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-right">
-                        <span className="font-display font-black text-base text-studio-950 block">
-                          {c.points} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
-                        </span>
-                        <span className="text-[10px] text-studio-400">
-                          {c.wins} {lang === 'vi' ? 'thắng' : 'wins'} · {c.podiums} podium
-                        </span>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/showroom?team=${c.teamId}`);
-                        }}
-                        className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
-                        title={lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'}
-                      >
-                        <Box className="w-3.5 h-3.5 text-f1red" />
-                        <span className="hidden sm:inline">3D</span>
-                      </button>
+            {/* Top 3 Constructors */}
+            <Card3DTilt
+              maxTilt={3}
+              glareOpacity={0.12}
+              className="bg-white rounded-xl border border-studio-200 shadow-subtle p-6 space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-studio-100">
+                <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-f1red" />{' '}
+                  {lang === 'vi'
+                    ? 'Bảng Điểm Đội Đua (Top 3)'
+                    : 'Constructors Championship (Top 3)'}
+                </h3>
+                <span className="text-xs font-semibold text-studio-500">
+                  {lang === 'vi' ? `Mùa giải ${standingsSeason}` : `${standingsSeason} Season`}
+                </span>
+              </div>
+
+              <div key={`constructors-${standingsSeason}`} className="space-y-3 animate-fade-in">
+                {topConstructors.map((c, idx) => {
+                  const teamColor = getTeamTextColor(c.teamId, false);
+                  return (
+                    <div
+                      key={c.teamId}
+                      style={{
+                        transitionDelay: `${idx * 80}ms`,
+                        opacity: standingsRevealed ? 1 : 0,
+                        transform: standingsRevealed ? 'translateY(0)' : 'translateY(16px)',
+                        transitionProperty: 'opacity, transform',
+                        transitionDuration: '500ms',
+                      }}
+                    >
+                      <AnimatedStandingsRow
+                        rank={c.rank}
+                        name={c.teamName}
+                        teamId={c.teamId}
+                        teamColor={teamColor}
+                        points={c.points}
+                        wins={c.wins}
+                        podiums={c.podiums}
+                        inView={standingsRevealed}
+                        lang={lang}
+                        onClick={() => navigate(`/teams/${c.teamId}`)}
+                        actionButton={
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/showroom?team=${c.teamId}`);
+                            }}
+                            className="p-1.5 rounded-lg bg-studio-100 hover:bg-studio-950 text-studio-600 hover:text-white border border-studio-200 text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
+                            title={
+                              lang === 'vi' ? 'Xem xe trong Showroom 3D' : 'View in 3D Showroom'
+                            }
+                          >
+                            <Box className="w-3.5 h-3.5 text-f1red" />
+                            <span className="hidden sm:inline">3D</span>
+                          </button>
+                        }
+                      />
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </Card3DTilt>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { DriverStanding, ConstructorStanding, SeasonYear, SeasonStandings } from
 // Source: Formula 1 Official Results (formula1.com/en/results)
 // - 2024: Completed Season (Official Final Classification)
 // - 2025: Completed Season (Official Final Classification)
-// - 2026: Ongoing Season (Official Current Live Standings after 15 events)
+// - 2026: Ongoing Season (Official Current Live Standings after 16 events)
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -22,7 +22,7 @@ export const DRIVER_STANDINGS_2024: DriverStanding[] = [
   { rank: 8, driverId: 'perez', driverName: 'Sergio Perez', driverCode: 'PER', teamId: 'redbull', teamName: 'Red Bull Racing', points: 152, wins: 0, podiums: 4, countryFlag: '🇲🇽' },
   { rank: 9, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', teamId: 'astonmartin', teamName: 'Aston Martin', points: 70, wins: 0, podiums: 0, countryFlag: '🇪🇸' },
   { rank: 10, driverId: 'gasly', driverName: 'Pierre Gasly', driverCode: 'GAS', teamId: 'alpine', teamName: 'Alpine', points: 42, wins: 0, podiums: 1, countryFlag: '🇫🇷' },
-  { rank: 11, driverId: 'hulkenberg', driverName: 'Nico Hulkenberg', driverCode: 'HUL', teamId: 'haas', teamName: 'Haas', points: 41, wins: 0, podiums: 0, countryFlag: '🇩🇪' },
+  { rank: 11, driverId: 'hulkenberg', driverName: 'Nico Hülkenberg', driverCode: 'HUL', teamId: 'haas', teamName: 'Haas', points: 41, wins: 0, podiums: 0, countryFlag: '🇩🇪' },
   { rank: 12, driverId: 'tsunoda', driverName: 'Yuki Tsunoda', driverCode: 'TSU', teamId: 'racingbulls', teamName: 'RB', points: 30, wins: 0, podiums: 0, countryFlag: '🇯🇵' },
   { rank: 13, driverId: 'stroll', driverName: 'Lance Stroll', driverCode: 'STR', teamId: 'astonmartin', teamName: 'Aston Martin', points: 24, wins: 0, podiums: 0, countryFlag: '🇨🇦' },
   { rank: 14, driverId: 'ocon', driverName: 'Esteban Ocon', driverCode: 'OCO', teamId: 'alpine', teamName: 'Alpine', points: 23, wins: 0, podiums: 1, countryFlag: '🇫🇷' },
@@ -65,7 +65,7 @@ export const DRIVER_STANDINGS_2025: DriverStanding[] = [
   { rank: 8, driverId: 'albon', driverName: 'Alexander Albon', driverCode: 'ALB', teamId: 'williams', teamName: 'Williams', points: 73, wins: 0, podiums: 1, countryFlag: '🇹🇭' },
   { rank: 9, driverId: 'sainz', driverName: 'Carlos Sainz', driverCode: 'SAI', teamId: 'williams', teamName: 'Williams', points: 64, wins: 0, podiums: 1, countryFlag: '🇪🇸' },
   { rank: 10, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', teamId: 'astonmartin', teamName: 'Aston Martin', points: 56, wins: 0, podiums: 0, countryFlag: '🇪🇸' },
-  { rank: 11, driverId: 'hulkenberg', driverName: 'Nico Hulkenberg', driverCode: 'HUL', teamId: 'audi', teamName: 'Kick Sauber', points: 51, wins: 0, podiums: 0, countryFlag: '🇩🇪' },
+  { rank: 11, driverId: 'hulkenberg', driverName: 'Nico Hülkenberg', driverCode: 'HUL', teamId: 'audi', teamName: 'Kick Sauber', points: 51, wins: 0, podiums: 0, countryFlag: '🇩🇪' },
   { rank: 12, driverId: 'hadjar', driverName: 'Isack Hadjar', driverCode: 'HAD', teamId: 'racingbulls', teamName: 'Racing Bulls', points: 51, wins: 0, podiums: 0, countryFlag: '🇫🇷' },
   { rank: 13, driverId: 'bearman', driverName: 'Oliver Bearman', driverCode: 'BEA', teamId: 'haas', teamName: 'Haas', points: 41, wins: 0, podiums: 0, countryFlag: '🇬🇧' },
   { rank: 14, driverId: 'lawson', driverName: 'Liam Lawson', driverCode: 'LAW', teamId: 'racingbulls', teamName: 'Racing Bulls', points: 38, wins: 0, podiums: 0, countryFlag: '🇳🇿' },
@@ -92,17 +92,17 @@ export const CONSTRUCTOR_STANDINGS_2025: ConstructorStanding[] = [
 ];
 
 // ----------------------------------------------------------------------------
-// 3. SEASON 2026 — Official Live Standings (Ongoing Season after 15 events)
+// 3. SEASON 2026 — Official Live Standings (Ongoing Season after 16 events)
 // ----------------------------------------------------------------------------
 export const DRIVER_STANDINGS_2026: DriverStanding[] = [
-  { rank: 1, driverId: 'antonelli', driverName: 'Andrea Kimi Antonelli', driverCode: 'ANT', teamId: 'mercedes', teamName: 'Mercedes', points: 320, wins: 8, podiums: 0, countryFlag: '🇮🇹' },
-  { rank: 2, driverId: 'russell', driverName: 'George Russell', driverCode: 'RUS', teamId: 'mercedes', teamName: 'Mercedes', points: 236, wins: 3, podiums: 0, countryFlag: '🇬🇧' },
-  { rank: 3, driverId: 'hamilton', driverName: 'Lewis Hamilton', driverCode: 'HAM', teamId: 'ferrari', teamName: 'Ferrari', points: 214, wins: 1, podiums: 0, countryFlag: '🇬🇧' },
-  { rank: 4, driverId: 'leclerc', driverName: 'Charles Leclerc', driverCode: 'LEC', teamId: 'ferrari', teamName: 'Ferrari', points: 191, wins: 1, podiums: 0, countryFlag: '🇲🇨' },
-  { rank: 5, driverId: 'norris', driverName: 'Lando Norris', driverCode: 'NOR', teamId: 'mclaren', teamName: 'McLaren', points: 188, wins: 2, podiums: 0, countryFlag: '🇬🇧' },
-  { rank: 6, driverId: 'verstappen', driverName: 'Max Verstappen', driverCode: 'VER', teamId: 'redbull', teamName: 'Red Bull', points: 188, wins: 1, podiums: 0, countryFlag: '🇳🇱' },
-  { rank: 7, driverId: 'piastri', driverName: 'Oscar Piastri', driverCode: 'PIA', teamId: 'mclaren', teamName: 'McLaren', points: 128, wins: 0, podiums: 0, countryFlag: '🇦🇺' },
-  { rank: 8, driverId: 'hadjar', driverName: 'Isack Hadjar', driverCode: 'HAD', teamId: 'redbull', teamName: 'Red Bull', points: 96, wins: 0, podiums: 0, countryFlag: '🇫🇷' },
+  { rank: 1, driverId: 'antonelli', driverName: 'Andrea Kimi Antonelli', driverCode: 'ANT', teamId: 'mercedes', teamName: 'Mercedes', points: 320, wins: 8, podiums: 13, countryFlag: '🇮🇹' },
+  { rank: 2, driverId: 'russell', driverName: 'George Russell', driverCode: 'RUS', teamId: 'mercedes', teamName: 'Mercedes', points: 236, wins: 3, podiums: 8, countryFlag: '🇬🇧' },
+  { rank: 3, driverId: 'hamilton', driverName: 'Lewis Hamilton', driverCode: 'HAM', teamId: 'ferrari', teamName: 'Ferrari', points: 214, wins: 1, podiums: 6, countryFlag: '🇬🇧' },
+  { rank: 4, driverId: 'leclerc', driverName: 'Charles Leclerc', driverCode: 'LEC', teamId: 'ferrari', teamName: 'Ferrari', points: 191, wins: 1, podiums: 4, countryFlag: '🇲🇨' },
+  { rank: 5, driverId: 'norris', driverName: 'Lando Norris', driverCode: 'NOR', teamId: 'mclaren', teamName: 'McLaren', points: 188, wins: 2, podiums: 5, countryFlag: '🇬🇧' },
+  { rank: 6, driverId: 'verstappen', driverName: 'Max Verstappen', driverCode: 'VER', teamId: 'redbull', teamName: 'Red Bull', points: 188, wins: 1, podiums: 8, countryFlag: '🇳🇱' },
+  { rank: 7, driverId: 'piastri', driverName: 'Oscar Piastri', driverCode: 'PIA', teamId: 'mclaren', teamName: 'McLaren', points: 128, wins: 0, podiums: 2, countryFlag: '🇦🇺' },
+  { rank: 8, driverId: 'hadjar', driverName: 'Isack Hadjar', driverCode: 'HAD', teamId: 'redbull', teamName: 'Red Bull', points: 96, wins: 0, podiums: 2, countryFlag: '🇫🇷' },
   { rank: 9, driverId: 'lawson', driverName: 'Liam Lawson', driverCode: 'LAW', teamId: 'racingbulls', teamName: 'RB F1 Team', points: 65, wins: 0, podiums: 0, countryFlag: '🇳🇿' },
   { rank: 10, driverId: 'gasly', driverName: 'Pierre Gasly', driverCode: 'GAS', teamId: 'alpine', teamName: 'Alpine F1 Team', points: 41, wins: 0, podiums: 0, countryFlag: '🇫🇷' },
   { rank: 11, driverId: 'lindblad', driverName: 'Arvid Lindblad', driverCode: 'LIN', teamId: 'racingbulls', teamName: 'RB F1 Team', points: 38, wins: 0, podiums: 0, countryFlag: '🇬🇧' },
@@ -114,17 +114,16 @@ export const DRIVER_STANDINGS_2026: DriverStanding[] = [
   { rank: 17, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', teamId: 'astonmartin', teamName: 'Aston Martin', points: 7, wins: 0, podiums: 0, countryFlag: '🇪🇸' },
   { rank: 18, driverId: 'sainz', driverName: 'Carlos Sainz', driverCode: 'SAI', teamId: 'williams', teamName: 'Williams', points: 7, wins: 0, podiums: 0, countryFlag: '🇪🇸' },
   { rank: 19, driverId: 'albon', driverName: 'Alexander Albon', driverCode: 'ALB', teamId: 'williams', teamName: 'Williams', points: 5, wins: 0, podiums: 0, countryFlag: '🇹🇭' },
-  { rank: 20, driverId: 'tsunoda', driverName: 'Yuki Tsunoda', driverCode: 'TSU', teamId: 'racingbulls', teamName: 'RB F1 Team', points: 1, wins: 0, podiums: 0, countryFlag: '🇯🇵' },
-  { rank: 21, driverId: 'stroll', driverName: 'Lance Stroll', driverCode: 'STR', teamId: 'astonmartin', teamName: 'Aston Martin', points: 0, wins: 0, podiums: 0, countryFlag: '🇨🇦' },
-  { rank: 22, driverId: 'bottas', driverName: 'Valtteri Bottas', driverCode: 'BOT', teamId: 'cadillac', teamName: 'Cadillac F1 Team', points: 0, wins: 0, podiums: 0, countryFlag: '🇫🇮' },
-  { rank: 23, driverId: 'perez', driverName: 'Sergio Pérez', driverCode: 'PER', teamId: 'cadillac', teamName: 'Cadillac F1 Team', points: 0, wins: 0, podiums: 0, countryFlag: '🇲🇽' },
+  { rank: 20, driverId: 'stroll', driverName: 'Lance Stroll', driverCode: 'STR', teamId: 'astonmartin', teamName: 'Aston Martin', points: 0, wins: 0, podiums: 0, countryFlag: '🇨🇦' },
+  { rank: 21, driverId: 'bottas', driverName: 'Valtteri Bottas', driverCode: 'BOT', teamId: 'cadillac', teamName: 'Cadillac F1 Team', points: 0, wins: 0, podiums: 0, countryFlag: '🇫🇮' },
+  { rank: 22, driverId: 'perez', driverName: 'Sergio Pérez', driverCode: 'PER', teamId: 'cadillac', teamName: 'Cadillac F1 Team', points: 0, wins: 0, podiums: 0, countryFlag: '🇲🇽' },
 ];
 
 export const CONSTRUCTOR_STANDINGS_2026: ConstructorStanding[] = [
-  { rank: 1, teamId: 'mercedes', teamName: 'Mercedes', points: 556, wins: 11, podiums: 0, engine: 'Mercedes' },
-  { rank: 2, teamId: 'ferrari', teamName: 'Ferrari', points: 405, wins: 2, podiums: 0, engine: 'Ferrari' },
-  { rank: 3, teamId: 'mclaren', teamName: 'McLaren', points: 316, wins: 2, podiums: 0, engine: 'Mercedes' },
-  { rank: 4, teamId: 'redbull', teamName: 'Red Bull', points: 298, wins: 1, podiums: 0, engine: 'Red Bull Ford' },
+  { rank: 1, teamId: 'mercedes', teamName: 'Mercedes', points: 556, wins: 11, podiums: 21, engine: 'Mercedes' },
+  { rank: 2, teamId: 'ferrari', teamName: 'Ferrari', points: 405, wins: 2, podiums: 10, engine: 'Ferrari' },
+  { rank: 3, teamId: 'mclaren', teamName: 'McLaren', points: 316, wins: 2, podiums: 7, engine: 'Mercedes' },
+  { rank: 4, teamId: 'redbull', teamName: 'Red Bull', points: 298, wins: 1, podiums: 10, engine: 'Red Bull Ford' },
   { rank: 5, teamId: 'racingbulls', teamName: 'RB F1 Team', points: 90, wins: 0, podiums: 0, engine: 'Red Bull Ford' },
   { rank: 6, teamId: 'alpine', teamName: 'Alpine F1 Team', points: 68, wins: 0, podiums: 0, engine: 'Mercedes' },
   { rank: 7, teamId: 'haas', teamName: 'Haas F1 Team', points: 27, wins: 0, podiums: 0, engine: 'Ferrari' },
@@ -158,7 +157,7 @@ export const STANDINGS_DATA: Record<SeasonYear, SeasonStandings> = {
   2026: {
     season: 2026,
     status: 'ongoing',
-    lastUpdated: '2026-10-10',
+    lastUpdated: '2026-10-09',
     notes: 'Official Live Standings after 16 events · Mercedes & Andrea Kimi Antonelli Leading',
     leaderTitle: 'Current Championship Leader: Andrea Kimi Antonelli (320 pts) · Mercedes (556 pts)',
     drivers: DRIVER_STANDINGS_2026,

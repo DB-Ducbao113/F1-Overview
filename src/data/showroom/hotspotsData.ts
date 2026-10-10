@@ -36,7 +36,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Cánh gió trước là bộ phận khí động học đầu tiên đón nhận luồng không khí va chạm với xe F1. Được chế tạo từ hơn 40 lớp sợi carbon siêu nhẹ, cánh gió không chỉ tạo ra hàng trăm kilogram lực nén ở tốc độ cao mà còn chia tách luồng khí: một phần đưa vào làm mát phanh và động cơ, phần còn lại tạo thành các luồng xoáy Y250 Vortex định hướng quanh lốp trước để triệt tiêu lực cản gió hỗn loạn.',
     descriptionEn:
       'The front wing is the primary aerodynamic surface encountering undisturbed air. Fabricated from over 40 plies of aerospace-grade carbon fiber, it generates critical front-axle downforce and channels high-energy vortices around the front wheel wake, sealing the ground-effect underfloor tunnels.',
-    imageUrl: '/images/showroom/wings_drs.jpg',
+    imageUrl: '/images/showroom/wings_drs.webp',
     position: [0, 0.28, -2.25],
     cameraPos: [1.2, 0.9, -3.2],
     cameraTarget: [0, 0.25, -2.2],
@@ -69,7 +69,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Hệ thống DRS (Drag Reduction System) được điều khiển thủy lực với tốc độ phản hồi tính bằng mili-giây. Khi tay đua nằm trong khoảng cách dưới 1 giây sau xe phía trước tại vùng DRS Detection Point, đèn báo trên vô lăng sẽ sáng. Kích hoạt DRS làm nâng cánh phụ phía sau lên tối đa 85 mm, giảm 30% lực cản khí động của toàn xe và mang lại lợi thế vượt trội trên các đoạn thẳng dài.',
     descriptionEn:
       'The Drag Reduction System utilizes an ultra-fast hydraulic actuator to pivot the upper rear wing flap open by up to 85 mm. When trailing within 1 second through FIA designated zones, DRS sheds 30% of total aerodynamic drag, unleashing up to 25 km/h top-speed advantage.',
-    imageUrl: '/images/showroom/wings_drs.jpg',
+    imageUrl: '/images/showroom/wings_drs.webp',
     position: [0, 0.95, 2.15],
     cameraPos: [-1.4, 1.4, 3.1],
     cameraTarget: [0, 0.85, 2.1],
@@ -102,7 +102,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Power Unit hiện đại của F1 là đỉnh cao hiệu suất nhiệt trên thế giới (vượt ngưỡng 50%). Bao gồm 6 thành phần chính: Động cơ đốt trong (ICE) 1.6L vòng tua 15,000 RPM, Bộ tăng áp đơn Turbocharger, Mô-tơ điện thu hồi động năng MGU-K (120 kW / 160 HP), Mô-tơ điện thu hồi nhiệt năng khí xả MGU-H, Bộ pin lưu trữ năng lượng (Energy Store), và Hộp điều khiển điện tử (Control Electronics).',
     descriptionEn:
       'The modern Formula 1 Power Unit achieves world-record thermal efficiency beyond 50%. It comprises six integrated elements: 1.6L Internal Combustion Engine (15,000 RPM), Turbocharger, MGU-K kinetic recuperation motor, MGU-H exhaust heat recovery unit, 4 MJ Lithium Energy Store battery, and Control Electronics.',
-    imageUrl: '/images/showroom/power_unit.jpg',
+    imageUrl: '/images/showroom/power_unit.webp',
     position: [0, 0.62, 0.65],
     cameraPos: [1.8, 1.3, 0.5],
     cameraTarget: [0, 0.48, 0.65],
@@ -136,7 +136,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Được giới thiệu từ năm 2018 bởi FIA, hệ thống Halo đã cứu sống nhiều tay đua trong các vụ tai nạn kinh hoàng (như Romain Grosjean tại Bahrain 2020 hay Guanyu Zhou tại Silverstone 2022). Khung Halo chỉ nặng 7 kg nhưng có thể chịu được lực ép thẳng đứng 121 kN (tương đương 12 tấn, gấp 2 lần xe buýt 2 tầng Luân Đôn). Lớp vỏ carbon bên ngoài được vát khí động học với các rãnh chia gió vi mô.',
     descriptionEn:
       'Mandated by the FIA in 2018, the Halo has proven life-saving in multiple severe impacts. Fabricated from high-tensile Grade 5 Titanium, the structure weighs just 7 kg yet survives a 121 kN (12.3 tonne) static load. Teams wrap the bare titanium in custom aerodynamic carbon fairings with micro vortex-generators.',
-    imageUrl: '/images/showroom/halo_safety.jpg',
+    imageUrl: '/images/showroom/halo_safety.webp',
     position: [0, 0.82, -0.35],
     cameraPos: [0.9, 1.25, -1.2],
     cameraTarget: [0, 0.65, -0.35],
@@ -169,7 +169,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Hốc gió Sidepods đóng vai trò kép: vừa giải nhiệt cho khối động cơ hơn 1000 mã lực thông qua dàn tản nhiệt nước và khí nạp (Intercoolers), vừa định hình khí động học quan trọng nhất thân xe. Thiết kế hớt gầm sâu (Extreme Undercut) và bề mặt dốc phía trên (Downwash Ramp) ép luồng không khí áp suất cao đi dọc theo eo thân xe chảy thẳng xuống bề mặt khuếch tán sàn sau.',
     descriptionEn:
       'Sidepods fulfill a vital dual role: thermal management for the 1000+ HP powertrain via radiator intercoolers, and macro airflow conditioning. Aggressive undercut channels accelerate high-pressure ambient air along the waistline, feeding downwash currents directly to the rear diffuser.',
-    imageUrl: '/images/showroom/sidepods_cooling.jpg',
+    imageUrl: '/images/showroom/sidepods_cooling.webp',
     position: [0.85, 0.38, 0.05],
     cameraPos: [2.5, 1.2, -0.2],
     cameraTarget: [0.4, 0.35, 0.05],
@@ -202,7 +202,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Lốp Pirelli 18-inch với thành lốp thấp giúp xe F1 phản hồi lái cực nhạy và giảm hiện tượng nhún không kiểm soát. Ẩn phía sau mâm hợp kim ma-giê BBS là hệ thống phanh carbon-carbon Brembo với hơn 1,000 lỗ thông gió li ti. Khi phanh từ 340 km/h xuống 80 km/h chỉ trong 100 mét, đĩa phanh sản sinh lực hãm trên 5G và bốc cháy đỏ rực ở nhiệt độ trên 1,000°C.',
     descriptionEn:
       'Pirelli 18-inch low-profile tires deliver immediate steering response and rigid lateral compliance. Behind the forged magnesium wheels reside Brembo carbon-carbon brake discs drilled with over 1,000 cooling holes, generating brutal 5G deceleration from 340 km/h while glowing white-hot above 1,000°C.',
-    imageUrl: '/images/showroom/pirelli_tires.jpg',
+    imageUrl: '/images/showroom/pirelli_tires.webp',
     position: [0.96, 0.35, -1.45],
     cameraPos: [1.9, 0.65, -1.8],
     cameraTarget: [0.85, 0.35, -1.45],

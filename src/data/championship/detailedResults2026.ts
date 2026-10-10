@@ -158,7 +158,7 @@ export const DETAILED_RACE_RESULTS_2026: DetailedRaceResult[] = [
     {
       position: 11,
       driverId: 'hulkenberg',
-      driverName: 'Nico Hulkenberg',
+      driverName: 'Nico Hülkenberg',
       driverCode: 'HUL',
       driverNumber: 27,
       teamId: 'audi',

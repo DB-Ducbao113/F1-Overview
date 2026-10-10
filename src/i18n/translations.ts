@@ -4,8 +4,8 @@ export const t = {
       home: 'Trang chủ',
       championship: 'Giải đấu',
       collection: 'Showroom 3D',
-      brandTitle: 'Ground Effect Hub',
-      brandSub: '3D Technical Showcase & Racing Archive',
+      brandTitle: 'PODIUM',
+      brandSub: 'Effet de Sol · 3D Racing Archive',
     },
     home: {
       heroTitle1: 'Đỉnh Cao Tốc Độ.',
@@ -15,7 +15,7 @@ export const t = {
     championship: {
       badge: 'Giải đua xe Công thức 1 FIA',
       title: 'Trung Tâm Giải Đấu',
-      desc: 'Theo dõi bảng xếp hạng tay đua, đội đua chính thức, lịch trình 24 chặng đua toàn cầu và diễn biến mùa giải Formula 1.',
+      desc: 'Theo dõi bảng xếp hạng tay đua, đội đua chính thức, lịch trình 23 chặng đua toàn cầu và diễn biến mùa giải Formula 1.',
       tabStandings: 'Bảng Xếp Hạng',
       tabCalendar: 'Lịch Thi Đấu',
       tabResults: 'Kết Quả Chặng',
@@ -32,13 +32,13 @@ export const t = {
       engine: 'Động cơ',
     },
     footer: {
-      desc: 'Ground Effect Hub — Nền tảng mô phỏng kỹ thuật 3D, dữ liệu chặng đua thời gian thực và không gian lưu trữ di sản Formula 1 đỉnh cao.',
+      desc: 'PODIUM — Effet de Sol: nền tảng mô phỏng kỹ thuật 3D, kết quả chặng đua sau phiên và không gian lưu trữ di sản Formula 1.',
       colExplore: 'Khám Phá',
       colLegal: 'Bản Quyền & Ghi Nhận',
       disclaimer:
-        'Dự án phi lợi nhuận được phát triển độc lập nhằm mục đích nghiên cứu công nghệ khí động học và tôn vinh thể thao tốc độ. Formula 1, F1, Grand Prix cùng các thương hiệu và tài sản trí tuệ liên quan thuộc quyền sở hữu của Formula One Licensing B.V. và các đội đua chính thức.',
+        'Dự án fan không chính thức, độc lập và phi lợi nhuận; không liên kết, tài trợ hay được chứng thực bởi Formula 1 hoặc bất kỳ đội đua nào. Formula 1, F1, Grand Prix cùng các thương hiệu và tài sản trí tuệ liên quan thuộc quyền sở hữu của Formula One Licensing B.V. và các chủ sở hữu tương ứng.',
       copyright:
-        '© 2026 Ground Effect Hub · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
+        '© 2026 PODIUM — Effet de Sol · Phát triển bởi BaoBungBu · Tôn vinh kỷ nguyên hiệu ứng mặt đất F1.',
     },
   },
   en: {
@@ -46,8 +46,8 @@ export const t = {
       home: 'Home',
       championship: 'Championship',
       collection: '3D Showroom',
-      brandTitle: 'Ground Effect Hub',
-      brandSub: '3D Technical Showcase & Racing Archive',
+      brandTitle: 'PODIUM',
+      brandSub: 'Effet de Sol · 3D Racing Archive',
     },
     home: {
       heroTitle1: 'Pinnacle Pace.',
@@ -57,7 +57,7 @@ export const t = {
     championship: {
       badge: 'FIA Formula One World Championship',
       title: 'Championship Hub',
-      desc: 'Follow official Driver and Constructor classifications, the full 24-round season calendar, and Grand Prix race classifications.',
+      desc: 'Follow official Driver and Constructor classifications, the full 23-round season calendar, and Grand Prix race classifications.',
       tabStandings: 'Standings',
       tabCalendar: 'Race Calendar',
       tabResults: 'Race Results',
@@ -74,13 +74,13 @@ export const t = {
       engine: 'Power Unit',
     },
     footer: {
-      desc: 'Ground Effect Hub — An interactive 3D engineering platform, real-time championship telemetry, and heritage archive celebrating the pinnacle of Formula 1.',
+      desc: 'PODIUM — Effet de Sol: an interactive 3D engineering platform, published post-session results, and Formula 1 heritage archive.',
       colExplore: 'Explore',
       colLegal: 'Attribution & Provenance',
       disclaimer:
-        'An independent, non-commercial platform built for aerodynamic research, engineering exploration, and motorsport appreciation. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks are trademarks of Formula One Licensing B.V. and their respective constructors.',
+        'Unofficial, independent, non-commercial fan project; not affiliated with, sponsored by, or endorsed by Formula 1 or any team. F1, FORMULA ONE, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and associated marks belong to Formula One Licensing B.V. and their respective owners.',
       copyright:
-        '© 2026 Ground Effect Hub · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
+        '© 2026 PODIUM — Effet de Sol · Engineered by BaoBungBu · Celebrating the Ground Effect F1 era.',
     },
   },
 };

@@ -18,7 +18,7 @@ interface StudioW15StageProps {
  * StudioW15Stage — Fully Enclosed 360° Luxury Automotive Launch Pavilion
  *
  * All 4 walls and 4 corners are meticulously themed and sealed:
- * 1. North Wall (Back): Main Manufacturer Premiere Branding Wall (cadillac.jpg match)
+ * 1. North Wall (Back): Main Manufacturer Premiere Branding Wall (cadillac.webp match)
  * 2. South Wall (Front): Machine Technical Dossier & Telemetry Wall
  * 3. West Wall (Left): Drivers Hall of Fame (Tên các tay đua huyền thoại & hiện tại đã từng thi đấu)
  * 4. East Wall (Right): All-Time Achievements (Bảng vàng thành tích toàn thời gian: Vô địch, Chiến thắng, Pole, Podium)
@@ -55,24 +55,25 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   return (
     <group position={[0, 0, 0]}>
       {/* ── Studio Ambient & Global Photometric Lighting ── */}
-      <ambientLight intensity={0.7} color="#f8fafc" />
+      <ambientLight intensity={1.05} color="#ffffff" />
 
       {/* Main Studio Key Light (High directional light casting crisp, soft car shadows) */}
       <directionalLight
         position={[6.0, 9.0, -4.5]}
-        intensity={1.9}
+        intensity={2.5}
         color="#ffffff"
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
         shadow-bias={-0.0001}
       />
 
-      {/* Secondary Cool Fill Light (Softens contrast on the opposite flank) */}
-      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={0.95} color="#e2e8f0" />
+      {/* Neutral fill reveals the opposite flank without tinting the team livery.
+          Reuse the existing light: no extra shadow maps or render passes. */}
+      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={1.65} color="#f8fafc" />
 
       {/* Subtle Ground Bounce Light */}
-      <directionalLight position={[0, -2.5, 0]} intensity={0.3} color="#ffffff" />
+      <directionalLight position={[0, -2.5, 0]} intensity={0.45} color="#ffffff" />
 
       {/* ══════════════════════════════════════════════════════════════
           1. NORTH WALL (Back: z = +5.8) — Main Premiere Branding Wall
@@ -98,7 +99,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
 
-        {/* Main Floating Branding Display Board (cadillac.jpg match) */}
+        {/* Main Floating Branding Display Board (cadillac.webp match) */}
         <group position={[0, 2.6, -0.08]}>
           <mesh rotation={[0, Math.PI, 0]}>
             <boxGeometry args={[7.8, 3.9, 0.12]} />
@@ -140,7 +141,6 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           penumbra={0.65}
           intensity={3.2}
           color="#ffffff"
-          castShadow
           shadow-bias={-0.0001}
         />
       </group>
@@ -206,7 +206,6 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           penumbra={0.65}
           intensity={3.0}
           color="#ffffff"
-          castShadow
           shadow-bias={-0.0001}
         />
       </group>
@@ -265,7 +264,6 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           penumbra={0.65}
           intensity={3.0}
           color="#ffffff"
-          castShadow
           shadow-bias={-0.0001}
         />
       </group>
@@ -324,7 +322,6 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           penumbra={0.65}
           intensity={3.0}
           color="#ffffff"
-          castShadow
           shadow-bias={-0.0001}
         />
       </group>
@@ -418,7 +415,6 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
           penumbra={0.75}
           intensity={2.4}
           color="#ffffff"
-          castShadow
           shadow-bias={-0.0001}
         />
       </group>
@@ -430,7 +426,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
         <planeGeometry args={[24, 24]} />
         <MeshReflectorMaterial
           blur={[300, 100]}
-          resolution={1024}
+          resolution={512}
           mirror={0.74}
           mixBlur={0.6}
           mixStrength={2.6}
@@ -444,7 +440,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
       </mesh>
 
       {/* ══════════════════════════════════════════════════════════════
-          8. FLOOR DISPLAY PERIMETER BOX (cadillac.jpg Podium Outline)
+          8. FLOOR DISPLAY PERIMETER BOX (cadillac.webp Podium Outline)
           ══════════════════════════════════════════════════════════════ */}
       <group position={[0, 0.002, 0]}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-1.8, 0, 0]}>

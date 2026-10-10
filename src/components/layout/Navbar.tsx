@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { Menu, X, Trophy, Home, Box } from 'lucide-react';
-import { BrandLogo } from '../common/BrandLogo';
+import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
 
 export const Navbar: React.FC = React.memo(() => {
   const { lang, setLang } = useNavigationStore();
@@ -43,15 +43,20 @@ export const Navbar: React.FC = React.memo(() => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md border-b border-studio-300 shadow-subtle'
-            : 'bg-white/85 backdrop-blur-sm border-b border-studio-200'
+            ? 'bg-[#08080b]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_12px_35px_rgba(0,0,0,0.35)]'
+            : 'bg-[#08080b]/90 backdrop-blur-md border-b border-white/10'
         }`}
         style={{ height: 64 }}
       >
         <div className="page-container h-full flex items-center justify-between gap-2 sm:gap-6">
           {/* Brand Logo */}
-          <Link to="/" className="focus:outline-none" aria-label="Ground Effect Hub">
-            <BrandLogo size="md" variant="full" />
+          <Link
+            to="/"
+            className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-f1red rounded"
+            aria-label="PODIUM — Effet de Sol"
+          >
+            <OfficialBrandLogo size="md" variant="full" className="hidden sm:block" />
+            <OfficialBrandLogo size="md" variant="compact" className="sm:hidden" />
           </Link>
 
           {/* Center Navigation Links */}
@@ -73,7 +78,7 @@ export const Navbar: React.FC = React.memo(() => {
                   className={`flex items-center gap-1.5 lg:gap-2 py-1 text-[11px] lg:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 border-b-2 ${
                     isActive
                       ? 'border-f1red text-f1red'
-                      : 'border-transparent text-studio-600 hover:text-studio-950 hover:border-studio-300'
+                      : 'border-transparent text-studio-300 hover:text-white hover:border-white/30'
                   }`}
                 >
                   <span className={isActive ? 'text-f1red' : 'text-studio-400'}>{item.icon}</span>
@@ -86,13 +91,13 @@ export const Navbar: React.FC = React.memo(() => {
           {/* Right — Language Selector & Mobile Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Language Switcher */}
-            <div className="flex items-center bg-studio-100 p-0.5 rounded-full border border-studio-200">
+            <div className="flex items-center bg-white/5 p-0.5 rounded-full border border-white/10">
               <button
                 onClick={() => setLang('vi')}
                 className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'vi'
                     ? 'bg-f1red text-white shadow-sm'
-                    : 'text-studio-600 hover:text-studio-950'
+                    : 'text-studio-300 hover:text-white'
                 }`}
                 title="Tiếng Việt"
               >
@@ -103,7 +108,7 @@ export const Navbar: React.FC = React.memo(() => {
                 className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'en'
                     ? 'bg-f1red text-white shadow-sm'
-                    : 'text-studio-600 hover:text-studio-950'
+                    : 'text-studio-300 hover:text-white'
                 }`}
                 title="English"
               >
@@ -114,7 +119,7 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-studio-700 hover:text-studio-950 transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+              className="md:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
@@ -132,7 +137,7 @@ export const Navbar: React.FC = React.memo(() => {
           onClick={() => setMenuOpen(false)}
         >
           <div
-            className="fixed top-16 left-0 right-0 bg-white border-b border-studio-300 shadow-xl p-6 flex flex-col gap-4 animate-slide-down"
+            className="fixed top-16 left-0 right-0 bg-[#0b0b0f]/98 border-b border-white/10 shadow-2xl p-6 flex flex-col gap-4 animate-slide-down"
             onClick={(e) => e.stopPropagation()}
           >
             {NAV_ITEMS.map((item) => {
@@ -153,7 +158,7 @@ export const Navbar: React.FC = React.memo(() => {
                   className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
                     isActive
                       ? 'bg-f1red/10 text-f1red font-black'
-                      : 'text-studio-700 hover:bg-studio-100'
+                      : 'text-studio-200 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {item.icon}

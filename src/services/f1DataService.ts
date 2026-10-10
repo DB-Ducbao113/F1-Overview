@@ -13,10 +13,25 @@ const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v3';
 const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
 const STORAGE_SYNC_REVIEW_KEY = 'f1_sync_review_v1';
 const STORAGE_DISMISSED_REVIEW_KEY = 'f1_sync_review_dismissed_v1';
-const JOLPICA_API_BASE =
-  typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
-    ? '/api/jolpica/ergast/f1'
-    : 'https://api.jolpi.ca/ergast/f1';
+const JOLPICA_API_BASE = '/api/jolpica/ergast/f1';
+
+function buildJolpicaUrl(
+  season: SeasonYear,
+  type: 'results' | 'sprint',
+  limit: number,
+  offset: number,
+): string {
+  if (typeof import.meta !== 'undefined' && import.meta.env?.DEV) {
+    return `${JOLPICA_API_BASE}/${season}/${type}.json?limit=${limit}&offset=${offset}`;
+  }
+
+  const params = new URLSearchParams({
+    path: `ergast/f1/${season}/${type}.json`,
+    limit: String(limit),
+    offset: String(offset),
+  });
+  return `/api/jolpica?${params.toString()}`;
+}
 
 // Initial baseline data mapped by season
 export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> = {
@@ -207,7 +222,7 @@ async function fetchAllRacesFromJolpica(
   const raceMap = new Map<number, any>();
 
   while (true) {
-    const url = `${JOLPICA_API_BASE}/${season}/${type}.json?limit=${LIMIT}&offset=${offset}`;
+    const url = buildJolpicaUrl(season, type, LIMIT, offset);
     const res = await fetch(url, {
       headers: { Accept: 'application/json' },
       signal: AbortSignal.timeout(12000),
