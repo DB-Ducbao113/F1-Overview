@@ -1,6 +1,12 @@
-import { DetailedRaceResult, DetailedRaceResultEntry, SeasonYear, TeamId } from '../../types';
+import {
+  DetailedRaceResult,
+  DetailedRaceResultEntry,
+  SeasonYear,
+  TeamId,
+  UNKNOWN_TEAM_ID,
+} from '../../types';
 import { getRaceResults } from './results';
-import { CALENDAR_2026 } from './calendar';
+import { CALENDAR_2024, CALENDAR_2025, CALENDAR_2026 } from './calendar';
 
 // Reference driver pool per season
 interface GridDriver {
@@ -85,6 +91,20 @@ const DRIVER_GRID_2024: GridDriver[] = [
 
 const FIA_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 
+/**
+ * Fastest-lap bonus point rule.
+ * 2024 keeps +1 only for a top-10 finisher holding the fastest lap;
+ * removed from 2025 onwards.
+ */
+export function fastestLapBonusPoints(
+  season: SeasonYear,
+  position: number,
+  isFastestLap: boolean,
+): number {
+  if (!isFastestLap || position < 1 || position > 10) return 0;
+  return season === 2024 ? 1 : 0;
+}
+
 function normalizeDriverName(name: string): string {
   return name.toLowerCase().replace(/[^a-z]/g, '');
 }
@@ -114,7 +134,8 @@ export function getCompleteRaceClassification(
   if (!summary) return existingDetailed || null;
 
   const grid = season === 2026 ? DRIVER_GRID_2026 : season === 2025 ? DRIVER_GRID_2025 : DRIVER_GRID_2024;
-  const calRound = CALENDAR_2026.find((c) => c.round === round);
+  const calendar = season === 2026 ? CALENDAR_2026 : season === 2025 ? CALENDAR_2025 : CALENDAR_2024;
+  const calRound = calendar.find((c) => c.round === round);
   const lapsTotal = calRound?.laps || (summary.circuit.toLowerCase().includes('monaco') ? 78 : summary.circuit.toLowerCase().includes('spa') ? 44 : 57);
 
   // Match P1, P2, P3
@@ -132,11 +153,11 @@ export function getCompleteRaceClassification(
   // P1
   entries.push({
     position: 1,
-    driverId: p1Driver?.driverId || 'p1',
+    driverId: p1Driver?.driverId || 'unknown',
     driverName: summary.podium.p1.driver,
     driverCode: p1Driver?.driverCode || summary.podium.p1.driver.slice(0, 3).toUpperCase(),
-    driverNumber: p1Driver?.driverNumber || 1,
-    teamId: p1Driver?.teamId || 'ferrari',
+    driverNumber: p1Driver?.driverNumber,
+    teamId: p1Driver?.teamId || UNKNOWN_TEAM_ID,
     teamName: summary.podium.p1.team,
     laps: lapsTotal,
     status: 'Finished',
@@ -149,11 +170,11 @@ export function getCompleteRaceClassification(
   // P2
   entries.push({
     position: 2,
-    driverId: p2Driver?.driverId || 'p2',
+    driverId: p2Driver?.driverId || 'unknown',
     driverName: summary.podium.p2.driver,
     driverCode: p2Driver?.driverCode || summary.podium.p2.driver.slice(0, 3).toUpperCase(),
-    driverNumber: p2Driver?.driverNumber || 16,
-    teamId: p2Driver?.teamId || 'mclaren',
+    driverNumber: p2Driver?.driverNumber,
+    teamId: p2Driver?.teamId || UNKNOWN_TEAM_ID,
     teamName: summary.podium.p2.team,
     laps: lapsTotal,
     status: 'Finished',
@@ -166,11 +187,11 @@ export function getCompleteRaceClassification(
   // P3
   entries.push({
     position: 3,
-    driverId: p3Driver?.driverId || 'p3',
+    driverId: p3Driver?.driverId || 'unknown',
     driverName: summary.podium.p3.driver,
     driverCode: p3Driver?.driverCode || summary.podium.p3.driver.slice(0, 3).toUpperCase(),
-    driverNumber: p3Driver?.driverNumber || 4,
-    teamId: p3Driver?.teamId || 'redbull',
+    driverNumber: p3Driver?.driverNumber,
+    teamId: p3Driver?.teamId || UNKNOWN_TEAM_ID,
     teamName: summary.podium.p3.team,
     laps: lapsTotal,
     status: 'Finished',
@@ -180,18 +201,20 @@ export function getCompleteRaceClassification(
     fastestLapTime: summary.fastestLap?.driver === summary.podium.p3.driver ? summary.fastestLap.time : undefined,
   });
 
-  // Remaining drivers from grid
+  // Remaining drivers from grid, capped so the synthesized field matches the
+  // season grid size (sparse grids allowed; never invent drivers/points).
   const remaining = grid.filter((d) => !selectedDriverIds.has(d.driverId));
+  const slotsLeft = Math.max(0, grid.length - entries.length);
 
   // Determine fastest lap driver
   const flDriver = summary.fastestLap ? findGridDriver(summary.fastestLap.driver, grid) : undefined;
 
-  remaining.forEach((driver, idx) => {
+  remaining.slice(0, slotsLeft).forEach((driver, idx) => {
     const pos = idx + 4;
     const isPoints = pos <= 10;
     const basePts = isPoints ? FIA_POINTS[pos - 1] : 0;
     const isFl = flDriver?.driverId === driver.driverId;
-    const pts = isPoints && isFl ? basePts + 1 : basePts;
+    const pts = basePts + (isPoints ? fastestLapBonusPoints(season, pos, isFl) : 0);
 
     const gapSec = (12.5 + idx * 4.2).toFixed(3);
     const isDNF = pos >= 19;
@@ -233,5 +256,7 @@ export function getCompleteRaceClassification(
     },
     fastestLap: summary.fastestLap,
     entries,
+    // Display-only synthesis: excluded from standings calculation.
+    isSynthesized: true,
   };
 }

@@ -49,10 +49,19 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-f1red bg-f1red/15 px-2.5 py-0.5 rounded-full border border-f1red/30">
                 {isVi ? `Vòng ${race.round}` : `Round ${race.round}`} · {race.season}
               </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <ShieldCheck className="w-3 h-3" />{' '}
-                {isVi ? 'Kết Quả Chính Thức' : 'Official Classification'}
-              </span>
+              {race.isSynthesized ? (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                  <ShieldCheck className="w-3 h-3" />{' '}
+                  {isVi
+                    ? 'Dữ liệu suy diễn (Unofficial) — chỉ để hiển thị, không tính BXH'
+                    : 'Synthesized data (Unofficial) — display only, excluded from standings'}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <ShieldCheck className="w-3 h-3" />{' '}
+                  {isVi ? 'Kết Quả Chính Thức' : 'Official Classification'}
+                </span>
+              )}
             </div>
 
             <h3 className="font-display text-xl sm:text-2xl font-black uppercase text-white tracking-wide">

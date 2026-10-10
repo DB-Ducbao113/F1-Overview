@@ -5,6 +5,7 @@ import {
   OpenF1Location,
   OpenF1CarData,
   OpenF1RaceControl,
+  OpenF1ErrorCode,
   CURATED_REPLAY_RACES,
   CuratedReplayRace,
 } from '../../services/openF1Service';
@@ -50,6 +51,11 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
   // Active Race Control Flag & Selected Driver
   const [latestFlag, setLatestFlag] = useState<OpenF1RaceControl | null>(null);
   const [focusedDriverNumber, setFocusedDriverNumber] = useState<number | null>(null);
+
+  // Telemetry transport error, sourced from the service error code.
+  // Set when a poll fails with no usable data; cleared once data flows again.
+  // ('ok'/null both mean "no banner".)
+  const [telemetryError, setTelemetryError] = useState<OpenF1ErrorCode>(null);
 
   // Calibration coordinate bounds
   const [bounds, setBounds] = useState<{
@@ -121,7 +127,15 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
         carMap[c.driver_number] = c;
       });
 
-      if (!locations || locations.length === 0) return;
+      if (!locations || locations.length === 0) {
+        // No usable telemetry: surface the transport reason (if any) until
+        // a later poll recovers.
+        const code = openF1Service.lastErrorCode;
+        if (code && code !== 'ok') setTelemetryError(code);
+        return;
+      }
+      // Data is flowing again: reset any previous transport error.
+      setTelemetryError(null);
 
       // Update / Calibrate bounds dynamically from active points
       let curMinX = bounds?.minX ?? Infinity;
@@ -295,6 +309,7 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
     setCurrentTimeOffsetSec(0);
     setBounds(null);
     setDriversState({});
+    setTelemetryError(null);
   };
 
   // Format Replay Time
@@ -366,6 +381,29 @@ export const OpenF1LiveMap: React.FC<OpenF1LiveMapProps> = ({ lang }) => {
           </select>
         </div>
       </div>
+
+      {/* ── Telemetry transport error banner (from service error code) ── */}
+      {telemetryError && (
+        <div
+          role="alert"
+          className="px-4 py-2 bg-amber-500/10 border-b border-amber-500/30 text-amber-300 text-xs font-mono font-bold flex items-center gap-2"
+        >
+          <Radio className="w-3.5 h-3.5 shrink-0" />
+          <span>
+            {telemetryError === 'upstream-rate-limited'
+              ? isVi
+                ? 'OpenF1 đang giới hạn tần suất (429) — tự thử lại sau ít phút.'
+                : 'OpenF1 rate limit (429) — retrying automatically.'
+              : telemetryError === 'timeout'
+                ? isVi
+                  ? 'Hết thời gian chờ telemetry — đang thử lại.'
+                  : 'Telemetry request timed out — retrying.'
+                : isVi
+                  ? 'Không tải được telemetry lúc này — đang giữ dữ liệu cũ.'
+                  : 'Telemetry unavailable — showing last known data.'}
+          </span>
+        </div>
+      )}
 
       {/* ── Main Map & Leaderboard Layout ── */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-0 relative bg-studio-950">

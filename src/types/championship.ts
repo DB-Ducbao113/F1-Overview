@@ -133,8 +133,14 @@ export interface DetailedRaceResult {
   winner?: { driver: string; team: string; time: string };
   fastestLap?: { driver: string; team: string; time: string };
   entries: DetailedRaceResultEntry[];
+  sprintEntries?: DetailedRaceResultEntry[];
   dataSource?: string;
   dataUpdatedAt?: string;
+  /**
+   * True when entries after P3 are inferred from the podium summary instead of
+   * official timing data. Display-only: never feed into standings calculation.
+   */
+  isSynthesized?: boolean;
 }
 
 export interface F1ResultDifference {

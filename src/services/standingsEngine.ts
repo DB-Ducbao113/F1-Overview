@@ -6,6 +6,7 @@ import {
   TeamId,
 } from '../types';
 import { TEAMS_DATA } from '../data/teams';
+import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 
 // Fallback driver metadata map
 const DRIVER_METADATA: Record<
@@ -168,21 +169,24 @@ export function recalculateStandingsFromRaces(
     });
   }
 
-  // Only races beyond round 16 that are not in the official baseline will contribute additional points
-  // (Rounds 1-16 are already included in the official base points above)
+  // Rounds at or below the baseline cutoff are already included in the official
+  // baseline standings (see BASELINE_CUTOFF_BY_SEASON). Sprint points are added
+  // exactly once, in the sprint loop below — never in the race loop.
+  const cutoff = BASELINE_CUTOFF_BY_SEASON[season]?.completedRounds ?? 16;
   const additionalRaces = (Array.isArray(races) ? races : []).filter(
-    (r) => r && r.status === 'completed' && r.round > 16,
+    (r) => r && !r.isSynthesized && r.round > cutoff,
   );
 
   additionalRaces.forEach((race) => {
-    const entries = Array.isArray(race.entries) ? race.entries : [];
+    const entries =
+      race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
     entries.forEach((entry) => {
       if (!entry) return;
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
       const locked = LOCKED_DRIVERS[entry.driverId];
       if (existingDriver) {
-        existingDriver.points += (entry.points || 0) + (entry.sprintPoints || 0);
+        existingDriver.points += entry.points || 0;
         if (entry.position === 1) existingDriver.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingDriver.podiums += 1;
         existingDriver.teamId = locked?.teamId || entry.teamId;
@@ -201,18 +205,18 @@ export function recalculateStandingsFromRaces(
           driverCode: dMeta.code,
           teamId: locked?.teamId || entry.teamId,
           teamName: locked?.teamName || entry.teamName,
-          points: (entry.points || 0) + (entry.sprintPoints || 0),
+          points: entry.points || 0,
           wins: entry.position === 1 ? 1 : 0,
-          podiums: entry.position <= 3 ? 1 : 0,
+          podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
           countryFlag: dMeta.flag,
         });
       }
 
-      // Constructor points increment
+      // Constructor points increment (race points only; sprint is added once below)
       const teamId = entry.teamId;
       const existingTeam = constructorMap.get(teamId);
       if (existingTeam) {
-        existingTeam.points += (entry.points || 0) + (entry.sprintPoints || 0);
+        existingTeam.points += entry.points || 0;
         if (entry.position === 1) existingTeam.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingTeam.podiums += 1;
         constructorMap.set(teamId, existingTeam);
@@ -221,11 +225,67 @@ export function recalculateStandingsFromRaces(
         constructorMap.set(teamId, {
           teamId,
           teamName: teamInfo?.name || entry.teamName,
-          points: (entry.points || 0) + (entry.sprintPoints || 0),
+            points: entry.points || 0,
           wins: entry.position === 1 ? 1 : 0,
-          podiums: entry.position <= 3 ? 1 : 0,
+            podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
           engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
         });
+      }
+    });
+
+    // Sprint points are counted exactly once: explicit sprintEntries win when
+    // present, otherwise legacy per-entry sprintPoints are derived. Never both.
+    const explicitSprint = Array.isArray(race.sprintEntries) ? race.sprintEntries : [];
+    const legacySprint =
+      explicitSprint.length === 0
+        ? entries
+            .filter((entry) => entry && entry.sprintPoints)
+            .map((entry) => ({
+              ...entry,
+              points: entry.sprintPoints || 0,
+            }))
+        : [];
+    const sprintEntries = [...explicitSprint, ...legacySprint];
+    sprintEntries.forEach((entry) => {
+      if (!entry) return;
+      const points = entry.points || 0;
+      const locked = LOCKED_DRIVERS[entry.driverId];
+      const existingDriver = driverMap.get(entry.driverId);
+      if (existingDriver) {
+          existingDriver.points += points;
+      } else {
+          const dMeta = DRIVER_METADATA[entry.driverId] || {
+            code: entry.driverCode || 'F1',
+            flag: '🏁',
+            teamId: locked?.teamId || entry.teamId,
+            teamName: locked?.teamName || entry.teamName,
+          };
+          driverMap.set(entry.driverId, {
+            driverId: entry.driverId,
+            driverName: entry.driverName,
+            driverCode: dMeta.code,
+            teamId: locked?.teamId || entry.teamId,
+            teamName: locked?.teamName || entry.teamName,
+            points,
+            wins: 0,
+            podiums: 0,
+            countryFlag: dMeta.flag,
+          });
+      }
+
+      const existingTeam = constructorMap.get(entry.teamId);
+      if (existingTeam) {
+          existingTeam.points += points;
+      } else {
+          const teamInfo = TEAMS_DATA[entry.teamId];
+          constructorMap.set(entry.teamId, {
+            teamId: entry.teamId,
+            teamName: teamInfo?.name || entry.teamName,
+            points,
+            wins: 0,
+            podiums: 0,
+            engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
+          });
       }
     });
   });

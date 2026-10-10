@@ -22,6 +22,7 @@ import {
 } from '../services/f1DataService';
 import { recalculateStandingsFromRaces } from '../services/standingsEngine';
 import { getRaceResults } from '../data/championship/results';
+import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 import {
   DRIVER_STANDINGS_2024,
   CONSTRUCTOR_STANDINGS_2024,
@@ -260,9 +261,16 @@ function computeInitialStandings(resultsMap: Record<SeasonYear, DetailedRaceResu
 
   try {
     const races2026 = resultsMap?.[2026];
+    const cutoff2026 = BASELINE_CUTOFF_BY_SEASON[2026].completedRounds;
     if (
       Array.isArray(races2026) &&
-      races2026.some((r) => r && r.round > 16 && r.status === 'completed')
+      races2026.some(
+        (r) =>
+          r &&
+          !r.isSynthesized &&
+          r.round > cutoff2026 &&
+          (r.status === 'completed' || (r.sprintEntries?.length || 0) > 0),
+      )
     ) {
       out[2026] = recalculateStandingsFromRaces(
         2026,
@@ -308,6 +316,27 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
 
       const currentRaces = get().detailedResults[season] || [];
       const syncRes = await syncF1SeasonData(season, currentRaces);
+
+      // Failed or partial sync: keep the saved snapshot untouched (no persist),
+      // only report the status honestly.
+      if (!syncRes.success) {
+        const failMeta: F1SyncMetadata = {
+          lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+          }),
+          syncStatus: 'error',
+          source: syncRes.source,
+          completedRoundsCount: currentRaces.length,
+          message: syncRes.message,
+        };
+        persistSyncMetadata(failMeta);
+        set({ syncMeta: failMeta });
+        return;
+      }
 
       if (syncRes.success) {
         const savedByRound = new Map(

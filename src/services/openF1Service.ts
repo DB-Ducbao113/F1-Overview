@@ -143,12 +143,21 @@ export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
   },
 ];
 
-// In-memory cache to prevent exceeding 30 req/min
+// In-memory cache to prevent exceeding 30 req/min (bounded: oldest evicted).
 const memoryCache = new Map<string, { timestamp: number; data: unknown }>();
 const CACHE_TTL_MS = 2000;
+const MAX_CLIENT_CACHE_ENTRIES = 500;
+
+export type OpenF1ErrorCode =
+  | 'ok'
+  | 'proxy-error'
+  | 'upstream-rate-limited'
+  | 'upstream-down'
+  | 'timeout'
+  | null;
 
 class OpenF1Service {
-  private baseUrl = 'https://api.openf1.org/v1';
+  lastErrorCode: OpenF1ErrorCode = null;
 
   private async fetchJson<T>(
     endpoint: string,
@@ -170,22 +179,31 @@ class OpenF1Service {
       return cached.data as T;
     }
 
-    // Try relative proxy route first, fallback to direct openf1 url
+    // Same-origin proxy only (dev Vite proxy and prod serverless share the
+    // same path/allowlist contract). No direct upstream fallback: it doubles
+    // requests against the 30 req/min quota and bypasses proxy cache/CSP.
     const url = `/api/openf1/${endpoint}${queryString ? `?${queryString}` : ''}`;
-    const directUrl = `${this.baseUrl}/${endpoint}${queryString ? `?${queryString}` : ''}`;
 
     try {
-      let res = await fetch(url).catch(() => null);
-      if (!res || !res.ok) {
-        res = await fetch(directUrl);
-      }
+      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) {
+        this.lastErrorCode =
+          res.status === 429 ? 'upstream-rate-limited' : 'upstream-down';
         return null;
       }
       const data = await res.json();
+      memoryCache.delete(cacheKey);
       memoryCache.set(cacheKey, { timestamp: now, data });
+      while (memoryCache.size > MAX_CLIENT_CACHE_ENTRIES) {
+        const oldest = memoryCache.keys().next();
+        if (oldest.done) break;
+        memoryCache.delete(oldest.value);
+      }
+      this.lastErrorCode = 'ok';
       return data as T;
-    } catch {
+    } catch (err) {
+      this.lastErrorCode =
+        err instanceof DOMException && err.name === 'TimeoutError' ? 'timeout' : 'proxy-error';
       return null;
     }
   }
