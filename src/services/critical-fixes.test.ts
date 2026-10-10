@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import {
-  DRIVER_STANDINGS_2026,
-  CONSTRUCTOR_STANDINGS_2026,
-} from '../data/championship/standings';
+import { DRIVER_STANDINGS_2026, CONSTRUCTOR_STANDINGS_2026 } from '../data/championship/standings';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
 import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 import {
@@ -190,11 +187,10 @@ describe('critical fixes: jolpica proxy rejects bad origins and paths (no networ
   });
 
   it('rejects unlisted origins (no wildcard)', async () => {
-    const { req, res } = mockReqRes(
-      { path: 'ergast/f1/2026/results.json' },
-      'GET',
-      { origin: 'https://evil.example', host: 'f1-overview.vercel.app' },
-    );
+    const { req, res } = mockReqRes({ path: 'ergast/f1/2026/results.json' }, 'GET', {
+      origin: 'https://evil.example',
+      host: 'f1-overview.vercel.app',
+    });
     await jolpicaHandler(req, res);
     expect(res.statusCode).toBe(403);
   });
@@ -235,21 +231,19 @@ describe('critical fixes: openf1 proxy allowlist (no network)', () => {
   });
 
   it('rejects unlisted preview origins (no *.vercel.app wildcard)', async () => {
-    const { req, res } = mockReqRes(
-      { endpoint: 'sessions' },
-      'GET',
-      { origin: 'https://attacker.vercel.app', host: 'podiumeds.vercel.app' },
-    );
+    const { req, res } = mockReqRes({ endpoint: 'sessions' }, 'GET', {
+      origin: 'https://attacker.vercel.app',
+      host: 'podiumeds.vercel.app',
+    });
     await openF1Handler(req, res);
     expect(res.statusCode).toBe(403);
   });
 
   it('lets same-origin requests through CORS to the allowlist check', async () => {
-    const { req, res } = mockReqRes(
-      { endpoint: 'nope' },
-      'GET',
-      { origin: 'https://podiumeds.vercel.app', host: 'podiumeds.vercel.app' },
-    );
+    const { req, res } = mockReqRes({ endpoint: 'nope' }, 'GET', {
+      origin: 'https://podiumeds.vercel.app',
+      host: 'podiumeds.vercel.app',
+    });
     await openF1Handler(req, res);
     expect(res.statusCode).toBe(400);
   });
@@ -448,26 +442,22 @@ describe('critical fixes: openf1 client uses proxy only with coded errors', () =
     expect(openF1Service.lastErrorCode).toBe('ok');
   });
 
-  it(
-    'reports client timeouts with a distinct code',
-    async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(
-          (_url: string, init?: { signal?: AbortSignal }) =>
-            new Promise((_resolve, reject) => {
-              init?.signal?.addEventListener('abort', () => {
-                reject(new DOMException('signal timed out', 'TimeoutError'));
-              });
-            }),
-        ),
-      );
-      const pending = openF1Service.getPositions(987003);
-      expect(await pending).toEqual([]);
-      expect(openF1Service.lastErrorCode).toBe('timeout');
-    },
-    15000,
-  );
+  it('reports client timeouts with a distinct code', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        (_url: string, init?: { signal?: AbortSignal }) =>
+          new Promise((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => {
+              reject(new DOMException('signal timed out', 'TimeoutError'));
+            });
+          }),
+      ),
+    );
+    const pending = openF1Service.getPositions(987003);
+    expect(await pending).toEqual([]);
+    expect(openF1Service.lastErrorCode).toBe('timeout');
+  }, 15000);
 
   it('refetches after the 2s client TTL expires', async () => {
     vi.useFakeTimers();
@@ -571,28 +561,24 @@ describe('critical fixes: openf1 proxy cache, stale bound and single-flight', ()
     expect(c.res.statusCode).toBe(503);
   });
 
-  it(
-    'aborts stale upstream attempts (timeout) instead of hanging',
-    async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn(
-          (_url: string, init?: { signal?: AbortSignal }) =>
-            new Promise((_resolve, reject) => {
-              init?.signal?.addEventListener('abort', () => {
-                const err = new DOMException('signal timed out', 'TimeoutError');
-                reject(err);
-              });
-            }),
-        ),
-      );
-      const key = { endpoint: 'position', session_key: '993010' };
-      const a = reqRes(key);
-      await openF1Handler(a.req, a.res);
-      expect(a.res.statusCode).toBe(503);
-    },
-    15000,
-  );
+  it('aborts stale upstream attempts (timeout) instead of hanging', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        (_url: string, init?: { signal?: AbortSignal }) =>
+          new Promise((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => {
+              const err = new DOMException('signal timed out', 'TimeoutError');
+              reject(err);
+            });
+          }),
+      ),
+    );
+    const key = { endpoint: 'position', session_key: '993010' };
+    const a = reqRes(key);
+    await openF1Handler(a.req, a.res);
+    expect(a.res.statusCode).toBe(503);
+  }, 15000);
 
   it('dedups concurrent requests and clears the slot after errors', async () => {
     let calls = 0;

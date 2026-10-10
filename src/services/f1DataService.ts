@@ -403,8 +403,7 @@ export async function syncF1SeasonData(
     try {
       sprintRaces = await fetchAllRacesFromJolpica(season, 'sprint');
     } catch (error) {
-      sprintSyncWarning =
-        ' Không thể làm mới kết quả Sprint; vẫn giữ điểm Sprint đã lưu gần nhất.';
+      sprintSyncWarning = ' Không thể làm mới kết quả Sprint; vẫn giữ điểm Sprint đã lưu gần nhất.';
       console.warn('Sprint classification refresh failed:', error);
     }
 
@@ -423,8 +422,7 @@ export async function syncF1SeasonData(
       });
 
       const savedByRound = new Map(existingResults.map((race) => [race.round, race]));
-      const transformed = [...racesByRound.values()]
-        .map((race: any): DetailedRaceResult | null => {
+      const transformed = [...racesByRound.values()].map((race: any): DetailedRaceResult | null => {
         const entries: DetailedRaceResultEntry[] = (race.Results || []).map((res: any) => {
           const teamId = mapConstructorId(res.Constructor?.constructorId);
           const pos = parseInt(res.position, 10) || 20;
@@ -464,7 +462,7 @@ export async function syncF1SeasonData(
         const sprintEntries =
           fetchedSprintEntries.length > 0
             ? fetchedSprintEntries
-            : (savedByRound.get(parseInt(race.round, 10))?.sprintEntries ||
+            : savedByRound.get(parseInt(race.round, 10))?.sprintEntries ||
               savedByRound
                 .get(parseInt(race.round, 10))
                 ?.entries.filter((entry) => entry.sprintPoints)
@@ -473,7 +471,7 @@ export async function syncF1SeasonData(
                   points: entry.sprintPoints || 0,
                   sprintPoints: undefined,
                 })) ||
-              []);
+              [];
         const round = parseInt(race.round, 10);
         if (!Number.isFinite(round)) return null;
 
@@ -540,7 +538,8 @@ export async function syncF1SeasonData(
     // Network, timeout, or partial-page failure: keep the last saved snapshot
     // visible, but report honestly — never as success.
     const partial = err instanceof PartialSyncError;
-    const fallback = existingResults.length > 0 ? existingResults : INITIAL_DETAILED_RESULTS[season];
+    const fallback =
+      existingResults.length > 0 ? existingResults : INITIAL_DETAILED_RESULTS[season];
     return {
       success: false,
       partial: partial || undefined,

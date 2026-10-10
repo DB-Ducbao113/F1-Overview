@@ -178,8 +178,7 @@ export function recalculateStandingsFromRaces(
   );
 
   additionalRaces.forEach((race) => {
-    const entries =
-      race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
+    const entries = race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
     entries.forEach((entry) => {
       if (!entry) return;
       // Driver points increment
@@ -225,9 +224,9 @@ export function recalculateStandingsFromRaces(
         constructorMap.set(teamId, {
           teamId,
           teamName: teamInfo?.name || entry.teamName,
-            points: entry.points || 0,
+          points: entry.points || 0,
           wins: entry.position === 1 ? 1 : 0,
-            podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
+          podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
           engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
         });
       }
@@ -252,40 +251,40 @@ export function recalculateStandingsFromRaces(
       const locked = LOCKED_DRIVERS[entry.driverId];
       const existingDriver = driverMap.get(entry.driverId);
       if (existingDriver) {
-          existingDriver.points += points;
+        existingDriver.points += points;
       } else {
-          const dMeta = DRIVER_METADATA[entry.driverId] || {
-            code: entry.driverCode || 'F1',
-            flag: '🏁',
-            teamId: locked?.teamId || entry.teamId,
-            teamName: locked?.teamName || entry.teamName,
-          };
-          driverMap.set(entry.driverId, {
-            driverId: entry.driverId,
-            driverName: entry.driverName,
-            driverCode: dMeta.code,
-            teamId: locked?.teamId || entry.teamId,
-            teamName: locked?.teamName || entry.teamName,
-            points,
-            wins: 0,
-            podiums: 0,
-            countryFlag: dMeta.flag,
-          });
+        const dMeta = DRIVER_METADATA[entry.driverId] || {
+          code: entry.driverCode || 'F1',
+          flag: '🏁',
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
+        };
+        driverMap.set(entry.driverId, {
+          driverId: entry.driverId,
+          driverName: entry.driverName,
+          driverCode: dMeta.code,
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
+          points,
+          wins: 0,
+          podiums: 0,
+          countryFlag: dMeta.flag,
+        });
       }
 
       const existingTeam = constructorMap.get(entry.teamId);
       if (existingTeam) {
-          existingTeam.points += points;
+        existingTeam.points += points;
       } else {
-          const teamInfo = TEAMS_DATA[entry.teamId];
-          constructorMap.set(entry.teamId, {
-            teamId: entry.teamId,
-            teamName: teamInfo?.name || entry.teamName,
-            points,
-            wins: 0,
-            podiums: 0,
-            engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
-          });
+        const teamInfo = TEAMS_DATA[entry.teamId];
+        constructorMap.set(entry.teamId, {
+          teamId: entry.teamId,
+          teamName: teamInfo?.name || entry.teamName,
+          points,
+          wins: 0,
+          podiums: 0,
+          engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
+        });
       }
     });
   });

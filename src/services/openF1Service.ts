@@ -149,12 +149,7 @@ const CACHE_TTL_MS = 2000;
 const MAX_CLIENT_CACHE_ENTRIES = 500;
 
 export type OpenF1ErrorCode =
-  | 'ok'
-  | 'proxy-error'
-  | 'upstream-rate-limited'
-  | 'upstream-down'
-  | 'timeout'
-  | null;
+  'ok' | 'proxy-error' | 'upstream-rate-limited' | 'upstream-down' | 'timeout' | null;
 
 class OpenF1Service {
   lastErrorCode: OpenF1ErrorCode = null;
@@ -187,8 +182,7 @@ class OpenF1Service {
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) {
-        this.lastErrorCode =
-          res.status === 429 ? 'upstream-rate-limited' : 'upstream-down';
+        this.lastErrorCode = res.status === 429 ? 'upstream-rate-limited' : 'upstream-down';
         return null;
       }
       const data = await res.json();
