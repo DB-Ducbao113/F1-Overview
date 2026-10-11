@@ -2,6 +2,18 @@
  * Persist completed Formula 1 session classifications in the repository.
  * Formula 1's public live-timing archive publishes classifications before
  * slower feeds. Write only when a complete 22-driver classification changes.
+ *
+ * Two sources are tried in order:
+ *   1. livetiming.formula1.com (F1 official live-timing archive) — preferred.
+ *   2. api.jolpi.ca (Ergast-compatible API) — fallback when the F1 archive
+ *      answers 403 (bot protection) or is otherwise unreachable. Jolpica
+ *      carries official qualifying (Q1/Q2/Q3) and sprint classifications,
+ *      but no practice sessions and no sprint qualifying.
+ *
+ * Usage:
+ *   node scripts/sync-openf1-sessions.js
+ *   node scripts/sync-openf1-sessions.js --dry-run   (preview without writing)
+ *   node scripts/sync-openf1-sessions.js --source jolpica|f1   (pin a source)
  */
 
 import fs from 'node:fs';
@@ -18,8 +30,25 @@ const OUTPUT_FILE = path.join(
   'openF1SessionResults2026.json',
 );
 const LIVE_TIMING_BASE = 'https://livetiming.formula1.com/static';
+const JOLPICA_BASE = 'https://api.jolpi.ca/ergast/f1';
 const EXPECTED_GRID_SIZE = 22;
-const USER_AGENT = 'PODIUM-F1-Sync/2.0';
+const MAX_ATTEMPTS = 6;
+const RETRY_BASE_MS = 1500;
+const RETRY_CAP_MS = 12000;
+const USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+const IS_DRY_RUN = process.argv.includes('--dry-run');
+const PINNED_SOURCE = (() => {
+  const argIndex = process.argv.findIndex(
+    (arg) => arg === '--source' || arg.startsWith('--source='),
+  );
+  if (argIndex < 0) return null;
+  const inline = process.argv[argIndex]?.split('=')[1];
+  return inline || process.argv[argIndex + 1] || null;
+})();
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const jitterSleep = () => sleep(150 + Math.random() * 150);
 
 const DRIVER_FALLBACK = {
   1: ['norris', 'Lando Norris', 'NOR', 'mclaren', 'McLaren F1 Team'],
@@ -27,7 +56,7 @@ const DRIVER_FALLBACK = {
   5: ['bortoleto', 'Gabriel Bortoleto', 'BOR', 'audi', 'Audi F1 Team'],
   6: ['hadjar', 'Isack Hadjar', 'HAD', 'redbull', 'Oracle Red Bull Racing'],
   10: ['gasly', 'Pierre Gasly', 'GAS', 'alpine', 'BWT Alpine F1 Team'],
-  11: ['perez', 'Sergio Pérez', 'PER', 'cadillac', 'Cadillac Formula 1 Team'],
+  11: ['perez', 'Sergio Pérez', 'PER', 'cadillac', 'Cadillac F1 Team'],
   12: ['antonelli', 'Andrea Kimi Antonelli', 'ANT', 'mercedes', 'Mercedes-AMG PETRONAS F1 Team'],
   14: ['alonso', 'Fernando Alonso', 'ALO', 'astonmartin', 'Aston Martin Aramco F1 Team'],
   16: ['leclerc', 'Charles Leclerc', 'LEC', 'ferrari', 'Scuderia Ferrari HP'],
@@ -41,24 +70,37 @@ const DRIVER_FALLBACK = {
   44: ['hamilton', 'Lewis Hamilton', 'HAM', 'ferrari', 'Scuderia Ferrari HP'],
   55: ['sainz', 'Carlos Sainz', 'SAI', 'williams', 'Williams Racing'],
   63: ['russell', 'George Russell', 'RUS', 'mercedes', 'Mercedes-AMG PETRONAS F1 Team'],
-  77: ['bottas', 'Valtteri Bottas', 'BOT', 'cadillac', 'Cadillac Formula 1 Team'],
-  81: ['piastri', 'Oscar Piastri', 'PIA', 'mclaren', 'McLaren F1 Team'],
+  77: ['bottas', 'Valtteri Bottas', 'BOT', 'cadillac', 'Cadillac F1 Team'],
+  81: ['piastri', 'Oscar Piastri', 'PIA', 'mclaren', 'McLaren Mastercard F1 Team'],
   87: ['bearman', 'Oliver Bearman', 'BEA', 'haas', 'MoneyGram Haas F1 Team'],
 };
 
+// Team name/IDs → our TeamId. Tokens cover both live-timing driver names
+// ("Oracle Red Bull Racing") and Jolpica names/constructorIds ("Red Bull",
+// "red_bull"). Any unmapped constructor stays unknown.
 const TEAM_IDS = [
   ['red bull', 'redbull'],
+  ['red_bull', 'redbull'],
   ['racing bulls', 'racingbulls'],
+  ['rb f1 team', 'racingbulls'],
+  ['rb', 'racingbulls'],
   ['mercedes', 'mercedes'],
   ['ferrari', 'ferrari'],
   ['mclaren', 'mclaren'],
   ['aston martin', 'astonmartin'],
+  ['aston_martin', 'astonmartin'],
   ['williams', 'williams'],
   ['alpine', 'alpine'],
   ['haas', 'haas'],
+  ['sauber', 'audi'],
   ['audi', 'audi'],
   ['cadillac', 'cadillac'],
 ];
+
+function teamTokenId(value) {
+  const normalized = String(value || '').toLowerCase();
+  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'unknown';
+}
 
 const SESSION_MAP = {
   'Practice 1': ['practice', 'fp1'],
@@ -71,18 +113,23 @@ const SESSION_MAP = {
 
 async function fetchText(url, attempt = 0) {
   const response = await fetch(url, {
-    headers: { Accept: 'application/json', 'User-Agent': USER_AGENT },
-    signal: AbortSignal.timeout(25_000),
+    headers: {
+      Accept: 'application/json',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'User-Agent': USER_AGENT,
+    },
+    signal: AbortSignal.timeout(60_000),
   });
-  // 403 from F1's bot protection is transient (same request succeeds on
-  // retry), so treat it like other retryable statuses with bounded backoff.
+  // Both F1's bot protection and Jolpica's rate limiter answer with
+  // retryable statuses; bounded backoff with jitter gets through most of them.
   const retryable =
     response.status === 403 ||
     response.status === 408 ||
     response.status === 429 ||
     response.status >= 500;
-  if (retryable && attempt < 3) {
-    await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 1500));
+  if (retryable && attempt < MAX_ATTEMPTS) {
+    const backoff = Math.min(RETRY_BASE_MS * 2 ** attempt, RETRY_CAP_MS);
+    await sleep(backoff + Math.random() * 500);
     return fetchText(url, attempt + 1);
   }
   if (!response.ok) throw new Error(`${url} returned ${response.status}`);
@@ -90,6 +137,7 @@ async function fetchText(url, attempt = 0) {
 }
 
 async function fetchJson(url) {
+  await jitterSleep();
   return JSON.parse(await fetchText(url));
 }
 
@@ -117,27 +165,37 @@ async function fetchStream(sessionPath, fileName) {
   return parseJsonStream(text);
 }
 
-function teamId(name) {
-  const normalized = String(name || '').toLowerCase();
-  // Never credit an unmapped constructor to another team: unknown stays unknown.
-  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'unknown';
-}
-
-function profile(number, driver) {
+function profile(number, driver, constructor) {
   const fallback = DRIVER_FALLBACK[number] || [
     `driver-${number}`,
-    driver?.FullName || `Driver ${number}`,
-    driver?.Tla || `#${number}`,
-    teamId(driver?.TeamName),
-    driver?.TeamName || 'Formula 1 Team',
+    driver
+      ? `${driver.givenName ?? ''} ${driver.familyName ?? ''}`.trim() || `Driver ${number}`
+      : `Driver ${number}`,
+    driver?.code || driver?.Tla || `#${number}`,
+    'unknown',
+    constructor?.name || 'Formula 1 Team',
   ];
+  const driverName =
+    fallback[1] ||
+    (driver?.FirstName && driver?.LastName
+      ? `${driver.FirstName} ${driver.LastName}`.trim()
+      : undefined) ||
+    (driver?.givenName && driver?.familyName
+      ? `${driver.givenName} ${driver.familyName}`.trim()
+      : undefined) ||
+    driver?.FullName;
+  const driverCode = driver?.Tla || driver?.code || fallback[2];
+  const teamName = driver?.TeamName || constructor?.name || fallback[4];
+  const mappedTeam = teamTokenId(teamName);
   return {
     driverId: fallback[0],
-    driverName: fallback[1],
-    driverCode: driver?.Tla || fallback[2],
+    driverName,
+    driverCode,
     driverNumber: number,
-    teamId: driver?.TeamName ? teamId(driver.TeamName) : fallback[3],
-    teamName: driver?.TeamName || fallback[4],
+    // Never credit an unmapped constructor to another team: unknown stays
+    // unknown and keeps the local fallback profile.
+    teamId: mappedTeam === 'unknown' ? fallback[3] : mappedTeam,
+    teamName,
   };
 }
 
@@ -315,7 +373,188 @@ async function readSession(session) {
   };
 }
 
-async function run() {
+// ─── Jolpica (Ergast) fallback ───────────────────────────────────────────────
+
+async function fetchJolpicaRaces(endpoint) {
+  const races = [];
+  let offset = 0;
+  // Endpoint-specific entry keys: qualifying returns QualifyingResults,
+  // sprint returns SprintResults, results returns Results.
+  const entryKey = endpoint.startsWith('qualifying')
+    ? 'QualifyingResults'
+    : endpoint.startsWith('sprint')
+      ? 'SprintResults'
+      : 'Results';
+  for (let page = 0; page < 20; page += 1) {
+    // Jolpica paginates by result entries, not by race weekends.
+    const response = await fetchJson(`${JOLPICA_BASE}/2026/${endpoint}?limit=100&offset=${offset}`);
+    const pageRaces = response?.MRData?.RaceTable?.Races || [];
+    races.push(...pageRaces);
+    const total = Number(response?.MRData?.total || 0);
+    offset += pageRaces.reduce((sum, race) => sum + (race[entryKey] || []).length, 0);
+    if (pageRaces.length === 0 || offset >= total) break;
+  }
+  return races;
+}
+
+function fastestSegmentTime(entry) {
+  const times = [entry.Q3, entry.Q2, entry.Q1]
+    .map((value) => (typeof value === 'string' && value ? value : undefined))
+    .filter(Boolean);
+  return times.sort((a, b) => (lapTimeToSeconds(a) ?? 0) - (lapTimeToSeconds(b) ?? 0))[0];
+}
+
+function buildJolpicaQualifyingRace(race) {
+  const entries = (race.QualifyingResults || [])
+    .map((entry) => {
+      const position = Number(entry.position);
+      const profileEntry = {
+        position,
+        ...profile(Number(entry.number), entry.Driver, entry.Constructor),
+      };
+      return {
+        ...profileEntry,
+        q1Time: typeof entry.Q1 === 'string' && entry.Q1 ? entry.Q1 : undefined,
+        q2Time: typeof entry.Q2 === 'string' && entry.Q2 ? entry.Q2 : undefined,
+        q3Time: typeof entry.Q3 === 'string' && entry.Q3 ? entry.Q3 : undefined,
+        bestLapTime: fastestSegmentTime(entry) || '',
+      };
+    })
+    .filter((entry) => Number.isInteger(entry.position) && entry.position > 0)
+    .sort((a, b) => a.position - b.position);
+
+  const leaderSeconds = lapTimeToSeconds(entries[0]?.bestLapTime);
+  const entriesWithGaps = entries.map((entry) => {
+    const seconds = lapTimeToSeconds(entry.bestLapTime);
+    const gap =
+      entry.position === 1
+        ? 'POLE'
+        : formatGap(
+            Number.isFinite(seconds) && Number.isFinite(leaderSeconds)
+              ? seconds - leaderSeconds
+              : undefined,
+          );
+    return { ...entry, gapToPole: gap || '' };
+  });
+
+  return {
+    round: Number(race.round),
+    grandPrix: race.raceName,
+    season: 2026,
+    circuit: race.Circuit?.circuitName || 'Circuit',
+    sessions: {
+      qualifying: {
+        sessionKey: 'qualifying',
+        sessionName: 'Qualifying',
+        dateStr: race.date,
+        status: 'finished',
+        poleDriver: entriesWithGaps[0]
+          ? {
+              driver: entriesWithGaps[0].driverName,
+              team: entriesWithGaps[0].teamName,
+              time: entriesWithGaps[0].bestLapTime,
+            }
+          : undefined,
+        entries: entriesWithGaps,
+      },
+    },
+  };
+}
+
+function buildJolpicaSprintRace(race) {
+  const entries = (race.SprintResults || [])
+    .map((entry) => {
+      const position = Number(entry.position);
+      const gapTime = entry.Time?.time ? cleanGap(entry.Time.time) : '';
+      return {
+        position,
+        ...profile(Number(entry.number), entry.Driver, entry.Constructor),
+        lapsCompleted: Number(entry.laps) || 0,
+        bestLapTime: position === 1 ? 'LEADER' : gapTime || '',
+        gapToPole: position === 1 ? 'LEADER' : gapTime || '',
+        sprintPoints: entry.points != null ? Number(entry.points) : undefined,
+      };
+    })
+    .filter((entry) => Number.isInteger(entry.position) && entry.position > 0)
+    .sort((a, b) => a.position - b.position);
+
+  return {
+    round: Number(race.round),
+    grandPrix: race.raceName,
+    season: 2026,
+    circuit: race.Circuit?.circuitName || 'Circuit',
+    sessions: {
+      sprint: {
+        sessionKey: 'sprint',
+        sessionName: 'Sprint',
+        dateStr: race.date,
+        status: 'finished',
+        poleDriver: entries[0]
+          ? {
+              driver: entries[0].driverName,
+              team: entries[0].teamName,
+              time: 'LEADER',
+            }
+          : undefined,
+        entries,
+      },
+    },
+  };
+}
+
+async function syncFromJolpica(existing) {
+  const [qualifyingRaces, sprintRaces] = await Promise.all([
+    fetchJolpicaRaces('qualifying.json'),
+    fetchJolpicaRaces('sprint.json').catch(() => []),
+  ]);
+
+  // Only sync the most recent weekend that has a complete qualifying
+  // classification — same "latest meeting only" policy as the F1 path.
+  const completed = qualifyingRaces.filter(
+    (race) => (race.QualifyingResults || []).length >= EXPECTED_GRID_SIZE,
+  );
+  if (completed.length === 0) {
+    console.log('[F1 timing] Jolpica has no completed qualifying classification.');
+    return false;
+  }
+  const latest = completed.reduce((a, b) => (Number(a.round) >= Number(b.round) ? a : b));
+  const round = Number(latest.round);
+
+  const existingRecord = existing.qualifying?.[round];
+  const nextRecord = buildJolpicaQualifyingRace(latest);
+  const sprintRace = sprintRaces.find((race) => Number(race.round) === round);
+  if (sprintRace && (sprintRace.SprintResults || []).length >= EXPECTED_GRID_SIZE) {
+    nextRecord.sessions.sprint = buildJolpicaSprintRace(sprintRace).sessions.sprint;
+  }
+
+  if (existingRecord) {
+    // Jolpica has no practice sessions and no sprint qualifying: keep whatever
+    // the live-timing archive already captured for those sessions.
+    nextRecord.sessions = {
+      ...existingRecord.sessions,
+      ...nextRecord.sessions,
+    };
+  }
+
+  const changed =
+    JSON.stringify(existing.qualifying?.[round] || null) !== JSON.stringify(nextRecord);
+  if (changed) {
+    console.log(
+      `[F1 timing] Jolpica: round ${round} (${latest.raceName}) ${
+        existingRecord ? 'updated' : 'added'
+      }.`,
+    );
+    existing.qualifying = existing.qualifying || {};
+    existing.qualifying[round] = nextRecord;
+  } else {
+    console.log(`[F1 timing] Jolpica: round ${round} unchanged.`);
+  }
+  return changed;
+}
+
+// ─── Primary source: F1 live timing ──────────────────────────────────────────
+
+async function syncFromLiveTiming(existing) {
   const index = await fetchJson(`${LIVE_TIMING_BASE}/2026/Index.json`);
   const meetings = (index.Meetings || []).filter((meeting) =>
     meeting.Sessions?.some((session) => SESSION_MAP[session.Name] && session.Path),
@@ -325,9 +564,6 @@ async function run() {
 
   const round = Number(meeting.Number);
   if (!Number.isInteger(round)) throw new Error(`Invalid round number for ${meeting.Name}`);
-  const existing = fs.existsSync(OUTPUT_FILE)
-    ? JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'))
-    : { practice: {}, qualifying: {} };
   let changed = false;
 
   for (const session of meeting.Sessions || []) {
@@ -347,19 +583,59 @@ async function run() {
       changed = true;
     }
   }
-
   if (!changed) {
     console.log('[F1 timing] No new complete session results.');
+  } else {
+    console.log(`[F1 timing] Updated complete session snapshot for round ${round}.`);
+  }
+  return changed;
+}
+
+async function run() {
+  const existing = fs.existsSync(OUTPUT_FILE)
+    ? JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'))
+    : { practice: {}, qualifying: {} };
+  existing.practice = existing.practice || {};
+  existing.qualifying = existing.qualifying || {};
+
+  let changed = false;
+  const preferJolpica = PINNED_SOURCE === 'jolpica';
+  let useJolpica = preferJolpica;
+
+  if (!preferJolpica) {
+    try {
+      changed = await syncFromLiveTiming(existing);
+    } catch (error) {
+      if (PINNED_SOURCE === 'f1') throw error;
+      console.log(
+        `[F1 timing] Live timing archive unavailable: ${error.message}. Trying Jolpica fallback...`,
+      );
+      useJolpica = true;
+    }
+  }
+
+  if (useJolpica) {
+    changed = await syncFromJolpica(existing);
+  }
+
+  if (!changed) {
+    console.log('[F1 timing] Nothing to write.');
+    return;
+  }
+  if (IS_DRY_RUN) {
+    console.log('[F1 timing] Dry run: data changed but nothing was written.');
     return;
   }
   fs.writeFileSync(OUTPUT_FILE, `${JSON.stringify(existing, null, 2)}\n`, 'utf8');
-  console.log(`[F1 timing] Updated complete session snapshot for round ${round}.`);
+  console.log('[F1 timing] Session snapshot written.');
 }
 
 run().catch((error) => {
   const hint = /returned 403/.test(error.message)
     ? ' (F1 bot protection kept rejecting the request after retries; re-run later or from a different network)'
-    : '';
+    : /returned 429/.test(error.message)
+      ? ' (Jolpica rate limit hit; re-run in a minute)'
+      : '';
   console.error(`[F1 timing] Sync failed: ${error.message}${hint}`);
   process.exit(1);
 });
