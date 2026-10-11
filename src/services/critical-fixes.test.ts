@@ -97,8 +97,40 @@ describe('critical fixes: unknown constructor and sparse grid', () => {
     expect(ids).not.toContain('p1');
     expect(ids).not.toContain('p2');
     expect(ids).not.toContain('p3');
-    // 2024 grid size: synthesized field matches the season grid, no extra rows.
-    expect(race?.entries).toHaveLength(20);
+    // Only the official podium rows are forwarded — no fabricated P4+ field.
+    expect(race?.entries.map((e) => e.position)).toEqual([1, 2, 3]);
+    expect(race?.entries.every((e) => e.status === 'Finished')).toBe(true);
+  });
+
+  it('forwards a sparse real classification instead of replacing it', () => {
+    const sparse: DetailedRaceResult = {
+      id: 'race-2026-r18-sparse',
+      season: 2026,
+      round: 18,
+      grandPrix: 'Sparse Grand Prix',
+      officialName: 'Sparse Grand Prix 2026',
+      circuit: 'Sparse Circuit',
+      date: '01 Nov 2026',
+      status: 'completed',
+      lapsTotal: 57,
+      entries: [
+        {
+          position: 1,
+          driverId: 'russell',
+          driverName: 'George Russell',
+          driverCode: 'RUS',
+          teamId: 'mercedes',
+          teamName: 'Mercedes',
+          laps: 57,
+          status: 'Finished',
+          timeOrGap: '1:30:00.000',
+          points: 25,
+        },
+      ],
+    };
+    const race = getCompleteRaceClassification(2026, 18, [sparse]);
+    expect(race).toBe(sparse);
+    expect(race?.isSynthesized).toBeUndefined();
   });
 });
 
@@ -114,20 +146,21 @@ describe('critical fixes: fastest-lap rule by season', () => {
     expect(fastestLapBonusPoints(2026, 5, true)).toBe(0);
   });
 
-  it('applies the rule in synthesized classifications', () => {
-    // 2024 R5: Alonso holds FL and synthesizes inside the top 10 -> base 2 + 1.
-    const r2024 = getCompleteRaceClassification(2024, 5);
-    const alonso = r2024?.entries.find((e) => e.driverId === 'alonso');
-    expect(alonso?.fastestLap).toBe(true);
-    expect(alonso?.points).toBe(3);
-    // 2026 R1: Verstappen holds FL but synthesizes outside top-3 -> no bonus.
-    const r2026 = getCompleteRaceClassification(2026, 1);
-    const verstappen = r2026?.entries.find((e) => e.driverId === 'verstappen');
+  it('keeps official podium points and fastest-lap flags without inventing rows', () => {
+    // 2024 R1: Verstappen wins with the fastest lap -> official 26 points.
+    const r2024 = getCompleteRaceClassification(2024, 1);
+    const verstappen = r2024?.entries.find((e) => e.driverId === 'verstappen');
+    expect(verstappen?.position).toBe(1);
     expect(verstappen?.fastestLap).toBe(true);
-    expect([25, 18, 15, 12, 10, 8, 6, 4, 2, 1, 0]).toContain(verstappen?.points);
-    const pos = verstappen?.position || 99;
-    const base = pos <= 10 ? [25, 18, 15, 12, 10, 8, 6, 4, 2, 1][pos - 1] : 0;
-    expect(verstappen?.points).toBe(base);
+    expect(verstappen?.points).toBe(26);
+    // No fabricated rows for drivers outside the podium.
+    expect(r2024?.entries).toHaveLength(3);
+    // 2026 R1: Verstappen holds the fastest lap but is not on the podium ->
+    // he gets no invented entry; only the race header reports the fastest lap.
+    const r2026 = getCompleteRaceClassification(2026, 1);
+    expect(r2026?.entries.find((e) => e.driverId === 'verstappen')).toBeUndefined();
+    expect(r2026?.fastestLap?.driver).toBe('Max Verstappen');
+    expect(r2026?.entries).toHaveLength(3);
   });
 
   it('uses per-season laps (Monza 2024 = 53)', () => {
