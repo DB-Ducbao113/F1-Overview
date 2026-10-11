@@ -314,6 +314,9 @@
               "teamName": "Red Bull Racing",
               "lapsCompleted": 15,
               "bestLapTime": "1:31.156",
+              "q1Time": "1:33.477",
+              "q2Time": "1:32.701",
+              "q3Time": "1:31.156",
               "gapToPole": "POLE"
             },
             {
@@ -326,6 +329,9 @@
               "teamName": "Mercedes",
               "lapsCompleted": 21,
               "bestLapTime": "1:31.276",
+              "q1Time": "1:33.573",
+              "q2Time": "1:32.614",
+              "q3Time": "1:31.276",
               "gapToPole": "+0.120s"
             },
             {
@@ -338,6 +344,9 @@
               "teamName": "Ferrari",
               "lapsCompleted": 19,
               "bestLapTime": "1:31.399",
+              "q1Time": "1:33.495",
+              "q2Time": "1:32.246",
+              "q3Time": "1:31.399",
               "gapToPole": "+0.243s"
             },
             {
@@ -350,6 +359,9 @@
               "teamName": "McLaren",
               "lapsCompleted": 19,
               "bestLapTime": "1:31.454",
+              "q1Time": "1:34.277",
+              "q2Time": "1:33.106",
+              "q3Time": "1:31.454",
               "gapToPole": "+0.298s"
             },
             {
@@ -362,6 +374,9 @@
               "teamName": "McLaren",
               "lapsCompleted": 15,
               "bestLapTime": "1:31.587",
+              "q1Time": "1:34.257",
+              "q2Time": "1:32.572",
+              "q3Time": "1:31.587",
               "gapToPole": "+0.431s"
             },
             {
@@ -374,6 +389,9 @@
               "teamName": "Ferrari",
               "lapsCompleted": 14,
               "bestLapTime": "1:31.702",
+              "q1Time": "1:33.748",
+              "q2Time": "1:32.562",
+              "q3Time": "1:31.702",
               "gapToPole": "+0.546s"
             },
             {
@@ -386,6 +404,9 @@
               "teamName": "Mercedes",
               "lapsCompleted": 20,
               "bestLapTime": "1:31.849",
+              "q1Time": "1:34.392",
+              "q2Time": "1:32.998",
+              "q3Time": "1:31.849",
               "gapToPole": "+0.693s"
             },
             {
@@ -398,6 +419,9 @@
               "teamName": "Racing Bulls",
               "lapsCompleted": 15,
               "bestLapTime": "1:32.341",
+              "q1Time": "1:34.855",
+              "q2Time": "1:33.133",
+              "q3Time": "1:32.341",
               "gapToPole": "+1.185s"
             },
             {
@@ -410,6 +434,8 @@
               "teamName": "Red Bull Racing",
               "lapsCompleted": 15,
               "bestLapTime": "1:32.947",
+              "q1Time": "1:34.182",
+              "q2Time": "1:32.947",
               "gapToPole": "+1.791s"
             },
             {
@@ -422,6 +448,8 @@
               "teamName": "Alpine",
               "lapsCompleted": 15,
               "bestLapTime": "1:33.155",
+              "q1Time": "1:34.673",
+              "q2Time": "1:33.155",
               "gapToPole": "+1.999s"
             },
             {
@@ -434,6 +462,8 @@
               "teamName": "Alpine",
               "lapsCompleted": 12,
               "bestLapTime": "1:33.249",
+              "q1Time": "1:35.048",
+              "q2Time": "1:33.249",
               "gapToPole": "+2.093s"
             },
             {
@@ -446,6 +476,8 @@
               "teamName": "Audi",
               "lapsCompleted": 14,
               "bestLapTime": "1:33.420",
+              "q1Time": "1:34.128",
+              "q2Time": "1:33.420",
               "gapToPole": "+2.264s"
             },
             {
@@ -458,6 +490,8 @@
               "teamName": "Haas F1 Team",
               "lapsCompleted": 12,
               "bestLapTime": "1:33.423",
+              "q1Time": "1:34.950",
+              "q2Time": "1:33.423",
               "gapToPole": "+2.267s"
             },
             {
@@ -470,6 +504,8 @@
               "teamName": "Audi",
               "lapsCompleted": 14,
               "bestLapTime": "1:33.466",
+              "q1Time": "1:34.690",
+              "q2Time": "1:33.466",
               "gapToPole": "+2.310s"
             },
             {
@@ -482,6 +518,8 @@
               "teamName": "Aston Martin",
               "lapsCompleted": 12,
               "bestLapTime": "1:33.734",
+              "q1Time": "1:34.960",
+              "q2Time": "1:33.734",
               "gapToPole": "+2.578s"
             },
             {
@@ -494,6 +532,8 @@
               "teamName": "Haas F1 Team",
               "lapsCompleted": 12,
               "bestLapTime": "1:34.368",
+              "q1Time": "1:35.004",
+              "q2Time": "1:34.368",
               "gapToPole": "+3.212s"
             },
             {
@@ -506,6 +546,7 @@
               "teamName": "Racing Bulls",
               "lapsCompleted": 6,
               "bestLapTime": "1:35.136",
+              "q1Time": "1:35.136",
               "gapToPole": "+3.980s"
             },
             {
@@ -518,6 +559,7 @@
               "teamName": "Aston Martin",
               "lapsCompleted": 6,
               "bestLapTime": "1:35.662",
+              "q1Time": "1:35.662",
               "gapToPole": "+4.506s"
             },
             {
@@ -530,6 +572,7 @@
               "teamName": "Williams",
               "lapsCompleted": 7,
               "bestLapTime": "1:36.130",
+              "q1Time": "1:36.130",
               "gapToPole": "+4.974s"
             },
             {
@@ -542,6 +585,7 @@
               "teamName": "Cadillac",
               "lapsCompleted": 8,
               "bestLapTime": "1:36.760",
+              "q1Time": "1:36.760",
               "gapToPole": "+5.604s"
             },
             {
@@ -554,6 +598,7 @@
               "teamName": "Cadillac",
               "lapsCompleted": 9,
               "bestLapTime": "1:36.868",
+              "q1Time": "1:36.868",
               "gapToPole": "+5.712s"
             },
             {
@@ -566,6 +611,7 @@
               "teamName": "Williams",
               "lapsCompleted": 7,
               "bestLapTime": "1:37.376",
+              "q1Time": "1:37.376",
               "gapToPole": "+6.220s"
             }
           ]
@@ -851,6 +897,330 @@
               "teamName": "Aston Martin",
               "lapsCompleted": 0,
               "bestLapTime": "",
+              "gapToPole": ""
+            }
+          ]
+        },
+        "qualifying": {
+          "sessionKey": "qualifying",
+          "sessionName": "Qualifying",
+          "dateStr": "2026-10-10T13:30:00.000Z",
+          "status": "finished",
+          "poleDriver": {
+            "driver": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "time": "1:31.373"
+          },
+          "entries": [
+            {
+              "position": 1,
+              "driverId": "verstappen",
+              "driverName": "Max Verstappen",
+              "driverCode": "VER",
+              "driverNumber": 3,
+              "teamId": "redbull",
+              "teamName": "Red Bull Racing",
+              "lapsCompleted": 15,
+              "bestLapTime": "1:31.373",
+              "q1Time": "1:33.241",
+              "q2Time": "1:31.639",
+              "q3Time": "1:31.373",
+              "gapToPole": "POLE"
+            },
+            {
+              "position": 2,
+              "driverId": "leclerc",
+              "driverName": "Charles Leclerc",
+              "driverCode": "LEC",
+              "driverNumber": 16,
+              "teamId": "ferrari",
+              "teamName": "Ferrari",
+              "lapsCompleted": 25,
+              "bestLapTime": "1:31.427",
+              "q1Time": "1:32.774",
+              "q2Time": "1:31.953",
+              "q3Time": "1:31.427",
+              "gapToPole": "+0.054s"
+            },
+            {
+              "position": 3,
+              "driverId": "hamilton",
+              "driverName": "Lewis Hamilton",
+              "driverCode": "HAM",
+              "driverNumber": 44,
+              "teamId": "ferrari",
+              "teamName": "Ferrari",
+              "lapsCompleted": 25,
+              "bestLapTime": "1:31.496",
+              "q1Time": "1:32.429",
+              "q2Time": "1:31.529",
+              "q3Time": "1:31.496",
+              "gapToPole": "+0.123s"
+            },
+            {
+              "position": 4,
+              "driverId": "antonelli",
+              "driverName": "Andrea Kimi Antonelli",
+              "driverCode": "ANT",
+              "driverNumber": 12,
+              "teamId": "mercedes",
+              "teamName": "Mercedes",
+              "lapsCompleted": 23,
+              "bestLapTime": "1:31.562",
+              "q1Time": "1:33.601",
+              "q2Time": "1:32.079",
+              "q3Time": "1:31.562",
+              "gapToPole": "+0.189s"
+            },
+            {
+              "position": 5,
+              "driverId": "norris",
+              "driverName": "Lando Norris",
+              "driverCode": "NOR",
+              "driverNumber": 1,
+              "teamId": "mclaren",
+              "teamName": "McLaren",
+              "lapsCompleted": 24,
+              "bestLapTime": "1:31.712",
+              "q1Time": "1:32.775",
+              "q2Time": "1:31.895",
+              "q3Time": "1:31.712",
+              "gapToPole": "+0.339s"
+            },
+            {
+              "position": 6,
+              "driverId": "russell",
+              "driverName": "George Russell",
+              "driverCode": "RUS",
+              "driverNumber": 63,
+              "teamId": "mercedes",
+              "teamName": "Mercedes",
+              "lapsCompleted": 23,
+              "bestLapTime": "1:31.747",
+              "q1Time": "1:33.617",
+              "q2Time": "1:32.212",
+              "q3Time": "1:31.747",
+              "gapToPole": "+0.374s"
+            },
+            {
+              "position": 7,
+              "driverId": "piastri",
+              "driverName": "Oscar Piastri",
+              "driverCode": "PIA",
+              "driverNumber": 81,
+              "teamId": "mclaren",
+              "teamName": "McLaren",
+              "lapsCompleted": 22,
+              "bestLapTime": "1:31.860",
+              "q1Time": "1:33.076",
+              "q2Time": "1:32.245",
+              "q3Time": "1:31.860",
+              "gapToPole": "+0.487s"
+            },
+            {
+              "position": 8,
+              "driverId": "gasly",
+              "driverName": "Pierre Gasly",
+              "driverCode": "GAS",
+              "driverNumber": 10,
+              "teamId": "alpine",
+              "teamName": "Alpine",
+              "lapsCompleted": 22,
+              "bestLapTime": "1:32.225",
+              "q1Time": "1:33.182",
+              "q2Time": "1:32.602",
+              "q3Time": "1:32.225",
+              "gapToPole": "+0.852s"
+            },
+            {
+              "position": 9,
+              "driverId": "lawson",
+              "driverName": "Liam Lawson",
+              "driverCode": "LAW",
+              "driverNumber": 30,
+              "teamId": "racingbulls",
+              "teamName": "Racing Bulls",
+              "lapsCompleted": 21,
+              "bestLapTime": "1:32.319",
+              "q1Time": "1:32.885",
+              "q2Time": "1:32.319",
+              "q3Time": "1:32.369",
+              "gapToPole": "+0.946s"
+            },
+            {
+              "position": 10,
+              "driverId": "lindblad",
+              "driverName": "Arvid Lindblad",
+              "driverCode": "LIN",
+              "driverNumber": 41,
+              "teamId": "racingbulls",
+              "teamName": "Racing Bulls",
+              "lapsCompleted": 21,
+              "bestLapTime": "1:32.498",
+              "q1Time": "1:33.288",
+              "q2Time": "1:32.498",
+              "q3Time": "1:32.781",
+              "gapToPole": "+1.125s"
+            },
+            {
+              "position": 11,
+              "driverId": "hulkenberg",
+              "driverName": "Nico Hülkenberg",
+              "driverCode": "HUL",
+              "driverNumber": 27,
+              "teamId": "audi",
+              "teamName": "Audi",
+              "lapsCompleted": 19,
+              "bestLapTime": "1:32.784",
+              "q1Time": "1:33.147",
+              "q2Time": "1:32.784",
+              "gapToPole": "+1.411s"
+            },
+            {
+              "position": 12,
+              "driverId": "bearman",
+              "driverName": "Oliver Bearman",
+              "driverCode": "BEA",
+              "driverNumber": 87,
+              "teamId": "haas",
+              "teamName": "Haas F1 Team",
+              "lapsCompleted": 12,
+              "bestLapTime": "1:32.908",
+              "q1Time": "1:33.356",
+              "q2Time": "1:32.908",
+              "gapToPole": "+1.535s"
+            },
+            {
+              "position": 13,
+              "driverId": "ocon",
+              "driverName": "Esteban Ocon",
+              "driverCode": "OCO",
+              "driverNumber": 31,
+              "teamId": "haas",
+              "teamName": "Haas F1 Team",
+              "lapsCompleted": 15,
+              "bestLapTime": "1:33.323",
+              "q1Time": "1:33.803",
+              "q2Time": "1:33.323",
+              "gapToPole": "+1.950s"
+            },
+            {
+              "position": 14,
+              "driverId": "sainz",
+              "driverName": "Carlos Sainz",
+              "driverCode": "SAI",
+              "driverNumber": 55,
+              "teamId": "williams",
+              "teamName": "Williams",
+              "lapsCompleted": 15,
+              "bestLapTime": "1:33.526",
+              "q1Time": "1:33.774",
+              "q2Time": "1:33.526",
+              "gapToPole": "+2.153s"
+            },
+            {
+              "position": 15,
+              "driverId": "bortoleto",
+              "driverName": "Gabriel Bortoleto",
+              "driverCode": "BOR",
+              "driverNumber": 5,
+              "teamId": "audi",
+              "teamName": "Audi",
+              "lapsCompleted": 19,
+              "bestLapTime": "1:33.658",
+              "q1Time": "1:34.169",
+              "q2Time": "1:33.658",
+              "gapToPole": "+2.285s"
+            },
+            {
+              "position": 16,
+              "driverId": "colapinto",
+              "driverName": "Franco Colapinto",
+              "driverCode": "COL",
+              "driverNumber": 43,
+              "teamId": "alpine",
+              "teamName": "Alpine",
+              "lapsCompleted": 14,
+              "bestLapTime": "1:33.261",
+              "q1Time": "1:33.261",
+              "q2Time": "1:33.787",
+              "gapToPole": "+1.888s"
+            },
+            {
+              "position": 17,
+              "driverId": "alonso",
+              "driverName": "Fernando Alonso",
+              "driverCode": "ALO",
+              "driverNumber": 14,
+              "teamId": "astonmartin",
+              "teamName": "Aston Martin",
+              "lapsCompleted": 9,
+              "bestLapTime": "1:34.223",
+              "q1Time": "1:34.223",
+              "gapToPole": "+2.850s"
+            },
+            {
+              "position": 18,
+              "driverId": "albon",
+              "driverName": "Alexander Albon",
+              "driverCode": "ALB",
+              "driverNumber": 23,
+              "teamId": "williams",
+              "teamName": "Williams",
+              "lapsCompleted": 10,
+              "bestLapTime": "1:34.289",
+              "q1Time": "1:34.289",
+              "gapToPole": "+2.916s"
+            },
+            {
+              "position": 19,
+              "driverId": "stroll",
+              "driverName": "Lance Stroll",
+              "driverCode": "STR",
+              "driverNumber": 18,
+              "teamId": "astonmartin",
+              "teamName": "Aston Martin",
+              "lapsCompleted": 8,
+              "bestLapTime": "1:34.946",
+              "q1Time": "1:34.946",
+              "gapToPole": "+3.573s"
+            },
+            {
+              "position": 20,
+              "driverId": "perez",
+              "driverName": "Sergio Pérez",
+              "driverCode": "PER",
+              "driverNumber": 11,
+              "teamId": "cadillac",
+              "teamName": "Cadillac",
+              "lapsCompleted": 8,
+              "bestLapTime": "1:35.123",
+              "q1Time": "1:35.123",
+              "gapToPole": "+3.750s"
+            },
+            {
+              "position": 21,
+              "driverId": "bottas",
+              "driverName": "Valtteri Bottas",
+              "driverCode": "BOT",
+              "driverNumber": 77,
+              "teamId": "cadillac",
+              "teamName": "Cadillac",
+              "lapsCompleted": 10,
+              "bestLapTime": "1:35.984",
+              "q1Time": "1:35.984",
+              "gapToPole": "+4.611s"
+            },
+            {
+              "position": 22,
+              "driverId": "hadjar",
+              "driverName": "Isack Hadjar",
+              "driverCode": "HAD",
+              "driverNumber": 6,
+              "teamId": "redbull",
+              "teamName": "Red Bull Racing",
+              "lapsCompleted": 3,
+              "bestLapTime": "No time",
               "gapToPole": ""
             }
           ]

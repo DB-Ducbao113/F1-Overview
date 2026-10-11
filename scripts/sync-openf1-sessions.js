@@ -74,7 +74,14 @@ async function fetchText(url, attempt = 0) {
     headers: { Accept: 'application/json', 'User-Agent': USER_AGENT },
     signal: AbortSignal.timeout(25_000),
   });
-  if ((response.status === 429 || response.status >= 500) && attempt < 3) {
+  // 403 from F1's bot protection is transient (same request succeeds on
+  // retry), so treat it like other retryable statuses with bounded backoff.
+  const retryable =
+    response.status === 403 ||
+    response.status === 408 ||
+    response.status === 429 ||
+    response.status >= 500;
+  if (retryable && attempt < 3) {
     await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 1500));
     return fetchText(url, attempt + 1);
   }
@@ -112,7 +119,8 @@ async function fetchStream(sessionPath, fileName) {
 
 function teamId(name) {
   const normalized = String(name || '').toLowerCase();
-  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'redbull';
+  // Never credit an unmapped constructor to another team: unknown stays unknown.
+  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'unknown';
 }
 
 function profile(number, driver) {
@@ -154,6 +162,21 @@ function cleanGap(value) {
   return text;
 }
 
+// Qualifying TimingData carries per-segment best laps in Lines[n].BestLapTimes,
+// an array where index 0/1/2 are Q1/Q2/Q3 (or SQ1/SQ2/SQ3 in sprint qualifying).
+// Drivers eliminated in an earlier segment have empty {} objects for later
+// segments, so their q2Time/q3Time stay undefined and the UI renders "-".
+function segmentBestLaps(line) {
+  const bests = line?.BestLapTimes;
+  if (!Array.isArray(bests)) return undefined;
+  const read = (index) => {
+    const value = bests[index]?.Value;
+    return typeof value === 'string' && value ? value : undefined;
+  };
+  const segments = { q1: read(0), q2: read(1), q3: read(2) };
+  return segments.q1 || segments.q2 || segments.q3 ? segments : undefined;
+}
+
 function sessionDate(session) {
   const offset = String(session.GmtOffset || '00:00:00');
   const sign = offset.startsWith('-') ? '-' : '+';
@@ -176,6 +199,7 @@ function baseEntries(timingData, timingStats, drivers) {
         lapsCompleted: Number(line.NumberOfLaps) || 0,
         bestLapTime,
         rawGap: cleanGap(line.GapToLeader),
+        segmentTimes: segmentBestLaps(line),
       };
     })
     .filter((entry) => Number.isInteger(entry.position) && entry.position > 0)
@@ -186,8 +210,9 @@ function buildPracticeSession(session, entries) {
   const leaderSeconds = lapTimeToSeconds(entries[0]?.bestLapTime);
   const normalized = entries.map((entry) => {
     const seconds = lapTimeToSeconds(entry.bestLapTime);
+    const { segmentTimes: _segments, ...cleaned } = entry;
     return {
-      ...entry,
+      ...cleaned,
       bestLapTime: entry.bestLapTime || 'No time',
       gapToP1:
         entry.position === 1
@@ -218,6 +243,7 @@ function buildPracticeSession(session, entries) {
 
 function buildClassificationSession(session, sessionKey, entries) {
   const sprint = sessionKey === 'sprint';
+  const hasSegments = sessionKey === 'qualifying' || sessionKey === 'sprintQualifying';
   const leaderSeconds = lapTimeToSeconds(entries[0]?.bestLapTime);
   const sprintPoints = [8, 7, 6, 5, 4, 3, 2, 1];
   const normalized = entries.map((entry) => {
@@ -228,8 +254,16 @@ function buildClassificationSession(session, sessionKey, entries) {
         : undefined,
     );
     const displayGap = sprint ? entry.rawGap : calculatedGap;
+    const { segmentTimes, ...cleaned } = entry;
     return {
-      ...entry,
+      ...cleaned,
+      ...(hasSegments && segmentTimes
+        ? {
+            q1Time: segmentTimes.q1,
+            q2Time: segmentTimes.q2,
+            q3Time: segmentTimes.q3,
+          }
+        : {}),
       bestLapTime: sprint
         ? entry.position === 1
           ? 'LEADER'
@@ -323,6 +357,9 @@ async function run() {
 }
 
 run().catch((error) => {
-  console.error(`[F1 timing] Sync failed: ${error.message}`);
+  const hint = /returned 403/.test(error.message)
+    ? ' (F1 bot protection kept rejecting the request after retries; re-run later or from a different network)'
+    : '';
+  console.error(`[F1 timing] Sync failed: ${error.message}${hint}`);
   process.exit(1);
 });

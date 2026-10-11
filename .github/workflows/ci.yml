@@ -43,3 +43,13 @@ jobs:
       - name: Security Audit (Dependencies)
         run: npm audit --audit-level=critical
         continue-on-error: true
+
+      - name: Secret scan (no real tokens in tree)
+        run: |
+          # Quét pattern token GitHub, loại trừ fixture cố ý chứa chuỗi giả.
+          if grep -rEn --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=coverage --exclude-dir=.git --exclude='secret-scan.fixture' 'ghp_[A-Za-z0-9]{20,}' .; then
+            echo 'Possible real token pattern found in tree (fixture excluded).'
+            exit 1
+          fi
+          # Tự kiểm tra quy tắc: fixture phải khớp pattern (chứng minh scanner hoạt động).
+          grep -qE 'ghp_[A-Za-z0-9]{20,}' scripts/fixtures/secret-scan.fixture

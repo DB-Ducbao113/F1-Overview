@@ -22,6 +22,7 @@ import {
 } from '../services/f1DataService';
 import { recalculateStandingsFromRaces } from '../services/standingsEngine';
 import { getRaceResults } from '../data/championship/results';
+import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 import {
   DRIVER_STANDINGS_2024,
   CONSTRUCTOR_STANDINGS_2024,
@@ -116,19 +117,19 @@ function describeClassificationDifferences(
         oldEntry.driverId,
         oldEntry.laps,
         oldEntry.status,
-        oldEntry.timeOrGap,
+        normalizeTimeOrGap(oldEntry.timeOrGap),
         oldEntry.points,
         oldEntry.fastestLap,
-        oldEntry.fastestLapTime,
+        normalizeTimeOrGap(oldEntry.fastestLapTime),
       ].join('|') !==
         [
           newEntry.driverId,
           newEntry.laps,
           newEntry.status,
-          newEntry.timeOrGap,
+          normalizeTimeOrGap(newEntry.timeOrGap),
           newEntry.points,
           newEntry.fastestLap,
-          newEntry.fastestLapTime,
+          normalizeTimeOrGap(newEntry.fastestLapTime),
         ].join('|')
     );
   });
@@ -148,21 +149,76 @@ function describeClassificationDifferences(
   };
 }
 
-function sameRaceClassification(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
-  const fingerprint = (race: DetailedRaceResult) => {
-    const entries = Array.isArray(race?.entries) ? race.entries : [];
-    return entries
-      .slice()
-      .sort((left, right) => left.position - right.position)
-      .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
-        [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime].join('|'),
-      )
-      .join('\n');
-  };
-  return fingerprint(a) === fingerprint(b);
+/**
+ * Gap/time strings may differ only by formatting between sources
+ * ("+10.704s" vs "+10.704"). Normalize for comparison so cosmetic drift
+ * never blocks the auto-sync; only the unit suffix "s" is stripped and only
+ * when the rest is a numeric time/gap token ("Finished", "+1 Lap", …
+ * are kept verbatim).
+ */
+export function normalizeTimeOrGap(value?: string): string {
+  const raw = String(value ?? '')
+    .trim()
+    .replace(/\s+/g, ' ');
+  const match = raw.match(/^([+-]?[\d:.]+)s$/i);
+  return match ? match[1] : raw;
 }
 
-function getSyncSignature(results: DetailedRaceResult[]): string {
+function fingerprintRaceEntries(race: DetailedRaceResult): string {
+  const entries = Array.isArray(race?.entries) ? race.entries : [];
+  return entries
+    .slice()
+    .sort((left, right) => left.position - right.position)
+    .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
+      [
+        position,
+        driverId,
+        laps,
+        status,
+        normalizeTimeOrGap(timeOrGap),
+        points,
+        fastestLap,
+        normalizeTimeOrGap(fastestLapTime),
+      ].join('|'),
+    )
+    .join('\n');
+}
+
+function fingerprintSprintEntries(race: DetailedRaceResult): string {
+  const entries = Array.isArray(race?.sprintEntries) ? race.sprintEntries : [];
+  return entries
+    .slice()
+    .sort((left, right) => left.position - right.position)
+    .map(({ position, driverId, points }) => [position, driverId, points].join('|'))
+    .join('\n');
+}
+
+export function sameRaceEntries(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
+  return fingerprintRaceEntries(a) === fingerprintRaceEntries(b);
+}
+
+export function sameSprintEntries(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
+  return fingerprintSprintEntries(a) === fingerprintSprintEntries(b);
+}
+
+function describeSprintDifferences(
+  saved: DetailedRaceResult,
+  incoming: DetailedRaceResult,
+): { previous: string; incoming: string } {
+  const describe = (race: DetailedRaceResult) =>
+    (Array.isArray(race?.sprintEntries) ? race.sprintEntries : [])
+      .slice()
+      .sort((left, right) => left.position - right.position)
+      .slice(0, 8)
+      .map(
+        (entry) =>
+          `Sprint P${entry.position} ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts)`,
+      )
+      .join(' · ');
+  return { previous: describe(saved), incoming: describe(incoming) };
+}
+
+export function getSyncSignature(results: DetailedRaceResult[]): string {
   if (!Array.isArray(results)) return '';
   return JSON.stringify(
     results
@@ -184,13 +240,26 @@ function getSyncSignature(results: DetailedRaceResult[]): string {
               points,
               fastestLap,
               fastestLapTime,
-            }) => [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime],
+            }) => [
+              position,
+              driverId,
+              laps,
+              status,
+              normalizeTimeOrGap(timeOrGap),
+              points,
+              fastestLap,
+              normalizeTimeOrGap(fastestLapTime),
+            ],
           ),
+        sprintEntries: (Array.isArray(race.sprintEntries) ? race.sprintEntries : [])
+          .slice()
+          .sort((left, right) => left.position - right.position)
+          .map(({ position, driverId, points }) => [position, driverId, points]),
       })),
   );
 }
 
-function findSyncDifferences(
+export function findSyncDifferences(
   season: SeasonYear,
   savedResults: DetailedRaceResult[],
   incomingResults: DetailedRaceResult[],
@@ -206,12 +275,26 @@ function findSyncDifferences(
     if (!incoming) continue;
     const saved = savedByRound.get(incoming.round);
     if (saved) {
-      if (!sameRaceClassification(saved, incoming)) {
+      const raceChanged = !sameRaceEntries(saved, incoming);
+      const sprintChanged = !sameSprintEntries(saved, incoming);
+      if (raceChanged) {
         const classification = describeClassificationDifferences(saved, incoming);
         differences.push({
           round: incoming.round,
           grandPrix: incoming.grandPrix,
           ...classification,
+        });
+      }
+      // Sprint-only changes are detected too (even with the main race still
+      // pending) but never gate the sync: they auto-apply below so standings
+      // reflect sprint results immediately.
+      if (sprintChanged) {
+        const sprint = describeSprintDifferences(saved, incoming);
+        differences.push({
+          round: incoming.round,
+          grandPrix: incoming.grandPrix,
+          sprintOnly: true,
+          ...sprint,
         });
       }
       continue;
@@ -260,9 +343,16 @@ function computeInitialStandings(resultsMap: Record<SeasonYear, DetailedRaceResu
 
   try {
     const races2026 = resultsMap?.[2026];
+    const cutoff2026 = BASELINE_CUTOFF_BY_SEASON[2026].completedRounds;
     if (
       Array.isArray(races2026) &&
-      races2026.some((r) => r && r.round > 16 && r.status === 'completed')
+      races2026.some(
+        (r) =>
+          r &&
+          !r.isSynthesized &&
+          r.round > cutoff2026 &&
+          (r.status === 'completed' || (r.sprintEntries?.length || 0) > 0),
+      )
     ) {
       out[2026] = recalculateStandingsFromRaces(
         2026,
@@ -309,13 +399,36 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
       const currentRaces = get().detailedResults[season] || [];
       const syncRes = await syncF1SeasonData(season, currentRaces);
 
+      // Failed or partial sync: keep the saved snapshot untouched (no persist),
+      // only report the status honestly.
+      if (!syncRes.success) {
+        const failMeta: F1SyncMetadata = {
+          lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+          }),
+          syncStatus: 'error',
+          source: syncRes.source,
+          completedRoundsCount: currentRaces.length,
+          message: syncRes.message,
+        };
+        persistSyncMetadata(failMeta);
+        set({ syncMeta: failMeta });
+        return;
+      }
+
       if (syncRes.success) {
         const savedByRound = new Map(
           currentRaces.filter(Boolean).map((race) => [race.round, race]),
         );
+        // Review gate stays race-only: sprint-only changes must keep flowing
+        // so standings reflect sprint results without waiting for the race.
         const hasExistingConflict = syncRes.results.some((incoming) => {
           const saved = savedByRound.get(incoming.round);
-          return saved && !sameRaceClassification(saved, incoming);
+          return saved && !sameRaceEntries(saved, incoming);
         });
 
         const differences = findSyncDifferences(season, currentRaces, syncRes.results);

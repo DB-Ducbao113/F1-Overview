@@ -20,8 +20,42 @@ function boundedInteger(value: unknown, fallback: number, maximum: number): numb
   return Math.min(parsed, maximum);
 }
 
+function readEnv(name: string): string {
+  const proc = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } })
+    .process;
+  return proc?.env?.[name] || '';
+}
+
+function getAllowedOrigins(): string[] {
+  return readEnv('ALLOWED_ORIGINS')
+    .split(',')
+    .map((s: string) => s.trim())
+    .filter((s: string) => s.length > 0);
+}
+
+function isOriginAllowed(origin: string, host: string): boolean {
+  if (!origin) return true; // non-browser or no-Origin request
+  try {
+    if (host && new URL(origin).host === host) return true; // same-origin
+  } catch {
+    return false;
+  }
+  return getAllowedOrigins().includes(origin);
+}
+
 export default async function handler(req: any, res: any) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS is a browser-compatibility mechanism, NOT authentication or quota
+  // protection. Only same-origin and explicitly configured origins pass;
+  // never `*` or `*.vercel.app`.
+  const origin = String(req.headers?.origin || '');
+  const host = String(req.headers?.host || '');
+  res.setHeader('Vary', 'Origin');
+  if (origin) {
+    if (!isOriginAllowed(origin, host)) {
+      return res.status(403).json({ error: 'Origin not allowed' });
+    }
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=86400');
@@ -54,6 +88,12 @@ export default async function handler(req: any, res: any) {
 
     const payload = await upstream.json();
     responseCache.set(cacheKey, { storedAt: now, payload });
+    // Bound memory: serverless instances are ephemeral but enumeration of
+    // offset=0..10000 must not grow the map without limit.
+    if (responseCache.size > 200) {
+      const oldest = responseCache.keys().next();
+      if (!oldest.done) responseCache.delete(oldest.value);
+    }
     res.setHeader('X-Cache', 'MISS');
     return res.status(200).json(payload);
   } catch {

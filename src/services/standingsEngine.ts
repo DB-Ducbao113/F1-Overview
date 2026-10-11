@@ -6,6 +6,7 @@ import {
   TeamId,
 } from '../types';
 import { TEAMS_DATA } from '../data/teams';
+import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 
 // Fallback driver metadata map
 const DRIVER_METADATA: Record<
@@ -168,21 +169,23 @@ export function recalculateStandingsFromRaces(
     });
   }
 
-  // Only races beyond round 16 that are not in the official baseline will contribute additional points
-  // (Rounds 1-16 are already included in the official base points above)
+  // Rounds at or below the baseline cutoff are already included in the official
+  // baseline standings (see BASELINE_CUTOFF_BY_SEASON). Sprint points are added
+  // exactly once, in the sprint loop below — never in the race loop.
+  const cutoff = BASELINE_CUTOFF_BY_SEASON[season]?.completedRounds ?? 16;
   const additionalRaces = (Array.isArray(races) ? races : []).filter(
-    (r) => r && r.status === 'completed' && r.round > 16,
+    (r) => r && !r.isSynthesized && r.round > cutoff,
   );
 
   additionalRaces.forEach((race) => {
-    const entries = Array.isArray(race.entries) ? race.entries : [];
+    const entries = race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
     entries.forEach((entry) => {
       if (!entry) return;
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
       const locked = LOCKED_DRIVERS[entry.driverId];
       if (existingDriver) {
-        existingDriver.points += (entry.points || 0) + (entry.sprintPoints || 0);
+        existingDriver.points += entry.points || 0;
         if (entry.position === 1) existingDriver.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingDriver.podiums += 1;
         existingDriver.teamId = locked?.teamId || entry.teamId;
@@ -201,18 +204,18 @@ export function recalculateStandingsFromRaces(
           driverCode: dMeta.code,
           teamId: locked?.teamId || entry.teamId,
           teamName: locked?.teamName || entry.teamName,
-          points: (entry.points || 0) + (entry.sprintPoints || 0),
+          points: entry.points || 0,
           wins: entry.position === 1 ? 1 : 0,
-          podiums: entry.position <= 3 ? 1 : 0,
+          podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
           countryFlag: dMeta.flag,
         });
       }
 
-      // Constructor points increment
+      // Constructor points increment (race points only; sprint is added once below)
       const teamId = entry.teamId;
       const existingTeam = constructorMap.get(teamId);
       if (existingTeam) {
-        existingTeam.points += (entry.points || 0) + (entry.sprintPoints || 0);
+        existingTeam.points += entry.points || 0;
         if (entry.position === 1) existingTeam.wins += 1;
         if (entry.position >= 1 && entry.position <= 3) existingTeam.podiums += 1;
         constructorMap.set(teamId, existingTeam);
@@ -221,22 +224,130 @@ export function recalculateStandingsFromRaces(
         constructorMap.set(teamId, {
           teamId,
           teamName: teamInfo?.name || entry.teamName,
-          points: (entry.points || 0) + (entry.sprintPoints || 0),
+          points: entry.points || 0,
           wins: entry.position === 1 ? 1 : 0,
-          podiums: entry.position <= 3 ? 1 : 0,
+          podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
+          engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
+        });
+      }
+    });
+
+    // Sprint points are counted exactly once: explicit sprintEntries win when
+    // present, otherwise legacy per-entry sprintPoints are derived. Never both.
+    const explicitSprint = Array.isArray(race.sprintEntries) ? race.sprintEntries : [];
+    const legacySprint =
+      explicitSprint.length === 0
+        ? entries
+            .filter((entry) => entry && entry.sprintPoints)
+            .map((entry) => ({
+              ...entry,
+              points: entry.sprintPoints || 0,
+            }))
+        : [];
+    const sprintEntries = [...explicitSprint, ...legacySprint];
+    sprintEntries.forEach((entry) => {
+      if (!entry) return;
+      const points = entry.points || 0;
+      const locked = LOCKED_DRIVERS[entry.driverId];
+      const existingDriver = driverMap.get(entry.driverId);
+      if (existingDriver) {
+        existingDriver.points += points;
+      } else {
+        const dMeta = DRIVER_METADATA[entry.driverId] || {
+          code: entry.driverCode || 'F1',
+          flag: '🏁',
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
+        };
+        driverMap.set(entry.driverId, {
+          driverId: entry.driverId,
+          driverName: entry.driverName,
+          driverCode: dMeta.code,
+          teamId: locked?.teamId || entry.teamId,
+          teamName: locked?.teamName || entry.teamName,
+          points,
+          wins: 0,
+          podiums: 0,
+          countryFlag: dMeta.flag,
+        });
+      }
+
+      const existingTeam = constructorMap.get(entry.teamId);
+      if (existingTeam) {
+        existingTeam.points += points;
+      } else {
+        const teamInfo = TEAMS_DATA[entry.teamId];
+        constructorMap.set(entry.teamId, {
+          teamId: entry.teamId,
+          teamName: teamInfo?.name || entry.teamName,
+          points,
+          wins: 0,
+          podiums: 0,
           engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
         });
       }
     });
   });
 
-  // Sort and rank drivers: Points DESC -> Wins DESC -> Podiums DESC
+  // FIA countback support: finishing-position histograms over the full Grand
+  // Prix history available in the input (not only rounds past the cutoff).
+  // Rounds missing from the data (e.g. most baseline rounds, which only exist
+  // as totals) contribute through wins/podiums, which are compared BEFORE the
+  // histograms. Ties deeper than the available detail fall back to total
+  // podiums — deterministic, but not claimed to be FIA-exact in that case.
+  const driverHistograms = new Map<string, number[]>();
+  const teamHistograms = new Map<string, number[]>();
+  const tally = (map: Map<string, number[]>, key: string, position: number) => {
+    if (position < 1 || position > 10) return;
+    let hist = map.get(key);
+    if (!hist) {
+      hist = new Array(11).fill(0);
+      map.set(key, hist);
+    }
+    hist[position] += 1;
+  };
+  (Array.isArray(races) ? races : [])
+    .filter((r) => r && !r.isSynthesized)
+    .forEach((race) => {
+      const entries =
+        race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
+      // FIA countback uses Grand Prix finishes only: sprint positions never
+      // decide ties, for drivers or constructors.
+      entries.forEach((entry) => {
+        if (!entry) return;
+        tally(driverHistograms, entry.driverId, entry.position);
+        tally(teamHistograms, entry.teamId, entry.position);
+      });
+    });
+  const zeros = () => new Array(11).fill(0);
+  // Sort: Points DESC -> Wins DESC -> P2 DESC -> ... -> P10 DESC -> Podiums DESC.
+  // Matches the FIA countback order for the available data; where detailed
+  // history is missing, the trailing podiums fallback keeps the order
+  // deterministic without claiming FIA-exactness.
+  const compareCountback = (
+    a: { points: number; wins: number; podiums: number },
+    b: { points: number; wins: number; podiums: number },
+    histA: number[],
+    histB: number[],
+  ): number => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.wins !== a.wins) return b.wins - a.wins;
+    for (let pos = 2; pos <= 10; pos++) {
+      if (histB[pos] !== histA[pos]) return histB[pos] - histA[pos];
+    }
+    return b.podiums - a.podiums;
+  };
+
+  // Sort and rank drivers: Points DESC -> Wins DESC -> P2..P10 DESC -> Podiums DESC
   const rankedDrivers: DriverStanding[] = Array.from(driverMap.values())
-    .sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      return b.podiums - a.podiums;
-    })
+    .sort((a, b) =>
+      compareCountback(
+        a,
+        b,
+        driverHistograms.get(a.driverId) || zeros(),
+        driverHistograms.get(b.driverId) || zeros(),
+      ),
+    )
     .map((item, idx) => {
       const locked = LOCKED_DRIVERS[item.driverId];
       return {
@@ -247,13 +358,16 @@ export function recalculateStandingsFromRaces(
       };
     });
 
-  // Sort and rank constructors: Points DESC -> Wins DESC -> Podiums DESC
+  // Sort and rank constructors: Points DESC -> Wins DESC -> P2..P10 DESC -> Podiums DESC
   const rankedConstructors: ConstructorStanding[] = Array.from(constructorMap.values())
-    .sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      return b.podiums - a.podiums;
-    })
+    .sort((a, b) =>
+      compareCountback(
+        a,
+        b,
+        teamHistograms.get(a.teamId) || zeros(),
+        teamHistograms.get(b.teamId) || zeros(),
+      ),
+    )
     .map((item, idx) => ({
       ...item,
       rank: idx + 1,
