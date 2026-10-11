@@ -117,19 +117,19 @@ function describeClassificationDifferences(
         oldEntry.driverId,
         oldEntry.laps,
         oldEntry.status,
-        oldEntry.timeOrGap,
+        normalizeTimeOrGap(oldEntry.timeOrGap),
         oldEntry.points,
         oldEntry.fastestLap,
-        oldEntry.fastestLapTime,
+        normalizeTimeOrGap(oldEntry.fastestLapTime),
       ].join('|') !==
         [
           newEntry.driverId,
           newEntry.laps,
           newEntry.status,
-          newEntry.timeOrGap,
+          normalizeTimeOrGap(newEntry.timeOrGap),
           newEntry.points,
           newEntry.fastestLap,
-          newEntry.fastestLapTime,
+          normalizeTimeOrGap(newEntry.fastestLapTime),
         ].join('|')
     );
   });
@@ -149,13 +149,37 @@ function describeClassificationDifferences(
   };
 }
 
+/**
+ * Gap/time strings may differ only by formatting between sources
+ * ("+10.704s" vs "+10.704"). Normalize for comparison so cosmetic drift
+ * never blocks the auto-sync; only the unit suffix "s" is stripped and only
+ * when the rest is a numeric time/gap token ("Finished", "+1 Lap", …
+ * are kept verbatim).
+ */
+export function normalizeTimeOrGap(value?: string): string {
+  const raw = String(value ?? '')
+    .trim()
+    .replace(/\s+/g, ' ');
+  const match = raw.match(/^([+-]?[\d:.]+)s$/i);
+  return match ? match[1] : raw;
+}
+
 function fingerprintRaceEntries(race: DetailedRaceResult): string {
   const entries = Array.isArray(race?.entries) ? race.entries : [];
   return entries
     .slice()
     .sort((left, right) => left.position - right.position)
     .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
-      [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime].join('|'),
+      [
+        position,
+        driverId,
+        laps,
+        status,
+        normalizeTimeOrGap(timeOrGap),
+        points,
+        fastestLap,
+        normalizeTimeOrGap(fastestLapTime),
+      ].join('|'),
     )
     .join('\n');
 }
@@ -216,7 +240,16 @@ export function getSyncSignature(results: DetailedRaceResult[]): string {
               points,
               fastestLap,
               fastestLapTime,
-            }) => [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime],
+            }) => [
+              position,
+              driverId,
+              laps,
+              status,
+              normalizeTimeOrGap(timeOrGap),
+              points,
+              fastestLap,
+              normalizeTimeOrGap(fastestLapTime),
+            ],
           ),
         sprintEntries: (Array.isArray(race.sprintEntries) ? race.sprintEntries : [])
           .slice()
