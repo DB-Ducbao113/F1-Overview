@@ -14,7 +14,7 @@ import {
   getSyncSignature,
   normalizeTimeOrGap,
 } from '../store/useChampionshipStore';
-import { syncF1SeasonData } from './f1DataService';
+import { syncF1SeasonData, reconcileSeasonRaces } from './f1DataService';
 
 const emptySource: OpenF1SprintSource = { getFinishedSprintEntries: () => null };
 
@@ -629,6 +629,84 @@ describe('sprint constructor mapping and repeated syncs', () => {
       vi.unstubAllGlobals();
     }
   }, 15000);
+});
+
+describe('reload reconciliation: applied results must survive a refresh', () => {
+  const entry = (position: number, timeOrGap: string) => ({
+    position,
+    driverId: 'russell',
+    driverName: 'George Russell',
+    driverCode: 'RUS',
+    teamId: 'mercedes' as TeamId,
+    teamName: 'Mercedes',
+    laps: 51,
+    status: 'Finished',
+    timeOrGap,
+    points: 25,
+  });
+
+  const baselineRace: DetailedRaceResult = {
+    id: 'race-2026-r15-azerbaijan',
+    season: 2026,
+    round: 15,
+    grandPrix: 'Azerbaijan Grand Prix',
+    officialName: 'AZERBAIJAN GP',
+    circuit: 'Baku City Circuit',
+    date: '26 Sep 2026',
+    status: 'completed',
+    lapsTotal: 51,
+    entries: [entry(1, '+0.196s')],
+  };
+
+  const appliedRace: DetailedRaceResult = {
+    ...baselineRace,
+    entries: [entry(1, '+0.196')],
+    dataUpdatedAt: '2026-10-11T00:00:00.000Z',
+  };
+
+  it('keeps the synced/applied classification instead of rolling back to baseline', () => {
+    const reconciled = reconcileSeasonRaces([baselineRace], [appliedRace]);
+    expect(reconciled).toHaveLength(1);
+    expect(reconciled[0].entries[0].timeOrGap).toBe('+0.196');
+    expect(reconciled[0].dataUpdatedAt).toBe('2026-10-11T00:00:00.000Z');
+  });
+
+  it('still fills rounds the cache has never seen from the baseline', () => {
+    const cachedOnlyRound17: DetailedRaceResult = {
+      ...baselineRace,
+      id: 'race-2026-r17-singapore',
+      round: 17,
+      entries: [entry(1, '1:40:00.000')],
+    };
+    const reconciled = reconcileSeasonRaces([baselineRace], [cachedOnlyRound17]);
+    expect(reconciled.map((race) => race.round)).toEqual([15, 17]);
+    expect(reconciled[0].entries[0].timeOrGap).toBe('+0.196s');
+  });
+
+  it('lets baseline win when the cached round has no classification yet', () => {
+    const emptyShell: DetailedRaceResult = {
+      ...baselineRace,
+      entries: [],
+      status: 'scheduled',
+    };
+    const reconciled = reconcileSeasonRaces([baselineRace], [emptyShell]);
+    expect(reconciled).toHaveLength(1);
+    expect(reconciled[0].entries).toHaveLength(1);
+    expect(reconciled[0].status).toBe('completed');
+  });
+
+  it('keeps cached scheduled shells that the baseline does not cover', () => {
+    const futureShell: DetailedRaceResult = {
+      ...baselineRace,
+      id: 'race-2026-r17-singapore',
+      round: 17,
+      entries: [],
+      status: 'scheduled',
+    };
+    const reconciled = reconcileSeasonRaces([baselineRace], [futureShell]);
+    expect(reconciled.map((race) => race.round)).toEqual([15, 17]);
+    expect(reconciled[1].status).toBe('scheduled');
+  });
 });
 
 describe('sprint points table', () => {

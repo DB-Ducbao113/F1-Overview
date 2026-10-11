@@ -119,27 +119,38 @@ function normalizeRaceResults(races: DetailedRaceResult[]): DetailedRaceResult[]
 
 /**
  * Reconcile baseline static results with dynamic client cache.
- * Baseline static snapshot (maintained in repo) is authoritative.
- * Cached live results supplement any newly completed rounds not yet in baseline.
+ * Cached (synced or user-applied) results win whenever they carry a real
+ * classification — otherwise every reload would silently roll accepted data
+ * back to the static snapshot and re-trigger the sync review banner.
+ * The baseline snapshot only fills rounds the cache has no entries for.
  */
-function reconcileSeasonRaces(
+export function reconcileSeasonRaces(
   baseline: DetailedRaceResult[],
   cached: DetailedRaceResult[],
 ): DetailedRaceResult[] {
   const raceMap = new Map<number, DetailedRaceResult>();
-  for (const race of baseline) {
-    if (race && typeof race.round === 'number') {
-      raceMap.set(race.round, race);
-    }
-  }
+  const hasEntries = (race: DetailedRaceResult | undefined): boolean =>
+    Boolean(race && Array.isArray(race.entries) && race.entries.length > 0);
+
   for (const race of cached) {
     if (
       race &&
       typeof race.round === 'number' &&
       !race.id?.includes('simulated') &&
-      !raceMap.has(race.round)
+      hasEntries(race)
     ) {
       raceMap.set(race.round, race);
+    }
+  }
+  for (const race of baseline) {
+    if (race && typeof race.round === 'number' && !hasEntries(raceMap.get(race.round))) {
+      raceMap.set(race.round, race);
+    }
+  }
+  // Keep cached shells (scheduled rounds, sprint-only bridges) not covered above.
+  for (const race of cached) {
+    if (race && typeof race.round === 'number' && !race.id?.includes('simulated')) {
+      if (!raceMap.has(race.round)) raceMap.set(race.round, race);
     }
   }
   return Array.from(raceMap.values()).sort((a, b) => a.round - b.round);
