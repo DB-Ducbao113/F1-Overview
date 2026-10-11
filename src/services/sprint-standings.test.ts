@@ -350,11 +350,7 @@ describe('sprint points table', () => {
 });
 
 describe('sprint provenance: provisional refresh vs official protection', () => {
-  const prov = (
-    round: number,
-    driverId: string,
-    points: number,
-  ): DetailedRaceResult => ({
+  const prov = (round: number, driverId: string, points: number): DetailedRaceResult => ({
     id: `race-2026-r${round}-sprint-provisional`,
     season: 2026,
     round,
@@ -367,9 +363,16 @@ describe('sprint provenance: provisional refresh vs official protection', () => 
     entries: [],
     sprintEntries: [
       {
-        position: 1, driverId, driverName: driverId, driverCode: 'X',
-        teamId: 'redbull', teamName: 'Red Bull', laps: 19, status: 'Finished',
-        timeOrGap: '', points,
+        position: 1,
+        driverId,
+        driverName: driverId,
+        driverCode: 'X',
+        teamId: 'redbull',
+        teamName: 'Red Bull',
+        laps: 19,
+        status: 'Finished',
+        timeOrGap: '',
+        points,
       },
     ],
     sprintProvenance: 'provisional',
@@ -377,7 +380,11 @@ describe('sprint provenance: provisional refresh vs official protection', () => 
   });
 
   it('replaces saved provisional data after a JSON persist round-trip', () => {
-    const first = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [prov(17, 'verstappen', 8)] });
+    const first = attachOpenF1SprintResults({
+      2024: [],
+      2025: [],
+      2026: [prov(17, 'verstappen', 8)],
+    });
     // Simulate localStorage persist: serialize + parse, then refresh.
     const reloaded = JSON.parse(JSON.stringify(first)) as typeof first;
     const newer: OpenF1SprintSource = {
@@ -400,9 +407,7 @@ describe('sprint provenance: provisional refresh vs official protection', () => 
     };
     const newer: OpenF1SprintSource = {
       getFinishedSprintEntries: (_s, r) =>
-        r === 17
-          ? [{ ...official.sprintEntries![0], driverId: 'hamilton' }]
-          : null,
+        r === 17 ? [{ ...official.sprintEntries![0], driverId: 'hamilton' }] : null,
     };
     const attached = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [official] }, newer);
     const r17 = attached[2026].find((r) => r.round === 17)!;
@@ -415,9 +420,7 @@ describe('sprint provenance: provisional refresh vs official protection', () => 
     delete (legacy as Partial<DetailedRaceResult>).sprintProvenance;
     const newer: OpenF1SprintSource = {
       getFinishedSprintEntries: (_s, r) =>
-        r === 17
-          ? [{ ...legacy.sprintEntries![0], driverId: 'hamilton' }]
-          : null,
+        r === 17 ? [{ ...legacy.sprintEntries![0], driverId: 'hamilton' }] : null,
     };
     const attached = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [legacy] }, newer);
     expect(attached[2026].find((r) => r.round === 17)!.sprintEntries![0].driverId).toBe(
@@ -442,9 +445,16 @@ describe('sprint sync detection without a completed main race', () => {
   });
 
   const sprint = (driverId: string, points: number, position = 1) => ({
-    position, driverId, driverName: driverId, driverCode: 'X',
-    teamId: 'redbull' as const, teamName: 'Red Bull', laps: 19, status: 'Finished',
-    timeOrGap: '', points,
+    position,
+    driverId,
+    driverName: driverId,
+    driverCode: 'X',
+    teamId: 'redbull' as const,
+    teamName: 'Red Bull',
+    laps: 19,
+    status: 'Finished',
+    timeOrGap: '',
+    points,
   });
 
   it('detects sprint-only changes while the race gate stays closed', () => {
@@ -471,9 +481,16 @@ describe('sprint constructor mapping and repeated syncs', () => {
         round === 17
           ? [
               {
-                position: 1, driverId: 'newdriver', driverName: 'New Driver', driverCode: 'NEW',
-                teamId: 'newteam' as unknown as TeamId, teamName: 'New Team 11', laps: 19, status: 'Finished',
-                timeOrGap: '', points: 8,
+                position: 1,
+                driverId: 'newdriver',
+                driverName: 'New Driver',
+                driverCode: 'NEW',
+                teamId: 'newteam' as unknown as TeamId,
+                teamName: 'New Team 11',
+                laps: 19,
+                status: 'Finished',
+                timeOrGap: '',
+                points: 8,
               },
             ]
           : null,
@@ -495,7 +512,13 @@ describe('sprint constructor mapping and repeated syncs', () => {
       SprintResults: [
         {
           position: '1',
-          Driver: { driverId: 'max_verstappen', givenName: 'Max', familyName: 'Verstappen', code: 'VER', permanentNumber: '33' },
+          Driver: {
+            driverId: 'max_verstappen',
+            givenName: 'Max',
+            familyName: 'Verstappen',
+            code: 'VER',
+            permanentNumber: '33',
+          },
           Constructor: { constructorId: 'red_bull', name: 'Red Bull' },
           laps: '19',
           status: 'Finished',
