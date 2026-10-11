@@ -10,6 +10,7 @@ import {
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
 import { DRIVER_STANDINGS_2026 } from '../data/championship/standings';
+import { attachOpenF1SprintResults } from '../data/championship/openF1SprintBridge';
 
 const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v3';
 const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
@@ -152,7 +153,7 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
     const raw = localStorage.getItem(STORAGE_DETAILED_RESULTS_KEY);
     if (raw) {
       const parsed: Record<SeasonYear, DetailedRaceResult[]> = JSON.parse(raw);
-      return {
+      return attachOpenF1SprintResults({
         2024:
           parsed[2024] && parsed[2024].length > 0
             ? normalizeRaceResults(parsed[2024])
@@ -162,12 +163,12 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
           INITIAL_DETAILED_RESULTS[2026] || [],
           normalizeRaceResults(parsed[2026] || []),
         ),
-      };
+      });
     }
   } catch {
     // ignore
   }
-  return INITIAL_DETAILED_RESULTS;
+  return attachOpenF1SprintResults(INITIAL_DETAILED_RESULTS);
 }
 
 export function loadSyncReview(): F1SyncReview | null {
@@ -525,7 +526,10 @@ export async function syncF1SeasonData(
           raceByRound.set(race.round, race);
         }
       }
-      const syncedResults = [...raceByRound.values()].sort((a, b) => a.round - b.round);
+      const syncedResults = attachOpenF1SprintResults({
+        ...INITIAL_DETAILED_RESULTS,
+        [season]: [...raceByRound.values()].sort((a, b) => a.round - b.round),
+      })[season];
 
       return {
         success: true,
