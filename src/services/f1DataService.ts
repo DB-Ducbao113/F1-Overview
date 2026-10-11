@@ -4,7 +4,6 @@ import {
   SeasonYear,
   TeamId,
   F1SyncMetadata,
-  F1SyncReview,
   UNKNOWN_TEAM_ID,
 } from '../types';
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
@@ -182,38 +181,17 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
   return attachOpenF1SprintResults(INITIAL_DETAILED_RESULTS);
 }
 
-export function loadSyncReview(): F1SyncReview | null {
+/**
+ * Remove any leftover interactive-sync review snapshot persisted by older
+ * builds. The sync pipeline now applies reconciled results automatically, so a
+ * stale review must never re-appear or block future syncs.
+ */
+export function clearStaleSyncReview(): void {
   try {
-    const raw = localStorage.getItem(STORAGE_SYNC_REVIEW_KEY);
-    return raw ? (JSON.parse(raw) as F1SyncReview) : null;
-  } catch {
-    return null;
-  }
-}
-
-export function loadDismissedSyncSignature(): string | null {
-  try {
-    return localStorage.getItem(STORAGE_DISMISSED_REVIEW_KEY);
-  } catch {
-    return null;
-  }
-}
-
-export function persistDismissedSyncSignature(signature: string | null): void {
-  try {
-    if (signature) localStorage.setItem(STORAGE_DISMISSED_REVIEW_KEY, signature);
-    else localStorage.removeItem(STORAGE_DISMISSED_REVIEW_KEY);
+    localStorage.removeItem(STORAGE_SYNC_REVIEW_KEY);
+    localStorage.removeItem(STORAGE_DISMISSED_REVIEW_KEY);
   } catch {
     // Continue with in-memory reconciliation if browser storage is unavailable.
-  }
-}
-
-export function persistSyncReview(review: F1SyncReview | null): void {
-  try {
-    if (review) localStorage.setItem(STORAGE_SYNC_REVIEW_KEY, JSON.stringify(review));
-    else localStorage.removeItem(STORAGE_SYNC_REVIEW_KEY);
-  } catch {
-    // Keep the in-memory review available if browser storage is unavailable.
   }
 }
 

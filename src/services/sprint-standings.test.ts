@@ -7,13 +7,6 @@ import {
 } from '../data/championship/openF1SprintBridge';
 import { DetailedRaceResult, DetailedRaceResultEntry, TeamId } from '../types';
 import { recalculateStandingsFromRaces } from './standingsEngine';
-import {
-  sameRaceEntries,
-  sameSprintEntries,
-  findSyncDifferences,
-  getSyncSignature,
-  normalizeTimeOrGap,
-} from '../store/useChampionshipStore';
 import { syncF1SeasonData, reconcileSeasonRaces } from './f1DataService';
 
 const emptySource: OpenF1SprintSource = { getFinishedSprintEntries: () => null };
@@ -427,116 +420,6 @@ describe('sprint provenance: provisional refresh vs official protection', () => 
     expect(attached[2026].find((r) => r.round === 17)!.sprintEntries![0].driverId).toBe(
       'verstappen',
     );
-  });
-});
-
-describe('sprint sync detection without a completed main race', () => {
-  const shell = (sprintEntries: DetailedRaceResult['sprintEntries']): DetailedRaceResult => ({
-    id: 'race-2026-r17-singapore',
-    season: 2026,
-    round: 17,
-    grandPrix: 'Singapore Grand Prix',
-    officialName: 'Singapore Grand Prix',
-    circuit: 'Marina Bay',
-    date: '10 Oct 2026',
-    status: 'scheduled',
-    lapsTotal: 62,
-    entries: [],
-    sprintEntries,
-  });
-
-  const sprint = (driverId: string, points: number, position = 1) => ({
-    position,
-    driverId,
-    driverName: driverId,
-    driverCode: 'X',
-    teamId: 'redbull' as const,
-    teamName: 'Red Bull',
-    laps: 19,
-    status: 'Finished',
-    timeOrGap: '',
-    points,
-  });
-
-  it('detects sprint-only changes while the race gate stays closed', () => {
-    const saved = shell([sprint('verstappen', 8)]);
-    const incoming = shell([sprint('hamilton', 8)]);
-    // Race entries identical (both empty) → no review gate.
-    expect(sameRaceEntries(saved, incoming)).toBe(true);
-    // Sprint change detected and fingerprinted.
-    expect(sameSprintEntries(saved, incoming)).toBe(false);
-    expect(getSyncSignature([saved])).not.toBe(getSyncSignature([incoming]));
-    const diffs = findSyncDifferences(2026, [saved], [incoming]);
-    expect(diffs.some((d) => d.round === 17 && d.sprintOnly)).toBe(true);
-    expect(diffs.some((d) => d.round === 17 && !d.sprintOnly)).toBe(false);
-  });
-});
-
-describe('cosmetic gap-format drift must not gate the sync', () => {
-  const entry = (
-    position: number,
-    driverId: string,
-    points: number,
-    timeOrGap: string,
-  ): DetailedRaceResultEntry => ({
-    position,
-    driverId,
-    driverName: driverId,
-    driverCode: 'X',
-    teamId: 'redbull',
-    teamName: 'Red Bull',
-    laps: 51,
-    status: 'Finished',
-    timeOrGap,
-    points,
-  });
-  const race = (timeSuffix: string, nameStyle: 'short' | 'full'): DetailedRaceResult => ({
-    id: 'race-2026-r15-azerbaijan',
-    season: 2026,
-    round: 15,
-    grandPrix: 'Azerbaijan Grand Prix',
-    officialName: 'Azerbaijan Grand Prix',
-    circuit: 'Baku',
-    date: '28 Sep 2026',
-    status: 'completed',
-    lapsTotal: 51,
-    entries: [
-      entry(2, 'verstappen', 18, `+0.196${timeSuffix}`),
-      entry(3, 'hadjar', 15, `+10.704${timeSuffix}`),
-      entry(4, 'leclerc', 12, `+14.136${timeSuffix}`),
-      entry(5, 'antonelli', 10, `+14.512${timeSuffix}`),
-    ].map((e) =>
-      nameStyle === 'full' && e.driverId === 'antonelli'
-        ? { ...e, driverName: 'Andrea Kimi Antonelli' }
-        : e,
-    ),
-    sprintEntries: [],
-  });
-
-  it('treats "+10.704s" and "+10.704" (and driver-name style) as identical', () => {
-    const saved = race('s', 'short');
-    const incoming = race('', 'full');
-    expect(sameRaceEntries(saved, incoming)).toBe(true);
-    expect(getSyncSignature([saved])).toBe(getSyncSignature([incoming]));
-    expect(findSyncDifferences(2026, [saved], [incoming])).toEqual([]);
-  });
-
-  it('still gates when points or position actually change', () => {
-    const saved = race('s', 'short');
-    const incoming = race('', 'short');
-    const realChange: DetailedRaceResult = {
-      ...incoming,
-      entries: incoming.entries.map((e) => (e.position === 3 ? { ...e, points: 14 } : e)),
-    };
-    expect(sameRaceEntries(saved, realChange)).toBe(false);
-    expect(findSyncDifferences(2026, [saved], [realChange]).length).toBeGreaterThan(0);
-  });
-
-  it('keeps status strings like "Finished" verbatim', () => {
-    expect(normalizeTimeOrGap('Finished')).toBe('Finished');
-    expect(normalizeTimeOrGap('+1 Lap')).toBe('+1 Lap');
-    expect(normalizeTimeOrGap('1:33:29.182')).toBe('1:33:29.182');
-    expect(normalizeTimeOrGap('+10.704s')).toBe('+10.704');
   });
 });
 

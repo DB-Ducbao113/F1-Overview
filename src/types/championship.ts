@@ -150,25 +150,9 @@ export interface DetailedRaceResult {
   isSynthesized?: boolean;
 }
 
-export interface F1ResultDifference {
-  round: number;
-  grandPrix: string;
-  previous: string;
-  incoming: string;
-  /** Sprint-only change (main-race entries untouched): auto-applied, never gates review. */
-  sprintOnly?: boolean;
-}
-
-export interface F1SyncReview {
-  season: SeasonYear;
-  results: DetailedRaceResult[];
-  differences: F1ResultDifference[];
-  source: string;
-}
-
 export interface F1SyncMetadata {
   lastSyncTimestamp: string;
-  syncStatus: 'idle' | 'syncing' | 'success' | 'review' | 'error';
+  syncStatus: 'idle' | 'syncing' | 'success' | 'error';
   source: string;
   completedRoundsCount: number;
   message?: string;
