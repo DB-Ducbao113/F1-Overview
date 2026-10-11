@@ -74,7 +74,14 @@ async function fetchText(url, attempt = 0) {
     headers: { Accept: 'application/json', 'User-Agent': USER_AGENT },
     signal: AbortSignal.timeout(25_000),
   });
-  if ((response.status === 429 || response.status >= 500) && attempt < 3) {
+  // 403 from F1's bot protection is transient (same request succeeds on
+  // retry), so treat it like other retryable statuses with bounded backoff.
+  const retryable =
+    response.status === 403 ||
+    response.status === 408 ||
+    response.status === 429 ||
+    response.status >= 500;
+  if (retryable && attempt < 3) {
     await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 1500));
     return fetchText(url, attempt + 1);
   }
@@ -323,6 +330,9 @@ async function run() {
 }
 
 run().catch((error) => {
-  console.error(`[F1 timing] Sync failed: ${error.message}`);
+  const hint = /returned 403/.test(error.message)
+    ? ' (F1 bot protection kept rejecting the request after retries; re-run later or from a different network)'
+    : '';
+  console.error(`[F1 timing] Sync failed: ${error.message}${hint}`);
   process.exit(1);
 });
