@@ -123,15 +123,7 @@ export const F1StartLightsPreloader: React.FC = () => {
                   <i key={line} style={{ '--line': line } as React.CSSProperties} />
                 ))}
               </div>
-              {phase === 'lights-out' ? (
-                <div className="podium-intro__cue" role="status" aria-label={START_LIGHT_CUE}>
-                  <div aria-hidden="true">
-                    <span className="podium-intro__its">IT&apos;S</span>
-                    <strong>LIGHTS OUT.</strong>
-                    <span className="podium-intro__away">AND AWAY WE GO!</span>
-                  </div>
-                </div>
-              ) : (
+              {phase === 'launch' && (
                 <div className="podium-intro__launch-brand" aria-label="PODIUM — Effet de Sol">
                   <strong>
                     PODIUM<span>.</span>
@@ -139,6 +131,20 @@ export const F1StartLightsPreloader: React.FC = () => {
                   <span>EFFET DE SOL</span>
                 </div>
               )}
+              {/* Kept mounted through the launch phase so the cue animates out
+                  instead of vanishing on the phase switch. */}
+              <div
+                className={`podium-intro__cue${phase === 'launch' ? ' is-launching' : ''}`}
+                role="status"
+                aria-label={START_LIGHT_CUE}
+                aria-hidden={phase === 'launch' || undefined}
+              >
+                <div aria-hidden="true">
+                  <span className="podium-intro__its">IT&apos;S</span>
+                  <strong>LIGHTS OUT.</strong>
+                  <span className="podium-intro__away">AND AWAY WE GO!</span>
+                </div>
+              </div>
             </>
           )}
           {phase === 'lights-out' && <div className="podium-intro__flash" aria-hidden="true" />}
