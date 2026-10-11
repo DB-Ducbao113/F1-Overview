@@ -44,6 +44,21 @@ function isKnownTeam(teamId: string): teamId is TeamId {
   return teamId in TEAMS_DATA;
 }
 
+/**
+ * Normalize freshly attached provisional entries: unknown constructors park
+ * under the sentinel (never credited elsewhere), missing points fall back to
+ * the FIA table. Official entries already stored are never rewritten here.
+ */
+function sanitizeSprintEntries(entries: DetailedRaceResultEntry[]): DetailedRaceResultEntry[] {
+  return entries.map((entry) => ({
+    ...entry,
+    teamId: isKnownTeam(entry.teamId) ? entry.teamId : UNKNOWN_TEAM_ID,
+    points: Number.isFinite(entry.points)
+      ? entry.points
+      : sprintPointsForPosition(entry.position),
+  }));
+}
+
 const liveSprintSource: OpenF1SprintSource = {
   getFinishedSprintEntries(season: SeasonYear, round: number) {
     // The committed snapshot only covers 2026.
@@ -96,13 +111,19 @@ function buildSprintShell(
     lapsTotal: cal.laps,
     entries: [],
     sprintEntries,
+    sprintProvenance: 'provisional',
     dataSource: 'OpenF1 live timing (provisional)',
   };
 }
 
 /**
  * Attach provisional OpenF1 sprint results to detailed results.
- * Rounds that already carry official `sprintEntries` are left untouched.
+ * Replacement rule (never lose official data, always refresh provisional):
+ * - existing `sprintProvenance === 'official'` → keep (official wins).
+ * - existing marker absent + non-empty entries → keep (pre-marker data is
+ *   treated as official/legacy and preserved).
+ * - otherwise (absent marker with empty entries, or `'provisional'`) →
+ *   replace with the current source so corrections propagate.
  */
 export function attachOpenF1SprintResults(
   detailed: Record<SeasonYear, DetailedRaceResult[]>,
@@ -125,12 +146,21 @@ export function attachOpenF1SprintResults(
       .sort((a, b) => a - b)
       .map((round) => {
         const existing = byRound.get(round);
-        if (existing && existing.sprintEntries && existing.sprintEntries.length > 0) {
+        if (
+          existing &&
+          existing.sprintEntries &&
+          existing.sprintEntries.length > 0 &&
+          (existing.sprintProvenance === 'official' || !existing.sprintProvenance)
+        ) {
           return existing;
         }
-        const entries = source.getFinishedSprintEntries(season, round) || [];
+        const raw = source.getFinishedSprintEntries(season, round) || [];
+        // No sprint data: leave the stored round untouched (no empty arrays,
+        // no misleading markers).
+        if (raw.length === 0) return existing || null;
+        const entries = sanitizeSprintEntries(raw);
         if (existing) {
-          return { ...existing, sprintEntries: entries };
+          return { ...existing, sprintEntries: entries, sprintProvenance: 'provisional' as const };
         }
         return buildSprintShell(season, round, entries);
       })

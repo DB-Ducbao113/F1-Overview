@@ -460,19 +460,28 @@ export async function syncF1SeasonData(
             gridPosition: parseInt(res.grid, 10) || undefined,
           }),
         );
+        const savedRace = savedByRound.get(parseInt(race.round, 10));
         const sprintEntries =
           fetchedSprintEntries.length > 0
             ? fetchedSprintEntries
-            : savedByRound.get(parseInt(race.round, 10))?.sprintEntries ||
-              savedByRound
-                .get(parseInt(race.round, 10))
-                ?.entries.filter((entry) => entry.sprintPoints)
+            : savedRace?.sprintEntries ||
+              savedRace?.entries
+                .filter((entry) => entry.sprintPoints)
                 .map((entry) => ({
                   ...entry,
                   points: entry.sprintPoints || 0,
                   sprintPoints: undefined,
                 })) ||
               [];
+        // Provenance for the attach step: freshly fetched entries are
+        // official; reused saved entries keep their marker (provisional saved
+        // data stays replaceable, official saved data stays protected).
+        const sprintProvenance =
+          fetchedSprintEntries.length > 0
+            ? ('official' as const)
+            : sprintEntries.length > 0
+              ? (savedRace?.sprintProvenance ?? ('provisional' as const))
+              : undefined;
         const round = parseInt(race.round, 10);
         if (!Number.isFinite(round)) return null;
 
@@ -511,6 +520,7 @@ export async function syncF1SeasonData(
             : undefined,
           entries,
           sprintEntries,
+          sprintProvenance,
         };
       });
 

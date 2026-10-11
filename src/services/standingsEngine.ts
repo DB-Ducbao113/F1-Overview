@@ -289,10 +289,12 @@ export function recalculateStandingsFromRaces(
     });
   });
 
-  // FIA countback support: finishing-position histograms over the
-  // additionally processed races. Baseline-era detail is unavailable, so
-  // baseline history is represented only through wins/podiums totals (which
-  // are compared before the histograms). Documented limitation, not a guess.
+  // FIA countback support: finishing-position histograms over the full Grand
+  // Prix history available in the input (not only rounds past the cutoff).
+  // Rounds missing from the data (e.g. most baseline rounds, which only exist
+  // as totals) contribute through wins/podiums, which are compared BEFORE the
+  // histograms. Ties deeper than the available detail fall back to total
+  // podiums — deterministic, but not claimed to be FIA-exact in that case.
   const driverHistograms = new Map<string, number[]>();
   const teamHistograms = new Map<string, number[]>();
   const tally = (map: Map<string, number[]>, key: string, position: number) => {
@@ -304,21 +306,24 @@ export function recalculateStandingsFromRaces(
     }
     hist[position] += 1;
   };
-  additionalRaces.forEach((race) => {
-    const entries = race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
-    // FIA countback uses Grand Prix finishes only: sprint positions never
-    // decide ties, for drivers or constructors.
-    entries.forEach((entry) => {
-      if (!entry) return;
-      tally(driverHistograms, entry.driverId, entry.position);
-      tally(teamHistograms, entry.teamId, entry.position);
+  (Array.isArray(races) ? races : [])
+    .filter((r) => r && !r.isSynthesized)
+    .forEach((race) => {
+      const entries =
+        race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
+      // FIA countback uses Grand Prix finishes only: sprint positions never
+      // decide ties, for drivers or constructors.
+      entries.forEach((entry) => {
+        if (!entry) return;
+        tally(driverHistograms, entry.driverId, entry.position);
+        tally(teamHistograms, entry.teamId, entry.position);
+      });
     });
-  });
   const zeros = () => new Array(11).fill(0);
   // Sort: Points DESC -> Wins DESC -> P2 DESC -> ... -> P10 DESC -> Podiums DESC.
-  // Matches the FIA countback order for the available data; baseline-era
-  // detail beyond wins/podiums is not recorded anywhere, so ties that deep
-  // fall back to total podiums.
+  // Matches the FIA countback order for the available data; where detailed
+  // history is missing, the trailing podiums fallback keeps the order
+  // deterministic without claiming FIA-exactness.
   const compareCountback = (
     a: { points: number; wins: number; podiums: number },
     b: { points: number; wins: number; podiums: number },

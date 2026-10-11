@@ -149,21 +149,52 @@ function describeClassificationDifferences(
   };
 }
 
-function sameRaceClassification(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
-  const fingerprint = (race: DetailedRaceResult) => {
-    const entries = Array.isArray(race?.entries) ? race.entries : [];
-    return entries
-      .slice()
-      .sort((left, right) => left.position - right.position)
-      .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
-        [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime].join('|'),
-      )
-      .join('\n');
-  };
-  return fingerprint(a) === fingerprint(b);
+function fingerprintRaceEntries(race: DetailedRaceResult): string {
+  const entries = Array.isArray(race?.entries) ? race.entries : [];
+  return entries
+    .slice()
+    .sort((left, right) => left.position - right.position)
+    .map(({ position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime }) =>
+      [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime].join('|'),
+    )
+    .join('\n');
 }
 
-function getSyncSignature(results: DetailedRaceResult[]): string {
+function fingerprintSprintEntries(race: DetailedRaceResult): string {
+  const entries = Array.isArray(race?.sprintEntries) ? race.sprintEntries : [];
+  return entries
+    .slice()
+    .sort((left, right) => left.position - right.position)
+    .map(({ position, driverId, points }) => [position, driverId, points].join('|'))
+    .join('\n');
+}
+
+export function sameRaceEntries(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
+  return fingerprintRaceEntries(a) === fingerprintRaceEntries(b);
+}
+
+export function sameSprintEntries(a: DetailedRaceResult, b: DetailedRaceResult): boolean {
+  return fingerprintSprintEntries(a) === fingerprintSprintEntries(b);
+}
+
+function describeSprintDifferences(
+  saved: DetailedRaceResult,
+  incoming: DetailedRaceResult,
+): { previous: string; incoming: string } {
+  const describe = (race: DetailedRaceResult) =>
+    (Array.isArray(race?.sprintEntries) ? race.sprintEntries : [])
+      .slice()
+      .sort((left, right) => left.position - right.position)
+      .slice(0, 8)
+      .map(
+        (entry) =>
+          `Sprint P${entry.position} ${entry.driverName || 'Unknown'} (${entry.points ?? 0} pts)`,
+      )
+      .join(' · ');
+  return { previous: describe(saved), incoming: describe(incoming) };
+}
+
+export function getSyncSignature(results: DetailedRaceResult[]): string {
   if (!Array.isArray(results)) return '';
   return JSON.stringify(
     results
@@ -187,11 +218,15 @@ function getSyncSignature(results: DetailedRaceResult[]): string {
               fastestLapTime,
             }) => [position, driverId, laps, status, timeOrGap, points, fastestLap, fastestLapTime],
           ),
+        sprintEntries: (Array.isArray(race.sprintEntries) ? race.sprintEntries : [])
+          .slice()
+          .sort((left, right) => left.position - right.position)
+          .map(({ position, driverId, points }) => [position, driverId, points]),
       })),
   );
 }
 
-function findSyncDifferences(
+export function findSyncDifferences(
   season: SeasonYear,
   savedResults: DetailedRaceResult[],
   incomingResults: DetailedRaceResult[],
@@ -207,12 +242,26 @@ function findSyncDifferences(
     if (!incoming) continue;
     const saved = savedByRound.get(incoming.round);
     if (saved) {
-      if (!sameRaceClassification(saved, incoming)) {
+      const raceChanged = !sameRaceEntries(saved, incoming);
+      const sprintChanged = !sameSprintEntries(saved, incoming);
+      if (raceChanged) {
         const classification = describeClassificationDifferences(saved, incoming);
         differences.push({
           round: incoming.round,
           grandPrix: incoming.grandPrix,
           ...classification,
+        });
+      }
+      // Sprint-only changes are detected too (even with the main race still
+      // pending) but never gate the sync: they auto-apply below so standings
+      // reflect sprint results immediately.
+      if (sprintChanged) {
+        const sprint = describeSprintDifferences(saved, incoming);
+        differences.push({
+          round: incoming.round,
+          grandPrix: incoming.grandPrix,
+          sprintOnly: true,
+          ...sprint,
         });
       }
       continue;
@@ -342,9 +391,11 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
         const savedByRound = new Map(
           currentRaces.filter(Boolean).map((race) => [race.round, race]),
         );
+        // Review gate stays race-only: sprint-only changes must keep flowing
+        // so standings reflect sprint results without waiting for the race.
         const hasExistingConflict = syncRes.results.some((incoming) => {
           const saved = savedByRound.get(incoming.round);
-          return saved && !sameRaceClassification(saved, incoming);
+          return saved && !sameRaceEntries(saved, incoming);
         });
 
         const differences = findSyncDifferences(season, currentRaces, syncRes.results);

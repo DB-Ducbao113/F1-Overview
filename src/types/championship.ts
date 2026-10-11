@@ -134,6 +134,13 @@ export interface DetailedRaceResult {
   fastestLap?: { driver: string; team: string; time: string };
   entries: DetailedRaceResultEntry[];
   sprintEntries?: DetailedRaceResultEntry[];
+  /**
+   * Where `sprintEntries` came from. Provisional (OpenF1 live timing) data
+   * may be replaced by newer provisional data or by official synced data;
+   * official data is never overwritten by provisional data. Races written
+   * before this marker existed are treated as official (preserved).
+   */
+  sprintProvenance?: 'official' | 'provisional';
   dataSource?: string;
   dataUpdatedAt?: string;
   /**
@@ -148,6 +155,8 @@ export interface F1ResultDifference {
   grandPrix: string;
   previous: string;
   incoming: string;
+  /** Sprint-only change (main-race entries untouched): auto-applied, never gates review. */
+  sprintOnly?: boolean;
 }
 
 export interface F1SyncReview {

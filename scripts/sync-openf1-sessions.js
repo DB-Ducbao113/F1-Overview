@@ -119,7 +119,8 @@ async function fetchStream(sessionPath, fileName) {
 
 function teamId(name) {
   const normalized = String(name || '').toLowerCase();
-  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'redbull';
+  // Never credit an unmapped constructor to another team: unknown stays unknown.
+  return TEAM_IDS.find(([token]) => normalized.includes(token))?.[1] || 'unknown';
 }
 
 function profile(number, driver) {

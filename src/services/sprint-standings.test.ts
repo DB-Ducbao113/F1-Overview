@@ -1,12 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, afterEach } from 'vitest';
 import { DRIVER_STANDINGS_2026, CONSTRUCTOR_STANDINGS_2026 } from '../data/championship/standings';
 import {
   attachOpenF1SprintResults,
   sprintPointsForPosition,
   OpenF1SprintSource,
 } from '../data/championship/openF1SprintBridge';
-import { DetailedRaceResult, DetailedRaceResultEntry } from '../types';
+import { DetailedRaceResult, DetailedRaceResultEntry, TeamId } from '../types';
 import { recalculateStandingsFromRaces } from './standingsEngine';
+import {
+  sameRaceEntries,
+  sameSprintEntries,
+  findSyncDifferences,
+  getSyncSignature,
+} from '../store/useChampionshipStore';
+import { syncF1SeasonData } from './f1DataService';
 
 const emptySource: OpenF1SprintSource = { getFinishedSprintEntries: () => null };
 
@@ -329,6 +336,207 @@ describe('sprint standings: FIA countback for ties', () => {
     expect(res.drivers[0].driverId).toBe('aaa');
     expect(res.drivers[1].driverId).toBe('bbb');
   });
+});
+
+describe('sprint points table', () => {
+  it('awards 8..1 for P1..P8 and 0 beyond, preferring official values', () => {
+    expect([1, 2, 3, 4, 5, 6, 7, 8].map((p) => sprintPointsForPosition(p))).toEqual([
+      8, 7, 6, 5, 4, 3, 2, 1,
+    ]);
+    expect(sprintPointsForPosition(9)).toBe(0);
+    expect(sprintPointsForPosition(22)).toBe(0);
+    expect(sprintPointsForPosition(1, 8)).toBe(8);
+  });
+});
+
+describe('sprint provenance: provisional refresh vs official protection', () => {
+  const prov = (
+    round: number,
+    driverId: string,
+    points: number,
+  ): DetailedRaceResult => ({
+    id: `race-2026-r${round}-sprint-provisional`,
+    season: 2026,
+    round,
+    grandPrix: 'Singapore Grand Prix',
+    officialName: 'Singapore Grand Prix',
+    circuit: 'Marina Bay',
+    date: '10 Oct 2026',
+    status: 'scheduled',
+    lapsTotal: 62,
+    entries: [],
+    sprintEntries: [
+      {
+        position: 1, driverId, driverName: driverId, driverCode: 'X',
+        teamId: 'redbull', teamName: 'Red Bull', laps: 19, status: 'Finished',
+        timeOrGap: '', points,
+      },
+    ],
+    sprintProvenance: 'provisional',
+    dataSource: 'OpenF1 live timing (provisional)',
+  });
+
+  it('replaces saved provisional data after a JSON persist round-trip', () => {
+    const first = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [prov(17, 'verstappen', 8)] });
+    // Simulate localStorage persist: serialize + parse, then refresh.
+    const reloaded = JSON.parse(JSON.stringify(first)) as typeof first;
+    const newer: OpenF1SprintSource = {
+      getFinishedSprintEntries: (_s, r) =>
+        r === 17
+          ? [{ ...reloaded[2026][0].sprintEntries![0], driverId: 'hamilton', points: 8 }]
+          : null,
+    };
+    const refreshed = attachOpenF1SprintResults(reloaded, newer);
+    const res = totals(refreshed[2026]);
+    expect(driverPoints(res, 'verstappen')).toBe(baseDriverPoints('verstappen'));
+    expect(driverPoints(res, 'hamilton')).toBe(baseDriverPoints('hamilton') + 8);
+  });
+
+  it('never overwrites marked official entries with provisional data', () => {
+    const official: DetailedRaceResult = {
+      ...prov(17, 'verstappen', 8),
+      sprintProvenance: 'official',
+      dataSource: 'Jolpica F1 API',
+    };
+    const newer: OpenF1SprintSource = {
+      getFinishedSprintEntries: (_s, r) =>
+        r === 17
+          ? [{ ...official.sprintEntries![0], driverId: 'hamilton' }]
+          : null,
+    };
+    const attached = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [official] }, newer);
+    const r17 = attached[2026].find((r) => r.round === 17)!;
+    expect(r17.sprintEntries![0].driverId).toBe('verstappen');
+    expect(r17.sprintProvenance).toBe('official');
+  });
+
+  it('preserves unmarked legacy official entries', () => {
+    const legacy: DetailedRaceResult = { ...prov(17, 'verstappen', 8) };
+    delete (legacy as Partial<DetailedRaceResult>).sprintProvenance;
+    const newer: OpenF1SprintSource = {
+      getFinishedSprintEntries: (_s, r) =>
+        r === 17
+          ? [{ ...legacy.sprintEntries![0], driverId: 'hamilton' }]
+          : null,
+    };
+    const attached = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [legacy] }, newer);
+    expect(attached[2026].find((r) => r.round === 17)!.sprintEntries![0].driverId).toBe(
+      'verstappen',
+    );
+  });
+});
+
+describe('sprint sync detection without a completed main race', () => {
+  const shell = (sprintEntries: DetailedRaceResult['sprintEntries']): DetailedRaceResult => ({
+    id: 'race-2026-r17-singapore',
+    season: 2026,
+    round: 17,
+    grandPrix: 'Singapore Grand Prix',
+    officialName: 'Singapore Grand Prix',
+    circuit: 'Marina Bay',
+    date: '10 Oct 2026',
+    status: 'scheduled',
+    lapsTotal: 62,
+    entries: [],
+    sprintEntries,
+  });
+
+  const sprint = (driverId: string, points: number, position = 1) => ({
+    position, driverId, driverName: driverId, driverCode: 'X',
+    teamId: 'redbull' as const, teamName: 'Red Bull', laps: 19, status: 'Finished',
+    timeOrGap: '', points,
+  });
+
+  it('detects sprint-only changes while the race gate stays closed', () => {
+    const saved = shell([sprint('verstappen', 8)]);
+    const incoming = shell([sprint('hamilton', 8)]);
+    // Race entries identical (both empty) → no review gate.
+    expect(sameRaceEntries(saved, incoming)).toBe(true);
+    // Sprint change detected and fingerprinted.
+    expect(sameSprintEntries(saved, incoming)).toBe(false);
+    expect(getSyncSignature([saved])).not.toBe(getSyncSignature([incoming]));
+    const diffs = findSyncDifferences(2026, [saved], [incoming]);
+    expect(diffs.some((d) => d.round === 17 && d.sprintOnly)).toBe(true);
+    expect(diffs.some((d) => d.round === 17 && !d.sprintOnly)).toBe(false);
+  });
+});
+
+describe('sprint constructor mapping and repeated syncs', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+  it('parks unknown teams under the sentinel without inflating Red Bull', () => {
+    const alien: OpenF1SprintSource = {
+      getFinishedSprintEntries: (_s, round) =>
+        round === 17
+          ? [
+              {
+                position: 1, driverId: 'newdriver', driverName: 'New Driver', driverCode: 'NEW',
+                teamId: 'newteam' as unknown as TeamId, teamName: 'New Team 11', laps: 19, status: 'Finished',
+                timeOrGap: '', points: 8,
+              },
+            ]
+          : null,
+    };
+    const attached = attachOpenF1SprintResults({ 2024: [], 2025: [], 2026: [] }, alien);
+    const entry = attached[2026].find((r) => r.round === 17)!.sprintEntries![0];
+    expect(entry.teamId).toBe('unknown');
+    const res = totals(attached[2026]);
+    expect(teamPoints(res, 'redbull')).toBe(baseTeamPoints('redbull'));
+  });
+
+  it('produces identical totals across repeated official syncs', async () => {
+    const fresh = {
+      round: '17',
+      raceName: 'Singapore Grand Prix',
+      date: '2026-10-11',
+      Circuit: { circuitName: 'Marina Bay', Location: { locality: 'X', country: 'Y' } },
+      Results: [],
+      SprintResults: [
+        {
+          position: '1',
+          Driver: { driverId: 'max_verstappen', givenName: 'Max', familyName: 'Verstappen', code: 'VER', permanentNumber: '33' },
+          Constructor: { constructorId: 'red_bull', name: 'Red Bull' },
+          laps: '19',
+          status: 'Finished',
+          Time: { time: '30:00.000' },
+          points: '8',
+          grid: '1',
+        },
+      ],
+    };
+    const page = (races: unknown[], total: number) => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      json: async () => ({ MRData: { RaceTable: { Races: races }, total: String(total) } }),
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/sprint.json')) return page([fresh], 1);
+        return page([], 0);
+      }),
+    );
+    try {
+      const first = await syncF1SeasonData(2026, []);
+      const second = await syncF1SeasonData(2026, first.results);
+      expect(first.success).toBe(true);
+      expect(second.success).toBe(true);
+      // dataUpdatedAt legitimately refreshes; everything else must be stable.
+      const strip = (results: DetailedRaceResult[]) =>
+        results.map(({ dataUpdatedAt: _t, ...rest }) => rest);
+      expect(strip(second.results)).toEqual(strip(first.results));
+      const a = totals(first.results);
+      const b = totals(second.results);
+      expect(JSON.stringify(b.drivers)).toBe(JSON.stringify(a.drivers));
+      expect(JSON.stringify(b.constructors)).toBe(JSON.stringify(a.constructors));
+      const res = totals(second.results);
+      expect(driverPoints(res, 'verstappen')).toBe(baseDriverPoints('verstappen') + 8);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  }, 15000);
 });
 
 describe('sprint points table', () => {
