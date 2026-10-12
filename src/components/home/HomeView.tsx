@@ -46,7 +46,10 @@ export const HomeView: React.FC = () => {
         .map((race) => race.round),
     );
     const upcomingRounds = CALENDAR_2026.filter(
-      (gp) => gp && !completedResults.has(gp.round) && getCalendarRaceState(gp, scheduleNow) !== 'completed',
+      (gp) =>
+        gp &&
+        !completedResults.has(gp.round) &&
+        getCalendarRaceState(gp, scheduleNow) !== 'completed',
     );
     return (
       upcomingRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'current') ||

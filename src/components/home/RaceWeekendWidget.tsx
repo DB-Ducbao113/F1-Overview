@@ -56,7 +56,10 @@ function formatIctSession(start: Date, lang: 'vi' | 'en') {
   const ictDate = new Date(start.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
 
   return {
-    day: lang === 'vi' ? ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][ictDate.getDay()] : value('weekday'),
+    day:
+      lang === 'vi'
+        ? ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][ictDate.getDay()]
+        : value('weekday'),
     date: `${value('day')}/${value('month')}`,
     time: `${value('hour')}:${value('minute')}`,
   };
@@ -263,7 +266,8 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-studio-400">
                 <span>{lang === 'vi' ? 'Tiến trình tuần đua' : 'Weekend Progress'}</span>
                 <span className="text-f1red font-semibold">
-                  {sessions.filter((s) => now > new Date(s.endIso).getTime()).length} / {sessions.length}
+                  {sessions.filter((s) => now > new Date(s.endIso).getTime()).length} /{' '}
+                  {sessions.length}
                 </span>
               </div>
               <div className="grid grid-cols-5 gap-1.5 h-1.5 w-full">
@@ -316,8 +320,8 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
                       ? 'Cuộc đua chính đang diễn ra · Kết quả sẽ được cập nhật sau phiên'
                       : 'Main race in progress · Results update after the session'
                     : lang === 'vi'
-                    ? 'Phiên đang diễn ra theo lịch · Kết quả cập nhật sau phiên'
-                    : 'Scheduled session in progress · Results available after the session'}
+                      ? 'Phiên đang diễn ra theo lịch · Kết quả cập nhật sau phiên'
+                      : 'Scheduled session in progress · Results available after the session'}
                 </p>
               </div>
 
@@ -402,9 +406,10 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
         <div className="pt-4 border-t border-studio-100 flex flex-wrap items-center justify-between gap-3 pl-2">
           <div className="flex items-center gap-2.5 flex-wrap">
             {sessionCards.map((session) => {
-              const label = lang === 'vi'
-                ? SESSION_CARD_LABELS[session.id].vi
-                : SESSION_CARD_LABELS[session.id].en;
+              const label =
+                lang === 'vi'
+                  ? SESSION_CARD_LABELS[session.id].vi
+                  : SESSION_CARD_LABELS[session.id].en;
               const isRace = session.id === 'race';
               const isSprint = session.id === 'sprint';
               return (

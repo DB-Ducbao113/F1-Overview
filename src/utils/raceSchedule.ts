@@ -37,7 +37,9 @@ function getSessionStart(gp: GrandPrixRound, key: RaceSessionKey): Date | null {
   if (!session || gp.venueUtcOffset === undefined) return null;
 
   const isoDate = session.dateStr.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  const textDate = session.dateStr.match(/^(?:[A-Za-z]{3}\s+)?(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/);
+  const textDate = session.dateStr.match(
+    /^(?:[A-Za-z]{3}\s+)?(\d{1,2})\s+([A-Za-z]{3})(?:\s+(\d{4}))?$/,
+  );
   const dateParts = isoDate
     ? {
         year: Number(isoDate[1]),
