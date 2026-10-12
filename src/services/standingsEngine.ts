@@ -4,6 +4,7 @@ import {
   ConstructorStanding,
   SeasonYear,
   TeamId,
+  UNKNOWN_TEAM_ID,
 } from '../types';
 import { TEAMS_DATA } from '../data/teams';
 import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
@@ -115,8 +116,15 @@ export function recalculateStandingsFromRaces(
     }
   >();
 
+  // Ignore sentinel unknowns so unmatched race records never invent phantom
+  // driver/team standings or points.
+  const canonicalBaseDrivers = baseDrivers.filter((d) => d?.driverId && d.driverId !== 'unknown');
+  const canonicalBaseConstructors = baseConstructors.filter(
+    (c) => c?.teamId && c.teamId !== UNKNOWN_TEAM_ID,
+  );
+
   // Initialize driverMap with existing official baseline standings
-  baseDrivers.forEach((d) => {
+  canonicalBaseDrivers.forEach((d) => {
     const locked = LOCKED_DRIVERS[d.driverId];
     driverMap.set(d.driverId, {
       driverId: d.driverId,
@@ -132,7 +140,7 @@ export function recalculateStandingsFromRaces(
   });
 
   // Initialize constructorMap with existing official baseline standings
-  baseConstructors.forEach((c) => {
+  canonicalBaseConstructors.forEach((c) => {
     constructorMap.set(c.teamId, {
       teamId: c.teamId,
       teamName: c.teamName,
@@ -153,8 +161,11 @@ export function recalculateStandingsFromRaces(
       .filter((r) => r && r.status === 'completed')
       .forEach((r) => {
         (r.entries || []).forEach((e) => {
-          if (e && e.position >= 1 && e.position <= 3) {
+          if (!e || e.position < 1 || e.position > 3) return;
+          if (e.driverId && e.driverId !== 'unknown') {
             racePodiumsByDriver.set(e.driverId, (racePodiumsByDriver.get(e.driverId) || 0) + 1);
+          }
+          if (e.teamId && e.teamId !== UNKNOWN_TEAM_ID) {
             racePodiumsByTeam.set(e.teamId, (racePodiumsByTeam.get(e.teamId) || 0) + 1);
           }
         });
@@ -181,6 +192,8 @@ export function recalculateStandingsFromRaces(
     const entries = race.status === 'completed' && Array.isArray(race.entries) ? race.entries : [];
     entries.forEach((entry) => {
       if (!entry) return;
+      if (!entry.driverId || entry.driverId === 'unknown') return;
+
       // Driver points increment
       const existingDriver = driverMap.get(entry.driverId);
       const locked = LOCKED_DRIVERS[entry.driverId];
@@ -213,22 +226,24 @@ export function recalculateStandingsFromRaces(
 
       // Constructor points increment (race points only; sprint is added once below)
       const teamId = entry.teamId;
-      const existingTeam = constructorMap.get(teamId);
-      if (existingTeam) {
-        existingTeam.points += entry.points || 0;
-        if (entry.position === 1) existingTeam.wins += 1;
-        if (entry.position >= 1 && entry.position <= 3) existingTeam.podiums += 1;
-        constructorMap.set(teamId, existingTeam);
-      } else {
-        const teamInfo = TEAMS_DATA[teamId];
-        constructorMap.set(teamId, {
-          teamId,
-          teamName: teamInfo?.name || entry.teamName,
-          points: entry.points || 0,
-          wins: entry.position === 1 ? 1 : 0,
-          podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
-          engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
-        });
+      if (teamId && teamId !== UNKNOWN_TEAM_ID) {
+        const existingTeam = constructorMap.get(teamId);
+        if (existingTeam) {
+          existingTeam.points += entry.points || 0;
+          if (entry.position === 1) existingTeam.wins += 1;
+          if (entry.position >= 1 && entry.position <= 3) existingTeam.podiums += 1;
+          constructorMap.set(teamId, existingTeam);
+        } else {
+          const teamInfo = TEAMS_DATA[teamId];
+          constructorMap.set(teamId, {
+            teamId,
+            teamName: teamInfo?.name || entry.teamName,
+            points: entry.points || 0,
+            wins: entry.position === 1 ? 1 : 0,
+            podiums: entry.position >= 1 && entry.position <= 3 ? 1 : 0,
+            engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
+          });
+        }
       }
     });
 
@@ -247,6 +262,7 @@ export function recalculateStandingsFromRaces(
     const sprintEntries = [...explicitSprint, ...legacySprint];
     sprintEntries.forEach((entry) => {
       if (!entry) return;
+      if (!entry.driverId || entry.driverId === 'unknown') return;
       const points = entry.points || 0;
       const locked = LOCKED_DRIVERS[entry.driverId];
       const existingDriver = driverMap.get(entry.driverId);
@@ -272,19 +288,21 @@ export function recalculateStandingsFromRaces(
         });
       }
 
-      const existingTeam = constructorMap.get(entry.teamId);
-      if (existingTeam) {
-        existingTeam.points += points;
-      } else {
-        const teamInfo = TEAMS_DATA[entry.teamId];
-        constructorMap.set(entry.teamId, {
-          teamId: entry.teamId,
-          teamName: teamInfo?.name || entry.teamName,
-          points,
-          wins: 0,
-          podiums: 0,
-          engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
-        });
+      if (entry.teamId && entry.teamId !== UNKNOWN_TEAM_ID) {
+        const existingTeam = constructorMap.get(entry.teamId);
+        if (existingTeam) {
+          existingTeam.points += points;
+        } else {
+          const teamInfo = TEAMS_DATA[entry.teamId];
+          constructorMap.set(entry.teamId, {
+            teamId: entry.teamId,
+            teamName: teamInfo?.name || entry.teamName,
+            points,
+            wins: 0,
+            podiums: 0,
+            engine: teamInfo?.powerUnit || 'Hybrid Turbo V6',
+          });
+        }
       }
     });
   });

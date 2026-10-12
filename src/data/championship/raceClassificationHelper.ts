@@ -168,6 +168,7 @@ export function getCompleteRaceClassification(
   const entries: DetailedRaceResultEntry[] = podiumRows.map((row) => {
     const gridDriver = findGridDriver(row.driver, grid);
     const isFl = summary.fastestLap?.driver === row.driver;
+    const isFastestLapAwarded = season < 2025 && isFl;
     return {
       position: row.position,
       driverId: gridDriver?.driverId || 'unknown',
@@ -180,8 +181,8 @@ export function getCompleteRaceClassification(
       status: 'Finished',
       timeOrGap: row.timeOrGap,
       points: row.points ?? FIA_POINTS[row.position - 1],
-      fastestLap: isFl,
-      fastestLapTime: isFl && summary.fastestLap ? summary.fastestLap.time : undefined,
+      fastestLap: isFastestLapAwarded,
+      fastestLapTime: isFastestLapAwarded && summary.fastestLap ? summary.fastestLap.time : undefined,
     };
   });
 
