@@ -27,7 +27,9 @@ export const HotspotSelectorBar: React.FC<HotspotSelectorBarProps> = React.memo(
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300 font-bold flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-amber-400" />
-                  {lang === 'vi' ? '6 LINH KIỆN KỸ THUẬT' : '6 TECHNICAL COMPONENTS'}
+                  {lang === 'vi'
+                    ? `${F1_HOTSPOTS.length} LINH KIỆN KỸ THUẬT`
+                    : `${F1_HOTSPOTS.length} TECHNICAL COMPONENTS`}
                 </span>
                 <span
                   className="w-2 h-2 rounded-full shadow-xs"
@@ -42,7 +44,7 @@ export const HotspotSelectorBar: React.FC<HotspotSelectorBarProps> = React.memo(
             </div>
           </div>
 
-          {/* 6 Component Tabs Grid / Strip */}
+          {/* Component Tabs Grid / Strip */}
           <div className="flex items-center gap-2 overflow-x-auto py-1 custom-scrollbar">
             {F1_HOTSPOTS.map((h, i) => {
               const isSelected = activeHotspot?.id === h.id;

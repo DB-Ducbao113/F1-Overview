@@ -120,7 +120,9 @@ const ACTIVE_2026_DRIVER_IDS = new Set([
 ]);
 
 function mapDriverId(jolpicaId) {
-  return DRIVER_ID_MAP[jolpicaId] || jolpicaId;
+  if (DRIVER_ID_MAP[jolpicaId]) return DRIVER_ID_MAP[jolpicaId];
+  const surname = jolpicaId.split('_').pop();
+  return ACTIVE_2026_DRIVER_IDS.has(surname) ? surname : jolpicaId;
 }
 
 function mapTeamId(constructorId) {

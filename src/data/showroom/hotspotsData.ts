@@ -43,7 +43,7 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     specs: [
       { labelVi: 'Vật liệu chế tạo', labelEn: 'Construction', value: 'Carbon Fiber Pre-preg T1000' },
       { labelVi: 'Lực nén tối đa', labelEn: 'Peak Downforce', value: '~450 kg @ 250 km/h' },
-      { labelVi: 'Chiều rộng tiêu chuẩn', labelEn: 'Regulation Width', value: '2000 mm (FIA 2026)' },
+      { labelVi: 'Chiều rộng tiêu chuẩn', labelEn: 'Regulation Width', value: '1900 mm (FIA 2026)' },
       { labelVi: 'Số tầng cánh (Flaps)', labelEn: 'Cascade Elements', value: '4 Adjustable Elements' },
     ],
     highlightsVi: [
@@ -99,28 +99,28 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     summaryVi: 'Cỗ máy 1000+ mã lực kết hợp động cơ đốt trong V6 Turbo và hệ thống hồi lưu điện năng MGU-K.',
     summaryEn: '1000+ HP hybrid marvel pairing a 1.6L Turbo V6 with an MGU-K regenerative electric motor.',
     descriptionVi:
-      'Power Unit hiện đại của F1 là đỉnh cao hiệu suất nhiệt trên thế giới (vượt ngưỡng 50%). Bao gồm 6 thành phần chính: Động cơ đốt trong (ICE) 1.6L vòng tua 15,000 RPM, Bộ tăng áp đơn Turbocharger, Mô-tơ điện thu hồi động năng MGU-K (120 kW / 160 HP), Mô-tơ điện thu hồi nhiệt năng khí xả MGU-H, Bộ pin lưu trữ năng lượng (Energy Store), và Hộp điều khiển điện tử (Control Electronics).',
+      'Power Unit hiện đại của F1 là đỉnh cao hiệu suất nhiệt trên thế giới (vượt ngưỡng 50%). Bao gồm 5 thành phần chính theo luật 2026 (đã bỏ MGU-H): Động cơ đốt trong (ICE) 1.6L vòng tua 15,000 RPM, Bộ tăng áp đơn Turbocharger, Mô-tơ điện thu hồi động năng MGU-K 350 kW (470 HP), Bộ pin lưu trữ năng lượng (Energy Store), và Hộp điều khiển điện tử (Control Electronics).',
     descriptionEn:
-      'The modern Formula 1 Power Unit achieves world-record thermal efficiency beyond 50%. It comprises six integrated elements: 1.6L Internal Combustion Engine (15,000 RPM), Turbocharger, MGU-K kinetic recuperation motor, MGU-H exhaust heat recovery unit, 4 MJ Lithium Energy Store battery, and Control Electronics.',
+      'The modern Formula 1 Power Unit achieves world-record thermal efficiency beyond 50%. Under 2026 regulations (MGU-H removed) it comprises five integrated elements: 1.6L Internal Combustion Engine (15,000 RPM), Turbocharger, 350 kW MGU-K kinetic recuperation motor, upgraded Energy Store battery, and Control Electronics.',
     imageUrl: '/images/showroom/power_unit.webp',
-    position: [0, 0.62, 0.65],
+    position: [0.95, 0.6, 0.65],
     cameraPos: [1.8, 1.3, 0.5],
     cameraTarget: [0, 0.48, 0.65],
     specs: [
       { labelVi: 'Dung tích & cấu hình', labelEn: 'Displacement', value: '1.6 L, 90° V6 Single Turbo' },
       { labelVi: 'Tổng công suất', labelEn: 'Combined Output', value: '1,050+ Horsepower (BHP)' },
       { labelVi: 'Vòng tua tối đa', labelEn: 'RPM Limit', value: '15,000 RPM' },
-      { labelVi: 'Năng lượng pin ERS', labelEn: 'Battery Deployment', value: '4 MJ per lap (MGU-K)' },
+      { labelVi: 'Năng lượng pin ERS', labelEn: 'Battery Deployment', value: '8.5 MJ per lap (MGU-K, 2026)' },
       { labelVi: 'Hiệu suất nhiệt', labelEn: 'Thermal Efficiency', value: '> 52% (Cao nhất thế giới)' },
     ],
     highlightsVi: [
       'Công nghệ đánh lửa tia nén buồng đốt phụ (Pre-Chamber Ignition TJI) đốt cháy kiệt nhiên liệu.',
-      'Thu hồi điện năng khi phanh lên tới 2 MJ mỗi vòng để phóng ra 160 mã lực điện hỗ trợ tức thì.',
+      'Thu hồi điện năng khi phanh lên tới 8.5 MJ mỗi vòng, mô-tơ MGU-K 350 kW phóng gần 470 mã lực điện hỗ trợ tức thì.',
       'Sử dụng nhiên liệu sinh học 100% bền vững hướng đến tương lai xanh Net Zero.',
     ],
     highlightsEn: [
       'Turbulent Jet Ignition (TJI) pre-chamber system maximizing fuel combustion completeness.',
-      'Harvests up to 2 MJ per lap under braking, deploying 160 electric BHP on corner exit.',
+      'Harvests up to 8.5 MJ per lap under braking, 350 kW MGU-K deploying nearly 470 electric BHP on corner exit.',
       'Transitioning to 100% advanced sustainable drop-in biofuel.',
     ],
   },
@@ -222,6 +222,39 @@ export const F1_HOTSPOTS: HotspotItem[] = [
       'Discs feature over 1,000 precision ventilation holes for rapid thermal relief.',
       'Mandatory aerodynamic wheel rim covers reducing chaotic wheel rim vortices.',
       'Tire degradation curves form the core cornerstone of Grand Prix pit-stop strategy.',
+    ],
+  },
+  {
+    id: 'floor',
+    nameVi: 'Sàn Venturi & Bộ Khuếch Tán',
+    nameEn: 'Venturi Floor & Diffuser',
+    categoryVi: 'Hiệu Ứng Mặt Đất (Ground Effect)',
+    categoryEn: 'Ground Effect',
+    summaryVi: 'Hầm gió Venturi dưới gầm tạo ~60% lực nén, tấm gỗ Jabroc 10mm và đèn mưa FIA ở đuôi xe.',
+    summaryEn: 'Venturi tunnels generate ~60% of total downforce, with the 10mm Jabroc plank and FIA rain light at the tail.',
+    descriptionVi:
+      'Sàn xe hiệu ứng mặt đất là nguồn lực nén lớn nhất của F1 hiện đại. Hai hầm gió Venturi tăng tốc luồng khí dưới gầm, tạo vùng áp suất thấp hút xe xuống mặt đường. Tim gầm là tấm gỗ Jabroc dày 10mm kiểm định độ cao gầm xe, hai bên là các cánh chia gió Strake, phía trên là cánh dầm Beam Wing khuếch đại lực hút của bộ khuếch tán Diffuser. Cụm đèn LED đỏ FIA ở đuôi vừa báo mưa vừa nhấp nháy xanh khi thu hồi năng lượng ERS.',
+    descriptionEn:
+      'The ground-effect floor is the largest downforce source on a modern F1 car. Twin Venturi tunnels accelerate underbody airflow, creating low-pressure suction. A 10mm Jabroc reference plank controls ride height, flanked by diffuser strakes, with the beam wing above amplifying extraction. The FIA LED rain light doubles as a green ERS harvesting indicator.',
+    imageUrl: '/images/showroom/sidepods_cooling.webp',
+    position: [0, 0.25, 1.2],
+    cameraPos: [0, 1.0, 3.4],
+    cameraTarget: [0, 0.3, 1.1],
+    specs: [
+      { labelVi: 'Nguồn lực nén', labelEn: 'Downforce Share', value: '~60% tổng lực nén xe' },
+      { labelVi: 'Tấm tham chiếu gầm', labelEn: 'Reference Plank', value: 'Jabroc 10 mm (FIA)' },
+      { labelVi: 'Đèn an toàn đuôi', labelEn: 'Rear Light', value: 'FIA RL24 LED (Đỏ/Xanh ERS)' },
+      { labelVi: 'Cánh khuếch đại', labelEn: 'Extraction Wing', value: 'Beam Wing kép' },
+    ],
+    highlightsVi: [
+      'Tấm gỗ Jabroc mòn quá 1mm sau chặng đua sẽ khiến xe bị loại khỏi kết quả.',
+      'Các cánh Strake dọc chia luồng khuếch tán, chân gắn guốc titan chống mài mòn.',
+      'Đèn mưa LED đỏ rực khi trời mưa, nhấp nháy xanh khi pin ERS đang sạc.',
+    ],
+    highlightsEn: [
+      'Excessive Jabroc plank wear beyond 1mm means disqualification after the race.',
+      'Longitudinal diffuser strakes with titanium skid shoes preventing wear damage.',
+      'Ruby rain LED glowing red in wet conditions, flashing green while the ERS battery charges.',
     ],
   },
 ];
