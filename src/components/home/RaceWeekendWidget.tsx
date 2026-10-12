@@ -5,24 +5,43 @@ import { GrandPrixRound } from '../../types';
 import { MapPin, Calendar, ArrowRight, Radio, Trophy, CheckCircle2 } from 'lucide-react';
 import { formatDateStr } from '../../utils/dateUtils';
 import { scheduleWallClockSecondTick, tabSync } from '../../lib/live/tabSync';
+import { getSessionTimeRange, RaceSessionKey } from '../../utils/raceSchedule';
 import { Card3DTilt } from '../common/Card3DTilt';
+import { getCalendarBySeason } from '../../data/championship';
 
-interface SingaporeCountdownWidgetProps {
+interface RaceWeekendWidgetProps {
   race: GrandPrixRound;
 }
 
 interface SessionTiming {
-  id: string;
+  id: RaceSessionKey;
   nameVi: string;
   nameEn: string;
   startIso: string;
   endIso: string;
 }
 
-const ICT_DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const SESSION_NAMES: Record<RaceSessionKey, { vi: string; en: string }> = {
+  fp1: { vi: 'Luyện Tập 1 (FP1)', en: 'Practice 1 (FP1)' },
+  fp2: { vi: 'Luyện Tập 2 (FP2)', en: 'Practice 2 (FP2)' },
+  fp3: { vi: 'Luyện Tập 3 (FP3)', en: 'Practice 3 (FP3)' },
+  sprintQualifying: { vi: 'Phân Hạng Sprint', en: 'Sprint Qualifying' },
+  sprint: { vi: 'Đua Sprint', en: 'Sprint Race' },
+  qualifying: { vi: 'Phân Hạng', en: 'Qualifying' },
+  race: { vi: 'Chặng Đua Chính', en: 'Grand Prix Race' },
+};
 
-function formatIctSession(startIso: string, lang: 'vi' | 'en') {
-  const date = new Date(startIso);
+const SESSION_CARD_LABELS: Record<RaceSessionKey, { vi: string; en: string }> = {
+  fp1: { vi: 'Luyện Tập 1', en: 'FP1' },
+  fp2: { vi: 'Luyện Tập 2', en: 'FP2' },
+  fp3: { vi: 'Luyện Tập 3', en: 'FP3' },
+  sprintQualifying: { vi: 'Phân Hạng Sprint', en: 'Sprint Quali' },
+  sprint: { vi: 'Sprint', en: 'Sprint' },
+  qualifying: { vi: 'Phân Hạng', en: 'Qualifying' },
+  race: { vi: 'Đua Chính', en: 'Grand Prix' },
+};
+
+function formatIctSession(start: Date, lang: 'vi' | 'en') {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Asia/Bangkok',
     weekday: 'short',
@@ -31,13 +50,13 @@ function formatIctSession(startIso: string, lang: 'vi' | 'en') {
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
-  }).formatToParts(date);
+  }).formatToParts(start);
   const value = (type: Intl.DateTimeFormatPartTypes) =>
     parts.find((part) => part.type === type)?.value || '';
-  const ictDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+  const ictDate = new Date(start.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
 
   return {
-    day: lang === 'vi' ? ICT_DAY_LABELS[ictDate.getDay()] : value('weekday'),
+    day: lang === 'vi' ? ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][ictDate.getDay()] : value('weekday'),
     date: `${value('day')}/${value('month')}`,
     time: `${value('hour')}:${value('minute')}`,
   };
@@ -73,51 +92,30 @@ const TimeCluster: React.FC<{ value: number; label: string }> = ({ value, label 
   );
 };
 
-export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> = ({ race }) => {
+export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
   const [now, setNow] = useState<number>(() => Date.now());
 
-  // Official Singapore schedule stored with its source offset; the UI always renders UTC+7.
+  // Convert each session from venue-local time for countdown and live-state checks.
   const sessions: SessionTiming[] = useMemo(
-    () => [
-      {
-        id: 'fp1',
-        nameVi: 'Luyện Tập 1 (FP1)',
-        nameEn: 'Practice 1 (FP1)',
-        startIso: '2026-10-09T16:30:00+08:00',
-        endIso: '2026-10-09T17:30:00+08:00',
-      },
-      {
-        id: 'sprintQualifying',
-        nameVi: 'Phân Hạng Sprint (Sprint Shootout)',
-        nameEn: 'Sprint Qualifying',
-        startIso: '2026-10-09T20:30:00+08:00',
-        endIso: '2026-10-09T21:14:00+08:00',
-      },
-      {
-        id: 'sprint',
-        nameVi: 'Đua Nước Rút (Sprint Race)',
-        nameEn: 'Sprint Race',
-        startIso: '2026-10-10T17:00:00+08:00',
-        endIso: '2026-10-10T18:00:00+08:00',
-      },
-      {
-        id: 'qualifying',
-        nameVi: 'Phân Hạng (Qualifying)',
-        nameEn: 'Qualifying Shootout',
-        startIso: '2026-10-10T21:00:00+08:00',
-        endIso: '2026-10-10T22:00:00+08:00',
-      },
-      {
-        id: 'race',
-        nameVi: 'Chặng Đua Chính (Grand Prix)',
-        nameEn: 'Grand Prix Race',
-        startIso: '2026-10-11T20:00:00+08:00',
-        endIso: '2026-10-11T22:00:00+08:00',
-      },
-    ],
-    [],
+    () =>
+      (Object.keys(race.sessions) as RaceSessionKey[])
+        .flatMap((id) => {
+          const range = getSessionTimeRange(race, id);
+          if (!range) return [];
+          return [
+            {
+              id,
+              nameVi: SESSION_NAMES[id].vi,
+              nameEn: SESSION_NAMES[id].en,
+              startIso: range.start.toISOString(),
+              endIso: range.end.toISOString(),
+            },
+          ];
+        })
+        .sort((a, b) => a.startIso.localeCompare(b.startIso)),
+    [race],
   );
 
   // Wall-clock synchronized tick (aligned strictly to :00.000 whole second boundary)
@@ -191,8 +189,10 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const isLive = state === 'live';
   const sessionCards = sessions.map((session) => ({
     ...session,
-    local: formatIctSession(session.startIso, lang),
+    local: formatIctSession(new Date(session.startIso), lang),
   }));
+  const isMainRaceInProgress =
+    activeSession?.id === 'race' && now < new Date(activeSession.endIso).getTime();
 
   return (
     <section className="page-container select-none">
@@ -223,7 +223,13 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                 }`}
               >
                 {isLive
-                  ? '● LIVE RACING'
+                  ? isMainRaceInProgress
+                    ? lang === 'vi'
+                      ? '● ĐUA CHÍNH ĐANG DIỄN RA'
+                      : '● MAIN RACE IN PROGRESS'
+                    : lang === 'vi'
+                      ? '● ĐANG DIỄN RA'
+                      : '● SESSION IN PROGRESS'
                   : lang === 'vi'
                     ? `Chặng ${race.round} · Tuần Lễ Thi Đấu`
                     : `Round ${race.round} · Active Race Weekend`}
@@ -257,7 +263,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
               <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-studio-400">
                 <span>{lang === 'vi' ? 'Tiến trình tuần đua' : 'Weekend Progress'}</span>
                 <span className="text-f1red font-semibold">
-                  {sessions.filter((s) => now > new Date(s.endIso).getTime()).length} / 5
+                  {sessions.filter((s) => now > new Date(s.endIso).getTime()).length} / {sessions.length}
                 </span>
               </div>
               <div className="grid grid-cols-5 gap-1.5 h-1.5 w-full">
@@ -283,11 +289,13 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                 })}
               </div>
               <div className="grid grid-cols-5 text-[9px] text-center font-bold text-studio-400">
-                <span>FP1</span>
-                <span>S-QUALI</span>
-                <span>SPRINT</span>
-                <span>QUALI</span>
-                <span>RACE</span>
+                {sessionCards.map((session) => (
+                  <span key={session.id}>
+                    {lang === 'vi'
+                      ? SESSION_CARD_LABELS[session.id].vi
+                      : SESSION_CARD_LABELS[session.id].en}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -303,14 +311,18 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
                   </span>
                 </div>
                 <p className="text-xs text-studio-600 font-medium">
-                  {lang === 'vi'
+                  {isMainRaceInProgress
+                    ? lang === 'vi'
+                      ? 'Cuộc đua chính đang diễn ra · Kết quả sẽ được cập nhật sau phiên'
+                      : 'Main race in progress · Results update after the session'
+                    : lang === 'vi'
                     ? 'Phiên đang diễn ra theo lịch · Kết quả cập nhật sau phiên'
                     : 'Scheduled session in progress · Results available after the session'}
                 </p>
               </div>
 
               <button
-                onClick={() => navigate('/season/2026?tab=results')}
+                onClick={() => navigate(`/season/${race.season}?tab=results`)}
                 className="group flex items-center gap-2 px-5 py-3 rounded-full bg-studio-950 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-md cursor-pointer shrink-0"
               >
                 <Radio className="w-4 h-4 text-white animate-pulse" />
@@ -376,7 +388,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
               </div>
 
               <button
-                onClick={() => navigate('/season/2026?tab=results')}
+                onClick={() => navigate(`/season/${race.season}?tab=results`)}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-studio-900 hover:bg-f1red text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
                 <Trophy className="w-3.5 h-3.5 text-amber-400" />
@@ -390,18 +402,9 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
         <div className="pt-4 border-t border-studio-100 flex flex-wrap items-center justify-between gap-3 pl-2">
           <div className="flex items-center gap-2.5 flex-wrap">
             {sessionCards.map((session) => {
-              const label =
-                session.id === 'fp1'
-                  ? 'FP1'
-                  : session.id === 'sprintQualifying'
-                    ? 'Sprint Quali'
-                    : session.id === 'sprint'
-                      ? 'Sprint'
-                      : session.id === 'qualifying'
-                        ? lang === 'vi'
-                          ? 'Phân hạng'
-                          : 'Qualifying'
-                        : 'Grand Prix';
+              const label = lang === 'vi'
+                ? SESSION_CARD_LABELS[session.id].vi
+                : SESSION_CARD_LABELS[session.id].en;
               const isRace = session.id === 'race';
               const isSprint = session.id === 'sprint';
               return (
@@ -437,10 +440,14 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
 
           {/* Full Schedule Link */}
           <button
-            onClick={() => navigate('/season/2026?tab=calendar')}
+            onClick={() => navigate(`/season/${race.season}?tab=calendar`)}
             className="px-4 py-2.5 rounded-xl border border-studio-300 hover:border-f1red text-studio-700 hover:text-f1red transition-colors text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer ml-auto"
           >
-            <span>{lang === 'vi' ? 'Lịch 23 Chặng Chi Tiết' : 'Full 23-Race Calendar'}</span>
+            <span>
+              {lang === 'vi'
+                ? `Lịch ${getCalendarBySeason(race.season).length} Chặng Chi Tiết`
+                : `${getCalendarBySeason(race.season).length}-Race Calendar`}
+            </span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

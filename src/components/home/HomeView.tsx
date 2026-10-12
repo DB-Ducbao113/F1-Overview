@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
 import { FullscreenCarStage } from './FullscreenCarStage';
-import { SingaporeCountdownWidget } from './SingaporeCountdownWidget';
+import { RaceWeekendWidget } from './RaceWeekendWidget';
 import { F1NewsTicker } from '../common/F1NewsTicker';
 import { AnimatedStandingsRow } from './AnimatedStandingsRow';
 import { useReveal } from '../../hooks/useReveal';
@@ -13,6 +13,7 @@ import { ArrowRight, Trophy, ShieldCheck, Box } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
 import { Card3DTilt } from '../common/Card3DTilt';
 import { PodiumBrandHero } from './PodiumBrandHero';
+import { getCalendarRaceState } from '../../utils/raceSchedule';
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -25,24 +26,35 @@ export const HomeView: React.FC = () => {
 
   // Show the active race weekend, or the next scheduled round.
   const detailedResultsRaw = useChampionshipStore((state) => state.detailedResults?.[2026]);
+  const [scheduleNow, setScheduleNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const refreshSchedule = () => setScheduleNow(Date.now());
+    const interval = window.setInterval(refreshSchedule, 30_000);
+    document.addEventListener('visibilitychange', refreshSchedule);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', refreshSchedule);
+    };
+  }, []);
 
   const nextRace = useMemo(() => {
     const detailedResults = detailedResultsRaw || [];
-    const completedRoundNumbers = new Set([
-      ...CALENDAR_2026.filter((gp) => gp && gp.status === 'completed').map((gp) => gp.round),
-      ...(Array.isArray(detailedResults) ? detailedResults : [])
+    const completedResults = new Set(
+      (Array.isArray(detailedResults) ? detailedResults : [])
         .filter((race) => race && race.status === 'completed')
         .map((race) => race.round),
-    ]);
+    );
+    const upcomingRounds = CALENDAR_2026.filter(
+      (gp) => gp && !completedResults.has(gp.round) && getCalendarRaceState(gp, scheduleNow) !== 'completed',
+    );
     return (
-      CALENDAR_2026.find(
-        (gp) => gp && gp.status === 'current' && !completedRoundNumbers.has(gp.round),
-      ) ||
-      CALENDAR_2026.find((gp) => gp && !completedRoundNumbers.has(gp.round)) ||
+      upcomingRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'current') ||
+      upcomingRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'upcoming') ||
       CALENDAR_2026[CALENDAR_2026.length - 1] ||
       CALENDAR_2026[0]
     );
-  }, [detailedResultsRaw]);
+  }, [detailedResultsRaw, scheduleNow]);
 
   // Standings for current selected season (synchronized with championship store)
   const currentStandings = useMemo(
@@ -76,7 +88,7 @@ export const HomeView: React.FC = () => {
         </div>
 
         {/* ── 2. Race weekend countdown ── */}
-        <SingaporeCountdownWidget race={nextRace} />
+        <RaceWeekendWidget race={nextRace} />
 
         {/* ── 3. Championship Standings (Official Verified Data) ── */}
         <section ref={standingsRef} className="page-container space-y-6">

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useLayoutEffect, useState } from 'react';
 import {
   Link,
   Navigate,
@@ -90,7 +90,7 @@ function RaceRoute() {
   const season = (validSeason(year) ? Number(year) : 2026) as SeasonYear;
   const raceRound = Number(round);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (validRoute) {
       setSelectedSeason(season);
       setActiveSubTab('results');

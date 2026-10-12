@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getCalendarBySeason } from '../../data/championship';
 import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
 import { QUALIFYING_RESULTS_2026 } from '../../data/championship/qualifyingResults2026';
@@ -23,6 +23,7 @@ import { SeasonYear } from '../../types';
 import { GrandPrixQualifyingData } from '../../types/qualifying';
 import { GrandPrixPracticeData } from '../../types/practice';
 import { Card3DTilt } from '../common/Card3DTilt';
+import { getCalendarRaceState, getSessionTimeRange } from '../../utils/raceSchedule';
 
 const OPENF1_SESSION_RESULTS = openF1SessionResults as {
   practice: Record<number, GrandPrixPracticeData>;
@@ -47,13 +48,29 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
   const activeSeason: SeasonYear = season ?? selectedSeason ?? 2026;
   const calendar = getCalendarBySeason(activeSeason);
   const is2026 = activeSeason === 2026;
+  const [scheduleNow, setScheduleNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const refreshSchedule = () => setScheduleNow(Date.now());
+    const interval = window.setInterval(refreshSchedule, 30_000);
+    document.addEventListener('visibilitychange', refreshSchedule);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', refreshSchedule);
+    };
+  }, []);
 
   const seasonResults = detailedResults[activeSeason] || [];
   const completedRounds = new Set([
-    ...calendar.filter((gp) => gp.status === 'completed').map((gp) => gp.round),
+    ...calendar
+      .filter((gp) => getCalendarRaceState(gp, scheduleNow) === 'completed')
+      .map((gp) => gp.round),
     ...seasonResults.filter((race) => race.status === 'completed').map((race) => race.round),
   ]);
-  const nextRace = calendar.find((gp) => !completedRounds.has(gp.round));
+  const availableRounds = calendar.filter((gp) => !completedRounds.has(gp.round));
+  const nextRace =
+    availableRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'current') ||
+    availableRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'upcoming');
   const sprintCount = calendar.filter((gp) => gp.hasSprint).length;
   // Default to Round 1 so track map is immediately visible above the fold without any scrolling
   const [expandedRound, setExpandedRound] = useState<number | null>(1);
@@ -178,7 +195,8 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
         {calendar.map((gp) => {
           const isExpanded = expandedRound === gp.round;
           const isCompleted = completedRounds.has(gp.round);
-          const isCurrent = gp.status === 'current' && !isCompleted;
+          const raceState = getCalendarRaceState(gp, scheduleNow);
+          const isCurrent = raceState === 'current' && !isCompleted;
           const isNext = gp.round === nextRace?.round;
           const staticPracticeData = is2026 ? PRACTICE_RESULTS_2026[gp.round] : undefined;
           const livePracticeData = is2026 ? OPENF1_SESSION_RESULTS.practice[gp.round] : undefined;
@@ -390,6 +408,12 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                       );
                       const isFinishedRace =
                         isRaceSession && (isCompleted || session.status === 'finished');
+                      const raceRange = isRaceSession ? getSessionTimeRange(gp, 'race') : null;
+                      const isLiveRace =
+                        Boolean(raceRange) &&
+                        scheduleNow >= raceRange!.start.getTime() &&
+                        scheduleNow < raceRange!.end.getTime() &&
+                        !isFinishedRace;
 
                       const isFinished =
                         isFinishedPractice ||
@@ -398,7 +422,11 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                         isFinishedRace ||
                         session.status === 'finished';
 
-                      const sessionStatus = isFinished ? 'finished' : session.status;
+                      const sessionStatus = isFinished
+                        ? 'finished'
+                        : isLiveRace
+                          ? 'live'
+                          : session.status;
 
                       const statusLabel =
                         sessionStatus === 'finished'
