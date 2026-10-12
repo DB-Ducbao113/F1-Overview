@@ -869,11 +869,11 @@ export function generateNoseTexture(
       drawFerrariShield(ctx, 0, 0, 75);
       ctx.restore();
 
-      // HP Title Sponsor blue roundel
+      // Snapdragon (đúng sf24.webp: mũi có Snapdragon, HP chỉ ở nắp máy sau này)
       ctx.save();
       ctx.translate(390, 1280);
       ctx.rotate(-Math.PI / 2);
-      drawHpLogo(ctx, 0, 0, 68);
+      drawSnapdragonLogo(ctx, 0, 0, 40);
       ctx.restore();
 
       // Charles Leclerc #16
@@ -1884,11 +1884,11 @@ export function generateBodyworkTexture(
       ctx.lineTo(1450, 1750);
       ctx.stroke();
 
-      ctx.font = '900 88px "Arial Black", sans-serif';
+      ctx.font = '900 72px "Arial Black", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('aramco', 750, 1865);
+      ctx.fillText('cognizant', 750, 1865);
 
       drawAstonMartinWings(ctx, 1220, 1865, 160);
 
@@ -1942,7 +1942,7 @@ export function generateBodyworkTexture(
       ctx.fill();
 
       ctx.font = '900 100px "Impact", sans-serif';
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#0078d0';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('B W T', 750, 1880);
@@ -2057,11 +2057,11 @@ export function generateBodyworkTexture(
       ctx.lineTo(1450, 1750);
       ctx.stroke();
 
-      ctx.font = '900 88px "Arial Black", sans-serif';
+      ctx.font = '900 56px "Arial Black", sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('KOMATSU', 750, 1865);
+      ctx.fillText('WILLIAMS RACING', 750, 1865);
 
       drawWilliamsLogo(ctx, 1220, 1865, 80);
 
@@ -2270,21 +2270,41 @@ export function generateBodyworkTexture(
 export function generateWingsTexture(
   teamId: TeamId,
   livery: Team3DLivery,
-  _sponsors: TeamSponsorConfig,
+  sponsors?: TeamSponsorConfig,
 ): THREE.CanvasTexture {
   return createUVTexture(1024, 1024, (ctx, w, h) => {
-    const wingBaseColor = livery.wingColor || '#0a0b0e';
     const aeroPaint = livery.bodyColor || '#e8002d';
     const accentPaint = livery.accentColor || '#ffffff';
 
-    // 1. Carbon fiber base weave for aerodynamic wing structure
-    drawCarbonWeave(ctx, w, h, wingBaseColor, 0.16);
+    // 1. Dark carbon base — đúng thực tế (sf24/w15/rb20/mcl38.webp: cánh, treo,
+    // khuếch tán đều là carbon đen, chỉ viền/logo màu đội). Base sáng #1a1e24
+    // thay vì #0a0b0e để không chìm vào nền studio đen, nhưng vẫn là đen.
+    drawCarbonWeave(ctx, w, h, '#1a1e24', 0.22);
 
-    // 2. Front Wing Flap Assembly (UV rows Y: 40..460 and Y: 1720..2020 which map to Front Wing in Primitive 10)
-    // Coated with team signature aerodynamic paint and cascade accent stripes
-    ctx.fillStyle = aeroPaint;
+    // 1b. Rear-zone team tint wash (nhẹ, không lấp carbon đen).
+    const rearBaseGrad = ctx.createLinearGradient(0, 460, 0, 1740);
+    rearBaseGrad.addColorStop(0, `${aeroPaint}2e`);
+    rearBaseGrad.addColorStop(0.5, 'rgba(0,0,0,0.0)');
+    rearBaseGrad.addColorStop(1, 'rgba(0,0,0,0.25)');
+    ctx.fillStyle = rearBaseGrad;
+    ctx.fillRect(0, 460, w, 1280);
+
+    // 1c. TEAM WORDMARK BAND — thin, no black backing plate.
+    // (Removed previous giant black panel: it sampled as black patches on the wing
+    // because front/rear share full UV space — gây vệt đen ở đuôi xe.)
+    // Team name is already painted per-team on flap/endplate islands below.
+
+    // 2. Front Wing Flaps: carbon đen + viền team (đúng ảnh thật: sf24 cánh đen
+    // viền đỏ, w15 cánh đen viền teal, rb20 cánh đen viền đỏ, mcl38 cánh đen viền papaya).
+    ctx.fillStyle = '#15181d';
     ctx.fillRect(0, 40, w, 220);
     ctx.fillRect(0, 1740, w, 180);
+    // Team-color leading-edge trim
+    ctx.fillStyle = aeroPaint;
+    ctx.fillRect(0, 40, w, 10);
+    ctx.fillRect(0, 250, w, 10);
+    ctx.fillRect(0, 1740, w, 10);
+    ctx.fillRect(0, 1910, w, 10);
 
     // Aerodynamic highlight speedline along front wing flaps
     ctx.fillStyle = accentPaint;
@@ -2429,8 +2449,9 @@ export function generateWingsTexture(
       ctx.fillText('PETRONAS', 220, 520);
       ctx.fillText('PETRONAS', 1650, 520);
     } else if (teamId === 'ferrari') {
-      // ── A. UPPER DRS FLAP ──
-      ctx.fillStyle = '#e8002d';
+      // ── A. UPPER DRS FLAP: đen carbon + chữ Ferrari trắng (đúng sf24.webp) ──
+      // Trước sơn đỏ là sai: ảnh thật cánh sau SF-24 nền đen chữ trắng.
+      ctx.fillStyle = '#101216';
       ctx.fillRect(275, 720, 175, 1010);
 
       ctx.fillStyle = '#ffffff';
@@ -2438,8 +2459,8 @@ export function generateWingsTexture(
       ctx.fillStyle = '#ffdf00';
       ctx.fillRect(436, 720, 8, 1010);
 
-      drawFlapBranding(355, 1225, '#e8002d', () => {
-        drawWingtipAccents('#ffdf00', '#ffffff', '#e8002d');
+      drawFlapBranding(355, 1225, '#101216', () => {
+        drawWingtipAccents('#ffdf00', '#ffffff', '#101216');
 
         ctx.font = 'italic 900 96px "Times New Roman", serif';
         ctx.fillStyle = '#ffffff';
@@ -2451,14 +2472,14 @@ export function generateWingsTexture(
         ctx.fillStyle = '#ffdf00';
         ctx.fillText('SCUDERIA FERRARI HP', 0, 44);
 
-        drawDrsBulletPod('#b80022', '#ffdf00');
+        drawDrsBulletPod('#1a1c20', '#ffdf00');
       });
 
-      // ── B. LOWER MAINPLANE ──
-      ctx.fillStyle = '#e8002d';
+      // ── B. LOWER MAINPLANE: đen + Santander trắng ──
+      ctx.fillStyle = '#101216';
       ctx.fillRect(680, 720, 210, 1010);
 
-      drawFlapBranding(785, 1240, '#e8002d', () => {
+      drawFlapBranding(785, 1240, '#101216', () => {
         ctx.font = '900 74px "Arial Black", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
@@ -2469,8 +2490,8 @@ export function generateWingsTexture(
         drawShellLogo(ctx, 380, 0, 44);
       });
 
-      // ── C. ENDPLATES ──
-      ctx.fillStyle = '#e8002d';
+      // ── C. ENDPLATES: đen + Santander/HP (đúng ảnh thật) ──
+      ctx.fillStyle = '#101216';
       ctx.fillRect(1074, 934, 220, 310);
       ctx.fillRect(870, 720, 308, 218);
 
@@ -2507,15 +2528,15 @@ export function generateWingsTexture(
       drawFlapBranding(355, 1225, '#030a1c', () => {
         drawWingtipAccents('#ffce00', '#ed1a3b', '#030a1c');
 
-        ctx.font = '900 96px "Impact", sans-serif';
+        ctx.font = '900 88px "Impact", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('H O N D A', 0, -8);
+        ctx.fillText('O R A C L E', 0, -8);
 
         ctx.font = '900 24px "Arial Black", sans-serif';
-        ctx.fillStyle = '#ed1a3b';
-        ctx.fillText('H R C', 0, 44);
+        ctx.fillStyle = '#ffce00';
+        ctx.fillText('RED BULL RACING', 0, 44);
 
         drawDrsBulletPod('#020612', '#ffce00');
       });
@@ -2525,11 +2546,11 @@ export function generateWingsTexture(
       ctx.fillRect(680, 720, 210, 1010);
 
       drawFlapBranding(785, 1240, '#030a1c', () => {
-        ctx.font = '900 86px "Impact", sans-serif';
+        ctx.font = '900 80px "Impact", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('B Y B I T', 0, 0);
+        ctx.fillText('Red Bull', 0, 0);
 
         drawRedBullChargingBulls(ctx, -380, 0, 85);
         drawRedBullChargingBulls(ctx, 380, 0, 85);
@@ -2558,8 +2579,8 @@ export function generateWingsTexture(
 
       ctx.font = '900 52px "Impact", sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('ORACLE', 220, 520);
-      ctx.fillText('ORACLE', 1650, 520);
+      ctx.fillText('BYBIT', 220, 520);
+      ctx.fillText('BYBIT', 1650, 520);
     } else if (teamId === 'mclaren') {
       // ── A. UPPER DRS FLAP ──
       ctx.fillStyle = '#ff8000';
@@ -2938,23 +2959,23 @@ export function generateWingsTexture(
       ctx.fillText('KICK', 220, 520);
       ctx.fillText('KICK', 1650, 520);
     } else if (teamId === 'haas') {
-      // ── A. UPPER DRS FLAP ──
-      ctx.fillStyle = '#121417';
+      // ── A. UPPER DRS FLAP: đỏ + HAAS trắng (đúng haas.webp) ──
+      ctx.fillStyle = '#e10600';
       ctx.fillRect(275, 720, 175, 1010);
 
-      ctx.fillStyle = '#e10600';
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(426, 720, 18, 1010);
 
-      drawFlapBranding(355, 1225, '#121417', () => {
-        drawWingtipAccents('#ffffff', '#e10600', '#121417');
+      drawFlapBranding(355, 1225, '#e10600', () => {
+        drawWingtipAccents('#ffffff', '#e10600', '#e10600');
 
-        ctx.font = '900 86px "Arial Black", sans-serif';
+        ctx.font = '900 92px "Impact", sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('MoneyGram', 0, 0);
+        ctx.fillText('H A A S', 0, 0);
 
-        drawDrsBulletPod('#e10600', '#ffffff');
+        drawDrsBulletPod('#7a0500', '#ffffff');
       });
 
       // ── B. LOWER MAINPLANE ──
@@ -3071,6 +3092,90 @@ export function generateWingsTexture(
         ctx.fillText(String(teamId).toUpperCase(), 0, 0);
       });
     }
+
+    // ── E. REAR-FACE SAFETY BRANDING (đuôi xe nhìn từ sau) ──
+    // The C42 rear wing / beam-wing rear face can map to gap islands
+    // (X: 450..680, 890..1074 & Y: 460..720). Paint explicit team branding there
+    // so the tail NEVER appears blank/black without team name/logo (fix ảnh 1).
+    // Uses sponsors config when available, falls back to livery team name.
+    {
+      const rearText = (sponsors?.rearWingText || livery.teamName || String(teamId)).toUpperCase();
+      const rearSub = (sponsors?.rearWingSub || '').toUpperCase();
+      const rearAccent = sponsors?.rearWingAccent || livery.accentColor || '#ffffff';
+      // Two vertical rear-face strips covering the inter-flap gaps
+      const strips = [
+        { x: 460, w: 200 },
+        { x: 900, w: 160 },
+      ];
+      strips.forEach(({ x, w: sw }) => {
+        ctx.fillStyle = aeroPaint;
+        ctx.fillRect(x, 470, sw, 240);
+        ctx.fillStyle = rearAccent;
+        ctx.fillRect(x, 690, sw, 12);
+        ctx.save();
+        ctx.translate(x + sw / 2, 590);
+        ctx.rotate(Math.PI / 2);
+        ctx.font = '900 64px "Impact", "Arial Black", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+        ctx.lineWidth = 5;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.strokeText(rearText, 0, rearSub ? -22 : 0);
+        ctx.fillText(rearText, 0, rearSub ? -22 : 0);
+        if (rearSub) {
+          ctx.font = '900 30px "Arial Black", sans-serif';
+          ctx.fillStyle = rearAccent;
+          ctx.fillText(rearSub, 0, 42);
+        }
+        ctx.restore();
+      });
+
+      // Large team emblem on both rear endplate islands so logo is visible from behind.
+      // Coordinates match existing endplate UV islands (1074,934 & 870,720).
+      const drawRearEmblem = (ex: number, ey: number, size: number) => {
+        switch (teamId) {
+          case 'ferrari':
+            drawFerrariShield(ctx, ex, ey, size);
+            break;
+          case 'mercedes':
+            drawMercedesStar(ctx, ex, ey, size * 0.55);
+            break;
+          case 'redbull':
+          case 'racingbulls':
+            drawRedBullChargingBulls(ctx, ex, ey, size * 0.9);
+            break;
+          case 'mclaren':
+            drawMcLarenSpeedmark(ctx, ex, ey, size * 0.8);
+            break;
+          case 'astonmartin':
+            drawAstonMartinWings(ctx, ex, ey, size * 1.1);
+            break;
+          case 'alpine':
+            drawAlpineLogo(ctx, ex, ey, size * 0.7);
+            break;
+          case 'williams':
+            drawWilliamsLogo(ctx, ex, ey, size * 0.7);
+            break;
+          case 'audi':
+            drawAudiFourRings(ctx, ex, ey, size * 1.1);
+            break;
+          case 'haas':
+            drawHaasLogo(ctx, ex, ey, size * 0.7);
+            break;
+          case 'cadillac':
+            drawCadillacCrest(ctx, ex, ey, size * 0.7);
+            break;
+          default:
+            break;
+        }
+      };
+      // Endplate island 1 (1074..1294, 934..1244) — draw emblem above existing small text
+      // Enlarged 2x: previous 72px was sub-pixel at 3-4m camera distance.
+      drawRearEmblem(1184, 985, 150);
+      // Endplate island 2 (870..1178, 720..938) — draw emblem beside existing text
+      drawRearEmblem(930, 830, 124);
+    }
   });
 }
 
@@ -3081,8 +3186,14 @@ export function generateWingsTexture(
  */
 export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THREE.CanvasTexture {
   return createUVTexture(512, 512, (ctx, w, h) => {
-    // Base structural carbon fiber
-    drawCarbonWeave(ctx, w, h, livery.floorColor || '#0a0b0d');
+    // Lightened graphite base — pure '#0a0b0d' vanishes against the black studio floor.
+    // Use mid-gray carbon so Venturi tunnels and strakes keep edge definition.
+    const rawFloor = livery.floorColor || '#0a0b0d';
+    const lightenedFloor =
+      rawFloor.toLowerCase() === '#0a0b0d' || rawFloor.toLowerCase() === '#08090b'
+        ? '#2b313a'
+        : rawFloor;
+    drawCarbonWeave(ctx, w, h, lightenedFloor, 0.28);
 
     ctx.save();
 
@@ -3124,19 +3235,21 @@ export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THRE
       ctx.fillRect(w - 24, y, 12, 18);
     }
 
-    // ── 3. Central FIA Jabroc Beechwood Reference Skid Plank ──
-    const plankX = Math.round(w * 0.45);
-    const plankW = Math.round(w * 0.1);
+    // ── 3. Central FIA Jabroc Reference Plank: thu nhỏ + tối màu ──
+    // Xe thật tấm gỗ chỉ rộng ~10cm ở tim gầm, màu nâu sẫm, hầu như không thấy khi nhìn ngang.
+    // Bản cũ rộng 10% texture + vàng sáng nên lộ thành mảng gỗ to (lỗi ảnh bạn gửi).
+    const plankX = Math.round(w * 0.47);
+    const plankW = Math.round(w * 0.06);
     const plankY = 80;
     const plankH = h - 160;
 
-    // Natural Amber Beechwood Jabroc laminate gradient
+    // Dark walnut thay vì amber sáng
     const plankGrad = ctx.createLinearGradient(plankX, 0, plankX + plankW, 0);
-    plankGrad.addColorStop(0, '#593a1c');
-    plankGrad.addColorStop(0.2, '#7a5229');
-    plankGrad.addColorStop(0.5, '#8c6032');
-    plankGrad.addColorStop(0.8, '#7a5229');
-    plankGrad.addColorStop(1, '#503318');
+    plankGrad.addColorStop(0, '#3d2a14');
+    plankGrad.addColorStop(0.2, '#5a3d20');
+    plankGrad.addColorStop(0.5, '#6b4c28');
+    plankGrad.addColorStop(0.8, '#5a3d20');
+    plankGrad.addColorStop(1, '#33220f');
     ctx.fillStyle = plankGrad;
     ctx.fillRect(plankX, plankY, plankW, plankH);
 
@@ -3150,42 +3263,38 @@ export function generateFloorTexture(teamId: TeamId, livery: Team3DLivery): THRE
       ctx.stroke();
     }
 
-    // ── 4. Machined Golden Titanium Skid Blocks (Front & Rear FIA Wear Indicators) ──
+    // ── 4. Titanium Skid Blocks: thu nhỏ 40%, tối màu, không viền sáng ──
     const drawSkidBlock = (bx: number, by: number, bw: number, bh: number) => {
-      // Gold titanium plate
+      // Dark titanium thay vì vàng chói
       const goldGrad = ctx.createLinearGradient(bx, by, bx + bw, by + bh);
-      goldGrad.addColorStop(0, '#f5d061');
-      goldGrad.addColorStop(0.5, '#d4af37');
-      goldGrad.addColorStop(1, '#9b7d20');
+      goldGrad.addColorStop(0, '#8a7326');
+      goldGrad.addColorStop(0.5, '#6e5c1e');
+      goldGrad.addColorStop(1, '#4a3e14');
       ctx.fillStyle = goldGrad;
       ctx.fillRect(bx, by, bw, bh);
 
-      // Bevel & border
-      ctx.strokeStyle = '#fae596';
-      ctx.lineWidth = 2;
+      // Viền tối
+      ctx.strokeStyle = '#2a2410';
+      ctx.lineWidth = 1.5;
       ctx.strokeRect(bx, by, bw, bh);
 
       // Hex fastener insets
-      ctx.fillStyle = '#22252a';
+      ctx.fillStyle = '#1a1d22';
       const insetOffsets = [
-        [bx + 12, by + bh * 0.5],
-        [bx + bw * 0.5, by + bh * 0.5],
-        [bx + bw - 12, by + bh * 0.5],
+        [bx + 8, by + bh * 0.5],
+        [bx + bw - 8, by + bh * 0.5],
       ];
       insetOffsets.forEach(([fx, fy]) => {
         ctx.beginPath();
-        ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
+        ctx.arc(fx, fy, 3, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 1;
-        ctx.stroke();
       });
     };
 
     // Forward skid block
-    drawSkidBlock(plankX + 6, plankY + 20, plankW - 12, 34);
+    drawSkidBlock(plankX + 4, plankY + 20, plankW - 8, 20);
     // Rearward skid block
-    drawSkidBlock(plankX + 6, plankY + plankH - 54, plankW - 12, 34);
+    drawSkidBlock(plankX + 4, plankY + plankH - 40, plankW - 8, 20);
 
     // Laser-engraved FIA Reference Identification
     ctx.font = 'bold 12px "Courier New", monospace';
@@ -3210,8 +3319,9 @@ export function generateSuspensionMirrorsTexture(
   livery: Team3DLivery,
 ): THREE.CanvasTexture {
   return createUVTexture(512, 512, (ctx, w, h) => {
-    // Base structural carbon weave for suspension arms
-    drawCarbonWeave(ctx, w, h, '#0d0f14');
+    // Carbon đen đúng thực tế (cả 4 ảnh sf24/w15/rb20/mcl38 treo đều đen).
+    // Dùng #1a1e24 thay vì #0d0f14 để không chìm vào nền studio, viền accent giữ thiết kế đội.
+    drawCarbonWeave(ctx, w, h, '#1a1e24', 0.24);
 
     ctx.save();
 
@@ -3237,13 +3347,41 @@ export function generateSuspensionMirrorsTexture(
       ctx.fill();
     };
 
-    // Draw suspension mount bearings
+    // ── 1b. Wishbone fairing stripes: đen + viền accent đội (đúng thực tế) ──
+    const wishbonePaint = '#1a1e24';
+    const wishboneStripe = mirrorAccent;
+    const wishboneBands = [
+      { x: 80, y: 560, w: 340, h: 44 },
+      { x: 80, y: 640, w: 340, h: 44 },
+      { x: w - 420, y: 560, w: 340, h: 44 },
+      { x: w - 420, y: 640, w: 340, h: 44 },
+      { x: 60, y: 760, w: 380, h: 36 },
+      { x: w - 440, y: 760, w: 380, h: 36 },
+    ];
+    wishboneBands.forEach(({ x, y, w: bw, h: bh }) => {
+      const g = ctx.createLinearGradient(x, y, x, y + bh);
+      g.addColorStop(0, wishbonePaint);
+      g.addColorStop(0.75, wishbonePaint);
+      g.addColorStop(1, 'rgba(0,0,0,0.35)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.roundRect(x, y, bw, bh, 10);
+      ctx.fill();
+      // Gloss highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fillRect(x + 8, y + 4, bw - 16, 5);
+      // White pinstripe for definition
+      ctx.fillStyle = wishboneStripe;
+      ctx.fillRect(x + 8, y + bh - 10, bw - 16, 5);
+    });
+
+    // Draw suspension mount bearings (on top of fairings)
     drawTitaniumBearing(160, 520, 24);
     drawTitaniumBearing(240, 680, 20);
     drawTitaniumBearing(w - 160, 520, 24);
     drawTitaniumBearing(w - 240, 680, 20);
 
-    // Suspension Pushrod Team-Colored Aerodynamic Bands
+    // Suspension Pushrod Team-Colored Aerodynamic Bands (kept for compatibility)
     ctx.fillStyle = mirrorAccent;
     ctx.fillRect(140, 600, 220, 10);
     ctx.fillRect(w - 360, 600, 220, 10);
@@ -3352,13 +3490,92 @@ export function generateDiffuserRainLightTexture(
   livery: Team3DLivery,
 ): THREE.CanvasTexture {
   return createUVTexture(512, 512, (ctx, w, h) => {
-    // Base structural carbon weave
-    drawCarbonWeave(ctx, w, h, '#08090c');
+    // Carbon đen đúng thực tế (diffuser/khuếch tán xe thật đều đen).
+    drawCarbonWeave(ctx, w, h, '#1a1e24', 0.24);
 
     ctx.save();
 
     const strakeColor = livery.diffuserAccentColor || livery.accentColor || '#ff0033';
     const rainLightColor = livery.rainLightColor || '#ff0033';
+    const teamPaint = livery.bodyColor || '#e8002d';
+    const teamAccent = livery.accentColor || '#ffffff';
+
+    // ── 0. BEAM-WING / REAR CRASH STRUCTURE TEAM LIVERY BANNER ──
+    // Base is now team paint, so banner uses accent for contrast (vàng/xanh theo đội).
+    ctx.fillStyle = teamAccent;
+    ctx.fillRect(0, 0, w, 110);
+    // Gloss highlight
+    const bannerShade = ctx.createLinearGradient(0, 0, 0, 110);
+    bannerShade.addColorStop(0, 'rgba(255,255,255,0.22)');
+    bannerShade.addColorStop(0.5, 'rgba(255,255,255,0.0)');
+    bannerShade.addColorStop(1, 'rgba(0,0,0,0.35)');
+    ctx.fillStyle = bannerShade;
+    ctx.fillRect(0, 0, w, 110);
+    // Accent pinstripe under banner
+    ctx.fillStyle = teamAccent;
+    ctx.fillRect(0, 110, w, 8);
+    ctx.fillStyle = strakeColor;
+    ctx.fillRect(0, 118, w, 4);
+    // Team name centered on beam-wing banner (dark text on accent for contrast)
+    ctx.font = '900 44px "Impact", "Arial Black", sans-serif';
+    ctx.fillStyle = '#0a0b0d';
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.lineWidth = 3;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const beamTeamName = (livery.teamName || String(teamId)).toUpperCase();
+    ctx.strokeText(beamTeamName, w * 0.5, 58);
+    ctx.fillText(beamTeamName, w * 0.5, 58);
+
+    // Team emblem mini on beam-wing banner (left & right)
+    const drawBeamEmblem = (ex: number) => {
+      switch (teamId) {
+        case 'ferrari':
+          drawFerrariShield(ctx, ex, 58, 52);
+          break;
+        case 'mercedes':
+          drawMercedesStar(ctx, ex, 58, 26);
+          break;
+        case 'redbull':
+        case 'racingbulls':
+          drawRedBullChargingBulls(ctx, ex, 58, 62);
+          break;
+        case 'mclaren':
+          drawMcLarenSpeedmark(ctx, ex, 58, 44);
+          break;
+        case 'astonmartin':
+          drawAstonMartinWings(ctx, ex, 58, 84);
+          break;
+        case 'alpine':
+          drawAlpineLogo(ctx, ex, 58, 40);
+          break;
+        case 'williams':
+          drawWilliamsLogo(ctx, ex, 58, 40);
+          break;
+        case 'audi':
+          drawAudiFourRings(ctx, ex, 58, 72);
+          break;
+        case 'haas':
+          drawHaasLogo(ctx, ex, 58, 44);
+          break;
+        case 'cadillac':
+          drawCadillacCrest(ctx, ex, 58, 44);
+          break;
+        default:
+          break;
+      }
+    };
+    drawBeamEmblem(90);
+    drawBeamEmblem(w - 90);
+
+    // ── 0b. DIFFUSER SIDEWALL TEAM COLOR WASH ──
+    // Paints outer sidewalls so the diffuser reads in team colors, not pure black.
+    ctx.fillStyle = teamPaint;
+    ctx.fillRect(0, 130, 46, h - 260);
+    ctx.fillRect(w - 46, 130, 46, h - 260);
+    ctx.fillStyle = teamAccent;
+    ctx.fillRect(46, 130, 6, h - 260);
+    ctx.fillRect(w - 52, 130, 6, h - 260);
 
     // ── 1. Vertical Diffuser Aerodynamic Strakes with Team Livery Edges ──
     const strakePositions = [140, 280, w - 280, w - 140];
@@ -3491,6 +3708,10 @@ export function generateDiffuserRainLightTexture(
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
     ctx.textAlign = 'center';
     ctx.fillText('FIA HOMOLOGATED RAIN LIGHT · TYPE-RL24', w * 0.5, rlY + rlH + 26);
+    // Team identifier under rain light so rear diffuser always shows constructor
+    ctx.font = '900 26px "Impact", "Arial Black", sans-serif';
+    ctx.fillStyle = teamAccent;
+    ctx.fillText((livery.teamName || String(teamId)).toUpperCase(), w * 0.5, rlY + rlH + 58);
 
     ctx.restore();
   });

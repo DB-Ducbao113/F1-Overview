@@ -37,57 +37,12 @@ const RealF1CarMesh: React.FC<{
   const livery = getTeam3DLivery(teamId);
   const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
 
-  // Clone scene hierarchy and apply procedural aerodynamic flap elevation ("lồi lên")
+  // Clone scene hierarchy (no procedural vertex deformation).
+  // NOTE: DRS flap tilt disabled — previous normalized-coords version stretched
+  // the whole rear wing into long bars (lỗi sinh thêm ở ảnh mới). Model stays pristine.
   const { clonedScene, clonedGeometries } = useMemo(() => {
     const cloned = scene.clone(true);
     const disposableGeometries: THREE.BufferGeometry[] = [];
-
-    // Procedural aerodynamic flap tilt & lift:
-    // Elevates the rear DRS top flap to an aggressive high-downforce attack angle matching real F1 cars,
-    // so the brand name (PETRONAS, Ferrari, HONDA, etc.) is prominently angled towards front/cockpit cameras.
-    cloned.traverse((child: any) => {
-      if (
-        child.isMesh &&
-        (child.material?.name || child.name || '').toLowerCase().includes('005')
-      ) {
-        child.geometry = child.geometry.clone();
-        disposableGeometries.push(child.geometry);
-        const pos = child.geometry.attributes.position;
-        if (pos) {
-          const px0 = -17.4;
-          const pz0 = -6.2;
-          const tiltAngle = 12.5 * (Math.PI / 180); // ~12.5 degrees upward attack angle
-          const liftZ = -0.48; // Negative Z is upward in c42 coordinates
-          const liftX = 0.2; // Slight forward aerodynamic tuck
-
-          for (let i = 0; i < pos.count; i++) {
-            const x = pos.getX(i);
-            const y = pos.getY(i);
-            const z = pos.getZ(i);
-
-            // Target rear wing DRS top flap: x < -17.4, z < -6.1, |y| < 3.85
-            if (x < -17.4 && z < -6.1 && Math.abs(y) < 3.85) {
-              const dx = x - px0;
-              const dz = z - pz0;
-              // Smooth falloff from leading edge pivot so wing stays seamlessly connected
-              const factor = Math.min(1.0, Math.pow(Math.abs(dx) / 1.5, 1.2));
-
-              const rotDx = dx * Math.cos(tiltAngle) - dz * Math.sin(tiltAngle);
-              const rotDz = dx * Math.sin(tiltAngle) + dz * Math.cos(tiltAngle);
-
-              pos.setXYZ(
-                i,
-                px0 + dx * (1 - factor) + (rotDx + liftX) * factor,
-                y,
-                pz0 + dz * (1 - factor) + (rotDz + liftZ) * factor,
-              );
-            }
-          }
-          child.geometry.computeVertexNormals();
-          pos.needsUpdate = true;
-        }
-      }
-    });
 
     return { clonedScene: cloned, clonedGeometries: disposableGeometries };
   }, [scene]);
@@ -211,9 +166,12 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('001')) {
           newMat = new THREE.MeshStandardMaterial({
             map: floorTex,
-            roughness: 0.35,
+            emissive: new THREE.Color('#ffffff'),
+            emissiveMap: floorTex,
+            emissiveIntensity: 0.18,
+            roughness: 0.55,
             metalness: 0.25,
-            envMapIntensity: 1.1,
+            envMapIntensity: 1.6,
           });
         }
         // 5. Suspension Wishbones, Pushrods & Wing Mirrors (003 - Prim 0)
@@ -221,12 +179,15 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('003')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: suspensionMirrorsTex,
+            emissive: new THREE.Color('#ffffff'),
+            emissiveMap: suspensionMirrorsTex,
+            emissiveIntensity: 0.35,
             color: new THREE.Color('#ffffff'),
-            roughness: 0.25,
+            roughness: 0.38,
             metalness: 0.35,
             clearcoat: livery.bodyClearcoat ?? 1.0,
             clearcoatRoughness: 0.08,
-            envMapIntensity: 1.4,
+            envMapIntensity: 2.2,
           });
         }
         // 6. Rear Aero Deflectors & Diffuser (009 - Prim 4)
@@ -234,24 +195,30 @@ const RealF1CarMesh: React.FC<{
         else if (matName.includes('009')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: diffuserRainLightTex,
+            emissive: new THREE.Color('#ffffff'),
+            emissiveMap: diffuserRainLightTex,
+            emissiveIntensity: 0.38,
             color: new THREE.Color('#ffffff'),
-            roughness: 0.3,
+            roughness: 0.45,
             metalness: 0.3,
             clearcoat: 0.4,
             clearcoatRoughness: 0.1,
-            envMapIntensity: 1.3,
+            envMapIntensity: 2.0,
           });
         }
         // 7. Wings Assembly: Front Wing Flaps & Rear Wing (005 - Prim 10)
         else if (matName.includes('005')) {
           newMat = new THREE.MeshPhysicalMaterial({
             map: wingsTex,
+            emissive: new THREE.Color('#ffffff'),
+            emissiveMap: wingsTex,
+            emissiveIntensity: 0.32,
             color: new THREE.Color('#ffffff'),
             roughness: livery.wingRoughness ?? 0.22,
             metalness: livery.wingMetalness ?? 0.25,
             clearcoat: livery.bodyClearcoat ?? 1.0,
             clearcoatRoughness: 0.08,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.15 : 0.5,
+            envMapIntensity: 1.9,
           });
         }
         // 8. Main Bodywork: Sidepods, Engine Cover, Shark Fin & Airbox (004 - Prim 1)

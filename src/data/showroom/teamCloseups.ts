@@ -39,7 +39,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         { labelVi: 'Vật liệu', labelEn: 'Material', value: 'Carbon Pre-preg T1000 & Titanium' },
         { labelVi: 'Lực nén cực đại', labelEn: 'Peak Downforce', value: '460 kg @ 250 km/h' },
         { labelVi: 'Trọng lượng cụm cánh', labelEn: 'Assembly Weight', value: '9.8 kg' },
-        { labelVi: 'Quy chuẩn', labelEn: 'Regulation', value: 'FIA 2026 2000mm Envelope' },
+        { labelVi: 'Quy chuẩn', labelEn: 'Regulation', value: 'FIA 2026 1900mm Envelope' },
       ],
     },
     power_unit: {
@@ -54,15 +54,15 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       highlightsVi: [
         'Buồng đốt phụ TJI (Turbulent Jet Ignition) đạt áp suất nén cực đại trên 300 bar.',
         'Cổ góp xả bằng hợp kim Inconel & Titanium chịu nhiệt độ khí xả trên 1,000°C.',
-        'Mô-tơ điện MGU-K thu hồi 2 MJ điện năng mỗi vòng đua, phóng thêm 160 mã lực tức thì.',
+        'Mô-tơ điện MGU-K 350 kW thu hồi 8.5 MJ điện năng mỗi vòng đua, phóng thêm gần 470 mã lực tức thì.',
       ],
       highlightsEn: [
         'Turbulent Jet Ignition (TJI) combustion chambers operating above 300 bar pressure.',
         'Inconel and titanium exhaust headers built to sustain 1,000°C+ thermal blasts.',
-        'MGU-K motor recuperating 2 MJ per lap, deploying 160 instant electric horsepower.',
+        'MGU-K motor recuperating 8.5 MJ per lap, deploying nearly 470 instant electric horsepower.',
       ],
       specs: [
-        { labelVi: 'Cấu hình', labelEn: 'Layout', value: '1.6L 90° V6 Turbo + MGU-K/H' },
+        { labelVi: 'Cấu hình', labelEn: 'Layout', value: '1.6L 90° V6 Turbo + MGU-K (2026)' },
         { labelVi: 'Tổng công suất', labelEn: 'Peak Output', value: '1,050+ Mã Lực (BHP)' },
         { labelVi: 'Vòng tua tối đa', labelEn: 'RPM Limit', value: '15,000 RPM' },
         { labelVi: 'Hiệu suất nhiệt', labelEn: 'Thermal Efficiency', value: '> 52.4% (Kỷ lục)' },
@@ -212,12 +212,12 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         'Close-up of the McLaren MCL38 engine compartment and overhead airbox featuring Android/Google branding. Houses the Mercedes-AMG M15 1.6L V6 Turbo Hybrid delivering over 1,050 combined horsepower.',
       highlightsVi: [
         'Cấu trúc tách rời Turbo nén và xả (Split-Turbo) đặt gọn trong khoang máy hẹp của McLaren.',
-        'Hệ thống thu hồi động năng MGU-K và pin lưu trữ ERS phóng thêm 160 mã lực tức thì.',
+        'Hệ thống thu hồi động năng MGU-K 350 kW và pin lưu trữ ERS phóng thêm gần 470 mã lực tức thì.',
         'Thân vỏ carbon ôm sát động cơ giảm tối đa lực cản không khí ở tốc độ cao.',
       ],
       highlightsEn: [
         'Pioneering split-turbo layout tightly integrated into McLaren’s ultra-compact chassis.',
-        'MGU-K motor and battery energy store deploying 160 instantaneous electric BHP.',
+        'MGU-K motor and battery energy store deploying nearly 470 instantaneous electric BHP.',
         'Shrink-wrapped carbon engine cover minimizing aerodynamic drag profile.',
       ],
       specs: [
@@ -366,7 +366,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       partCode: 'MB-PU-M15-BRIXWORTH',
       imageUrl: '/images/showroom/closeups/mercedes_power_unit.webp',
       conceptVi:
-        'Cận cảnh cỗ máy Mercedes-AMG M15 chế tác tại Brixworth, vương quốc Anh. Động cơ tăng áp Turbo Hybrid dẫn đầu về độ tin cậy và hiệu suất thu hồi nhiệt năng khí xả MGU-H.',
+        'Cận cảnh cỗ máy Mercedes-AMG M15 chế tác tại Brixworth, vương quốc Anh. Động cơ tăng áp Turbo Hybrid dẫn đầu về độ tin cậy và hiệu suất thu hồi động năng MGU-K 350 kW theo luật 2026 (đã bỏ MGU-H).',
       conceptEn:
         'Detailed engineering cutaway of the Brixworth-built Mercedes-AMG M15 power unit, renowned for unrivaled reliability and thermodynamic energy harvesting.',
       highlightsVi: [
@@ -383,7 +383,7 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         { labelVi: 'Cấu hình', labelEn: 'Engine Type', value: '1.6L 90° V6 Single Turbo Hybrid' },
         { labelVi: 'Công suất', labelEn: 'Total Output', value: '1,050+ HP' },
         { labelVi: 'Địa điểm chế tác', labelEn: 'Origin', value: 'Brixworth, United Kingdom' },
-        { labelVi: 'Dung lượng ERS', labelEn: 'Battery Energy', value: '4 MJ per lap' },
+        { labelVi: 'Dung lượng ERS', labelEn: 'Battery Energy', value: '8.5 MJ per lap (2026)' },
       ],
     },
     halo: {
@@ -702,12 +702,12 @@ function createGenericTeamCloseups(
       conceptEn: `Engineering cutaway of the 1.6L V6 Turbo Hybrid power unit delivering over 1,000 combined horsepower to the ${teamName} ${carModel}.`,
       highlightsVi: [
         'Công nghệ đánh lửa buồng đốt phụ TJI tối ưu hóa từng giọt nhiên liệu sinh học.',
-        'Mô-tơ điện MGU-K phóng thêm 160 mã lực điện tức thì khi ra khỏi góc cua.',
+        'Mô-tơ điện MGU-K 350 kW phóng thêm gần 470 mã lực điện tức thì khi ra khỏi góc cua.',
         'Khung gầm carbon ôm sát khối máy giảm thiểu lực cản khí động.',
       ],
       highlightsEn: [
         'Turbulent Jet Ignition maximizing thermal efficiency with sustainable biofuel.',
-        'MGU-K motor deploying 160 instantaneous electric horsepower on corner exit.',
+        'MGU-K motor deploying nearly 470 instantaneous electric horsepower on corner exit.',
         'Tightly packaged carbon monocoque cell minimizing aerodynamic drag.',
       ],
       specs: [
@@ -821,5 +821,37 @@ export const getTeamComponentCloseUp = (
   hotspotId: string
 ): ComponentCloseUp => {
   const teamMap = TEAM_CLOSEUPS[teamId] || TEAM_CLOSEUPS.ferrari;
+  if (hotspotId === 'floor') {
+    // Tổng hợp từ entry sidepods: tái dùng ảnh sidepods theo đội, 0 ảnh/texture mới (giữ RAM phẳng).
+    const base = teamMap.sidepods;
+    const rawSuffix = base.titleVi.includes('·') ? base.titleVi.split('·').slice(1).join('·').trim() : teamId;
+    const teamSuffix = rawSuffix.replace(/\s*Cận Cảnh\s*$/, '').trim() || rawSuffix;
+    return {
+      titleVi: `Sàn Venturi & Diffuser Cận Cảnh · ${teamSuffix}`,
+      titleEn: `${teamId.toUpperCase()} Venturi Floor & Diffuser Close-up`,
+      partCode: `${teamId.toUpperCase()}-FLOOR-DIFF`,
+      imageUrl: base.imageUrl,
+      conceptVi:
+        'Cận cảnh hầm gió Venturi, tấm gỗ Jabroc 10mm tim gầm và cụm đèn mưa LED FIA ở đuôi xe — nguồn lực nén mặt đất lớn nhất cỗ máy F1 hiện đại.',
+      conceptEn:
+        'Close-up of the Venturi tunnels, 10mm Jabroc reference plank and FIA rain LED cluster at the tail — the largest ground-effect downforce source on a modern F1 car.',
+      highlightsVi: [
+        'Hai hầm gió Venturi tạo vùng áp suất thấp hút xe xuống mặt đường.',
+        'Tấm gỗ Jabroc 10mm kiểm định độ cao gầm, mòn quá chuẩn sẽ bị loại.',
+        'Đèn LED đỏ FIA kiêm báo xanh khi pin ERS đang thu hồi năng lượng.',
+      ],
+      highlightsEn: [
+        'Twin Venturi tunnels generating low-pressure ground-effect suction.',
+        '10mm Jabroc reference plank policing ride height; excess wear disqualifies the car.',
+        'FIA red LED doubling as a green ERS harvesting indicator.',
+      ],
+      specs: [
+        { labelVi: 'Nguồn lực nén', labelEn: 'Downforce Share', value: '~60% tổng lực nén' },
+        { labelVi: 'Tấm tham chiếu', labelEn: 'Plank', value: 'Jabroc 10 mm' },
+        { labelVi: 'Đèn đuôi', labelEn: 'Rear Light', value: 'FIA RL24 LED' },
+        { labelVi: 'Khuếch đại', labelEn: 'Extraction', value: 'Beam Wing kép' },
+      ],
+    };
+  }
   return teamMap[hotspotId] || teamMap.wings;
 };

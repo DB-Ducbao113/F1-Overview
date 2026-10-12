@@ -49,18 +49,20 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
     };
   }, [northTexture, southTexture, westTexture, eastTexture]);
 
-  const studioWallColor = '#0b0d12';
-  const panelFrameColor = '#12141a';
+  // Lightened studio so near-black carbon (suspension/diffuser/wings) keeps silhouette.
+  // Was '#0b0d12' walls + '#07080c' floor — black parts dissolved into background.
+  const studioWallColor = '#232a35';
+  const panelFrameColor = '#2b323e';
 
   return (
     <group position={[0, 0, 0]}>
       {/* ── Studio Ambient & Global Photometric Lighting ── */}
-      <ambientLight intensity={1.05} color="#ffffff" />
+      <ambientLight intensity={1.7} color="#ffffff" />
 
       {/* Main Studio Key Light (High directional light casting crisp, soft car shadows) */}
       <directionalLight
         position={[6.0, 9.0, -4.5]}
-        intensity={2.5}
+        intensity={3.2}
         color="#ffffff"
         castShadow
         shadow-mapSize-width={1024}
@@ -70,10 +72,18 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
 
       {/* Neutral fill reveals the opposite flank without tinting the team livery.
           Reuse the existing light: no extra shadow maps or render passes. */}
-      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={1.65} color="#f8fafc" />
+      <directionalLight position={[-7.0, 6.0, 3.5]} intensity={2.3} color="#f8fafc" />
 
       {/* Subtle Ground Bounce Light */}
-      <directionalLight position={[0, -2.5, 0]} intensity={0.45} color="#ffffff" />
+      <directionalLight position={[0, -2.5, 0]} intensity={0.9} color="#dfe8f5" />
+
+      {/* ── Rear rim / edge lights: carve black diffuser, beam-wing & suspension
+          out of the dark background. Team-tinted + pure white for definition. ── */}
+      <directionalLight position={[-4.5, 3.2, 5.5]} intensity={2.6} color="#ffffff" />
+      <directionalLight position={[4.5, 2.4, 5.8]} intensity={1.8} color={team.primaryColor} />
+      <pointLight position={[0, 1.6, 4.6]} intensity={8} distance={9} color="#ffffff" />
+      {/* Under-glow lifts the floor/diffuser off the mirror so black strakes read */}
+      <pointLight position={[0, 0.25, 0]} intensity={3.2} distance={5} color={team.primaryColor} />
 
       {/* ══════════════════════════════════════════════════════════════
           1. NORTH WALL (Back: z = +5.8) — Main Premiere Branding Wall
@@ -427,15 +437,15 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
         <MeshReflectorMaterial
           blur={[300, 100]}
           resolution={512}
-          mirror={0.74}
+          mirror={0.55}
           mixBlur={0.6}
-          mixStrength={2.6}
-          roughness={0.12}
+          mixStrength={2.0}
+          roughness={0.32}
           depthScale={1.2}
           minDepthThreshold={0.4}
           maxDepthThreshold={1.4}
-          color="#07080c"
-          metalness={0.8}
+          color="#2a303b"
+          metalness={0.4}
         />
       </mesh>
 
