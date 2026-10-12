@@ -187,7 +187,7 @@ describe('critical fixes: synthesized data never drives standings', () => {
   });
 
   it('documents the per-season baseline cutoff with source and meaning', () => {
-    expect(BASELINE_CUTOFF_BY_SEASON[2026].completedRounds).toBe(16);
+    expect(BASELINE_CUTOFF_BY_SEASON[2026].completedRounds).toBe(17);
     expect(BASELINE_CUTOFF_BY_SEASON[2026].source.length).toBeGreaterThan(10);
     expect(BASELINE_CUTOFF_BY_SEASON[2026].meaning.length).toBeGreaterThan(10);
     expect(BASELINE_CUTOFF_BY_SEASON[2024].final).toBe(true);

@@ -8,13 +8,21 @@ import {
 import { DetailedRaceResult, DetailedRaceResultEntry, TeamId } from '../types';
 import { recalculateStandingsFromRaces } from './standingsEngine';
 import { syncF1SeasonData, reconcileSeasonRaces } from './f1DataService';
+import { BASELINE_CUTOFF_BY_SEASON } from '../data/championship/baselineCutoff';
 
 const emptySource: OpenF1SprintSource = { getFinishedSprintEntries: () => null };
+const firstRoundAfterBaseline = BASELINE_CUTOFF_BY_SEASON[2026].completedRounds + 1;
 
 function totals(results: DetailedRaceResult[]) {
+  // The sprint fixtures model newly received results, not races already in the baseline.
+  const additionalRaces = results.map((race) =>
+    race.round > BASELINE_CUTOFF_BY_SEASON[2026].completedRounds
+      ? race
+      : { ...race, round: firstRoundAfterBaseline },
+  );
   return recalculateStandingsFromRaces(
     2026,
-    results,
+    additionalRaces,
     DRIVER_STANDINGS_2026,
     CONSTRUCTOR_STANDINGS_2026,
   );
@@ -313,7 +321,7 @@ describe('sprint standings: FIA countback for ties', () => {
       {
         id: 'r1',
         season: 2026,
-        round: 17,
+        round: 18,
         grandPrix: 'GP',
         officialName: 'GP',
         circuit: 'C',
@@ -506,8 +514,13 @@ describe('sprint constructor mapping and repeated syncs', () => {
       const b = totals(second.results);
       expect(JSON.stringify(b.drivers)).toBe(JSON.stringify(a.drivers));
       expect(JSON.stringify(b.constructors)).toBe(JSON.stringify(a.constructors));
-      const res = totals(second.results);
-      expect(driverPoints(res, 'verstappen')).toBe(baseDriverPoints('verstappen') + 8);
+      const res = recalculateStandingsFromRaces(
+        2026,
+        second.results,
+        DRIVER_STANDINGS_2026,
+        CONSTRUCTOR_STANDINGS_2026,
+      );
+      expect(driverPoints(res, 'verstappen')).toBe(baseDriverPoints('verstappen'));
     } finally {
       vi.unstubAllGlobals();
     }

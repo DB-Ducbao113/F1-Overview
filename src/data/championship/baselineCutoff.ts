@@ -14,9 +14,9 @@ export interface BaselineCutoff {
 /**
  * Per-season baseline cutoff.
  * - 2024/2025: completed seasons, official final classification (24 rounds each).
- * - 2026: ongoing season, official live standings after 16 events
- *   (see `src/data/championship/standings.ts`). Rounds 1-16 are locked in the
- *   baseline; only rounds > 16 are added from freshly synced data. Baseline
+ * - 2026: ongoing season, official live standings after 17 events
+ *   (see `src/data/championship/standings.ts`). Rounds 1-17 are locked in the
+ *   baseline; only rounds > 17 are added from freshly synced data. Baseline
  *   detailed results only fill rounds missing from sync, never overwrite
  *   successfully synced rounds.
  */
@@ -34,10 +34,10 @@ export const BASELINE_CUTOFF_BY_SEASON: Record<SeasonYear, BaselineCutoff> = {
     meaning: 'Toàn bộ mùa đã khóa; không tính lại từ sync.',
   },
   2026: {
-    completedRounds: 16,
+    completedRounds: 17,
     final: false,
-    source: 'Official live standings after 16 events (src/data/championship/standings.ts)',
+    source: 'Official live standings after 17 events (src/data/championship/standings.ts)',
     meaning:
-      'Rounds 1–16 đã khóa trong baseline; chỉ rounds > 16 được cộng thêm từ dữ liệu đồng bộ.',
+      'Rounds 1–17 đã khóa trong baseline; chỉ rounds > 17 được cộng thêm từ dữ liệu đồng bộ.',
   },
 };

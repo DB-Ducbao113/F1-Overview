@@ -19,7 +19,7 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     expect(antonelli).toBeDefined();
     expect(antonelli!.podiums).toBeGreaterThan(0);
-    expect(antonelli!.podiums).toBe(13);
+    expect(antonelli!.podiums).toBe(14);
 
     expect(russell).toBeDefined();
     expect(russell!.podiums).toBeGreaterThan(0);
@@ -37,26 +37,26 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     expect(mercedes).toBeDefined();
     expect(mercedes!.podiums).toBeGreaterThan(0);
-    expect(mercedes!.podiums).toBe(21);
+    expect(mercedes!.podiums).toBe(22);
 
     expect(ferrari).toBeDefined();
     expect(ferrari!.podiums).toBeGreaterThan(0);
-    expect(ferrari!.podiums).toBe(10);
+    expect(ferrari!.podiums).toBe(11);
 
     expect(mclaren).toBeDefined();
     expect(mclaren!.podiums).toBeGreaterThan(0);
     expect(mclaren!.podiums).toBe(7);
   });
 
-  it('recalculateStandingsFromRaces should increment podiums for additional races', () => {
-    const sampleRound17Race: DetailedRaceResult = {
-      id: 'race-2026-r17-singapore',
+  it('only increments podiums for races beyond the baseline cutoff', () => {
+    const sampleRound18Race: DetailedRaceResult = {
+      id: 'race-2026-r18-united-states',
       season: 2026,
-      round: 17,
-      grandPrix: 'Singapore Grand Prix',
-      officialName: 'Singapore Grand Prix 2026',
-      circuit: 'Marina Bay',
-      date: '11 Oct 2026',
+      round: 18,
+      grandPrix: 'United States Grand Prix',
+      officialName: 'United States Grand Prix 2026',
+      circuit: 'Circuit of The Americas',
+      date: '25 Oct 2026',
       status: 'completed',
       lapsTotal: 62,
       entries: [
@@ -101,7 +101,7 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     const res = recalculateStandingsFromRaces(
       2026,
-      [sampleRound17Race],
+      [sampleRound18Race],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
@@ -112,10 +112,19 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     // Russell got P1 (podium +1) -> 8 + 1 = 9
     expect(russell!.podiums).toBe(9);
-    // Antonelli got P3 (podium +1) -> 13 + 1 = 14
-    expect(antonelli!.podiums).toBe(14);
-    // Mercedes got P1 & P3 (podiums +2) -> 21 + 2 = 23
-    expect(mercedes!.podiums).toBe(23);
+    // Antonelli got P3 (podium +1) -> 14 + 1 = 15
+    expect(antonelli!.podiums).toBe(15);
+    // Mercedes got P1 & P3 (podiums +2) -> 22 + 2 = 24
+    expect(mercedes!.podiums).toBe(24);
+
+    const baselineRound = recalculateStandingsFromRaces(
+      2026,
+      [{ ...sampleRound18Race, id: 'race-2026-r17-singapore', round: 17 }],
+      DRIVER_STANDINGS_2026,
+      CONSTRUCTOR_STANDINGS_2026,
+    );
+    expect(baselineRound.drivers.find((d) => d.driverId === 'antonelli')?.podiums).toBe(14);
+    expect(baselineRound.constructors.find((c) => c.teamId === 'mercedes')?.podiums).toBe(22);
   });
 
   it('recalculateStandingsFromRaces should defensively recover podiums if base has 0 podiums', () => {
