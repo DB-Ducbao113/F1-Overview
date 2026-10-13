@@ -7,6 +7,12 @@
  * same-origin requests) are allowed. Never allow `*` or `*.vercel.app`.
  */
 
+import {
+  applySimulatedFault,
+  getLoadTestControl,
+  simulatedOpenF1Payload,
+} from '../server/loadTest.js';
+
 const OPENF1_ORIGIN = 'https://api.openf1.org/v1';
 const ALLOWED_ENDPOINTS = new Set([
   'sessions',
@@ -79,7 +85,10 @@ function pruneCache(): void {
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, X-Load-Test-Mode, X-Load-Test-Token, X-Load-Test-Fault',
+  );
   res.setHeader('Cache-Control', 'public, s-maxage=12, stale-while-revalidate=60');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -91,6 +100,14 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: 'Unsupported OpenF1 endpoint' });
   }
 
+  const loadTest = getLoadTestControl(req);
+  if (loadTest === 'forbidden')
+    return res.status(403).json({ error: 'Load-test mode is preview-only' });
+  if (loadTest.enabled) {
+    if (await applySimulatedFault(res, loadTest.fault)) return undefined;
+    return res.status(200).json(simulatedOpenF1Payload(endpoint));
+  }
+
   const params = new URLSearchParams();
   const rawQuery = (req.query || {}) as Record<string, unknown>;
   for (const [key, value] of Object.entries(rawQuery)) {
@@ -99,7 +116,14 @@ export default async function handler(req: any, res: any) {
     if (v !== '') params.append(key, v);
   }
   // Least-privilege: cap result windows so one client cannot page the whole archive.
-  if (!params.has('limit')) params.set('limit', '500');
+  // OpenF1's `session_key=latest` lookup does not accept a limit alongside the
+  // sentinel; adding one makes an otherwise valid lookup return no results.
+  if (
+    !params.has('limit') &&
+    !(endpoint === 'sessions' && params.get('session_key') === 'latest')
+  ) {
+    params.set('limit', '500');
+  }
 
   const cacheKey = `${endpoint}?${params.toString()}`;
   const now = Date.now();

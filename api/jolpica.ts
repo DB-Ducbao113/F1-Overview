@@ -4,6 +4,12 @@
  * during short upstream outages or rate-limit windows.
  */
 
+import {
+  applySimulatedFault,
+  getLoadTestControl,
+  simulatedJolpicaPayload,
+} from '../server/loadTest.js';
+
 const JOLPICA_ORIGIN = 'https://api.jolpi.ca';
 const ALLOWED_PATH = /^ergast\/f1\/(2024|2025|2026)\/(results|sprint)\.json$/;
 const CACHE_TTL_MS = 15 * 60_000;
@@ -57,7 +63,10 @@ export default async function handler(req: any, res: any) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, X-Load-Test-Mode, X-Load-Test-Token, X-Load-Test-Fault',
+  );
   res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=86400');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -70,6 +79,13 @@ export default async function handler(req: any, res: any) {
 
   const limit = boundedInteger(req.query?.limit, 100, 100);
   const offset = boundedInteger(req.query?.offset, 0, 10_000);
+  const loadTest = getLoadTestControl(req);
+  if (loadTest === 'forbidden')
+    return res.status(403).json({ error: 'Load-test mode is preview-only' });
+  if (loadTest.enabled) {
+    if (await applySimulatedFault(res, loadTest.fault)) return undefined;
+    return res.status(200).json(simulatedJolpicaPayload(path, limit, offset));
+  }
   const cacheKey = `${path}?limit=${limit}&offset=${offset}`;
   const cached = responseCache.get(cacheKey);
   const now = Date.now();
