@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { F1NewsTicker } from './F1NewsTicker';
@@ -9,7 +9,13 @@ vi.mock('react-router-dom', () => ({
 }));
 
 describe('F1NewsTicker Component', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('renders F1 FEED badge and marquee ticker track', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-13T02:34:00.000Z'));
     const html = renderToStaticMarkup(<F1NewsTicker />);
 
     // Renders F1 FEED static label
@@ -18,7 +24,14 @@ describe('F1NewsTicker Component', () => {
     // Contains the animate-ticker-marquee class
     expect(html).toContain('animate-ticker-marquee');
 
-    // Contains Singapore GP headline
+    // Uses the next scheduled session after the completed Singapore weekend.
+    expect(html).toContain('UNITED STATES GP');
+    expect(html).toContain('FP1');
+    expect(html).not.toContain('SINGAPORE FP1');
+    expect(html).toContain('17 / 23 CHẶNG ĐÃ HOÀN THÀNH');
+    expect(html).toContain('340 ĐIỂM');
+
+    // Contains Singapore GP latest result headline.
     expect(html).toContain('SINGAPORE GP');
 
     // Retired Live Center must not be advertised.

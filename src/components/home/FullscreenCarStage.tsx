@@ -89,7 +89,7 @@ const POSTER_CARS: PosterCar[] = [
     id: 'vcarb02',
     name: 'Racing Bulls VCARB 02',
     shortName: 'VCARB 02',
-    team: 'Visa Cash App RB F1 Team',
+    team: 'Racing Bulls',
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
     color: '#1634cb',

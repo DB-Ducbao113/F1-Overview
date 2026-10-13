@@ -294,7 +294,9 @@ export const ShowroomView: React.FC = () => {
 
         {/* Studio Technical Metadata Watermark (Mercedes / Maranello Engineering Stage style) */}
         <div className="absolute bottom-4 left-4 z-10 pointer-events-none hidden lg:flex flex-col text-[10px] font-mono tracking-widest text-studio-500 uppercase select-none space-y-0.5">
-          <span className="text-studio-400 font-bold">STUDIO W15 · PHOTOMETRIC STAGE</span>
+          <span className="text-studio-400 font-bold">
+            STUDIO {livery.shortCarName} · PHOTOMETRIC STAGE
+          </span>
           <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
         </div>
 

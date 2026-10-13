@@ -107,11 +107,11 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
       <div className="flex items-center gap-3 shrink-0 relative z-10 pl-2">
         <div className="text-right">
           <span
-            className={`font-display font-black text-base text-studio-950 block tabular-nums leading-none ${
+            className={`inline-flex items-baseline justify-end gap-1 font-display font-black text-base text-studio-950 tabular-nums leading-none ${
               rank === 1 && isDone ? 'animate-champion-flash text-amber-500' : ''
             } ${isHovered ? 'animate-score-flicker' : ''}`}
           >
-            {animatedPoints}{' '}
+            {animatedPoints}
             <span className="text-xs font-sans text-studio-500">
               {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
             </span>

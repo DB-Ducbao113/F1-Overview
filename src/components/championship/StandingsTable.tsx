@@ -92,8 +92,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       style={{ backgroundColor: leaderDriverColor }}
                     />
                     <span style={{ color: leaderDriverColor }}>{leaderDriver.driverName}</span>
-                    <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {leaderDriver.points || 0} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+                    <span className="inline-flex items-center gap-1 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {leaderDriver.points || 0}
+                      <span>{lang === 'vi' ? 'ĐIỂM' : 'PTS'}</span>
                     </span>
                   </span>
 
@@ -108,8 +109,9 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                     <span style={{ color: leaderConstructorColor }}>
                       {leaderConstructor.teamName}
                     </span>
-                    <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {leaderConstructor.points || 0} {lang === 'vi' ? 'ĐIỂM' : 'PTS'}
+                    <span className="inline-flex items-center gap-1 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      {leaderConstructor.points || 0}
+                      <span>{lang === 'vi' ? 'ĐIỂM' : 'PTS'}</span>
                     </span>
                   </span>
                 </div>

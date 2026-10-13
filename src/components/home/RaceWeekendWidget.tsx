@@ -252,8 +252,10 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
                 <Calendar className="w-4 h-4 text-f1red" /> {formatDateStr(race.dates, lang)}
               </span>
               <span className="text-studio-300">|</span>
-              <span>
-                {race.laps} {lang === 'vi' ? 'Vòng' : 'Laps'} ({race.raceDistanceKm} km)
+              <span className="inline-flex flex-wrap items-center gap-x-1.5">
+                <span>{race.laps}</span>
+                <span>{lang === 'vi' ? 'Vòng' : 'Laps'}</span>
+                <span>({race.raceDistanceKm} km)</span>
               </span>
               <span className="text-studio-300">|</span>
               <span className="text-studio-500 font-mono text-[11px]">
@@ -434,9 +436,10 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
                     {session.local.day} · {session.local.date}
                   </span>
                   <span
-                    className={`text-[10px] font-mono ${isRace ? 'text-studio-300' : 'text-studio-500'}`}
+                    className={`inline-flex items-center gap-1 text-[10px] font-mono ${isRace ? 'text-studio-300' : 'text-studio-500'}`}
                   >
-                    {session.local.time} {lang === 'vi' ? 'giờ VN' : 'UTC+7'}
+                    <span>{session.local.time}</span>
+                    <span>{lang === 'vi' ? 'giờ VN' : 'UTC+7'}</span>
                   </span>
                 </div>
               );

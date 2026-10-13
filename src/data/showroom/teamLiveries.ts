@@ -416,7 +416,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
   racingbulls: {
     teamId: 'racingbulls',
     teamName: 'Racing Bulls',
-    fullName: 'Visa Cash App RB Formula One Team',
+    fullName: 'Visa Cash App Racing Bulls Formula One Team',
     carModelName: 'Racing Bulls VCARB 02 / 03',
     shortCarName: 'VCARB 02',
     carImage: '/images/teams/racingbulls.webp',

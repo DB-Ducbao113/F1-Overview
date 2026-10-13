@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CALENDAR_2026, CALENDAR_2024, CALENDAR_2025, getCalendarBySeason } from './calendar';
+import { RACE_RESULTS_2026 } from './results';
 
 describe('Race Calendar Multi-Season Support', () => {
   it('returns appropriate calendars per season via getCalendarBySeason', () => {
@@ -82,11 +83,21 @@ describe('2026 Race Calendar Weekend Sessions Completeness', () => {
   it('keeps Singapore round 17 as a complete sprint weekend', () => {
     const singapore = CALENDAR_2026.find((gp) => gp.round === 17)!;
     expect(singapore.hasSprint).toBe(true);
+    expect(singapore.status).toBe('completed');
+    expect(Object.values(singapore.sessions).every((session) => session.status === 'finished')).toBe(
+      true,
+    );
     expect(singapore.sessions.fp1.timeStr).toBe('16:30');
     expect(singapore.sessions.sprintQualifying?.timeStr).toBe('20:30');
     expect(singapore.sessions.sprint?.timeStr).toBe('17:00');
     expect(singapore.sessions.qualifying.timeStr).toBe('21:00');
     expect(singapore.sessions.race.timeStr).toBe('20:00');
+  });
+
+  it('uses the correct Malaysia name for round 16 results', () => {
+    expect(RACE_RESULTS_2026.find((race) => race.round === 16)?.grandPrix).toBe(
+      'Malaysia Grand Prix',
+    );
   });
 
   it('verifies round 1 (Albert Park) has all 3 practice sessions properly configured', () => {

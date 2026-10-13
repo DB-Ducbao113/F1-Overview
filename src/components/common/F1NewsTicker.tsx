@@ -1,44 +1,103 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { Radio, Play, Pause } from 'lucide-react';
+import { CALENDAR_2026 } from '../../data/championship/calendar';
+import { DRIVER_STANDINGS_2026 } from '../../data/championship/standings';
+import {
+  getCalendarRaceState,
+  getSessionTimeRange,
+  RaceSessionKey,
+} from '../../utils/raceSchedule';
 
 export const F1NewsTicker: React.FC = () => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [now, setNow] = useState<number>(() => Date.now());
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
+  const nextSession = CALENDAR_2026.flatMap((race) =>
+    (Object.keys(race.sessions) as RaceSessionKey[]).flatMap((sessionKey) => {
+      const range = getSessionTimeRange(race, sessionKey);
+      const session = race.sessions[sessionKey];
+      return range && session && range.start.getTime() > now
+        ? [{ race, session, sessionKey, start: range.start }]
+        : [];
+    }),
+  ).sort((a, b) => a.start.getTime() - b.start.getTime())[0];
+  const completedRounds = CALENDAR_2026.filter(
+    (race) => getCalendarRaceState(race, now) === 'completed',
+  ).length;
+  const antonelliPoints = DRIVER_STANDINGS_2026.find(
+    (driver) => driver.driverId === 'antonelli',
+  )?.points;
+  const nextSessionTime = nextSession
+    ? new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-US', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).format(nextSession.start)
+    : '';
+  const sessionShortName: Record<RaceSessionKey, string> = {
+    fp1: 'FP1',
+    fp2: 'FP2',
+    fp3: 'FP3',
+    sprintQualifying: 'SPRINT QUALI',
+    sprint: 'SPRINT',
+    qualifying: 'QUALIFYING',
+    race: 'RACE',
+  };
+  const nextRaceName = nextSession?.race.name.replace(' Grand Prix', ' GP');
 
   const TICKER_ITEMS = [
     {
-      badge: lang === 'vi' ? 'SẮP DIỄN RA' : 'NEXT UP',
+      badge: nextSession
+        ? lang === 'vi'
+          ? 'SẮP DIỄN RA'
+          : 'NEXT UP'
+        : lang === 'vi'
+          ? 'MÙA GIẢI'
+          : 'SEASON',
       text:
-        lang === 'vi'
-          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 15:30 GIỜ VIỆT NAM'
-          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 15:30 VIETNAM TIME',
+        nextSession && nextRaceName
+          ? lang === 'vi'
+            ? `CHẶNG ${nextSession.race.round} ${nextRaceName.toUpperCase()} · ${sessionShortName[nextSession.sessionKey]} ${nextSessionTime} GIỜ VIỆT NAM`
+            : `ROUND ${nextSession.race.round} ${nextRaceName.toUpperCase()} · ${sessionShortName[nextSession.sessionKey]} ${nextSessionTime} VIETNAM TIME`
+          : lang === 'vi'
+            ? 'MÙA GIẢI ĐÃ KẾT THÚC'
+            : 'SEASON COMPLETE',
       link: '/season/2026?tab=calendar',
     },
     {
       badge: lang === 'vi' ? 'KẾT QUẢ' : 'LATEST',
       text:
         lang === 'vi'
-          ? 'CHẶNG 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING CHIẾN THẮNG'
-          : 'ROUND 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING TRIUMPH',
+          ? 'CHẶNG 17 SINGAPORE GP: VERSTAPPEN P1 · LECLERC P2 · ANTONELLI P3'
+          : 'ROUND 17 SINGAPORE GP: VERSTAPPEN P1 · LECLERC P2 · ANTONELLI P3',
       link: '/season/2026?tab=results',
     },
     {
       badge: lang === 'vi' ? 'TIẾN TRÌNH' : 'PROGRESS',
       text:
         lang === 'vi'
-          ? 'MÙA GIẢI F1 2026: 17 TRÊN TỔNG SỐ 23 CHẶNG ĐUA'
-          : '2026 FIA F1 SEASON: ROUND 17 OF 23 UPCOMING',
+          ? `MÙA GIẢI F1 2026: ${completedRounds} / ${CALENDAR_2026.length} CHẶNG ĐÃ HOÀN THÀNH`
+          : `2026 FIA F1 SEASON: ${completedRounds} OF ${CALENDAR_2026.length} ROUNDS COMPLETED`,
       link: '/season/2026?tab=calendar',
     },
     {
       badge: lang === 'vi' ? 'DẪN ĐẦU' : 'LEADER',
       text:
         lang === 'vi'
-          ? 'BẢNG XẾP HẠNG TAY ĐUA: ANTONELLI (MERCEDES) 320 ĐIỂM'
-          : 'DRIVERS CLASSIFICATION: ANTONELLI (MERCEDES) 320 PTS',
+          ? `BẢNG XẾP HẠNG TAY ĐUA: ANTONELLI (MERCEDES) ${antonelliPoints} ĐIỂM`
+          : `DRIVERS CLASSIFICATION: ANTONELLI (MERCEDES) ${antonelliPoints} PTS`,
       link: '/season/2026?tab=drivers',
     },
   ];

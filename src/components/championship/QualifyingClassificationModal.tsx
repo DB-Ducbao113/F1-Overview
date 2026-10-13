@@ -4,6 +4,7 @@ import { GrandPrixQualifyingData, QualifyingSessionResult } from '../../types/qu
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { X, Award, MapPin, Calendar, Zap, Trophy, ShieldCheck } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { formatDateStr } from '../../utils/dateUtils';
 
 interface QualifyingModalProps {
   qualifyingData: GrandPrixQualifyingData | null;
@@ -51,6 +52,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
   );
 
   const isSprintRace = activeSessionKey === 'sprint';
+  const isSprintQualifying = activeSessionKey === 'sprintQualifying';
 
   return createPortal(
     <div
@@ -78,6 +80,11 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                     <Zap className="w-3.5 h-3.5 text-amber-400" />
                     {isVi ? 'Kết Quả Cuộc Đua Sprint' : 'Sprint Race Classification'}
                   </>
+                ) : isSprintQualifying ? (
+                  <>
+                    <Award className="w-3.5 h-3.5 text-purple-400" />
+                    {isVi ? 'Bảng Xếp Hạng Phân Hạng Sprint' : 'Sprint Qualifying Classification'}
+                  </>
                 ) : (
                   <>
                     <Award className="w-3.5 h-3.5 text-purple-400" />
@@ -99,7 +106,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
               {currentSession && (
                 <span className="flex items-center gap-1 font-mono">
                   <Calendar className="w-3.5 h-3.5 text-studio-500" />
-                  {currentSession.dateStr}
+                  {formatDateStr(currentSession.dateStr, lang)}
                 </span>
               )}
             </div>

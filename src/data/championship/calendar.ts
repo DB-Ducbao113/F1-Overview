@@ -416,7 +416,7 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     flag: '🇸🇬',
     dates: '09 – 11 Oct 2026',
     season: 2026,
-    status: 'upcoming',
+    status: 'completed',
     hasSprint: true,
     venueUtcOffset: 8, // SGT
     laps: 62,
@@ -424,11 +424,11 @@ export const CALENDAR_2026: GrandPrixRound[] = [
     raceDistanceKm: 306.143,
     lapRecord: { time: '1:34.486', driver: 'Daniel Ricciardo', year: 2024 },
     sessions: {
-      fp1: { name: 'Practice 1', dateStr: 'Fri 09 Oct', timeStr: '16:30', status: 'scheduled' },
-      sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 09 Oct', timeStr: '20:30', status: 'scheduled' },
-      sprint: { name: 'Sprint Race', dateStr: 'Sat 10 Oct', timeStr: '17:00', status: 'scheduled' },
-      qualifying: { name: 'Qualifying', dateStr: 'Sat 10 Oct', timeStr: '21:00', status: 'scheduled' },
-      race: { name: 'Race', dateStr: 'Sun 11 Oct', timeStr: '20:00', status: 'scheduled' },
+      fp1: { name: 'Practice 1', dateStr: 'Fri 09 Oct', timeStr: '16:30', status: 'finished' },
+      sprintQualifying: { name: 'Sprint Qualifying', dateStr: 'Fri 09 Oct', timeStr: '20:30', status: 'finished' },
+      sprint: { name: 'Sprint Race', dateStr: 'Sat 10 Oct', timeStr: '17:00', status: 'finished' },
+      qualifying: { name: 'Qualifying', dateStr: 'Sat 10 Oct', timeStr: '21:00', status: 'finished' },
+      race: { name: 'Race', dateStr: 'Sun 11 Oct', timeStr: '20:00', status: 'finished' },
     },
   },
   {

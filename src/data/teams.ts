@@ -76,7 +76,7 @@ const RAW_TEAMS_DATA: Record<TeamId, F1Team> = {
   racingbulls: {
     id: 'racingbulls',
     name: 'Racing Bulls',
-    fullName: 'Visa Cash App RB Formula One Team',
+    fullName: 'Visa Cash App Racing Bulls Formula One Team',
     base: 'Faenza, Italy',
     teamPrincipal: 'Laurent Mekies',
     powerUnit: 'Honda RBPTH002 1.6L V6 Turbo Hybrid',
