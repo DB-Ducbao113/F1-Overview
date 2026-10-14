@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
-import { ExternalLink, Facebook, Heart } from 'lucide-react';
+import { ExternalLink, Facebook, Heart, MessageSquare } from 'lucide-react';
 import { author } from '../../data/author';
 import { DonationQr } from '../common/DonationQr';
 
@@ -124,16 +124,33 @@ export const Footer: React.FC = React.memo(() => {
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
               {lang === 'vi' ? 'Liên hệ tác giả' : 'Contact the creator'}
             </h3>
-            <a
-              href={author.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-3 rounded-lg border border-white/15 px-4 py-3 text-sm text-white/75 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-f1red"
-            >
-              <Facebook className="h-4 w-4" aria-hidden="true" />
-              {author.name} / Facebook
-              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <a
+                href={author.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-lg border border-white/15 px-4 py-3 text-sm text-white/75 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-f1red"
+              >
+                <Facebook className="h-4 w-4" aria-hidden="true" />
+                {author.name} / Facebook
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+              <a
+                href={author.feedbackFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-lg border border-f1red/50 bg-f1red/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:border-f1red hover:bg-f1red/20 focus-visible:outline-f1red"
+              >
+                <MessageSquare className="h-4 w-4" aria-hidden="true" />
+                {lang === 'vi' ? 'Gửi góp ý' : 'Send feedback'}
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+            <p className="mt-3 text-xs leading-5 text-white/55">
+              {lang === 'vi'
+                ? 'Báo lỗi hoặc đề xuất tính năng qua Google Forms.'
+                : 'Report a bug or suggest a feature through Google Forms.'}
+            </p>
           </section>
           <details className="group self-start rounded-xl border border-white/15 p-5">
             <summary className="cursor-pointer text-sm font-semibold text-white/85 focus-visible:outline-f1red">

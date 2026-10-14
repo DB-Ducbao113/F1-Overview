@@ -14,6 +14,7 @@ import {
   Palette,
   Compass,
   Facebook,
+  MessageSquare,
 } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { author } from '../../data/author';
@@ -96,6 +97,39 @@ export const AboutPage: React.FC = () => {
             </a>
           </div>
         </div>
+      </section>
+
+      <section
+        aria-labelledby="feedback-heading"
+        className="mb-10 rounded-2xl border border-studio-200 bg-white p-6 shadow-sm sm:p-8"
+      >
+        <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-f1red/10 text-f1red">
+          <MessageSquare className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <h2
+          id="feedback-heading"
+          className="font-display text-2xl font-bold uppercase tracking-tight text-studio-950"
+        >
+          {isVi ? 'Góp ý cho PODIUM' : 'Help improve PODIUM'}
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-studio-600">
+          {isVi
+            ? 'Bạn gặp lỗi, có ý tưởng tính năng mới hoặc muốn góp ý về trải nghiệm? Chia sẻ phản hồi để giúp PODIUM tốt hơn. Biểu mẫu hỗ trợ tiếng Việt và tiếng Anh.'
+            : 'Found a bug, have a feature idea, or want to share your experience? Send your feedback to help make PODIUM better. The form supports Vietnamese and English.'}
+        </p>
+        <a
+          href={author.feedbackFormUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-f1red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-f1red-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-f1red"
+        >
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          {isVi ? 'Gửi góp ý' : 'Send feedback'}
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+        <p className="mt-3 text-xs leading-5 text-studio-500">
+          {isVi ? 'Mở Google Forms trong tab mới.' : 'Opens Google Forms in a new tab.'}
+        </p>
       </section>
 
       <section
