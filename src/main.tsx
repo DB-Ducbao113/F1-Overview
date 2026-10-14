@@ -13,7 +13,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <App />
         <Analytics mode={import.meta.env.PROD ? 'production' : 'development'} />
-        <SpeedInsights sampleRate={0.2} />
+        <SpeedInsights
+          sampleRate={1}
+          beforeSend={(event) => {
+            const pathname = new URL(event.url).pathname;
+            return { ...event, route: pathname };
+          }}
+        />
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>,

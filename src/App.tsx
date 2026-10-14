@@ -15,7 +15,6 @@ import { F1StartLightsPreloader } from './components/common/F1StartLightsPreload
 import { useChampionshipStore } from './store/useChampionshipStore';
 import { useNavigationStore } from './store/useNavigationStore';
 import { SeasonYear, isSeasonYear } from './types';
-import { RaceClassificationModal } from './components/championship/RaceClassificationModal';
 import { getCompleteRaceClassification } from './data/championship/raceClassificationHelper';
 
 import { F1SpeedStream } from './components/common/F1SpeedStream';
@@ -53,8 +52,11 @@ const DriversDirectoryPage = lazy(() =>
 const AboutPage = lazy(() =>
   import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
 );
-
-let lastAutoRaceSyncAt = 0;
+const RaceClassificationModal = lazy(() =>
+  import('./components/championship/RaceClassificationModal').then((m) => ({
+    default: m.RaceClassificationModal,
+  })),
+);
 
 const validSeason = (value?: string): value is `${SeasonYear}` => isSeasonYear(value);
 
@@ -104,10 +106,12 @@ function RaceRoute() {
   return (
     <>
       <ChampionshipView season={season} onSeasonChange={(next) => navigate(`/season/${next}`)} />
-      <RaceClassificationModal
-        race={race}
-        onClose={() => navigate(`/season/${season}?tab=results`)}
-      />
+      <Suspense fallback={null}>
+        <RaceClassificationModal
+          race={race}
+          onClose={() => navigate(`/season/${season}?tab=results`)}
+        />
+      </Suspense>
     </>
   );
 }
@@ -129,24 +133,6 @@ function NotFound() {
 
 export const App: React.FC = () => {
   const location = useLocation();
-  const syncSeasonData = useChampionshipStore((state) => state.syncSeasonData);
-
-  useEffect(() => {
-    const refreshIfDue = () => {
-      if (document.visibilityState !== 'visible' || Date.now() - lastAutoRaceSyncAt < 15 * 60_000)
-        return;
-      lastAutoRaceSyncAt = Date.now();
-      void syncSeasonData(2026);
-    };
-
-    refreshIfDue();
-    const interval = window.setInterval(refreshIfDue, 15 * 60_000);
-    document.addEventListener('visibilitychange', refreshIfDue);
-    return () => {
-      window.clearInterval(interval);
-      document.removeEventListener('visibilitychange', refreshIfDue);
-    };
-  }, [syncSeasonData]);
 
   const [scrollProgress, setScrollProgress] = useState<number>(0);
 
@@ -184,9 +170,10 @@ export const App: React.FC = () => {
       {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-[45] opacity-[0.035] mix-blend-overlay"
+        className="fixed inset-0 pointer-events-none z-[45] opacity-[0.025] hidden lg:block"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundImage:
+            'repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,0.4) 4px)',
         }}
       />
 
@@ -205,7 +192,17 @@ export const App: React.FC = () => {
 
       <main className="flex-1 pt-16">
         <F1PageTransition pathname={location.pathname}>
-          <Suspense fallback={<div className="min-h-[50vh]" />}>
+          <Suspense
+            fallback={
+              <div className="min-h-[70vh] animate-pulse bg-gradient-to-b from-studio-100 via-white to-studio-100">
+                <div className="page-container pt-12 space-y-5">
+                  <div className="h-4 w-28 rounded bg-studio-200" />
+                  <div className="h-14 max-w-xl rounded bg-studio-200" />
+                  <div className="h-[46vh] rounded-3xl bg-studio-200" />
+                </div>
+              </div>
+            }
+          >
             <Routes>
               <Route path="/" element={<HomeView />} />
               {['/live', '/archive', '/timing'].map((path) => (
