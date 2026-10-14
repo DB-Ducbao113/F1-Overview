@@ -5,3 +5,6 @@ package-lock.json
 public/assets/
 public/models/
 src/data/**/*.ts
+docs/performance/lighthouse/**
+docs/performance/artifacts/*.json
+docs/performance/artifacts/production-index.html
