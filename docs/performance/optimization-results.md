@@ -45,20 +45,23 @@ Raw final reports are under [`m1a/lighthouse/`](m1a/lighthouse/), with per-run v
 
 ## Validation performed
 
-| Check                           | Result                    | Detail                                                                                                                             |
-| ------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run lint`                  | Pass                      | No ESLint errors.                                                                                                                  |
-| `npm run format:check`          | Pass                      | All authored files conform.                                                                                                        |
-| `npm test`                      | Pass                      | 27 files, 210 tests.                                                                                                               |
-| `npm run test:coverage`         | Pass                      | 63.2% statements, 59.8% branches, 68.51% functions, 63.96% lines.                                                                  |
-| `npm run build:check`           | Pass                      | Initial JavaScript 109.4 KiB gzip against the 180 KiB limit.                                                                       |
-| First build after adding tests  | Failed, corrected         | A multiline import left an unused `@ts-expect-error`; the import was corrected and the production build then passed.               |
-| First font-only Lighthouse set  | Failed, corrected         | CLS stayed near 0.234 because lazy route loading moved the footer.                                                                 |
-| First Preview Smoke run         | Failed, corrected         | Vercel Protection returned HTML because `VERCEL_PROTECTION_BYPASS` was empty; the workflow now skips before k6 and emits a notice. |
-| Final Lighthouse, 9 runs        | Pass                      | All route medians pass score, LCP, TBT, and CLS desktop gates.                                                                     |
-| Five-width visual capture       | Pass with M1B observation | 15 final screenshots; two delayed Homepage hero captures required a longer wait.                                                   |
-| High-load execution             | Not run by design         | Guard behavior is unit tested; no load was sent to Production.                                                                     |
-| Target-commit CI and deployment | Pending                   | Filled after the branch commit is pushed and the applicable workflows finish.                                                      |
+| Check                          | Result                    | Detail                                                                                                                                                                            |
+| ------------------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run lint`                 | Pass                      | No ESLint errors.                                                                                                                                                                 |
+| `npm run format:check`         | Pass                      | All authored files conform.                                                                                                                                                       |
+| `npm test`                     | Pass                      | 27 files, 210 tests.                                                                                                                                                              |
+| `npm run test:coverage`        | Pass                      | 63.2% statements, 59.8% branches, 68.51% functions, 63.96% lines.                                                                                                                 |
+| `npm run build:check`          | Pass                      | Initial JavaScript 109.4 KiB gzip against the 180 KiB limit.                                                                                                                      |
+| First build after adding tests | Failed, corrected         | A multiline import left an unused `@ts-expect-error`; the import was corrected and the production build then passed.                                                              |
+| First font-only Lighthouse set | Failed, corrected         | CLS stayed near 0.234 because lazy route loading moved the footer.                                                                                                                |
+| First Preview Smoke run        | Failed, corrected         | Vercel Protection returned HTML because `VERCEL_PROTECTION_BYPASS` was empty; the workflow now skips before k6 and emits a notice.                                                |
+| Final Lighthouse, 9 runs       | Pass                      | All route medians pass score, LCP, TBT, and CLS desktop gates.                                                                                                                    |
+| Five-width visual capture      | Pass with M1B observation | 15 final screenshots; two delayed Homepage hero captures required a longer wait.                                                                                                  |
+| High-load execution            | Not run by design         | Guard behavior is unit tested; no load was sent to Production.                                                                                                                    |
+| Target-commit CI               | Pass                      | SHA `a3cec587972a77ab2e27fe7c87cab27fb4ead8f6`; [CI run 38535918940](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38535918940).                                       |
+| Vercel Preview deployment      | Pass                      | Vercel reported Ready for `a3cec58`; [deployment status](https://vercel.com/bao-bung-bu/podiumeffetdesol/9XT4HuDjKohZtDEWHEu3UfkdxYNH).                                           |
+| Preview Smoke workflow         | Pass with explicit skip   | [Run 38536017325](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38536017325) skipped k6 because the protected Preview has no bypass secret; no smoke traffic was sent. |
+| Docker publish                 | Not applicable            | `perf/**` does not match its `main`/tag/manual triggers, so no image was published.                                                                                               |
 
 ## Exact changed files
 

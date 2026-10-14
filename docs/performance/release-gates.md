@@ -63,17 +63,17 @@ GO requires all functional, visual, bundle, CI, deployment, and blocking Lightho
 
 ## M1A gate status
 
-| Gate                            | Status              | Evidence                                                                                                                                         |
-| ------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Lint, format, tests, coverage   | Pass                | 27 test files and 210 tests; coverage remains 63.2% statements.                                                                                  |
-| Production build and bundle     | Pass                | 109.4 KiB initial JavaScript, below the 180 KiB limit.                                                                                           |
-| Desktop Lighthouse              | Pass locally        | Three cold runs each for Homepage, Season 2026, and Teams; median CLS is 0.001, 0.001, and 0.003.                                                |
-| Five-width visual review        | Pass for M1A scope  | 15 screenshots preserve typography and responsive layouts; delayed Homepage hero discovery remains assigned to M1B.                              |
-| Load-test safety                | Pass                | High-load, spike, soak, and fault scripts require simulated fixtures; target and response behavior have automated tests.                         |
-| F1 synchronization isolation    | Pass                | No F1 synchronization workflow, schedule, or data file changed.                                                                                  |
-| CI for `perf/**`                | Pending push        | `ci.yml` now includes `perf/**`; record the target run URL after it finishes.                                                                    |
-| Docker workflow                 | Not applicable      | The workflow intentionally does not publish branch builds and remains unchanged.                                                                 |
-| Preview smoke/Vercel deployment | Pending follow-up   | Vercel deployed `be5ac87`; smoke run 38535021363 exposed the missing bypass secret. The workflow now records a protected-preview skip before k6. |
-| Production field validation     | Pending later phase | M1A is not merged and cannot yet affect Production field data.                                                                                   |
+| Gate                            | Status              | Evidence                                                                                                                                                                 |
+| ------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Lint, format, tests, coverage   | Pass                | 27 test files and 210 tests; coverage remains 63.2% statements.                                                                                                          |
+| Production build and bundle     | Pass                | 109.4 KiB initial JavaScript, below the 180 KiB limit.                                                                                                                   |
+| Desktop Lighthouse              | Pass locally        | Three cold runs each for Homepage, Season 2026, and Teams; median CLS is 0.001, 0.001, and 0.003.                                                                        |
+| Five-width visual review        | Pass for M1A scope  | 15 screenshots preserve typography and responsive layouts; delayed Homepage hero discovery remains assigned to M1B.                                                      |
+| Load-test safety                | Pass                | High-load, spike, soak, and fault scripts require simulated fixtures; target and response behavior have automated tests.                                                 |
+| F1 synchronization isolation    | Pass                | No F1 synchronization workflow, schedule, or data file changed.                                                                                                          |
+| CI for `perf/**`                | Pass                | SHA `a3cec58`: [run 38535918940](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38535918940).                                                                  |
+| Docker workflow                 | Not applicable      | The workflow intentionally does not publish branch builds and remains unchanged.                                                                                         |
+| Preview smoke/Vercel deployment | Pass with skip      | Vercel Ready for `a3cec58`; [run 38536017325](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38536017325) verified the protected-preview guard and skipped k6. |
+| Production field validation     | Pending later phase | M1A is not merged and cannot yet affect Production field data.                                                                                                           |
 
-M1A remains **NO-GO for merge** until the target branch SHA has a successful CI result and any applicable Preview deployment/smoke result is recorded. M1B also requires explicit approval.
+M1A branch verification is **GO**. Overall release remains **NO-GO for merge** because this task does not merge to `main`, Production field validation is pending, and M1B requires explicit approval.
