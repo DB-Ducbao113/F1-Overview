@@ -1,11 +1,15 @@
 export const START_LIGHT_TIMING = {
   firstLightMs: 120,
-  lightIntervalMs: 180,
-  holdMs: 1080,
-  lightsOutMs: 1260,
-  launchMs: 1360,
-  totalMs: 1500,
+  lightIntervalMs: 220,
+  holdMs: 1000,
+  lightsOutMs: 1400,
+  launchMs: 1700,
+  logoHoldMs: 400,
+  revealDurationMs: 400,
+  totalMs: 2500,
 } as const;
+
+export const START_LIGHT_CUE = "IT'S LIGHTS OUT AND AWAY WE GO!";
 
 export function getStartLightsFrame(elapsedMs: number) {
   const time = Math.max(0, elapsedMs);
@@ -30,6 +34,5 @@ export function getStartLightsFrame(elapsedMs: number) {
             (time - START_LIGHT_TIMING.firstLightMs) / START_LIGHT_TIMING.lightIntervalMs,
           ) + 1,
         );
-
   return { phase, litColumns } as const;
 }
