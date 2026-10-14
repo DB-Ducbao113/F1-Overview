@@ -523,6 +523,7 @@ describe('critical fixes: openf1 client uses proxy only with coded errors', () =
 describe('critical fixes: openf1 proxy cache, stale bound and single-flight', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     vi.useRealTimers();
   });
 
@@ -530,7 +531,10 @@ describe('critical fixes: openf1 proxy cache, stale bound and single-flight', ()
     const res: any = {
       statusCode: 200,
       body: undefined as unknown,
-      setHeader: () => undefined,
+      headers: {} as Record<string, string>,
+      setHeader: (key: string, value: string) => {
+        res.headers[key] = value;
+      },
       status: (c: number) => {
         res.statusCode = c;
         return res;
@@ -564,6 +568,44 @@ describe('critical fixes: openf1 proxy cache, stale bound and single-flight', ()
     const c = reqRes({ endpoint: 'position', session_key: '993002' });
     await openF1Handler(c.req, c.res);
     expect(calls).toBe(2);
+  });
+
+  it('does not append a limit to the OpenF1 latest-session sentinel', async () => {
+    const calls: string[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        calls.push(url);
+        return { ok: true, status: 200, json: async () => [{ session_key: 11388 }] };
+      }),
+    );
+    const request = reqRes({ endpoint: 'sessions', session_key: 'latest' });
+    await openF1Handler(request.req, request.res);
+    expect(request.res.statusCode).toBe(200);
+    expect(calls[0]).toBe('https://api.openf1.org/v1/sessions?session_key=latest');
+  });
+
+  it('permits simulated payloads only with a preview-only server token', async () => {
+    vi.stubEnv('VERCEL_ENV', 'preview');
+    vi.stubEnv('LOAD_TEST_TOKEN', 'preview-test-token');
+    const simulated = reqRes(
+      { endpoint: 'position', session_key: '9472' },
+      { 'x-load-test-mode': 'simulated', 'x-load-test-token': 'preview-test-token' },
+    );
+    await openF1Handler(simulated.req, simulated.res);
+    expect(simulated.res.statusCode).toBe(200);
+    expect(simulated.res.headers['X-Load-Test-Mode']).toBe('simulated');
+    expect(simulated.res.body).toEqual(
+      expect.arrayContaining([expect.objectContaining({ position: 1 })]),
+    );
+
+    vi.stubEnv('VERCEL_ENV', 'production');
+    const production = reqRes(
+      { endpoint: 'position', session_key: '9472' },
+      { 'x-load-test-mode': 'simulated', 'x-load-test-token': 'preview-test-token' },
+    );
+    await openF1Handler(production.req, production.res);
+    expect(production.res.statusCode).toBe(403);
   });
 
   it('serves bounded STALE then fails loudly when stale is too old', async () => {
