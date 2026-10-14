@@ -77,3 +77,22 @@ GO requires all functional, visual, bundle, CI, deployment, and blocking Lightho
 | Production field validation     | Pending later phase | M1A is not merged and cannot yet affect Production field data.                                                                                                           |
 
 M1A branch verification is **GO**. Overall release remains **NO-GO for merge** because this task does not merge to `main`, Production field validation is pending, and M1B requires explicit approval.
+
+## M1B gate status
+
+| Gate                         | Status         | Evidence                                                                                                                                  |
+| ---------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Lint, tests, coverage        | Pass locally   | 29 test files, 215 tests; coverage remains 63.2% statements.                                                                              |
+| Format                       | Pass locally   | Raw Lighthouse reports are ignored after the first format-check failure; the final check passes.                                          |
+| Production build and bundle  | Pass locally   | Initial JavaScript is 109.7 KiB gzip, below the 180 KiB limit.                                                                            |
+| Desktop Homepage Lighthouse  | Pass locally   | Three cold runs; median score 99, LCP 776 ms, TBT 0 ms, CLS 0.000.                                                                        |
+| Mobile Homepage Lighthouse   | Partial        | Three cold runs; median score 84, LCP 4,068 ms, TBT 32 ms, CLS 0.000. The preserved 2.5-second intro keeps LCP above the 2.5-second gate. |
+| Hero discovery               | Pass locally   | Median request start 186 ms → 8 ms; one high-priority preloaded request and no duplicate.                                                 |
+| Carousel network             | Pass locally   | Initial team images 11 → 3 and bytes 822,082 → 223,054; keyboard, pointer, and emulated touch navigation pass.                            |
+| Intro regression             | Pass locally   | Refresh, Skip, Escape, and reduced-motion behavior pass without changing the 2.5-second choreography.                                     |
+| Five-width visual review     | Pass locally   | Final Homepage screenshots cover 390, 768, 1280, 1440, and 1920 px.                                                                       |
+| F1 synchronization isolation | Pass           | No F1 data, API, schedule, synchronization script, or data workflow changed.                                                              |
+| Target SHA CI and Preview    | Pending push   | Must be recorded for the exact branch candidate before M1B closes.                                                                        |
+| Docker workflow              | Not applicable | `perf/**` does not trigger Docker publishing.                                                                                             |
+
+M1B is **GO for branch verification and Preview deployment**. It remains **NO-GO for merge** until exact-SHA CI/Preview checks pass and the user approves moving to M2; the Mobile LCP release gate also remains explicitly open.

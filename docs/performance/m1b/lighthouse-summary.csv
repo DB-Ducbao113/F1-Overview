@@ -1,0 +1,13 @@
+phase,file,score,fcp,lcp,cls,tbt,requests,imageRequests,imageBytes,teamRequests,teamBytes,logoRequests,logoBytes,heroRequests,lcpLoadDelay,lcpElement
+"before","home--desktop--run1.json",95,460,1398,"0.001",0,36,14,1176757,11,822082,2,258313,1,195,"div.animate-f1-depth-enter > div.bg-studio-100 > section.podium-hero > img.absolute"
+"before","home--desktop--run2.json",95,457,1394,"0.001",0,36,14,1176757,11,822082,2,258313,1,183,"div.animate-f1-depth-enter > div.bg-studio-100 > section.podium-hero > img.absolute"
+"before","home--desktop--run3.json",95,459,1395,"0.001",0,36,14,1176757,11,822082,2,258313,1,183,"div.animate-f1-depth-enter > div.bg-studio-100 > section.podium-hero > img.absolute"
+"before","home--mobile--run1.json",83,2147,4292,"0.000",33,36,14,1176757,11,822082,2,258313,1,70,"EDS"
+"before","home--mobile--run2.json",83,2145,4290,"0.000",39,36,14,1176757,11,822082,2,258313,1,65,"EDS"
+"before","home--mobile--run3.json",83,2144,4288,"0.000",21,36,14,1176757,11,822082,2,258313,1,63,"EDS"
+"after","home--desktop--run1.json",99,438,776,"0.000",0,27,5,349514,3,223054,1,30098,1,75,"PODIUM — Effet de Sol"
+"after","home--desktop--run2.json",98,461,878,"0.000",0,27,5,349514,3,223054,1,30098,1,4,"div.animate-f1-depth-enter > div.bg-studio-100 > section.podium-hero > img.absolute"
+"after","home--desktop--run3.json",99,459,775,"0.000",0,27,5,349514,3,223054,1,30098,1,74,"PODIUM — Effet de Sol"
+"after","home--mobile--run1.json",84,2148,4068,"0.000",32,28,6,361232,3,223054,2,41816,1,8,"PODIUM — Effet de Sol"
+"after","home--mobile--run2.json",84,2148,4068,"0.000",32,28,6,361232,3,223054,2,41816,1,7,"PODIUM — Effet de Sol"
+"after","home--mobile--run3.json",84,2150,4073,"0.000",35,28,6,361232,3,223054,2,41816,1,7,"PODIUM — Effet de Sol"

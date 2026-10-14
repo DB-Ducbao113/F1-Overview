@@ -95,6 +95,22 @@
       type="font/woff2"
       crossorigin
     />
+    <!-- The homepage LCP image is otherwise discovered only after React mounts. -->
+    <link
+      rel="preload"
+      href="/images/podium-diffuser-hero-v2.webp"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      href="/logo/logo-compact.png"
+      as="image"
+      type="image/png"
+      media="(max-width: 639px)"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <div id="root"></div>

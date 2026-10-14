@@ -7,5 +7,6 @@ public/models/
 src/data/**/*.ts
 docs/performance/lighthouse/**
 docs/performance/m1a/lighthouse/**
+docs/performance/m1b/**/lighthouse/**
 docs/performance/artifacts/*.json
 docs/performance/artifacts/production-index.html

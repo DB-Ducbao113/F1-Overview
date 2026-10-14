@@ -55,8 +55,7 @@ export const Navbar: React.FC = React.memo(() => {
             className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-f1red rounded"
             aria-label="PODIUM — Effet de Sol"
           >
-            <OfficialBrandLogo size="md" variant="full" className="hidden sm:block" />
-            <OfficialBrandLogo size="md" variant="compact" className="sm:hidden" />
+            <OfficialBrandLogo size="md" variant="responsive" priority />
           </Link>
 
           {/* Center Navigation Links */}

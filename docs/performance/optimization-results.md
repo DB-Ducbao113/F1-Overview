@@ -107,3 +107,79 @@ Evidence and release documentation:
 - Candidate LCP/FCP values include localhost rather than Vercel network latency; Production validation remains required before release GO.
 - Four font preloads are deliberate for the bilingual first viewport but consume about 106 KiB. M1B should verify whether route-aware preload reduction is safe without reintroducing font shifts.
 - Revert the M1A commit to restore Google Fonts and the previous route minimum height. The load-test guard can be reverted independently from the font/layout files if necessary.
+
+## M1B result
+
+M1B was measured against the M1A branch head on the same local production server with Chrome 155 and Lighthouse 13.5.0. Both the before and after sets contain three cold runs for Desktop and three for Mobile. These measurements isolate the implementation change but remain local lab evidence; they do not replace Preview or Production field validation.
+
+| Form factor | Metric | M1A median | M1B median | Change |
+| ----------- | ------ | ---------: | ---------: | -----: |
+| Desktop     | Score  |         95 |         99 |     +4 |
+| Desktop     | FCP    |     459 ms |     459 ms |      0 |
+| Desktop     | LCP    |   1,395 ms |     776 ms |   -44% |
+| Desktop     | TBT    |       0 ms |       0 ms |      0 |
+| Desktop     | CLS    |      0.001 |      0.000 | -0.001 |
+| Mobile      | Score  |         83 |         84 |     +1 |
+| Mobile      | FCP    |   2,145 ms |   2,148 ms |  +3 ms |
+| Mobile      | LCP    |   4,290 ms |   4,068 ms |    -5% |
+| Mobile      | TBT    |      33 ms |      32 ms |  -1 ms |
+| Mobile      | CLS    |      0.000 |      0.000 |      0 |
+
+The preload moved the hero network request start from a median 186 ms to 8 ms. All three after reports contain exactly one hero request with `High` priority and `isLinkPreload: true`; the preload does not duplicate the component request. Desktop selected the navbar logo as the final LCP candidate in two runs and the hero in one. Mobile selected the navbar logo in all three runs, so the candidate is stable while the intentional 2.5-second intro remains part of the observed mobile timeline.
+
+### Network and asset result
+
+| Form factor | Measurement    |     M1A median |    M1B median |     Change |
+| ----------- | -------------- | -------------: | ------------: | ---------: |
+| Desktop     | Requests       |             36 |            27 |         -9 |
+| Desktop     | Image requests |             14 |             5 |         -9 |
+| Desktop     | Image transfer |    1,176,757 B |     349,514 B |       -70% |
+| Mobile      | Requests       |             36 |            28 |         -8 |
+| Mobile      | Image requests |             14 |             6 |         -8 |
+| Mobile      | Image transfer |    1,176,757 B |     361,232 B |       -69% |
+| Both        | Team images    | 11 / 822,082 B | 3 / 223,054 B | -73% bytes |
+
+The carousel initially mounts Ferrari plus its wrapped neighbours, Cadillac and McLaren. It adds the new active car and adjacent images only as navigation advances, retaining already decoded images to avoid a flash when users move back. The original 246,326-byte full logo remains as a rollback source; the rendered full logo is a 430×160 WebP of 29,830 bytes, an 87.9% source-size reduction. Navbar source selection now requests the compact PNG below 640 px and the full WebP above it instead of downloading both navbar variants.
+
+### Functional and visual verification
+
+- Browser QA confirmed the intro exists after refresh with all ten lamp elements, Skip dismisses it, Escape dismisses it, and reduced-motion uses no continuous speed-line animation plus the quiet brand fade.
+- Browser QA observed one ready hero request, 11 carousel panels, and only three initial team images. ArrowRight moved focus and expansion to panel 1, pointer hover expanded panel 5, and an emulated touch tap expanded panel 7. The touch run first exposed a synthetic click toggle; `onTouchEnd` now handles touch directly and prevents that duplicate click.
+- Five final screenshots at 390×844, 768×1024, 1280×900, 1440×1000, and 1920×1080 are under [`m1b/screenshots/`](m1b/screenshots/). The first 1440 capture occurred before the asynchronous hero decode and was replaced by a CDP capture after `naturalWidth > 0`; the final set shows the hero at every width.
+- Raw before/after Lighthouse reports are under [`m1b/`](m1b/), the complete comparison is in [`m1b/lighthouse-summary.csv`](m1b/lighthouse-summary.csv), and the interaction evidence is in [`m1b/browser-qa.json`](m1b/browser-qa.json).
+
+### Exact M1B changed files
+
+Application and tests:
+
+- `index.html`
+- `public/logo/logo-full.webp`
+- `src/main.tsx`
+- `src/components/analytics/SpeedInsightsRoute.tsx`
+- `src/components/analytics/speedInsightsRouteUtils.ts`
+- `src/components/analytics/SpeedInsightsRoute.test.ts`
+- `src/components/common/OfficialBrandLogo.tsx`
+- `src/components/home/PodiumBrandHero.tsx`
+- `src/components/home/FullscreenCarStage.tsx`
+- `src/components/home/carStageLoading.ts`
+- `src/components/home/carStageLoading.test.ts`
+- `src/components/layout/Navbar.tsx`
+
+Evidence and formatting:
+
+- `.prettierignore`
+- `docs/performance/m1b/before/lighthouse/*.json`
+- `docs/performance/m1b/after/lighthouse/*.json`
+- `docs/performance/m1b/lighthouse-summary.csv`
+- `docs/performance/m1b/browser-qa.json`
+- `docs/performance/m1b/screenshots/*.png`
+- `docs/performance/optimization-results.md`
+- `docs/performance/release-gates.md`
+
+### M1B checks, limitations, and rollback
+
+- `npm run lint`, `npm run test`, `npm run test:coverage`, and `npm run build:check` pass locally. The suite has 29 files and 215 tests; coverage remains 63.2% statements, 59.8% branches, 68.51% functions, and 63.96% lines. Initial JavaScript is 109.7 KiB gzip against the 180 KiB limit.
+- The first format check included the raw Lighthouse JSON and failed. `.prettierignore` now excludes M1B raw reports, and the final format check passes.
+- Mobile lab LCP remains above the 2.5-second release gate because the requested intro remains visible for 2.5 seconds and CPU-throttled timers extend its observed transition. M1B improves it without shortening or visually degrading the intro, but this gate remains open.
+- Explicit Speed Insights `route={pathname}` and query/hash stripping are implemented. Correct named aggregation cannot be claimed until the Preview/Production deployment accumulates real samples.
+- Roll back M1B by reverting its implementation commit. Individual rollback paths are: remove the two image preloads, restore all carousel image mounts, restore `logo.png` plus the two navbar logo instances, and restore the inline Speed Insights callback in `src/main.tsx`.

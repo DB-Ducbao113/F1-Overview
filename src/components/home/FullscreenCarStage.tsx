@@ -5,6 +5,7 @@ import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
 import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getNearbyCarIndexes, INITIAL_CAR_INDEX } from './carStageLoading';
 
 interface PosterCar {
   id: string;
@@ -191,7 +192,42 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
 
   // Active expanded car index (default to null: show all 11 teams evenly)
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const activeIndexRef = useRef<number | null>(null);
+  const panelRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [loadedImageIndexes, setLoadedImageIndexes] = useState<Set<number>>(
+    () => new Set(getNearbyCarIndexes(INITIAL_CAR_INDEX, POSTER_CARS.length)),
+  );
   const isAnyActive = activeIndex !== null;
+
+  const mountNearbyImages = useCallback((index: number) => {
+    setLoadedImageIndexes((current) => {
+      const next = new Set(current);
+      getNearbyCarIndexes(index, POSTER_CARS.length).forEach((item) => next.add(item));
+      return next.size === current.size ? current : next;
+    });
+  }, []);
+
+  const activateCar = useCallback(
+    (index: number) => {
+      activeIndexRef.current = index;
+      setActiveIndex(index);
+      mountNearbyImages(index);
+    },
+    [mountNearbyImages],
+  );
+
+  const collapseCars = useCallback(() => {
+    activeIndexRef.current = null;
+    setActiveIndex(null);
+  }, []);
+
+  const toggleCar = useCallback(
+    (index: number) => {
+      if (activeIndexRef.current === index) collapseCars();
+      else activateCar(index);
+    },
+    [activateCar, collapseCars],
+  );
 
   // Hero Cursor Glow State (A3)
   const heroRef = useRef<HTMLDivElement | null>(null);
@@ -252,9 +288,13 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
     if (rotateIntervalRef.current) clearInterval(rotateIntervalRef.current);
     rotateIntervalRef.current = window.setInterval(() => {
       if (isUserInteractingRef.current) return;
-      setActiveIndex((prev) => (prev === null ? 0 : (prev + 1) % POSTER_CARS.length));
+      const next =
+        activeIndexRef.current === null
+          ? INITIAL_CAR_INDEX
+          : (activeIndexRef.current + 1) % POSTER_CARS.length;
+      activateCar(next);
     }, 5000);
-  }, []);
+  }, [activateCar]);
 
   const stopAutoRotate = useCallback(() => {
     isUserInteractingRef.current = true;
@@ -353,7 +393,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
       <div className="page-container relative z-10">
         <div
           onMouseLeave={() => {
-            setActiveIndex(null);
+            collapseCars();
             stopAutoRotate();
           }}
           onMouseEnter={stopAutoRotate}
@@ -362,13 +402,20 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
         >
           {POSTER_CARS.map((car, idx) => {
             const isExpanded = idx === activeIndex;
+            const isImageMounted = loadedImageIndexes.has(idx);
 
             return (
               <div
                 key={car.id}
+                ref={(element) => {
+                  panelRefs.current[idx] = element;
+                }}
+                tabIndex={idx === (activeIndex ?? INITIAL_CAR_INDEX) ? 0 : -1}
+                aria-label={`${car.name} carousel panel`}
+                aria-expanded={isExpanded}
                 onMouseEnter={() => {
                   stopAutoRotate();
-                  setActiveIndex(idx);
+                  activateCar(idx);
                 }}
                 onMouseMove={isExpanded ? handleActivePanelMouseMove : undefined}
                 onMouseLeave={() => {
@@ -376,7 +423,32 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                 }}
                 onClick={() => {
                   stopAutoRotate();
-                  setActiveIndex(activeIndex === idx ? null : idx);
+                  toggleCar(idx);
+                }}
+                onTouchEnd={(event) => {
+                  event.preventDefault();
+                  stopAutoRotate();
+                  activateCar(idx);
+                }}
+                onKeyDown={(event) => {
+                  let nextIndex: number | null = null;
+                  if (event.key === 'ArrowRight') nextIndex = (idx + 1) % POSTER_CARS.length;
+                  if (event.key === 'ArrowLeft') {
+                    nextIndex = (idx - 1 + POSTER_CARS.length) % POSTER_CARS.length;
+                  }
+                  if (event.key === 'Home') nextIndex = 0;
+                  if (event.key === 'End') nextIndex = POSTER_CARS.length - 1;
+
+                  if (nextIndex !== null) {
+                    event.preventDefault();
+                    stopAutoRotate();
+                    activateCar(nextIndex);
+                    panelRefs.current[nextIndex]?.focus();
+                  } else if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    stopAutoRotate();
+                    toggleCar(idx);
+                  }
                 }}
                 style={{
                   flex: isExpanded ? 12 : 1,
@@ -410,17 +482,19 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                   }`}
                 >
                   {/* Background Sliced Image with Vignette */}
-                  <img
-                    src={car.imageUrl}
-                    alt={car.name}
-                    className={`absolute inset-0 w-full h-full object-cover object-center filter contrast-125 group-hover:scale-110 transition-all duration-700 ${
-                      !isAnyActive
-                        ? 'brightness-[0.45] group-hover:brightness-[0.7]'
-                        : 'brightness-[0.35]'
-                    }`}
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  {isImageMounted && (
+                    <img
+                      src={car.imageUrl}
+                      alt={car.name}
+                      className={`absolute inset-0 w-full h-full object-cover object-center filter contrast-125 group-hover:scale-110 transition-all duration-700 ${
+                        !isAnyActive
+                          ? 'brightness-[0.45] group-hover:brightness-[0.7]'
+                          : 'brightness-[0.35]'
+                      }`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
 
                   {/* Gradient Overlay & Ambient Tint */}
                   <div
@@ -568,7 +642,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                 key={car.id}
                 onClick={() => {
                   stopAutoRotate();
-                  setActiveIndex(idx);
+                  activateCar(idx);
                 }}
                 title={car.name}
                 aria-label={`Select ${car.name}`}
