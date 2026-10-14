@@ -98,5 +98,11 @@ export const F1SpeedStream: React.FC = () => {
     };
   }, [enabled]);
 
-  return enabled ? <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 pointer-events-none z-[1] opacity-35" /> : null;
+  return enabled ? (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="fixed inset-0 pointer-events-none z-[1] opacity-35"
+    />
+  ) : null;
 };

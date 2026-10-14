@@ -36,7 +36,11 @@ const DeferredCarStage: React.FC = () => {
 
   return (
     <div ref={markerRef} className="min-h-[560px] sm:min-h-[640px] lg:min-h-[700px]">
-      {isReady ? <FullscreenCarStage /> : <div className="h-full bg-[#050508]" aria-hidden="true" />}
+      {isReady ? (
+        <FullscreenCarStage />
+      ) : (
+        <div className="h-full bg-[#050508]" aria-hidden="true" />
+      )}
     </div>
   );
 };
@@ -120,7 +124,10 @@ export const HomeView: React.FC = () => {
         <RaceWeekendWidget race={nextRace} />
 
         {/* ── 3. Championship Standings (Official Verified Data) ── */}
-        <section ref={standingsRef} className="page-container space-y-6 [content-visibility:auto] [contain-intrinsic-size:auto_900px]">
+        <section
+          ref={standingsRef}
+          className="page-container space-y-6 [content-visibility:auto] [contain-intrinsic-size:auto_900px]"
+        >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-f1red block mb-1">

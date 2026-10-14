@@ -24,7 +24,12 @@ export function getStartLightsFrame(elapsedMs: number) {
   const litColumns =
     time < START_LIGHT_TIMING.firstLightMs || time >= START_LIGHT_TIMING.lightsOutMs
       ? 0
-      : Math.min(5, Math.floor((time - START_LIGHT_TIMING.firstLightMs) / START_LIGHT_TIMING.lightIntervalMs) + 1);
+      : Math.min(
+          5,
+          Math.floor(
+            (time - START_LIGHT_TIMING.firstLightMs) / START_LIGHT_TIMING.lightIntervalMs,
+          ) + 1,
+        );
 
   return { phase, litColumns } as const;
 }

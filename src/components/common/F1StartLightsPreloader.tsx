@@ -7,8 +7,10 @@ const INTRO_SESSION_KEY = 'podium:start-lights-seen';
 export const F1StartLightsPreloader: React.FC = () => {
   const [shouldPlay] = useState(() => {
     if (typeof window === 'undefined') return false;
-    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
-      window.sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
+    return (
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      window.sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true'
+    );
   });
   const [frame, setFrame] = useState(() => getStartLightsFrame(0));
   const [dismissed, setDismissed] = useState(!shouldPlay);
@@ -23,11 +25,16 @@ export const F1StartLightsPreloader: React.FC = () => {
     if (!visible) return;
     const update = () => setFrame(getStartLightsFrame(performance.now() - startedAt));
     const deadlines = [
-      ...Array.from({ length: 5 }, (_, index) => START_LIGHT_TIMING.firstLightMs + index * START_LIGHT_TIMING.lightIntervalMs),
+      ...Array.from(
+        { length: 5 },
+        (_, index) => START_LIGHT_TIMING.firstLightMs + index * START_LIGHT_TIMING.lightIntervalMs,
+      ),
       START_LIGHT_TIMING.lightsOutMs,
       START_LIGHT_TIMING.totalMs,
     ];
-    const timers = deadlines.map((deadline) => window.setTimeout(update, Math.max(0, deadline - (performance.now() - startedAt)) + 1));
+    const timers = deadlines.map((deadline) =>
+      window.setTimeout(update, Math.max(0, deadline - (performance.now() - startedAt)) + 1),
+    );
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' || event.key === ' ') {
         event.preventDefault();
@@ -50,7 +57,11 @@ export const F1StartLightsPreloader: React.FC = () => {
           {[1, 2, 3, 4, 5].map((column) => (
             <div className="podium-intro__column" key={column}>
               {[0, 1].map((lamp) => (
-                <span key={lamp} data-testid="start-light" className={`podium-intro__lamp${column <= frame.litColumns ? ' is-on' : ''}`} />
+                <span
+                  key={lamp}
+                  data-testid="start-light"
+                  className={`podium-intro__lamp${column <= frame.litColumns ? ' is-on' : ''}`}
+                />
               ))}
             </div>
           ))}
