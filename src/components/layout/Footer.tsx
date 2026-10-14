@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
+import { ExternalLink, Facebook, Heart, MessageSquare } from 'lucide-react';
+import { author } from '../../data/author';
+import { DonationQr } from '../common/DonationQr';
 
 export const Footer: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
@@ -116,14 +119,72 @@ export const Footer: React.FC = React.memo(() => {
           </section>
         </div>
 
-        <div className="mt-16 flex flex-col gap-5 border-t border-white/10 pt-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+        <div className="mt-12 grid gap-8 border-t border-white/10 pt-8 md:grid-cols-2">
+          <section>
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+              {lang === 'vi' ? 'Liên hệ tác giả' : 'Contact the creator'}
+            </h3>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <a
+                href={author.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-lg border border-white/15 px-4 py-3 text-sm text-white/75 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-f1red"
+              >
+                <Facebook className="h-4 w-4" aria-hidden="true" />
+                {author.name} / Facebook
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+              <a
+                href={author.feedbackFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-lg border border-f1red/50 bg-f1red/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:border-f1red hover:bg-f1red/20 focus-visible:outline-f1red"
+              >
+                <MessageSquare className="h-4 w-4" aria-hidden="true" />
+                {lang === 'vi' ? 'Gửi góp ý' : 'Send feedback'}
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+            <p className="mt-3 text-xs leading-5 text-white/55">
+              {lang === 'vi'
+                ? 'Báo lỗi hoặc đề xuất tính năng qua Google Forms.'
+                : 'Report a bug or suggest a feature through Google Forms.'}
+            </p>
+          </section>
+          <details className="group self-start rounded-xl border border-white/15 p-5">
+            <summary className="cursor-pointer text-sm font-semibold text-white/85 focus-visible:outline-f1red">
+              <span className="ml-2 inline-flex items-center gap-2 align-middle">
+                <Heart className="h-4 w-4 text-f1red" aria-hidden="true" />
+                {lang === 'vi' ? 'Ủng hộ tác giả · QR donate' : 'Support the creator · Donate QR'}
+              </span>
+            </summary>
+            <p className="mt-4 text-sm leading-6 text-white/60">
+              {lang === 'vi'
+                ? 'Ủng hộ tác giả để tiếp tục phát triển web. Quét mã bằng ứng dụng ngân hàng để donate. Mọi đóng góp đều tự nguyện. Cảm ơn bạn!'
+                : 'Support the creator to keep developing the website. Scan with your banking app to donate. All contributions are voluntary. Thank you!'}
+            </p>
+            <div className="mt-5 max-w-[280px] text-white/80">
+              <DonationQr />
+            </div>
+          </details>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
           <p className="max-w-3xl text-[13px] font-medium normal-case leading-6 tracking-normal text-white/65 sm:text-sm">
             {strings.copyright}
           </p>
           <div className="flex items-center gap-5 whitespace-nowrap">
             <span>© MMXXVI</span>
             <span className="h-px w-8 bg-f1red" />
-            <span>Designed by BaoBungBu</span>
+            <a
+              href={author.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white focus-visible:outline-f1red"
+            >
+              Designed by {author.name}
+            </a>
           </div>
         </div>
       </div>

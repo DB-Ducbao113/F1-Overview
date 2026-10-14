@@ -40,6 +40,7 @@ pnpm-debug.log*
 manage-skills.ps1
 .agent/
 scratch/
+runs/
 .eslintcache
 .prettiercache
 .vite/

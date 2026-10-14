@@ -13,8 +13,12 @@ import {
   Layers,
   Palette,
   Compass,
+  Facebook,
+  MessageSquare,
 } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { author } from '../../data/author';
+import { DonationQr } from '../common/DonationQr';
 
 export const AboutPage: React.FC = () => {
   const lang = useNavigationStore((state) => state.lang);
@@ -81,7 +85,100 @@ export const AboutPage: React.FC = () => {
               <span>•</span>
               <span>2024–2026</span>
             </div>
+            <a
+              href={author.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-3 text-sm font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/10 focus-visible:outline-f1red"
+            >
+              <Facebook className="h-4 w-4" aria-hidden="true" />
+              {isVi ? 'Liên hệ tác giả qua Facebook' : 'Contact the creator on Facebook'}
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
           </div>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="feedback-heading"
+        className="mb-10 rounded-2xl border border-studio-200 bg-white p-6 shadow-sm sm:p-8"
+      >
+        <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-f1red/10 text-f1red">
+          <MessageSquare className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <h2
+          id="feedback-heading"
+          className="font-display text-2xl font-bold uppercase tracking-tight text-studio-950"
+        >
+          {isVi ? 'Góp ý cho PODIUM' : 'Help improve PODIUM'}
+        </h2>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-studio-600">
+          {isVi
+            ? 'Bạn gặp lỗi, có ý tưởng tính năng mới hoặc muốn góp ý về trải nghiệm? Chia sẻ phản hồi để giúp PODIUM tốt hơn. Biểu mẫu hỗ trợ tiếng Việt và tiếng Anh.'
+            : 'Found a bug, have a feature idea, or want to share your experience? Send your feedback to help make PODIUM better. The form supports Vietnamese and English.'}
+        </p>
+        <a
+          href={author.feedbackFormUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-f1red px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-f1red-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-f1red"
+        >
+          <MessageSquare className="h-4 w-4" aria-hidden="true" />
+          {isVi ? 'Gửi góp ý' : 'Send feedback'}
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+        <p className="mt-3 text-xs leading-5 text-studio-500">
+          {isVi ? 'Mở Google Forms trong tab mới.' : 'Opens Google Forms in a new tab.'}
+        </p>
+      </section>
+
+      <section
+        aria-labelledby="donate-heading"
+        className="mb-10 grid grid-cols-1 gap-8 rounded-2xl border border-studio-200 bg-white p-6 shadow-sm sm:p-8 md:grid-cols-[1fr_18rem] md:items-start"
+      >
+        <div>
+          <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-f1red/10 text-f1red">
+            <Heart className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <h2
+            id="donate-heading"
+            className="font-display text-2xl font-bold uppercase tracking-tight text-studio-950"
+          >
+            {isVi ? 'Ủng hộ tác giả' : 'Support the creator'}
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-studio-600">
+            {isVi
+              ? 'Ủng hộ tác giả để tiếp tục phát triển web. Nếu bạn yêu thích PODIUM, bạn có thể donate để ủng hộ thời gian và công sức phát triển dự án. Mọi đóng góp đều tự nguyện; bạn vẫn có thể sử dụng toàn bộ website miễn phí.'
+              : 'Support the creator to keep developing the website. If you enjoy PODIUM, you can donate to support the time and effort behind the project. Contributions are voluntary, and the entire website remains free to use.'}
+          </p>
+          <p className="mt-3 text-sm leading-7 text-studio-600">
+            {isVi
+              ? 'Quét mã bằng ứng dụng ngân hàng, hoặc tải ảnh QR để sử dụng trên điện thoại. Cảm ơn bạn đã đồng hành!'
+              : 'Scan with your banking app, or download the QR image to use on your phone. Thank you for your support!'}
+          </p>
+          <dl className="mt-6 space-y-4 rounded-xl border border-studio-200 bg-studio-50 p-5 text-sm">
+            <div>
+              <dt className="text-xs text-studio-500">{isVi ? 'Ngân hàng' : 'Bank'}</dt>
+              <dd className="mt-1 font-semibold text-studio-900">{author.donation.bank}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-studio-500">
+                {isVi ? 'Chủ tài khoản' : 'Account holder'}
+              </dt>
+              <dd className="mt-1 font-semibold text-studio-900">{author.donation.recipient}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-studio-500">
+                {isVi ? 'Số tài khoản' : 'Account number'}
+              </dt>
+              <dd className="mt-1 select-all font-mono font-semibold text-studio-900">
+                {author.donation.account}
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div className="flex justify-center text-studio-700">
+          <DonationQr />
         </div>
       </section>
 
