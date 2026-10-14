@@ -20,6 +20,44 @@ interface SessionTiming {
 }
 
 const ICT_DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const MONTHS: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+const SESSION_NAMES: Record<string, Pick<SessionTiming, 'nameVi' | 'nameEn'>> = {
+  fp1: { nameVi: 'Luyện tập 1 (FP1)', nameEn: 'Practice 1 (FP1)' },
+  fp2: { nameVi: 'Luyện tập 2 (FP2)', nameEn: 'Practice 2 (FP2)' },
+  fp3: { nameVi: 'Luyện tập 3 (FP3)', nameEn: 'Practice 3 (FP3)' },
+  sprintQualifying: { nameVi: 'Phân hạng Sprint', nameEn: 'Sprint Qualifying' },
+  sprint: { nameVi: 'Đua nước rút (Sprint)', nameEn: 'Sprint Race' },
+  qualifying: { nameVi: 'Phân hạng', nameEn: 'Qualifying' },
+  race: { nameVi: 'Chặng đua chính', nameEn: 'Grand Prix Race' },
+};
+
+function buildSessionTimings(race: GrandPrixRound): SessionTiming[] {
+  return Object.entries(race.sessions).flatMap(([id, session]) => {
+    if (!session) return [];
+    const date = session.dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})/);
+    const time = session.timeStr.match(/^(\d{1,2}):(\d{2})/);
+    const labels = SESSION_NAMES[id];
+    if (!date || !time || !labels || MONTHS[date[2]] === undefined) return [];
+    const startMs = Date.UTC(
+      race.season,
+      MONTHS[date[2]],
+      Number(date[1]),
+      Number(time[1]) - (race.venueUtcOffset ?? 0),
+      Number(time[2]),
+    );
+    const durationMs = id === 'race' ? 2 * 60 * 60 * 1000 : 60 * 60 * 1000;
+    return [{
+      id,
+      ...labels,
+      startIso: new Date(startMs).toISOString(),
+      endIso: new Date(startMs + durationMs).toISOString(),
+    }];
+  });
+}
 
 function formatIctSession(startIso: string, lang: 'vi' | 'en') {
   const date = new Date(startIso);
@@ -79,7 +117,7 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
   const [now, setNow] = useState<number>(() => Date.now());
 
   // Official Singapore schedule stored with its source offset; the UI always renders UTC+7.
-  const sessions: SessionTiming[] = useMemo(
+  const legacySingaporeSessions: SessionTiming[] = useMemo(
     () => [
       {
         id: 'fp1',
@@ -119,6 +157,8 @@ export const SingaporeCountdownWidget: React.FC<SingaporeCountdownWidgetProps> =
     ],
     [],
   );
+  void legacySingaporeSessions;
+  const sessions = useMemo(() => buildSessionTimings(race), [race]);
 
   // Wall-clock synchronized tick (aligned strictly to :00.000 whole second boundary)
   useEffect(() => {
