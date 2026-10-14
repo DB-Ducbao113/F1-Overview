@@ -60,3 +60,20 @@ Monitor the seven-day Hobby window and report P75 Desktop/Mobile FCP, LCP, INP, 
 ## GO / NO-GO rule
 
 GO requires all functional, visual, bundle, CI, deployment, and blocking Lighthouse gates to pass for the target commit. Any F1 data regression, failed workflow, unverified production artifact, horizontal overflow introduced by the change, or unexplained Core Web Vital regression is NO-GO.
+
+## M1A gate status
+
+| Gate                            | Status              | Evidence                                                                                                                 |
+| ------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Lint, format, tests, coverage   | Pass                | 27 test files and 210 tests; coverage remains 63.2% statements.                                                          |
+| Production build and bundle     | Pass                | 109.4 KiB initial JavaScript, below the 180 KiB limit.                                                                   |
+| Desktop Lighthouse              | Pass locally        | Three cold runs each for Homepage, Season 2026, and Teams; median CLS is 0.001, 0.001, and 0.003.                        |
+| Five-width visual review        | Pass for M1A scope  | 15 screenshots preserve typography and responsive layouts; delayed Homepage hero discovery remains assigned to M1B.      |
+| Load-test safety                | Pass                | High-load, spike, soak, and fault scripts require simulated fixtures; target and response behavior have automated tests. |
+| F1 synchronization isolation    | Pass                | No F1 synchronization workflow, schedule, or data file changed.                                                          |
+| CI for `perf/**`                | Pending push        | `ci.yml` now includes `perf/**`; record the target run URL after it finishes.                                            |
+| Docker workflow                 | Not applicable      | The workflow intentionally does not publish branch builds and remains unchanged.                                         |
+| Preview smoke/Vercel deployment | Pending push        | Verify only if Vercel creates a Preview deployment event for the target SHA.                                             |
+| Production field validation     | Pending later phase | M1A is not merged and cannot yet affect Production field data.                                                           |
+
+M1A remains **NO-GO for merge** until the target branch SHA has a successful CI result and any applicable Preview deployment/smoke result is recorded. M1B also requires explicit approval.

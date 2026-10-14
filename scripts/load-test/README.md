@@ -7,7 +7,7 @@ These k6 scripts only target an explicitly named Vercel Preview hostname. They r
 1. Record the preview URL, commit SHA, Vercel plan, deployment protection state, region and remaining quota in `runs/<timestamp>/run.md`.
 2. Set `LOAD_TEST_TOKEN` as an encrypted Preview environment variable in Vercel. It is never a `VITE_` variable. The same value is supplied to k6 as `TEST_TOKEN` only for simulated tests.
 3. If Preview has Deployment Protection, create a **Protection Bypass for Automation** secret in Vercel and supply it to k6 as `VERCEL_PROTECTION_BYPASS`. This is a separate secret and is sent only as the `x-vercel-protection-bypass` request header.
-4. Run live smoke first. Use simulated mode for load, spike, soak and dependency-fault tests so OpenF1 and Jolpica are not load-tested.
+4. Run live smoke first. Load, spike, soak and dependency-fault scripts require `DATA_MODE=simulated` and stop before making a request if live mode is selected. This prevents load from reaching OpenF1 or Jolpica.
 
 ```powershell
 $env:BASE_URL = 'https://your-preview.vercel.app'

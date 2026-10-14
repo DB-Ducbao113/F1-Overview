@@ -1,59 +1,104 @@
 # Optimization results
 
-## M0 status
+## M1A result
 
-No performance optimization has been implemented. This document intentionally contains only the audited baseline so that later phases have an honest before/after comparison.
+M1A self-hosts the existing Inter and Playfair Display families, removes Google Fonts from the critical path, and reserves a full viewport for lazy route content so the footer cannot enter the initial viewport while a route chunk is loading.
 
-| Metric                             |         Before |       After M0 |
-| ---------------------------------- | -------------: | -------------: |
-| Homepage desktop Lighthouse median |             80 | Not applicable |
-| Homepage mobile Lighthouse median  |             64 | Not applicable |
-| Homepage desktop LCP median        |       1,473 ms | Not applicable |
-| Homepage mobile LCP median         |       5,772 ms | Not applicable |
-| Homepage desktop CLS median        |          0.233 | Not applicable |
-| Initial JavaScript                 | 109.4 KiB gzip |      Unchanged |
-| Showroom desktop TBT               |      33,251 ms | Not applicable |
-| Showroom mobile TBT                |     154,181 ms | Not applicable |
+The candidate was measured locally with Chrome 155 and Lighthouse 13.5.0 using the desktop preset, simulated throttling, and a new Lighthouse browser context for every run. Each route has three cold runs. M0 was measured against Production, while M1A was measured against the local production build; the LCP/FCP comparison is directional until the preview and production deployments are measured. CLS source removal is directly confirmed in the candidate reports.
+
+| Route       | Metric | M0 desktop | M1A median | Change |
+| ----------- | ------ | ---------: | ---------: | -----: |
+| Homepage    | Score  |         80 |         95 |    +15 |
+| Homepage    | FCP    |     770 ms |     465 ms |   -40% |
+| Homepage    | LCP    |   1,473 ms |   1,396 ms |    -5% |
+| Homepage    | CLS    |      0.233 |      0.001 | -99.6% |
+| Season 2026 | Score  |         78 |         97 |    +19 |
+| Season 2026 | FCP    |   1,030 ms |     474 ms |   -54% |
+| Season 2026 | LCP    |   1,432 ms |   1,024 ms |   -28% |
+| Season 2026 | CLS    |      0.233 |      0.001 | -99.6% |
+| Teams       | Score  |         80 |         96 |    +16 |
+| Teams       | FCP    |     760 ms |     428 ms |   -44% |
+| Teams       | LCP    |   1,602 ms |   1,324 ms |   -17% |
+| Teams       | CLS    |      0.233 |      0.003 | -98.7% |
+
+All nine final runs have CLS between 0.000 and 0.003, LCP below 1.5 seconds, and zero TBT.
+
+Raw final reports are under [`m1a/lighthouse/`](m1a/lighthouse/), with per-run values in [`m1a/lighthouse-summary.csv`](m1a/lighthouse-summary.csv). The font-only attempt remained near 0.234 CLS because its route skeleton exposed the footer before lazy content mounted. Reserving `calc(100vh - 4rem)` reduced CLS to 0.065–0.069 but still exposed 64 px of footer. The final `min-h-screen` route container removes the footer shift. Both failed summaries are retained as [`font-only-lighthouse-summary.csv`](m1a/font-only-lighthouse-summary.csv) and [`reserved-main-lighthouse-summary.csv`](m1a/reserved-main-lighthouse-summary.csv).
+
+## Font and visual evidence
+
+- Four variable WOFF2 subsets total 106,024 bytes: Inter Latin/Vietnamese and Playfair Display Latin/Vietnamese.
+- The external Google Fonts stylesheet, preconnects, and CSP origins are gone.
+- The four local subsets are preloaded because Vietnamese first-render content needs both Unicode subsets and the first viewport uses both families.
+- OFL license texts are stored beside the font assets.
+- Fifteen candidate screenshots cover `/`, `/season/2026`, and `/teams` at 390×844, 768×1024, 1280×900, 1440×1000, and 1920×1080 under [`m1a/screenshots/`](m1a/screenshots/).
+- Visual review found no new wrapping, clipping, or typography regression in the three target routes. Two Homepage captures initially missed the client-discovered hero image and passed after a 10-second retry; this remains evidence for the planned M1B hero discoverability task.
+
+## Load-test verification fixes
+
+- CI now runs for `perf/**` pushes and pull requests.
+- `load.js`, `spike.js`, `soak.js`, and `fault.js` reject any `DATA_MODE` other than `simulated` before a request can run.
+- Shared target validation requires the exact HTTPS preview hostname and rejects `podiumeds.vercel.app` even if it is supplied as the allowed host.
+- Automated tests cover target guards, simulated-mode guards, Jolpica preview fixtures, production rejection, 429/503 responses, and slow/timeout schedules.
+- The preview deployment smoke workflow remains a short live smoke only. No high-load test was run against Preview or Production during M1A.
+- `docker-publish.yml` remains limited to `main`, tags, and manual dispatch. F1 synchronization workflows and F1 data files are unchanged.
 
 ## Validation performed
 
-| Check                                         | Result                             | Detail                                                                                                   |
-| --------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `npm run lint`                                | Pass                               | No ESLint errors.                                                                                        |
-| `npm test -- --run`                           | Pass                               | 26 files, 200 tests.                                                                                     |
-| `npm run test:coverage`                       | Pass                               | 26 files, 200 tests; 63.2% statements and 63.96% lines in the configured service/utility scope.          |
-| `npm run build:check`                         | Pass                               | Production build completed; initial JS 109.4 KiB gzip under 180 KiB.                                     |
-| `npm run format:check` before artifact ignore | Fail                               | Raw Lighthouse JSON and downloaded production HTML are machine output and were not Prettier-formatted.   |
-| Final `npm run format:check`                  | Pass                               | Machine-generated evidence paths are explicitly ignored; all authored files conform.                     |
-| Production route smoke                        | Pass with noted visual defects     | All seven routes loaded at five widths; no HTTP request errors in run-1 Lighthouse reports.              |
-| Latest-main CI                                | Pass                               | [CI run](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38511671924).                          |
-| Latest-main Docker workflow                   | Pass                               | [Docker run](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38511671839).                      |
-| Production deployment identity                | Pass with public-header limitation | Production entry asset hashes match the local build from `cfbd651`; public headers do not include a SHA. |
+| Check                           | Result                    | Detail                                                                                                               |
+| ------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `npm run lint`                  | Pass                      | No ESLint errors.                                                                                                    |
+| `npm run format:check`          | Pass                      | All authored files conform.                                                                                          |
+| `npm test`                      | Pass                      | 27 files, 210 tests.                                                                                                 |
+| `npm run test:coverage`         | Pass                      | 63.2% statements, 59.8% branches, 68.51% functions, 63.96% lines.                                                    |
+| `npm run build:check`           | Pass                      | Initial JavaScript 109.4 KiB gzip against the 180 KiB limit.                                                         |
+| First build after adding tests  | Failed, corrected         | A multiline import left an unused `@ts-expect-error`; the import was corrected and the production build then passed. |
+| First font-only Lighthouse set  | Failed, corrected         | CLS stayed near 0.234 because lazy route loading moved the footer.                                                   |
+| Final Lighthouse, 9 runs        | Pass                      | All route medians pass score, LCP, TBT, and CLS desktop gates.                                                       |
+| Five-width visual capture       | Pass with M1B observation | 15 final screenshots; two delayed Homepage hero captures required a longer wait.                                     |
+| High-load execution             | Not run by design         | Guard behavior is unit tested; no load was sent to Production.                                                       |
+| Target-commit CI and deployment | Pending                   | Filled after the branch commit is pushed and the applicable workflows finish.                                        |
 
-The expected machine-generated paths were added to `.prettierignore`; the final format check passes.
+## Exact changed files
 
-## Exact files changed in M0
-
-Application source files changed: **none**.
-
-Audit-owned changes are:
+Application and configuration:
 
 - `.prettierignore`
-- `docs/performance/production-audit.md`
-- `docs/performance/baseline.md`
-- `docs/performance/bottlenecks.md`
+- `.github/workflows/ci.yml`
+- `index.html`
+- `src/App.tsx`
+- `src/index.css`
+- `vercel.json`
+- `public/fonts/inter-latin.woff2`
+- `public/fonts/inter-vietnamese.woff2`
+- `public/fonts/playfair-display-latin.woff2`
+- `public/fonts/playfair-display-vietnamese.woff2`
+- `public/fonts/LICENSE-Inter.txt`
+- `public/fonts/LICENSE-Playfair-Display.txt`
+
+Load-test safety and tests:
+
+- `scripts/load-test/README.md`
+- `scripts/load-test/lib.js`
+- `scripts/load-test/load.js`
+- `scripts/load-test/spike.js`
+- `scripts/load-test/soak.js`
+- `scripts/load-test/fault.js`
+- `scripts/load-test/safety.js`
+- `scripts/load-test/validate.mjs`
+- `src/services/load-test-safety.test.ts`
+
+Evidence and release documentation:
+
 - `docs/performance/optimization-results.md`
 - `docs/performance/release-gates.md`
-- `docs/performance/screenshots/*.png` — 35 viewport captures
-- `docs/performance/lighthouse/*` — Lighthouse JSON, DevTools logs, and two compressed traces
-- `docs/performance/artifacts/*` — headers, production HTML, Lighthouse/network/bundle summaries, and artifact manifest
+- `docs/performance/m1a/lighthouse/*.json`
+- `docs/performance/m1a/*.csv`
+- `docs/performance/m1a/screenshots/*.png`
 
-Every generated file and SHA-256 hash is listed in [artifact-manifest.csv](artifacts/artifact-manifest.csv).
+## Risks and rollback
 
-## Remaining risks
-
-- Field RES will continue to include older deployments until the seven-day window rolls forward.
-- `Unknown` route samples may remain visible for the same reason.
-- One-run diagnostics for non-Homepage routes are insufficient for accepting a release; release measurements require three cold runs.
-- Showroom's throttled trace is severe and must be reproduced with frame timing on representative hardware before a quality-preserving implementation is chosen.
-- The 390px visual overflows are pre-existing and need explicit regression assertions.
+- Production field RES cannot validate this work until the new deployment accumulates samples. Low traffic and the seven-day rolling window can delay a visible change.
+- Candidate LCP/FCP values include localhost rather than Vercel network latency; Production validation remains required before release GO.
+- Four font preloads are deliberate for the bilingual first viewport but consume about 106 KiB. M1B should verify whether route-aware preload reduction is safe without reintroducing font shifts.
+- Revert the M1A commit to restore Google Fonts and the previous route minimum height. The load-test guard can be reverted independently from the font/layout files if necessary.

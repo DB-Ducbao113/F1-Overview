@@ -1,5 +1,5 @@
 import { check } from 'k6';
-import { apiRequest, assertSafeTarget, config } from './lib.js';
+import { apiRequest, assertSafeTarget, assertSimulatedDataMode, config } from './lib.js';
 
 const stableRate = Number(__ENV.STABLE_RATE || 10);
 const duration = __ENV.DURATION || '30m';
@@ -9,6 +9,7 @@ const rate = Math.max(1, Math.floor(stableRate * 0.7));
 if (!Number.isFinite(stableRate) || !Number.isFinite(durationSeconds))
   throw new Error('STABLE_RATE must be numeric and DURATION must be Ns or Nm');
 assertSafeTarget(rate * durationSeconds);
+assertSimulatedDataMode();
 export const options = {
   scenarios: {
     soak: {

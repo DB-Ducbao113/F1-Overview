@@ -1,10 +1,11 @@
 import { check } from 'k6';
-import { apiRequest, assertSafeTarget } from './lib.js';
+import { apiRequest, assertSafeTarget, assertSimulatedDataMode } from './lib.js';
 
 const fault = __ENV.FAULT || '503';
 if (!['slow', 'timeout', '429', '503'].includes(fault))
   throw new Error('FAULT must be slow, timeout, 429, or 503');
 assertSafeTarget(30);
+assertSimulatedDataMode();
 export const options = { vus: 1, iterations: 10, thresholds: { http_req_failed: ['rate<1'] } };
 
 export default function () {

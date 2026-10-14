@@ -1,5 +1,5 @@
 import { check } from 'k6';
-import { apiRequest, assertSafeTarget, config } from './lib.js';
+import { apiRequest, assertSafeTarget, assertSimulatedDataMode, config } from './lib.js';
 
 const stableRate = Number(__ENV.STABLE_RATE || 20);
 if (!Number.isFinite(stableRate) || stableRate <= 0)
@@ -8,6 +8,7 @@ const low = Math.max(1, Math.ceil(stableRate * 0.5));
 const high = Math.ceil(stableRate * 1.5);
 const estimatedRequests = low * 30 + stableRate * 10 + high * 60 + stableRate * 10 + low * 120;
 assertSafeTarget(estimatedRequests);
+assertSimulatedDataMode();
 export const options = {
   scenarios: {
     spike: {

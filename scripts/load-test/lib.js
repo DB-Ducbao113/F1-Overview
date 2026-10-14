@@ -1,5 +1,10 @@
 import http from 'k6/http';
 import { Counter, Rate } from 'k6/metrics';
+import {
+  assertRequestCeiling,
+  requireSimulatedDataMode,
+  validateLoadTestTarget,
+} from './safety.js';
 
 export const sentRequests = new Counter('load_test_requests');
 export const invalidResponses = new Rate('invalid_response');
@@ -16,24 +21,20 @@ export const config = {
 };
 
 export function assertSafeTarget(expectedRequests = 0) {
-  if (!config.baseUrl || !config.stagingHost)
-    throw new Error('BASE_URL and ALLOWED_STAGING_HOST are required');
-  // k6's JavaScript runtime does not provide the browser/Node URL global.
-  const match = config.baseUrl.match(/^https:\/\/([^/:?#]+)(?::\d+)?(?:[/?#]|$)/i);
-  const hostname = match ? match[1].toLowerCase() : '';
-  if (!hostname || hostname !== config.stagingHost.toLowerCase()) {
-    throw new Error('BASE_URL must be HTTPS and its hostname must equal ALLOWED_STAGING_HOST');
-  }
-  if (hostname === config.productionHost.toLowerCase())
-    throw new Error('Refusing to run against the production hostname');
+  validateLoadTestTarget({
+    baseUrl: config.baseUrl,
+    allowedHost: config.stagingHost,
+    productionHost: config.productionHost,
+  });
   if (!['live', 'simulated'].includes(config.dataMode))
     throw new Error('DATA_MODE must be live or simulated');
   if (config.dataMode === 'simulated' && !config.token)
     throw new Error('TEST_TOKEN is required for simulated tests');
-  if (expectedRequests > config.maxRequests)
-    throw new Error(
-      `Planned ${expectedRequests} requests exceeds MAX_REQUESTS=${config.maxRequests}`,
-    );
+  assertRequestCeiling(expectedRequests, config.maxRequests);
+}
+
+export function assertSimulatedDataMode() {
+  requireSimulatedDataMode(config.dataMode);
 }
 
 export function headers(fault = '') {

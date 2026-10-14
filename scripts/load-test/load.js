@@ -1,5 +1,5 @@
 import { check } from 'k6';
-import { apiRequest, assertSafeTarget, config } from './lib.js';
+import { apiRequest, assertSafeTarget, assertSimulatedDataMode, config } from './lib.js';
 
 const rate = Number(__ENV.RATE || 1);
 const duration = __ENV.DURATION || '2m';
@@ -8,6 +8,7 @@ const durationSeconds =
 if (!Number.isFinite(rate) || !Number.isFinite(durationSeconds))
   throw new Error('RATE must be numeric and DURATION must be Ns or Nm');
 assertSafeTarget(rate * durationSeconds);
+assertSimulatedDataMode();
 export const options = {
   scenarios: {
     load: {
