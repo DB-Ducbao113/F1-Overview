@@ -1,14 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear } from '../../types';
 import { t } from '../../i18n/translations';
 import { StandingsTable } from './StandingsTable';
-import { RaceCalendar } from './RaceCalendar';
-import { RaceResults } from './RaceResults';
-import { TeamsDirectoryPage } from '../pages/TeamsDirectoryPage';
-import { DriversDirectoryPage } from '../pages/DriversDirectoryPage';
 import { Trophy, Calendar, CheckCircle2, RefreshCw, Users, UserRound } from 'lucide-react';
+
+const RaceCalendar = lazy(() =>
+  import('./RaceCalendar').then((module) => ({ default: module.RaceCalendar })),
+);
+const RaceResults = lazy(() =>
+  import('./RaceResults').then((module) => ({ default: module.RaceResults })),
+);
+const TeamsDirectoryPage = lazy(() =>
+  import('../pages/TeamsDirectoryPage').then((module) => ({
+    default: module.TeamsDirectoryPage,
+  })),
+);
+const DriversDirectoryPage = lazy(() =>
+  import('../pages/DriversDirectoryPage').then((module) => ({
+    default: module.DriversDirectoryPage,
+  })),
+);
 
 interface ChampionshipViewProps {
   season: SeasonYear;
@@ -153,13 +166,28 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
         </div>
 
         {/* Content Render based on Subtab with 3D Depth Entrance */}
-        <div key={activeSubTab} className="animate-f1-depth-enter">
-          {activeSubTab === 'standings' && <StandingsTable season={season} />}
-          {activeSubTab === 'calendar' && <RaceCalendar season={season} />}
-          {activeSubTab === 'results' && <RaceResults season={season} />}
-          {activeSubTab === 'teams' && <TeamsDirectoryPage initialSeason={season} hideHeader />}
-          {activeSubTab === 'drivers' && <DriversDirectoryPage initialSeason={season} hideHeader />}
-        </div>
+        <Suspense
+          fallback={
+            <div
+              className="min-h-[32rem] animate-pulse rounded-2xl border border-studio-200 bg-white p-5"
+              aria-label={lang === 'vi' ? 'Đang tải nội dung' : 'Loading content'}
+            >
+              <div className="h-20 rounded-xl bg-studio-100" />
+              <div className="mt-5 h-10 rounded-xl bg-studio-100" />
+              <div className="mt-3 h-64 rounded-xl bg-studio-100" />
+            </div>
+          }
+        >
+          <div key={activeSubTab} className="animate-f1-depth-enter">
+            {activeSubTab === 'standings' && <StandingsTable season={season} />}
+            {activeSubTab === 'calendar' && <RaceCalendar season={season} />}
+            {activeSubTab === 'results' && <RaceResults season={season} />}
+            {activeSubTab === 'teams' && <TeamsDirectoryPage initialSeason={season} hideHeader />}
+            {activeSubTab === 'drivers' && (
+              <DriversDirectoryPage initialSeason={season} hideHeader />
+            )}
+          </div>
+        </Suspense>
       </div>
 
       {/* Floating Toast Notification */}

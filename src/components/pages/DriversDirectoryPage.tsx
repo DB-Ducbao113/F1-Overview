@@ -7,6 +7,7 @@ import { DRIVERS_DATA } from '../../data/drivers';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { ViewportImage } from '../common/ViewportImage';
 import { getTeamTextColor } from '../../utils/teamColors';
 import { getTeamDisplayName } from '../../utils/teamNames';
 
@@ -133,11 +134,9 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                     {/* Top 16:9 Celebration Poster Banner */}
                     <div className="relative w-full aspect-video bg-studio-950 overflow-hidden">
                       {portraitUrl ? (
-                        <img
+                        <ViewportImage
                           src={portraitUrl}
                           alt={driver.driverName}
-                          loading="lazy"
-                          decoding="async"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { getCalendarBySeason } from '../../data/championship';
 import { PRACTICE_RESULTS_2026 } from '../../data/championship/practiceResults2026';
 import { QUALIFYING_RESULTS_2026 } from '../../data/championship/qualifyingResults2026';
@@ -16,8 +16,6 @@ import {
 } from 'lucide-react';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { PracticeClassificationModal } from './PracticeClassificationModal';
-import { QualifyingClassificationModal } from './QualifyingClassificationModal';
 import {
   formatDateStr,
   formatSessionName,
@@ -29,6 +27,17 @@ import { GrandPrixQualifyingData } from '../../types/qualifying';
 import { GrandPrixPracticeData } from '../../types/practice';
 import { Card3DTilt } from '../common/Card3DTilt';
 import { getCalendarRaceState, getSessionTimeRange } from '../../utils/raceSchedule';
+
+const PracticeClassificationModal = lazy(() =>
+  import('./PracticeClassificationModal').then((module) => ({
+    default: module.PracticeClassificationModal,
+  })),
+);
+const QualifyingClassificationModal = lazy(() =>
+  import('./QualifyingClassificationModal').then((module) => ({
+    default: module.QualifyingClassificationModal,
+  })),
+);
 
 const OPENF1_SESSION_RESULTS = openF1SessionResults as {
   practice: Record<number, GrandPrixPracticeData>;
@@ -602,20 +611,24 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
 
       {/* Practice Classification Modal Portal */}
       {activePracticeData && (
-        <PracticeClassificationModal
-          practiceData={activePracticeData}
-          initialSessionKey={selectedPracticeSessionKey}
-          onClose={() => setSelectedPracticeRound(null)}
-        />
+        <Suspense fallback={null}>
+          <PracticeClassificationModal
+            practiceData={activePracticeData}
+            initialSessionKey={selectedPracticeSessionKey}
+            onClose={() => setSelectedPracticeRound(null)}
+          />
+        </Suspense>
       )}
 
       {/* Qualifying Classification Modal Portal */}
       {activeQualifyingData && (
-        <QualifyingClassificationModal
-          qualifyingData={activeQualifyingData}
-          initialSessionKey={selectedQualifyingSessionKey}
-          onClose={() => setSelectedQualifyingRound(null)}
-        />
+        <Suspense fallback={null}>
+          <QualifyingClassificationModal
+            qualifyingData={activeQualifyingData}
+            initialSessionKey={selectedQualifyingSessionKey}
+            onClose={() => setSelectedQualifyingRound(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { Suspense, lazy, useMemo, useState } from 'react';
 import { getRaceResults, STANDINGS_DATA } from '../../data/championship';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { getCompleteRaceClassification } from '../../data/championship/raceClassificationHelper';
-import { RaceClassificationModal } from './RaceClassificationModal';
 import { formatDateStr } from '../../utils/dateUtils';
 import { getTeamTextColor } from '../../utils/teamColors';
 import { getTeamDisplayName } from '../../utils/teamNames';
@@ -21,6 +20,12 @@ import {
 } from 'lucide-react';
 import { RaceResult, SeasonYear } from '../../types';
 import { Card3DTilt } from '../common/Card3DTilt';
+
+const RaceClassificationModal = lazy(() =>
+  import('./RaceClassificationModal').then((module) => ({
+    default: module.RaceClassificationModal,
+  })),
+);
 
 interface RaceResultsProps {
   season: SeasonYear;
@@ -676,10 +681,12 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
 
       {/* Render Official Classification Modal when a round is chosen */}
       {activeClassification && (
-        <RaceClassificationModal
-          race={activeClassification}
-          onClose={() => setSelectedRaceRound(null)}
-        />
+        <Suspense fallback={null}>
+          <RaceClassificationModal
+            race={activeClassification}
+            onClose={() => setSelectedRaceRound(null)}
+          />
+        </Suspense>
       )}
     </div>
   );

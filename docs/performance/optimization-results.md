@@ -185,3 +185,69 @@ Evidence and formatting:
 - Mobile lab LCP remains above the 2.5-second release gate because the requested intro remains visible for 2.5 seconds and CPU-throttled timers extend its observed transition. M1B improves it without shortening or visually degrading the intro, but this gate remains open.
 - Explicit Speed Insights `route={pathname}` and query/hash stripping are implemented. Correct named aggregation cannot be claimed until the Preview/Production deployment accumulates real samples.
 - Roll back M1B by reverting its implementation commit. Individual rollback paths are: remove the two image preloads, restore all carousel image mounts, restore `logo.png` plus the two navbar logo instances, and restore the inline Speed Insights callback in `src/main.tsx`.
+
+## M2 result — Season and Teams
+
+M2 was measured locally from the M1B head with Chrome 155 and Lighthouse 13.5.0. Each route and form factor has three cold-cache runs before and after the implementation. Medians below compare the same local production build setup; Production field data is not available because this branch is not merged.
+
+| Route       | Form    | Metric            |                Before |                 After |             Change |
+| ----------- | ------- | ----------------- | --------------------: | --------------------: | -----------------: |
+| Season 2026 | Desktop | Score / FCP / LCP |     97 / 477 / 874 ms |     98 / 441 / 758 ms | +1 / -36 / -116 ms |
+| Season 2026 | Mobile  | Score / FCP / LCP | 81 / 2,240 / 4,338 ms | 83 / 2,153 / 4,002 ms | +2 / -87 / -336 ms |
+| Season 2025 | Desktop | Score / FCP / LCP |     97 / 465 / 863 ms |     98 / 440 / 756 ms | +1 / -25 / -107 ms |
+| Season 2025 | Mobile  | Score / FCP / LCP | 81 / 2,240 / 4,104 ms | 83 / 2,153 / 4,003 ms | +2 / -87 / -101 ms |
+| Teams       | Desktop | Score / FCP / LCP |     98 / 424 / 862 ms |     98 / 439 / 874 ms |   0 / +15 / +12 ms |
+| Teams       | Mobile  | Score / FCP / LCP | 81 / 2,077 / 4,416 ms | 83 / 2,150 / 4,107 ms | +2 / +73 / -309 ms |
+
+CLS stayed at 0.000 for both Season routes and at 0.002 Desktop / 0.000 Mobile for Teams. Desktop Teams' 12 ms LCP and 15 ms FCP increases are below 2% and within run-to-run noise; transferred bytes fell materially. Mobile LCP remains above 2.5 seconds on every target route because the requested intro remains unchanged.
+
+### Evidence and implementation
+
+The baseline waterfall made no API request on Season 2026, Season 2025, or Teams, so M2 does not alter API, store synchronization, snapshots, standings, schedules, or classifications. The baseline React Profiler recorded Season at 15.6 ms for mount plus 8.9 ms for its immediate update and Teams at 20.9 ms for mount, with no navigation `RunTask` over 50 ms. This did not support broad memoization or virtualization.
+
+Season instead loaded 18 scripts on its default Standings tab, including Calendar, Results, Teams, Drivers, and three classification modals. `ChampionshipView` now keeps Standings in the initial chunk and lazy-loads the selected secondary tab behind a stable local skeleton. Race, Practice, and Qualifying classification modals load only when opened. The median Season request count falls from 29 to 23 on Desktop and from 30 to 24 on Mobile; script transfer falls from 179 KiB to 138 KiB. Navigation QA confirms all deferred tabs and result modals still open correctly.
+
+Teams' native lazy loading fetched 11 car images on Desktop and 8 on Mobile during a cold load. `ViewportImage` now mounts team and driver images within 150 px of the viewport, preserving each banner's aspect ratio and loading remaining images during scroll. Median Teams image transfer falls from 926 to 536 KiB on Desktop and from 613 to 208 KiB on Mobile. Browser QA observed six team images initially at 1280 px and all eleven after progressive scrolling.
+
+### Functional and visual validation
+
+- Season switching changed `/season/2026` to `/season/2025`; Driver and Constructor standings rendered 22 and 10 rows respectively.
+- Calendar rendered 24 expandable rounds. Results loaded on demand, opened a classification with three rows, and the focused close control worked from the keyboard.
+- Teams rendered 11 cards. Searching for `Mercedes` returned four valid matches because the search includes power-unit data; clearing restored all 11 cards.
+- Vietnamese and English switching changed the heading between `Trung Tâm Giải Đấu` and `Championship Hub`.
+- Keyboard Tab produced a visible link focus target. No document-level horizontal overflow occurred at 390, 768, 1280, 1440, or 1920 px.
+- No F1 API request occurred during the functional run. Local-only 404 responses came from Vercel Analytics and Speed Insights endpoints, which are unavailable under `vite preview`; they are not application asset failures.
+- Fifteen screenshots cover Season 2026, Season 2025, and Teams at all five required widths under [`m2/screenshots/`](m2/screenshots/). Raw Lighthouse reports, the complete run CSV, navigation traces, and browser QA are under [`m2/`](m2/).
+- The intro source files were not edited. Their SHA-256 values remain `847C71C493EB2BDC08C89CB17E81FFDD1AA79D73FDA130998CA7CDD98231028F`, `7757B05F5BDADE05EE97C50F2E8176294A5F0A3B3254B604772665F6CBFFEFD0`, and `407B927FAD936039CE4EDD718B983533DD6CF5933788A60173FD3ECACB421918` for the component, stylesheet, and timing module.
+- Homepage regression checks produced Desktop 99/98/99 with median FCP 458 ms, LCP 879 ms, TBT 0 ms, CLS 0.000 and Mobile 84/84/84 with median FCP 2,148 ms, LCP 4,067 ms, TBT 30 ms, CLS 0.000. Mobile matches M1B. The Desktop median is 103 ms above M1B because M1B selected the smaller navbar logo as LCP in two runs; the one M1B run that selected the hero measured 878 ms, matching M2's 879 ms hero candidate. No Homepage, intro, font, logo, or hero source changed in M2.
+
+### Exact M2 changed files
+
+Application:
+
+- `src/components/championship/ChampionshipView.tsx`
+- `src/components/championship/RaceCalendar.tsx`
+- `src/components/championship/RaceResults.tsx`
+- `src/components/common/ViewportImage.tsx`
+- `src/components/pages/DriversDirectoryPage.tsx`
+- `src/components/pages/TeamsDirectoryPage.tsx`
+
+Evidence and documentation:
+
+- `.prettierignore`
+- `docs/performance/m2/before/lighthouse/*.json`
+- `docs/performance/m2/before/profiling/*`
+- `docs/performance/m2/after/lighthouse/*.json`
+- `docs/performance/m2/lighthouse-runs.csv`
+- `docs/performance/m2/browser-qa.json`
+- `docs/performance/m2/regression/lighthouse/*.json`
+- `docs/performance/m2/screenshots/*.png`
+- `docs/performance/optimization-results.md`
+- `docs/performance/release-gates.md`
+
+### Risks and rollback
+
+- Images are mounted by `IntersectionObserver`; browsers without it use the eager fallback. A card still reserves its fixed banner ratio before the image arrives. Roll back by replacing `ViewportImage` with the original native-lazy `<img>` elements and deleting the helper.
+- A first visit to Calendar, Results, Teams, or Drivers may show the local skeleton while its chunk downloads. Roll back by restoring static imports in `ChampionshipView`; modal imports can be reverted independently.
+- Local gates pass: lint, format, 29 test files / 215 tests, coverage, production build, and the 109.7 KiB initial JavaScript budget. Coverage remains 63.2% statements, 59.8% branches, 68.51% functions, and 63.96% lines.
+- Local lab results do not establish Preview or Production field improvement. CI, Preview deployment, and exact-SHA smoke status are recorded after the final commit.
