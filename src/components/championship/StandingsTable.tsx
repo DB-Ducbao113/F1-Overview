@@ -8,6 +8,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { Trophy, Award, ExternalLink, ShieldCheck, Clock } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { Card3DTilt } from '../common/Card3DTilt';
 
 interface StandingsTableProps {
@@ -72,9 +73,8 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
               {rawStandings.lastUpdated && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-studio-600 bg-studio-100 px-2.5 py-1 rounded-full border border-studio-200">
                   <Clock className="w-3 h-3 text-studio-400" />
-                  <span>
-                    {lang === 'vi' ? 'Cập nhật:' : 'Updated:'} {rawStandings.lastUpdated}
-                  </span>
+                  <span>{lang === 'vi' ? 'Cập nhật:' : 'Updated:'}</span>
+                  <time dateTime={rawStandings.lastUpdated}>{rawStandings.lastUpdated}</time>
                 </span>
               )}
             </div>
@@ -107,7 +107,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       style={{ backgroundColor: leaderConstructorColor }}
                     />
                     <span style={{ color: leaderConstructorColor }}>
-                      {leaderConstructor.teamName}
+                      {getTeamDisplayName(leaderConstructor.teamName)}
                     </span>
                     <span className="inline-flex items-center gap-1 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
                       {leaderConstructor.points || 0}
@@ -245,7 +245,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                             className="font-bold hover:underline truncate max-w-[140px] sm:max-w-none block text-xs"
                             style={{ color: driverColor }}
                           >
-                            {driver.teamName}
+                            {getTeamDisplayName(driver.teamName)}
                           </Link>
                         </div>
                       </td>
@@ -320,7 +320,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                             className="font-extrabold text-xs sm:text-sm hover:underline"
                             style={{ color: teamColor }}
                           >
-                            {c.teamName}
+                            {getTeamDisplayName(c.teamName)}
                           </Link>
                         </div>
                       </td>

@@ -277,8 +277,14 @@ export const TeamDetailPage: React.FC = () => {
                         {driver.driverName}
                       </span>
                       <span className="mt-1 block text-xs text-studio-500">
-                        {driver.points} PTS · {driver.wins} {lang === 'vi' ? 'chiến thắng' : 'wins'}{' '}
-                        · {driver.podiums} {lang === 'vi' ? 'podium' : 'podiums'}
+                        {driver.points} PTS · {driver.wins}{' '}
+                        {lang === 'vi' ? 'chiến thắng' : driver.wins === 1 ? 'win' : 'wins'} ·{' '}
+                        {driver.podiums}{' '}
+                        {lang === 'vi'
+                          ? 'lần lên bục'
+                          : driver.podiums === 1
+                            ? 'podium'
+                            : 'podiums'}
                       </span>
                     </span>
                     <ArrowRight className="h-4 w-4 shrink-0 text-studio-300 group-hover:text-f1red" />

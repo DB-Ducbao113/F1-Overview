@@ -6,6 +6,7 @@ import { getCompleteRaceClassification } from '../../data/championship/raceClass
 import { RaceClassificationModal } from './RaceClassificationModal';
 import { formatDateStr } from '../../utils/dateUtils';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import {
   Trophy,
   Zap,
@@ -248,7 +249,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     : 'bg-studio-100 text-studio-600 hover:bg-studio-200 hover:text-studio-950'
                 }`}
               >
-                <span>{team.teamName}</span>
+                <span>{getTeamDisplayName(team.teamName)}</span>
                 {team.podiums > 0 && (
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
@@ -356,7 +357,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {res.podium.p1.team}
+                        {getTeamDisplayName(res.podium.p1.team)}
                       </span>
                     </div>
                   </div>
@@ -397,7 +398,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {res.podium.p2.team}
+                        {getTeamDisplayName(res.podium.p2.team)}
                       </span>
                     </div>
                   </div>
@@ -438,7 +439,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {res.podium.p3.team}
+                        {getTeamDisplayName(res.podium.p3.team)}
                       </span>
                     </div>
                   </div>
@@ -560,7 +561,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                                 ),
                               }}
                             >
-                              {res.podium.p1.team}
+                              {getTeamDisplayName(res.podium.p1.team)}
                             </span>
                             <span className="text-studio-500"> · {res.podium.p1.time}</span>
                           </span>
@@ -591,7 +592,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                             ),
                           }}
                         >
-                          {res.podium.p2.team}
+                          {getTeamDisplayName(res.podium.p2.team)}
                         </span>
                         <span className="text-studio-500"> ({res.podium.p2.gap})</span>
                       </span>
@@ -620,7 +621,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                             ),
                           }}
                         >
-                          {res.podium.p3.team}
+                          {getTeamDisplayName(res.podium.p3.team)}
                         </span>
                         <span className="text-studio-500"> ({res.podium.p3.gap})</span>
                       </span>

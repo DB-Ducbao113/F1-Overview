@@ -8,6 +8,7 @@ import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
 
@@ -186,7 +187,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                         <div className="mt-1.5 flex items-center gap-2 text-xs font-semibold text-studio-600">
                           <ConstructorLogo teamId={driver.teamId} size="sm" />
                           <span>
-                            {driver.teamName} · {season}
+                            {getTeamDisplayName(driver.teamName)} · {season}
                           </span>
                         </div>
                       </div>

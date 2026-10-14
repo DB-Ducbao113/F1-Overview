@@ -14,6 +14,7 @@ import { getTeamTextColor } from '../../utils/teamColors';
 import { Card3DTilt } from '../common/Card3DTilt';
 import { PodiumBrandHero } from './PodiumBrandHero';
 import { getCalendarRaceState } from '../../utils/raceSchedule';
+import { getTeamDisplayName } from '../../utils/teamNames';
 
 const DeferredCarStage: React.FC = () => {
   const markerRef = useRef<HTMLDivElement | null>(null);
@@ -218,7 +219,7 @@ export const HomeView: React.FC = () => {
                       <AnimatedStandingsRow
                         rank={driver.rank}
                         name={driver.driverName}
-                        subName={driver.teamName}
+                        subName={getTeamDisplayName(driver.teamName)}
                         flag={driver.countryFlag}
                         teamId={driver.teamId}
                         teamColor={driverColor}
@@ -283,7 +284,7 @@ export const HomeView: React.FC = () => {
                     >
                       <AnimatedStandingsRow
                         rank={c.rank}
-                        name={c.teamName}
+                        name={getTeamDisplayName(c.teamName)}
                         teamId={c.teamId}
                         teamColor={teamColor}
                         points={c.points}

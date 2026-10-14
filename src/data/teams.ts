@@ -27,7 +27,7 @@ const RAW_TEAMS_DATA: Record<TeamId, F1Team> = {
   },
   redbull: {
     id: 'redbull',
-    name: 'Red Bull',
+    name: 'Red Bull Racing',
     fullName: 'Oracle Red Bull Racing',
     base: 'Milton Keynes, United Kingdom',
     teamPrincipal: 'Christian Horner',

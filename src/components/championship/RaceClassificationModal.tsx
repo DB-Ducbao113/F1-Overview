@@ -4,6 +4,7 @@ import { DetailedRaceResult } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { formatDateStr } from '../../utils/dateUtils';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { X, Trophy, Zap, Flag, Calendar, MapPin, ShieldCheck, Award } from 'lucide-react';
 
 interface RaceClassificationModalProps {
@@ -79,7 +80,8 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               </span>
               <span className="flex items-center gap-1 font-mono">
                 <Flag className="w-3.5 h-3.5 text-studio-500" />
-                {race.lapsTotal} {isVi ? 'Vòng' : 'Laps'}
+                <span>{race.lapsTotal}</span>
+                <span>{isVi ? 'Vòng' : 'Laps'}</span>
               </span>
             </div>
           </div>
@@ -105,7 +107,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
               >
                 {race.winner.driver}
               </span>
-              <span className="text-studio-500 font-mono">({race.winner.team})</span>
+              <span className="text-studio-500 font-mono">
+                ({getTeamDisplayName(race.winner.team)})
+              </span>
               <span className="font-mono text-amber-400 ml-1 font-bold">{race.winner.time}</span>
             </div>
           )}
@@ -206,7 +210,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                             color: getTeamTextColor(entry.teamId || entry.teamName, true),
                           }}
                         >
-                          {entry.teamName}
+                          {getTeamDisplayName(entry.teamName)}
                         </span>
                       </td>
 

@@ -4,6 +4,7 @@ import { GrandPrixQualifyingData, QualifyingSessionResult } from '../../types/qu
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { X, Award, MapPin, Calendar, Zap, Trophy, ShieldCheck } from 'lucide-react';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { formatDateStr } from '../../utils/dateUtils';
 
 interface QualifyingModalProps {
@@ -195,7 +196,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                 {currentSession.poleDriver.driver}
               </span>
               <span className="text-studio-400 font-mono text-[11px]">
-                ({currentSession.poleDriver.team})
+                ({getTeamDisplayName(currentSession.poleDriver.team)})
               </span>
               <span className="font-mono text-amber-300 font-bold ml-1.5 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
                 {currentSession.poleDriver.time}
@@ -310,7 +311,7 @@ export const QualifyingClassificationModal: React.FC<QualifyingModalProps> = ({
                                 className="font-bold truncate max-w-[180px]"
                                 style={{ color: teamColor }}
                               >
-                                {entry.teamName}
+                                {getTeamDisplayName(entry.teamName)}
                               </span>
                             </div>
                           </td>

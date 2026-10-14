@@ -4,6 +4,7 @@ import { GrandPrixPracticeData, PracticeSessionResult } from '../../types/practi
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { formatSessionName } from '../../utils/dateUtils';
 import { getTeamTextColor } from '../../utils/teamColors';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { X, Timer, MapPin, Thermometer, Sun } from 'lucide-react';
 
 interface PracticeModalProps {
@@ -150,7 +151,7 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                   {currentSession.fastestDriver.driver}
                 </span>
                 <span className="text-studio-500 font-mono">
-                  ({currentSession.fastestDriver.team})
+                  ({getTeamDisplayName(currentSession.fastestDriver.team)})
                 </span>
                 <span className="font-mono text-sky-300 font-bold ml-1">
                   {currentSession.fastestDriver.time}
@@ -251,7 +252,7 @@ export const PracticeClassificationModal: React.FC<PracticeModalProps> = ({
                               color: getTeamTextColor(entry.teamId || entry.teamName, true),
                             }}
                           >
-                            {entry.teamName}
+                            {getTeamDisplayName(entry.teamName)}
                           </span>
                         </td>
 

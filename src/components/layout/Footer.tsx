@@ -170,11 +170,11 @@ export const Footer: React.FC = React.memo(() => {
           </details>
         </div>
 
-        <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
-          <p className="max-w-3xl text-[13px] font-medium normal-case leading-6 tracking-normal text-white/65 sm:text-sm">
+        <div className="mt-10 flex min-w-0 flex-col gap-5 border-t border-white/10 pt-7 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/50 sm:flex-row sm:items-start sm:justify-between sm:text-xs">
+          <p className="min-w-0 max-w-3xl break-words text-[13px] font-medium normal-case leading-6 tracking-normal text-white/65 sm:flex-1 sm:text-sm">
             {strings.copyright}
           </p>
-          <div className="flex items-center gap-5 whitespace-nowrap">
+          <div className="flex shrink-0 items-center gap-5 whitespace-nowrap">
             <span>© MMXXVI</span>
             <span className="h-px w-8 bg-f1red" />
             <a

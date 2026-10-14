@@ -415,7 +415,7 @@ export const RACE_RESULTS_2026: RaceResult[] = [
   },
   {
     round: 7,
-    grandPrix: 'Barcelona Grand Prix',
+    grandPrix: 'Barcelona-Catalunya Grand Prix',
     circuit: 'Circuit de Barcelona-Catalunya',
     season: 2026,
     dataSource: 'Jolpica F1 API',
