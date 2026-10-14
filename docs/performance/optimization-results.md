@@ -40,24 +40,25 @@ Raw final reports are under [`m1a/lighthouse/`](m1a/lighthouse/), with per-run v
 - `load.js`, `spike.js`, `soak.js`, and `fault.js` reject any `DATA_MODE` other than `simulated` before a request can run.
 - Shared target validation requires the exact HTTPS preview hostname and rejects `podiumeds.vercel.app` even if it is supplied as the allowed host.
 - Automated tests cover target guards, simulated-mode guards, Jolpica preview fixtures, production rejection, 429/503 responses, and slow/timeout schedules.
-- The preview deployment smoke workflow remains a short live smoke only. No high-load test was run against Preview or Production during M1A.
+- The preview deployment smoke workflow remains a short live smoke only. When Vercel Deployment Protection is active and the bypass secret is absent, it now records an explicit skip before k6 is installed or run. No high-load test was run against Preview or Production during M1A.
 - `docker-publish.yml` remains limited to `main`, tags, and manual dispatch. F1 synchronization workflows and F1 data files are unchanged.
 
 ## Validation performed
 
-| Check                           | Result                    | Detail                                                                                                               |
-| ------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `npm run lint`                  | Pass                      | No ESLint errors.                                                                                                    |
-| `npm run format:check`          | Pass                      | All authored files conform.                                                                                          |
-| `npm test`                      | Pass                      | 27 files, 210 tests.                                                                                                 |
-| `npm run test:coverage`         | Pass                      | 63.2% statements, 59.8% branches, 68.51% functions, 63.96% lines.                                                    |
-| `npm run build:check`           | Pass                      | Initial JavaScript 109.4 KiB gzip against the 180 KiB limit.                                                         |
-| First build after adding tests  | Failed, corrected         | A multiline import left an unused `@ts-expect-error`; the import was corrected and the production build then passed. |
-| First font-only Lighthouse set  | Failed, corrected         | CLS stayed near 0.234 because lazy route loading moved the footer.                                                   |
-| Final Lighthouse, 9 runs        | Pass                      | All route medians pass score, LCP, TBT, and CLS desktop gates.                                                       |
-| Five-width visual capture       | Pass with M1B observation | 15 final screenshots; two delayed Homepage hero captures required a longer wait.                                     |
-| High-load execution             | Not run by design         | Guard behavior is unit tested; no load was sent to Production.                                                       |
-| Target-commit CI and deployment | Pending                   | Filled after the branch commit is pushed and the applicable workflows finish.                                        |
+| Check                           | Result                    | Detail                                                                                                                             |
+| ------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run lint`                  | Pass                      | No ESLint errors.                                                                                                                  |
+| `npm run format:check`          | Pass                      | All authored files conform.                                                                                                        |
+| `npm test`                      | Pass                      | 27 files, 210 tests.                                                                                                               |
+| `npm run test:coverage`         | Pass                      | 63.2% statements, 59.8% branches, 68.51% functions, 63.96% lines.                                                                  |
+| `npm run build:check`           | Pass                      | Initial JavaScript 109.4 KiB gzip against the 180 KiB limit.                                                                       |
+| First build after adding tests  | Failed, corrected         | A multiline import left an unused `@ts-expect-error`; the import was corrected and the production build then passed.               |
+| First font-only Lighthouse set  | Failed, corrected         | CLS stayed near 0.234 because lazy route loading moved the footer.                                                                 |
+| First Preview Smoke run         | Failed, corrected         | Vercel Protection returned HTML because `VERCEL_PROTECTION_BYPASS` was empty; the workflow now skips before k6 and emits a notice. |
+| Final Lighthouse, 9 runs        | Pass                      | All route medians pass score, LCP, TBT, and CLS desktop gates.                                                                     |
+| Five-width visual capture       | Pass with M1B observation | 15 final screenshots; two delayed Homepage hero captures required a longer wait.                                                   |
+| High-load execution             | Not run by design         | Guard behavior is unit tested; no load was sent to Production.                                                                     |
+| Target-commit CI and deployment | Pending                   | Filled after the branch commit is pushed and the applicable workflows finish.                                                      |
 
 ## Exact changed files
 
@@ -65,6 +66,7 @@ Application and configuration:
 
 - `.prettierignore`
 - `.github/workflows/ci.yml`
+- `.github/workflows/preview-smoke.yml`
 - `index.html`
 - `src/App.tsx`
 - `src/index.css`
