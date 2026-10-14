@@ -1,0 +1,31 @@
+{
+  "before": {
+    "calls": {},
+    "heap": 29951312,
+    "canvas": true
+  },
+  "livery": "SFFerrari",
+  "hotspot": {
+    "toggle": "Bật/Tắt 6 điểm kỹ thuật trên thân xe",
+    "button": "Cánh Gió Trước & Khí Động Học"
+  },
+  "modal": {
+    "dialog": false,
+    "text": true
+  },
+  "home": "",
+  "after": {
+    "calls": {
+      "deleteTexture": 27,
+      "deleteProgram": 24,
+      "deleteFramebuffer": 1,
+      "deleteRenderbuffer": 1,
+      "deleteBuffer": 192
+    },
+    "heap": 18888159,
+    "canvas": false,
+    "contextLost": [
+      true
+    ]
+  }
+}

@@ -1,0 +1,459 @@
+{
+  "environment": {
+    "chrome": "Chrome/155.0.8059.40"
+  },
+  "desktop": {
+    "label": "desktop-native",
+    "runs": [
+      {
+        "round": 1,
+        "items": {
+          "nose": {
+            "ms": 7.200000017881393,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 5.300000011920929,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 8.799999982118607,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 7.100000023841858,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 0.5,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 4,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 8.699999988079071,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 2.300000011920929,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 63.900000005960464,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 8.399999976158142,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 13.899999976158142,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 18.80000001192093,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 26.19999998807907,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 175.09999999403954
+      },
+      {
+        "round": 2,
+        "items": {
+          "nose": {
+            "ms": 0.4000000059604645,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 1.5,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 0.9000000059604645,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 0.5,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 0.30000001192092896,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 0.7999999821186066,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 0.5,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 0.20000001788139343,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 15.799999982118607,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 1.0999999940395355,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 1,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 1.300000011920929,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 1.300000011920929,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 25.600000023841858
+      },
+      {
+        "round": 3,
+        "items": {
+          "nose": {
+            "ms": 0.19999998807907104,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 0.5999999940395355,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 2.5,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 0.20000001788139343,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 0.19999998807907104,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 0.20000001788139343,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 0.699999988079071,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 0.20000001788139343,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 15.899999976158142,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 1,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 0.9000000059604645,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 1.2000000178813934,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 1,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 24.80000001192093
+      }
+    ],
+    "gltf": {
+      "fetchMs": 11.200000017881393,
+      "parseMs": 20.599999994039536,
+      "bytes": 2164896,
+      "meshes": 11,
+      "vertices": 204593,
+      "triangles": 237482,
+      "materials": 9
+    }
+  },
+  "mobile": {
+    "label": "mobile-cpu-4x",
+    "runs": [
+      {
+        "round": 1,
+        "items": {
+          "nose": {
+            "ms": 2.2000000178813934,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 2.199999988079071,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 3.5,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 1.5,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 1,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 1.5,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 2,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 1,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 383.2000000178814,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 3.699999988079071,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 3,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 4.5,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 5,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 414.30000001192093
+      },
+      {
+        "round": 2,
+        "items": {
+          "nose": {
+            "ms": 1.5999999940395355,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 2,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 2.2000000178813934,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 11.900000005960464,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 1.5999999940395355,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 1.5999999940395355,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 1.699999988079071,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 1,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 48.70000001788139,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 2.4000000059604645,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 3.5999999940395355,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 3.7000000178813934,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 4.5999999940395355,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 86.60000002384186
+      },
+      {
+        "round": 3,
+        "items": {
+          "nose": {
+            "ms": 1.4000000059604645,
+            "width": 1024,
+            "height": 1024
+          },
+          "bodywork": {
+            "ms": 2,
+            "width": 1024,
+            "height": 1024
+          },
+          "wings": {
+            "ms": 2,
+            "width": 1024,
+            "height": 1024
+          },
+          "floor": {
+            "ms": 1.199999988079071,
+            "width": 512,
+            "height": 512
+          },
+          "suspensionMirrors": {
+            "ms": 0.9000000059604645,
+            "width": 512,
+            "height": 512
+          },
+          "diffuserRainLight": {
+            "ms": 1.7999999821186066,
+            "width": 512,
+            "height": 512
+          },
+          "cockpit": {
+            "ms": 2.600000023841858,
+            "width": 512,
+            "height": 512
+          },
+          "halo": {
+            "ms": 1.199999988079071,
+            "width": 512,
+            "height": 512
+          },
+          "wheel": {
+            "ms": 34.900000005960464,
+            "width": 512,
+            "height": 512
+          },
+          "backdropTeam": {
+            "ms": 2.5999999940395355,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropTechnical": {
+            "ms": 2.5999999940395355,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropDrivers": {
+            "ms": 3.5999999940395355,
+            "width": 1024,
+            "height": 512
+          },
+          "backdropAchievements": {
+            "ms": 6.100000023841858,
+            "width": 1024,
+            "height": 512
+          }
+        },
+        "totalMs": 62.900000005960464
+      }
+    ],
+    "gltf": {
+      "fetchMs": 31.80000001192093,
+      "parseMs": 44.400000005960464,
+      "bytes": 2164896,
+      "meshes": 11,
+      "vertices": 204593,
+      "triangles": 237482,
+      "materials": 9
+    }
+  }
+}

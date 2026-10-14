@@ -1,0 +1,88 @@
+{
+  "initial": [
+    {
+      "id": "ShowroomView",
+      "phase": "mount",
+      "actualDuration": 17.599999994039536,
+      "baseDuration": 9.699999988079071,
+      "startTime": 655.9000000059605,
+      "commitTime": 698.4000000059605
+    },
+    {
+      "id": "ShowroomView",
+      "phase": "update",
+      "actualDuration": 0.30000001192092896,
+      "baseDuration": 7.9000000059604645,
+      "startTime": 878.1999999880791,
+      "commitTime": 878.5999999940395
+    }
+  ],
+  "livery": {
+    "result": "SFFerrari",
+    "entries": [
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 10.000000029802322,
+        "baseDuration": 6.10000005364418,
+        "startTime": 7277.5,
+        "commitTime": 7287.9000000059605
+      },
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 4.299999952316284,
+        "baseDuration": 3.2999999821186066,
+        "startTime": 7560.9000000059605,
+        "commitTime": 7570.0999999940395
+      },
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 2.7000000178813934,
+        "baseDuration": 2.9000000059604645,
+        "startTime": 7571.5999999940395,
+        "commitTime": 7574.5999999940395
+      }
+    ]
+  },
+  "camera": {
+    "result": "Xem toàn cảnh 4 vách bảng (Logo · Tay Đua · Kỹ Thuật · Thành Tích)",
+    "entries": [
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 2.7999999821186066,
+        "baseDuration": 2.799999952316284,
+        "startTime": 8558.09999999404,
+        "commitTime": 8561.09999999404
+      }
+    ]
+  },
+  "hotspotToggle": {
+    "result": "Bật/Tắt 6 điểm kỹ thuật trên thân xe",
+    "entries": [
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 2.5,
+        "baseDuration": 2.7000000178813934,
+        "startTime": 9766.5,
+        "commitTime": 9769.199999988079
+      }
+    ]
+  },
+  "hotspotOpen": {
+    "result": "Cánh Gió Trước & Khí Động Học",
+    "entries": [
+      {
+        "id": "ShowroomView",
+        "phase": "update",
+        "actualDuration": 7.300000011920929,
+        "baseDuration": 5.000000029802322,
+        "startTime": 10973.59999999404,
+        "commitTime": 10981.09999999404
+      }
+    ]
+  }
+}
