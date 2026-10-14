@@ -37,8 +37,8 @@ jobs:
       - name: Run Unit Tests & Coverage
         run: npm run test:coverage
 
-      - name: Build
-        run: npm run build
+      - name: Build and enforce initial bundle budget
+        run: npm run build:check
 
       - name: Security Audit (Dependencies)
         run: npm audit --audit-level=critical

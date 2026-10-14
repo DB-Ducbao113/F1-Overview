@@ -189,3 +189,22 @@ export function toVietnamTime(
 
   return { time: `${h}:${m}`, dayShift };
 }
+
+/** Render the actual Vietnam calendar date when a venue-to-Vietnam conversion crosses midnight. */
+export function formatVietnamSessionDate(
+  dateStr: string,
+  season: number,
+  dayShift: number,
+  lang: string,
+): string {
+  const match = dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})/);
+  const month = match ? EN_MONTHS.indexOf(match[2]) - 1 : -1;
+  if (!match || month < 0) return dayShift > 0 ? 'ngày hôm sau' : 'ngày trước';
+
+  return new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-GB', {
+    timeZone: 'UTC',
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+  }).format(new Date(Date.UTC(season, month, Number(match[1]) + dayShift)));
+}

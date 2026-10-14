@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { STANDINGS_DATA, CALENDAR_2026 } from '../../data/championship';
@@ -14,6 +14,32 @@ import { getTeamTextColor } from '../../utils/teamColors';
 import { Card3DTilt } from '../common/Card3DTilt';
 import { PodiumBrandHero } from './PodiumBrandHero';
 import { getCalendarRaceState } from '../../utils/raceSchedule';
+
+const DeferredCarStage: React.FC = () => {
+  const markerRef = useRef<HTMLDivElement | null>(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const marker = markerRef.current;
+    if (!marker) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsReady(true);
+        observer.disconnect();
+      },
+      { rootMargin: '300px 0px' },
+    );
+    observer.observe(marker);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={markerRef} className="min-h-[560px] sm:min-h-[640px] lg:min-h-[700px]">
+      {isReady ? <FullscreenCarStage /> : <div className="h-full bg-[#050508]" aria-hidden="true" />}
+    </div>
+  );
+};
 
 export const HomeView: React.FC = () => {
   const { lang } = useNavigationStore();
@@ -87,14 +113,14 @@ export const HomeView: React.FC = () => {
       <div className="space-y-16">
         {/* ── 1. Hero: Fullscreen Aerodynamic Car Stage (11 Teams) ── */}
         <div id="official-grid" className="scroll-mt-16">
-          <FullscreenCarStage />
+          <DeferredCarStage />
         </div>
 
         {/* ── 2. Race weekend countdown ── */}
         <RaceWeekendWidget race={nextRace} />
 
         {/* ── 3. Championship Standings (Official Verified Data) ── */}
-        <section ref={standingsRef} className="page-container space-y-6">
+        <section ref={standingsRef} className="page-container space-y-6 [content-visibility:auto] [contain-intrinsic-size:auto_900px]">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-f1red block mb-1">

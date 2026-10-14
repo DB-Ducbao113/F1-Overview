@@ -18,7 +18,12 @@ import { useChampionshipStore } from '../../store/useChampionshipStore';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { PracticeClassificationModal } from './PracticeClassificationModal';
 import { QualifyingClassificationModal } from './QualifyingClassificationModal';
-import { formatDateStr, formatSessionName, toVietnamTime } from '../../utils/dateUtils';
+import {
+  formatDateStr,
+  formatSessionName,
+  formatVietnamSessionDate,
+  toVietnamTime,
+} from '../../utils/dateUtils';
 import { SeasonYear } from '../../types';
 import { GrandPrixQualifyingData } from '../../types/qualifying';
 import { GrandPrixPracticeData } from '../../types/practice';
@@ -521,11 +526,14 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                                 ? (() => {
                                     const vn = toVietnamTime(session.timeStr, gp.venueUtcOffset);
                                     const dayLabel =
-                                      vn.dayShift === 1
-                                        ? ' (+1 ngày)'
-                                        : vn.dayShift === -1
-                                          ? ' (-1 ngày)'
-                                          : '';
+                                      vn.dayShift === 0
+                                        ? ''
+                                        : ` · ${formatVietnamSessionDate(
+                                            session.dateStr,
+                                            gp.season,
+                                            vn.dayShift,
+                                            lang,
+                                          )}`;
                                     return `${vn.time} giờ Việt Nam${dayLabel}`;
                                   })()
                                 : session.timeStr}

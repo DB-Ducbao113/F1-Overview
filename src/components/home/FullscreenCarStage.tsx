@@ -505,9 +505,8 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                           src={car.imageUrl}
                           alt={car.name}
                           className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out animate-ken-burns"
-                          loading="eager"
+                          loading="lazy"
                           decoding="async"
-                          fetchPriority="high"
                         />
                       )}
 

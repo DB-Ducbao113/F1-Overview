@@ -227,14 +227,14 @@ canvas.r3f {
 
 .podium-hero-image {
   filter: brightness(1.08) contrast(1.03) saturate(1.05);
-  animation: podiumHeroReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: podiumHeroReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes podiumHeroReveal {
   from {
     opacity: 0;
-    transform: scale(1.035);
-    filter: brightness(0.4) blur(5px);
+    transform: scale(1.015);
+    filter: brightness(0.72);
   }
   to {
     opacity: 1;

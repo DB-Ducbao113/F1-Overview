@@ -1,153 +1,102 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface StreamLine {
   x: number;
   y: number;
   length: number;
   speed: number;
-  depth: number; // 0 to 1 (3D perspective)
   alpha: number;
-  color: string;
 }
+
+const canAnimate = () => {
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  return (
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    !window.matchMedia('(max-width: 1023px)').matches &&
+    !connection?.saveData &&
+    (navigator.hardwareConcurrency ?? 4) >= 4
+  );
+};
 
 export const F1SpeedStream: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    if (!canAnimate()) return;
+    const idle = window.setTimeout(() => setEnabled(true), 1200);
+    return () => window.clearTimeout(idle);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return;
+    const ctx = canvas?.getContext('2d', { alpha: true });
+    if (!canvas || !ctx) return;
 
-    let animId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    // Mouse coordinates for aerodynamic deflection
-    let mouseX = -1000;
-    let mouseY = -1000;
-
-    const handleResize = () => {
-      if (!canvas) return;
+    let animationFrame = 0;
+    let width = 0;
+    let height = 0;
+    let lastFrame = 0;
+    let running = !document.hidden;
+    const resize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
     };
+    resize();
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
-
-    const handleMouseLeave = () => {
-      mouseX = -1000;
-      mouseY = -1000;
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    document.addEventListener('mouseleave', handleMouseLeave);
-
-    // Create 40 aerodynamic streamlines with 3D depth
-    const COLORS = ['rgba(225, 6, 0, ', 'rgba(255, 255, 255, ', 'rgba(245, 158, 11, '];
-    const lines: StreamLine[] = Array.from({ length: 42 }, () => {
-      const depth = Math.random(); // 0: far, 1: near
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        length: 40 + depth * 140,
-        speed: 1.2 + depth * 3.8,
-        depth,
-        alpha: 0.08 + depth * 0.22,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      };
-    });
-
-    let lastTime = performance.now();
-
+    const lines: StreamLine[] = Array.from({ length: 20 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      length: 50 + Math.random() * 100,
+      speed: 1.4 + Math.random() * 2.2,
+      alpha: 0.05 + Math.random() * 0.12,
+    }));
     const render = (time: number) => {
-      if (time - lastTime < 1000 / 30) {
-        animId = requestAnimationFrame(render);
+      if (!running) return;
+      if (time - lastFrame < 1000 / 24) {
+        animationFrame = requestAnimationFrame(render);
         return;
       }
-      const dt = Math.min(50, time - lastTime) / 16;
-      lastTime = time;
-
+      const delta = Math.min(50, time - lastFrame || 16) / 16;
+      lastFrame = time;
       ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-
-        // Aerodynamic cursor deflection
-        let dyOffset = 0;
-        if (mouseX > 0) {
-          const dx = line.x - mouseX;
-          const dy = line.y - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 180) {
-            const force = (1 - dist / 180) * 16 * (dy > 0 ? 1 : -1);
-            dyOffset = force;
-          }
-        }
-
-        // Draw streamline with gradient tail
-        const startX = line.x;
-        const endX = line.x + line.length;
-        const startY = line.y + dyOffset;
-        const endY = line.y + dyOffset;
-
-        const grad = ctx.createLinearGradient(startX, startY, endX, endY);
-        grad.addColorStop(0, `${line.color}0)`);
-        grad.addColorStop(0.7, `${line.color}${line.alpha})`);
-        grad.addColorStop(1, `${line.color}${line.alpha * 1.5})`);
-
+      for (const line of lines) {
+        const gradient = ctx.createLinearGradient(line.x, line.y, line.x + line.length, line.y);
+        gradient.addColorStop(0, 'rgba(255,255,255,0)');
+        gradient.addColorStop(1, `rgba(225,6,0,${line.alpha})`);
         ctx.beginPath();
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 0.8 + line.depth * 1.6;
-        ctx.lineCap = 'round';
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 1;
+        ctx.moveTo(line.x, line.y);
+        ctx.lineTo(line.x + line.length, line.y);
         ctx.stroke();
-
-        // Advance line forward
-        line.x += line.speed * dt;
-
-        // Wrap around seamlessly
-        if (line.x > width + 100) {
-          line.x = -line.length - 20;
+        line.x += line.speed * delta;
+        if (line.x > width + 30) {
+          line.x = -line.length;
           line.y = Math.random() * height;
         }
       }
-
-      animId = requestAnimationFrame(render);
+      animationFrame = requestAnimationFrame(render);
     };
-
-    animId = requestAnimationFrame(render);
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(animId);
+    const onVisibilityChange = () => {
+      running = !document.hidden;
+      if (running) {
+        lastFrame = performance.now();
+        animationFrame = requestAnimationFrame(render);
       } else {
-        lastTime = performance.now();
-        animId = requestAnimationFrame(render);
+        cancelAnimationFrame(animationFrame);
       }
     };
-    document.addEventListener('visibilitychange', handleVisibility);
-
+    window.addEventListener('resize', resize, { passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    animationFrame = requestAnimationFrame(render);
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('visibilitychange', handleVisibility);
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, []);
+  }, [enabled]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-[1] opacity-60 mix-blend-screen"
-    />
-  );
+  return enabled ? <canvas ref={canvasRef} aria-hidden="true" className="fixed inset-0 pointer-events-none z-[1] opacity-35" /> : null;
 };
