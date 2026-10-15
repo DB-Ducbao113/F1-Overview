@@ -274,3 +274,9 @@ Three cold Lighthouse runs per profile produced these medians against the M3A ba
 With auto-rotation off and the camera settled, the final instrumented ten-second window contains zero RAF callbacks and zero WebGL draws. Camera presets, orbit drag plus damping, livery switching, hotspot open/close, language, resize, hidden-tab restoration, off-screen restoration, and WebGL context restoration all repaint and return to zero recurring draws. Auto-rotation remains continuous: 285 callbacks and 31,768 indexed draws over ten seconds, comparable to M3A's 278 callbacks and 30,963 draws over 10.55 seconds.
 
 Before/after screenshots at 390, 768, 1280, 1440, and 1920 use the same overview camera, Mercedes livery, lighting, DPR, and auto-rotation-off state. Visual review found no quality or layout change, and document overflow remains zero. Full results, raw Lighthouse reports, interaction JSON, Chrome traces, CSV, screenshots, risks, and rollback steps are in [`m3/m3b1-results.md`](m3/m3b1-results.md).
+
+Evidence and deployment:
+
+- Implementation SHA `f6bde5474d9692ef3fa58e8cd466a76abc14f202` passed [CI run 38667313537](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667313537). Vercel deployed the branch preview at the protected [Preview alias](https://podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app) returning the expected SSO redirect.
+- [Preview Smoke run 38667377888](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667377888) passed target validation. k6 setup and the live smoke were explicitly skipped because `VERCEL_PROTECTION_BYPASS` is not configured; no live smoke or high-load request was sent to Preview or Production.
+- Docker publishing is not applicable to `perf/**` and did not run. Stop after M3B.1 for review before M3B.2; do not merge into main.

@@ -68,6 +68,7 @@ Manual side-by-side review found no change to geometry, bodywork, sponsor textur
 ## Validation and limitations
 
 - Local required checks: ESLint, Prettier, 29 test files / 215 tests, coverage (63.2%), and production build passed locally; final status is recorded in `release-gates.md`.
+- CI and Preview verification: Implementation SHA `f6bde5474d9692ef3fa58e8cd466a76abc14f202` passed [CI run 38667313537](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667313537) and [Preview Smoke run 38667377888](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667377888). Vercel Preview is deployed and protected with SSO.
 - Bundle: Showroom gzip changes from 90.38 KiB to approximately 90.66 KiB; Three.js remains 249.28 KiB gzip and route-isolated.
 - Initialization still contains large Three.js and texture/WebGL tasks. Mobile Lighthouse LCP and TBT remain far above release targets and are open M3B.2 issues.
 - Headless Chrome active motion ran at approximately 26-27 FPS both before and after. M3B.1 preserves that workload and does not claim a frame-rate improvement while animation is enabled.
