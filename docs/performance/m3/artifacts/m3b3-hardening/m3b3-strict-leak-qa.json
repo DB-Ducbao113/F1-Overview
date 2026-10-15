@@ -1,0 +1,503 @@
+{
+  "strictMode": {
+    "mounted": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 21
+        },
+        "render": {
+          "frame": 26,
+          "calls": 47,
+          "triangles": 237836,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 23
+      },
+      "heap": 47299916
+    },
+    "unmounted": {
+      "cache": {
+        "car": {
+          "entries": 0,
+          "referencedEntries": 0,
+          "totalReferences": 0,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 0
+        },
+        "studio": {
+          "entries": 0,
+          "referencedEntries": 0,
+          "totalReferences": 0,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 0
+        }
+      },
+      "heap": 53557540
+    },
+    "remounted": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 21
+        },
+        "render": {
+          "frame": 26,
+          "calls": 47,
+          "triangles": 237836,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 23
+      },
+      "heap": 47503041
+    }
+  },
+  "adjacentHit": {
+    "afterFerrari": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 34
+        },
+        "render": {
+          "frame": 38,
+          "calls": 47,
+          "triangles": 237836,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 23
+      },
+      "heap": 29368528
+    },
+    "afterReturn": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 34
+        },
+        "render": {
+          "frame": 50,
+          "calls": 47,
+          "triangles": 237836,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 23
+      },
+      "heap": 33339123
+    }
+  },
+  "extendedCycles": [
+    {
+      "cycle": 1,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 17439625
+      },
+      "heap": {
+        "usedSize": 8465332,
+        "totalSize": 9437184,
+        "embedderHeapUsedSize": 5189696,
+        "backingStorageSize": 8975573
+      }
+    },
+    {
+      "cycle": 2,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 18277825
+      },
+      "heap": {
+        "usedSize": 9303184,
+        "totalSize": 10223616,
+        "embedderHeapUsedSize": 5541032,
+        "backingStorageSize": 8975837
+      }
+    },
+    {
+      "cycle": 3,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 18695537
+      },
+      "heap": {
+        "usedSize": 9720708,
+        "totalSize": 10485760,
+        "embedderHeapUsedSize": 6009040,
+        "backingStorageSize": 8976025
+      }
+    },
+    {
+      "cycle": 4,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 19050729
+      },
+      "heap": {
+        "usedSize": 10075712,
+        "totalSize": 11010048,
+        "embedderHeapUsedSize": 6593768,
+        "backingStorageSize": 8976213
+      }
+    },
+    {
+      "cycle": 5,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 19386457
+      },
+      "heap": {
+        "usedSize": 10411252,
+        "totalSize": 11272192,
+        "embedderHeapUsedSize": 7013176,
+        "backingStorageSize": 8976401
+      }
+    },
+    {
+      "cycle": 6,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 19653349
+      },
+      "heap": {
+        "usedSize": 10677956,
+        "totalSize": 11796480,
+        "embedderHeapUsedSize": 7552040,
+        "backingStorageSize": 8976589
+      }
+    },
+    {
+      "cycle": 7,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 19871845
+      },
+      "heap": {
+        "usedSize": 10896264,
+        "totalSize": 11534336,
+        "embedderHeapUsedSize": 7963584,
+        "backingStorageSize": 8976777
+      }
+    },
+    {
+      "cycle": 8,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 20274589
+      },
+      "heap": {
+        "usedSize": 11298820,
+        "totalSize": 12320768,
+        "embedderHeapUsedSize": 8628864,
+        "backingStorageSize": 8976965
+      }
+    },
+    {
+      "cycle": 9,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 20840965
+      },
+      "heap": {
+        "usedSize": 11865008,
+        "totalSize": 12845056,
+        "embedderHeapUsedSize": 8975296,
+        "backingStorageSize": 8977153
+      }
+    },
+    {
+      "cycle": 10,
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "heap": 21062113
+      },
+      "heap": {
+        "usedSize": 12085968,
+        "totalSize": 13107200,
+        "embedderHeapUsedSize": 9558784,
+        "backingStorageSize": 8977341
+      }
+    }
+  ],
+  "consoleErrors": [
+    "prod:Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "prod:Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

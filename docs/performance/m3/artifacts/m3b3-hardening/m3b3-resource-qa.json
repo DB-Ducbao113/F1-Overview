@@ -1,0 +1,647 @@
+{
+  "capturedAt": "2026-10-15T07:43:27.008Z",
+  "browser": "Chrome/155.0.8059.40",
+  "rapidSwitching": [
+    {
+      "team": "Ferrari",
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 277.4,
+        "draws": 190,
+        "longTaskCount": 2,
+        "longTaskTotalMs": 348,
+        "maxLongTaskMs": 279
+      },
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 38,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 30041584,
+          "totalJSHeapSize": 37433160
+        }
+      }
+    },
+    {
+      "team": "McLaren",
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 263.8,
+        "draws": 190,
+        "longTaskCount": 1,
+        "longTaskTotalMs": 273,
+        "maxLongTaskMs": 273
+      },
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 3
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 3
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 50,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 31084927,
+          "totalJSHeapSize": 49752379
+        }
+      }
+    },
+    {
+      "team": "Mercedes",
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 331.7,
+        "draws": 190,
+        "longTaskCount": 2,
+        "longTaskTotalMs": 384,
+        "maxLongTaskMs": 333
+      },
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 4
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 4
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 62,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 22937674,
+          "totalJSHeapSize": 40839338
+        }
+      }
+    },
+    {
+      "team": "Ferrari",
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 253,
+        "draws": 190,
+        "longTaskCount": 1,
+        "longTaskTotalMs": 254,
+        "maxLongTaskMs": 254
+      },
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 5
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 5
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 74,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 23525362,
+          "totalJSHeapSize": 41888110
+        }
+      }
+    },
+    {
+      "team": "Mercedes",
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 176.1,
+        "draws": 190,
+        "longTaskCount": 1,
+        "longTaskTotalMs": 177,
+        "maxLongTaskMs": 177
+      },
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 86,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 23085418,
+          "totalJSHeapSize": 37696042
+        }
+      }
+    }
+  ],
+  "routeCycles": [
+    {
+      "cycle": 1,
+      "entered": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 86,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 18869816,
+          "totalJSHeapSize": 20129812
+        }
+      },
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "renderer": null,
+        "heap": {
+          "usedJSHeapSize": 18017653,
+          "totalJSHeapSize": 19201413
+        }
+      },
+      "heapUsage": {
+        "usedSize": 9041308,
+        "totalSize": 10223616,
+        "embedderHeapUsedSize": 5447008,
+        "backingStorageSize": 8977797
+      }
+    },
+    {
+      "cycle": 2,
+      "entered": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 26,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 19605221,
+          "totalJSHeapSize": 20531421
+        }
+      },
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "renderer": null,
+        "heap": {
+          "usedJSHeapSize": 18565769,
+          "totalJSHeapSize": 19988089
+        }
+      },
+      "heapUsage": {
+        "usedSize": 9589180,
+        "totalSize": 11010048,
+        "embedderHeapUsedSize": 5696712,
+        "backingStorageSize": 8978041
+      }
+    },
+    {
+      "cycle": 3,
+      "entered": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 26,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 19954273,
+          "totalJSHeapSize": 20793753
+        }
+      },
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "renderer": null,
+        "heap": {
+          "usedJSHeapSize": 18881565,
+          "totalJSHeapSize": 19988277
+        }
+      },
+      "heapUsage": {
+        "usedSize": 9904788,
+        "totalSize": 11010048,
+        "embedderHeapUsedSize": 6297160,
+        "backingStorageSize": 8978229
+      }
+    },
+    {
+      "cycle": 4,
+      "entered": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 26,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 20229765,
+          "totalJSHeapSize": 21580373
+        }
+      },
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "renderer": null,
+        "heap": {
+          "usedJSHeapSize": 19222985,
+          "totalJSHeapSize": 20512753
+        }
+      },
+      "heapUsage": {
+        "usedSize": 10246020,
+        "totalSize": 11534336,
+        "embedderHeapUsedSize": 6894488,
+        "backingStorageSize": 8978417
+      }
+    },
+    {
+      "cycle": 5,
+      "entered": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 26,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 20774769,
+          "totalJSHeapSize": 21842705
+        }
+      },
+      "exited": {
+        "cache": {
+          "car": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          },
+          "studio": {
+            "entries": 0,
+            "referencedEntries": 0,
+            "totalReferences": 0,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 0
+          }
+        },
+        "renderer": null,
+        "heap": {
+          "usedJSHeapSize": 19689809,
+          "totalJSHeapSize": 20775085
+        }
+      },
+      "heapUsage": {
+        "usedSize": 10712656,
+        "totalSize": 11796480,
+        "embedderHeapUsedSize": 7229536,
+        "backingStorageSize": 8978605
+      }
+    }
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

@@ -154,18 +154,21 @@ M3B.2 implementation and local verification are **GO for measurement completion 
 
 ## M3B.2 final verification and M3B.3 gate status
 
-| Gate                             | Status              | Evidence                                                                                                                        |
-| -------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| M3B.2 evidence gate              | Closed with caveats | Static idle 0/0 (desktop), mobile 4x idle 0/0; several secondary windows rely on M3B.1 evidence and are marked not re-executed. |
-| Cache boundedness                | Pass                | MAX_INACTIVE_SETS=1, eviction + refcount unit tests.                                                                            |
-| No live disposal                 | Pass                | Refcount tests; release is a no-op after eviction.                                                                              |
-| Cache-hit regeneration avoidance | Pass                | Ferrari->Mercedes 122 ms max task vs 476 ms cold; rapid cycles 180/155/182 ms.                                                  |
-| Zero recurring idle draws        | Pass                | Desktop and mobile 4x 10 s windows: 0 rAF / 0 draws.                                                                            |
-| Visual fidelity                  | Pass                | Post-rapid-cycle screenshot review: sponsor graphics, paint, wheels, walls, reflection intact.                                  |
-| Lighthouse variance              | Inconclusive        | Medians within run overlap of M3B.1; paired re-run registered as follow-up.                                                     |
-| Lint/format/tests/coverage/build | Pass                | 31 files / 234 tests; coverage 63.2%; initial JS 109.7 KiB.                                                                     |
-| CI and Preview                   | Pending push        | To be recorded for the final M3B.3 commit SHA.                                                                                  |
+| Gate                              | Status                         | Evidence                                                                                                                                                                 |
+| --------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| M3B.2 browser evidence            | Pass                           | Reduced-motion default/live change/drag, language, hidden/off-screen restore, and WebGL context restoration executed on `a66100a`; settled windows were 0 rAF / 0 draws. |
+| Idempotent and stale-safe release | Pass                           | Double release, stale same-key handle, refcount underflow, overlapping consumers, cleanup order, and deferred disposal covered by adversarial tests.                     |
+| Concurrent render lifecycle       | Pass                           | Acquisition occurs in a layout effect; server and interrupted renders generate zero resources; StrictMode records one reference per active namespace.                    |
+| Bounded cache                     | Pass                           | `MAX_INACTIVE_SETS=1`; rapid switches remain at two entries and one active reference per namespace with zero pending disposals.                                          |
+| GPU resource stability            | Pass                           | Repeated language switches stay at 61 geometries / 25 textures; multi-team switches stay at 61 / 34; programs remain 23.                                                 |
+| Route cleanup                     | Pass                           | Five enter/exit cycles and ten StrictMode-oriented cycles end with zero entries, references, and pending disposals.                                                      |
+| Heap comparison                   | Pass with observation          | Cycle-five candidate V8 heap is 10.12 MB vs baseline 10.13 MB; DOM/listener retention pattern is already present in M3B.1 and is not a cache regression.                 |
+| Paired desktop Lighthouse         | Pass with open absolute target | Five-run median TBT 3,462 -> 3,270 ms; main thread 7,215 -> 6,888 ms; LCP +48 ms; CLS unchanged.                                                                         |
+| Paired mobile Lighthouse          | Pass with open absolute target | Five-run median TBT 13,619 -> 12,874 ms; main thread 28,157 -> 25,731 ms; LCP +72 ms; CLS unchanged. Mobile LCP remains over 2.5 s.                                      |
+| Visual fidelity                   | Pass                           | Captures at 390, 768, 1280, 1440, and 1920 px retain model, materials, 512 px reflection, lighting, shadows, and controls.                                               |
+| Lint/format/tests/coverage/build  | Pass                           | 61 files / 456 tests; coverage 63.2% statements; Showroom 92.51 KiB gzip; `vendor-three` 249.28 KiB gzip.                                                                |
+| CI and Preview                    | Pending final docs push        | Must be updated with exact final documentation SHA, GitHub CI URL, Vercel Preview status, and executed-versus-skipped smoke result.                                      |
 
-M3B.3 is **GO for branch review** on executed evidence; the two registered
-follow-ups (paired Lighthouse re-run, 5-cycle route sweep) belong to the
-review session. Merge remains NO-GO.
+Local M3B.2/M3B.3 gates are **GO for branch review**. Merge and Production are
+**NO-GO** until exact final-SHA CI and Vercel Preview verification complete.
+M3B.4 must not start before this gate is reviewed.
