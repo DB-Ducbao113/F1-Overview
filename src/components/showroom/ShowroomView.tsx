@@ -20,7 +20,7 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
-import { disposeAll } from './showroomTextureCache';
+import { disposeAll, getCacheStats } from './showroomTextureCache';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
@@ -33,6 +33,18 @@ interface WebGLFallbackProps {
   primaryColor: string;
   lang: 'vi' | 'en';
 }
+
+type ShowroomDiagnosticsWindow = Window & {
+  __SHOWROOM_CACHE_STATS__?: () => {
+    car: ReturnType<typeof getCacheStats>;
+    studio: ReturnType<typeof getCacheStats>;
+  };
+  __SHOWROOM_RENDERER_STATS__?: () => unknown;
+};
+
+const diagnosticsEnabled = (): boolean =>
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).has('showroomDiagnostics');
 
 const WebGLContextGuard: React.FC<{
   onContextStateChange: (isLost: boolean) => void;
@@ -67,6 +79,25 @@ const ShowroomFrameInvalidator: React.FC<{
   useEffect(() => {
     if (active) invalidate();
   }, [active, invalidate, sceneRevision, size.height, size.width]);
+
+  return null;
+};
+
+const ShowroomResourceDiagnostics: React.FC = () => {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    if (!diagnosticsEnabled()) return;
+    const diagnosticsWindow = window as ShowroomDiagnosticsWindow;
+    diagnosticsWindow.__SHOWROOM_RENDERER_STATS__ = () => ({
+      memory: { ...gl.info.memory },
+      render: { ...gl.info.render },
+      programs: gl.info.programs?.length ?? 0,
+    });
+    return () => {
+      delete diagnosticsWindow.__SHOWROOM_RENDERER_STATS__;
+    };
+  }, [gl]);
 
   return null;
 };
@@ -183,6 +214,15 @@ export const ShowroomView: React.FC = () => {
   // torn down and retained GPU textures must be released with it.
   useEffect(() => {
     return () => disposeAll();
+  }, []);
+
+  useEffect(() => {
+    if (!diagnosticsEnabled()) return;
+    const diagnosticsWindow = window as ShowroomDiagnosticsWindow;
+    diagnosticsWindow.__SHOWROOM_CACHE_STATS__ = () => ({
+      car: getCacheStats('car'),
+      studio: getCacheStats('studio'),
+    });
   }, []);
 
   useEffect(() => {
@@ -404,6 +444,7 @@ export const ShowroomView: React.FC = () => {
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
             <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
+            <ShowroomResourceDiagnostics />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 

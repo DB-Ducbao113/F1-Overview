@@ -33,15 +33,19 @@ export const MAX_INACTIVE_SETS = 1;
 export interface CacheStats {
   entries: number;
   referencedEntries: number;
+  totalReferences: number;
+  pendingDisposals: number;
   inactiveOrderLength: number;
   hits: number;
   misses: number;
 }
 
 interface CacheEntry {
+  id: symbol;
   textures: Map<string, Texture>;
   refCount: number;
   lastUsed: number;
+  disposeWhenUnused: boolean;
 }
 
 interface CacheState {
@@ -50,11 +54,27 @@ interface CacheState {
   inactiveOrder: string[];
   hits: number;
   misses: number;
+  evictionScheduled: boolean;
+  evictionEpoch: number;
 }
 
 const namespaces: Record<TextureNamespace, CacheState> = {
-  car: { entries: new Map(), inactiveOrder: [], hits: 0, misses: 0 },
-  studio: { entries: new Map(), inactiveOrder: [], hits: 0, misses: 0 },
+  car: {
+    entries: new Map(),
+    inactiveOrder: [],
+    hits: 0,
+    misses: 0,
+    evictionScheduled: false,
+    evictionEpoch: 0,
+  },
+  studio: {
+    entries: new Map(),
+    inactiveOrder: [],
+    hits: 0,
+    misses: 0,
+    evictionScheduled: false,
+    evictionEpoch: 0,
+  },
 };
 
 /** Dispose a texture safely; never throws even if already disposed. */
@@ -73,23 +93,71 @@ const disposeEntry = (entry: CacheEntry): void => {
   entry.textures.clear();
 };
 
-const evictIfNeeded = (ns: TextureNamespace, now: number): void => {
+const evictIfNeeded = (ns: TextureNamespace): void => {
   const state = namespaces[ns];
   while (state.inactiveOrder.length > MAX_INACTIVE_SETS) {
     const lruKey = state.inactiveOrder[state.inactiveOrder.length - 1];
     const entry = state.entries.get(lruKey);
-    if (entry) {
+    if (entry && entry.refCount === 0) {
       disposeEntry(entry);
       state.entries.delete(lruKey);
     }
     state.inactiveOrder.pop();
   }
-  void now;
+};
+
+const scheduleEviction = (ns: TextureNamespace): void => {
+  const state = namespaces[ns];
+  if (state.evictionScheduled) return;
+  state.evictionScheduled = true;
+  const epoch = state.evictionEpoch;
+  queueMicrotask(() => {
+    if (state.evictionEpoch !== epoch) return;
+    state.evictionScheduled = false;
+    evictIfNeeded(ns);
+  });
 };
 
 const removeFromInactive = (state: CacheState, key: string): void => {
-  const idx = state.inactiveOrder.indexOf(key);
-  if (idx >= 0) state.inactiveOrder.splice(idx, 1);
+  state.inactiveOrder = state.inactiveOrder.filter((inactiveKey) => inactiveKey !== key);
+};
+
+const createRelease = (
+  ns: TextureNamespace,
+  setKey: string,
+  acquiredEntry: CacheEntry,
+): (() => void) => {
+  let released = false;
+
+  return () => {
+    if (released) return;
+    released = true;
+
+    const state = namespaces[ns];
+    const currentEntry = state.entries.get(setKey);
+
+    // The key may have been disposed and recreated. A handle can only release
+    // the exact entry it acquired; it must never mutate a replacement entry.
+    if (currentEntry !== acquiredEntry) return;
+    if (currentEntry.refCount <= 0) return;
+
+    currentEntry.refCount -= 1;
+    if (currentEntry.refCount > 0) return;
+
+    if (currentEntry.disposeWhenUnused) {
+      removeFromInactive(state, setKey);
+      disposeEntry(currentEntry);
+      state.entries.delete(setKey);
+      return;
+    }
+
+    removeFromInactive(state, setKey);
+    state.inactiveOrder.unshift(setKey);
+    // React runs the old layout-effect cleanup before setting up the new
+    // committed effect. Defer LRU eviction through that setup so a returning
+    // key can be retained instead of being evicted one instruction too soon.
+    scheduleEviction(ns);
+  };
 };
 
 export interface AcquireResult {
@@ -120,20 +188,13 @@ export const acquireSet = (
   if (existing) {
     if (existing.refCount === 0) removeFromInactive(state, setKey);
     existing.refCount += 1;
+    existing.disposeWhenUnused = false;
     existing.lastUsed = performance.now();
     state.hits += 1;
-    evictIfNeeded(ns, existing.lastUsed);
+    evictIfNeeded(ns);
     return {
       textures: existing.textures,
-      release: () => {
-        const entry = state.entries.get(setKey);
-        if (!entry) return;
-        entry.refCount = Math.max(0, entry.refCount - 1);
-        if (entry.refCount === 0) {
-          state.inactiveOrder.unshift(setKey);
-          evictIfNeeded(ns, performance.now());
-        }
-      },
+      release: createRelease(ns, setKey, existing),
       hit: true,
       key: setKey,
     };
@@ -144,21 +205,19 @@ export const acquireSet = (
   for (const slot of slotNames) {
     textures.set(slot, generate(slot));
   }
-  const entry: CacheEntry = { textures, refCount: 1, lastUsed: performance.now() };
+  const entry: CacheEntry = {
+    id: Symbol(setKey),
+    textures,
+    refCount: 1,
+    lastUsed: performance.now(),
+    disposeWhenUnused: false,
+  };
   state.entries.set(setKey, entry);
   state.misses += 1;
-  evictIfNeeded(ns, entry.lastUsed);
+  evictIfNeeded(ns);
   return {
     textures,
-    release: () => {
-      const e = state.entries.get(setKey);
-      if (!e) return;
-      e.refCount = Math.max(0, e.refCount - 1);
-      if (e.refCount === 0) {
-        state.inactiveOrder.unshift(setKey);
-        evictIfNeeded(ns, performance.now());
-      }
-    },
+    release: createRelease(ns, setKey, entry),
     hit: false,
     key: setKey,
   };
@@ -183,32 +242,59 @@ export const hasSet = (ns: TextureNamespace, setKey: string): boolean =>
 export const getCacheStats = (ns: TextureNamespace): CacheStats => {
   const state = namespaces[ns];
   let referenced = 0;
+  let references = 0;
+  let pendingDisposals = 0;
   state.entries.forEach((e) => {
     if (e.refCount > 0) referenced += 1;
+    references += e.refCount;
+    if (e.disposeWhenUnused) pendingDisposals += 1;
   });
   return {
     entries: state.entries.size,
     referencedEntries: referenced,
+    totalReferences: references,
+    pendingDisposals,
     inactiveOrderLength: state.inactiveOrder.length,
     hits: state.hits,
     misses: state.misses,
   };
 };
 
-/** Dispose every cached texture in one or all namespaces (teardown path). */
+/**
+ * Dispose every unreferenced texture and mark active entries for disposal as
+ * soon as their final consumer releases them. This is safe regardless of
+ * parent/child React effect-cleanup order.
+ */
 export const disposeAll = (ns?: TextureNamespace): void => {
   const targets: TextureNamespace[] = ns ? [ns] : ['car', 'studio'];
   targets.forEach((n) => {
     const state = namespaces[n];
-    state.entries.forEach((entry) => disposeEntry(entry));
-    state.entries.clear();
+    state.entries.forEach((entry, key) => {
+      if (entry.refCount === 0) {
+        disposeEntry(entry);
+        state.entries.delete(key);
+      } else {
+        entry.disposeWhenUnused = true;
+      }
+    });
     state.inactiveOrder.length = 0;
     state.hits = 0;
     state.misses = 0;
+    state.evictionScheduled = false;
+    state.evictionEpoch += 1;
   });
 };
 
 /** Test/teardown helper: full internal reset. */
 export const __resetCacheForTests = (): void => {
-  disposeAll();
+  (['car', 'studio'] as const).forEach((namespace) => {
+    const state = namespaces[namespace];
+    state.entries.forEach((entry) => disposeEntry(entry));
+    state.entries.clear();
+    state.inactiveOrder.length = 0;
+    state.hits = 0;
+    state.misses = 0;
+    state.evictionScheduled = false;
+    state.evictionEpoch += 1;
+  });
 };

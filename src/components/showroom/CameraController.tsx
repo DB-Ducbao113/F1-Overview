@@ -144,6 +144,14 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
       invalidate();
     }, [zoomTrigger, zoomDirection, camera, invalidate]);
 
+    useEffect(() => {
+      if (!reducedMotion || !controlsRef.current) return;
+      dampingUntil.current = 0;
+      controlsRef.current.enableDamping = false;
+      controlsRef.current.update();
+      invalidate();
+    }, [invalidate, reducedMotion]);
+
     useFrame((_, delta) => {
       if (!controlsRef.current) return;
 

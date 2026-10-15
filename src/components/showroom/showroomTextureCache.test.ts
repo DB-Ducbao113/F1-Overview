@@ -51,17 +51,18 @@ describe('showroomTextureCache', () => {
     expect(vi.mocked(body.dispose as ReturnType<typeof vi.fn>).mock.calls.length).toBe(0);
   });
 
-  it('evicts the LRU inactive set beyond capacity and disposes its textures once', () => {
+  it('evicts the LRU inactive set beyond capacity and disposes its textures once', async () => {
     // Release order defines the inactive order: ferrari freed first -> tail.
     const ferrari = acquireSet('car', 'ferrari:en', SLOTS, (s) => makeTexture(`f-${s}`));
     const mercedes = acquireSet('car', 'mercedes:en', SLOTS, (s) => makeTexture(`m-${s}`));
     // Hold texture references BEFORE release — eviction clears the entry map.
     const ferrariNose = ferrari.textures.get('nose');
     mercedes.release(); // inactive order: [mercedes]
-    ferrari.release(); // order: [ferrari, mercedes] -> ferrari is the tail
+    ferrari.release(); // order: [ferrari, mercedes] -> mercedes is the tail
 
     const mclaren = acquireSet('car', 'mclaren:en', SLOTS, (s) => makeTexture(`c-${s}`));
     mclaren.release(); // ferrari (tail) evicted to keep MAX_INACTIVE_SETS=1
+    await Promise.resolve();
 
     const stats = getCacheStats('car');
     expect(stats.entries).toBe(MAX_INACTIVE_SETS);
@@ -72,12 +73,13 @@ describe('showroomTextureCache', () => {
     expect(tex.dispose).toHaveBeenCalledTimes(1);
   });
 
-  it('releasing another set evicts the oldest inactive set (FIFO tail)', () => {
+  it('releasing another set evicts the oldest inactive set (FIFO tail)', async () => {
     const m = acquireSet('car', 'mercedes:en', SLOTS, (s) => makeTexture(`m-${s}`));
     const mNose = m.textures.get('nose');
     m.release(); // inactive order: [mercedes]
     const f = acquireSet('car', 'ferrari:en', SLOTS, (s) => makeTexture(`f-${s}`));
     f.release(); // order: [ferrari, mercedes] -> mercedes evicted (tail)
+    await Promise.resolve();
     expect(hasSet('car', 'mercedes:en')).toBe(false);
     expect(hasSet('car', 'ferrari:en')).toBe(true);
     const tex = mNose as unknown as { dispose: ReturnType<typeof vi.fn> };
@@ -120,12 +122,13 @@ describe('showroomTextureCache', () => {
     fresh.release();
   });
 
-  it('rapid switching keeps the cache bounded with correct refcounts', () => {
+  it('rapid switching keeps the cache bounded with correct refcounts', async () => {
     const keys = ['mercedes:en', 'ferrari:en', 'mclaren:en', 'mercedes:en', 'ferrari:en'];
     const handles = keys.map((k, i) =>
       acquireSet('car', k, SLOTS, (s) => makeTexture(`${i}-${k}-${s}`)),
     );
     [...handles].reverse().forEach((h) => h.release());
+    await Promise.resolve();
 
     const stats = getCacheStats('car');
     // Bounded: at most MAX_INACTIVE_SETS unreferenced entries remain.
@@ -146,24 +149,119 @@ describe('showroomTextureCache', () => {
     expect(stats.hits).toBe(1);
   });
 
+  it('retains a returning key across React cleanup-before-setup ordering', async () => {
+    const generator = vi.fn((slot: string) => makeTexture(`texture-${slot}`));
+    const mercedes = acquireSet('car', 'mercedes:en', SLOTS, generator);
+    mercedes.release();
+    const ferrari = acquireSet('car', 'ferrari:en', SLOTS, generator);
+
+    // A dependency change cleans up Ferrari before the next committed layout
+    // effect reacquires Mercedes. Eviction must wait through that setup.
+    ferrari.release();
+    const returningMercedes = acquireSet('car', 'mercedes:en', SLOTS, generator);
+    await Promise.resolve();
+
+    expect(returningMercedes.hit).toBe(true);
+    expect(generator).toHaveBeenCalledTimes(SLOTS.length * 2);
+    expect(getCacheStats('car')).toMatchObject({
+      entries: 2,
+      referencedEntries: 1,
+      totalReferences: 1,
+      inactiveOrderLength: 1,
+    });
+    returningMercedes.release();
+  });
+
   it('disposeAll resets hit/miss counters and clears both namespaces', () => {
-    acquireSet('car', 'mercedes:en', SLOTS, (s) => makeTexture(`m-${s}`));
-    acquireTexture('studio', 'mercedes:vi', 'north', () => makeTexture('n'));
+    const car = acquireSet('car', 'mercedes:en', SLOTS, (s) => makeTexture(`m-${s}`));
+    const studio = acquireTexture('studio', 'mercedes:vi', 'north', () => makeTexture('n'));
     disposeAll();
+    expect(getCacheStats('car').pendingDisposals).toBe(1);
+    expect(getCacheStats('studio').pendingDisposals).toBe(1);
+    car.release();
+    studio.release();
     expect(getCacheStats('car').entries).toBe(0);
     expect(getCacheStats('car').misses).toBe(0);
     expect(getCacheStats('studio').entries).toBe(0);
   });
 
-  it('release after eviction is a safe no-op (no crash, no double dispose)', () => {
+  it('release after eviction is a safe no-op (no crash, no double dispose)', async () => {
     const m = acquireSet('car', 'mercedes:en', SLOTS, (s) => makeTexture(`m-${s}`));
     const mNose = m.textures.get('nose');
     m.release();
     const f = acquireSet('car', 'ferrari:en', SLOTS, (s) => makeTexture(`f-${s}`));
     f.release(); // order: [ferrari, mercedes] -> mercedes evicted
+    await Promise.resolve();
 
     expect(() => m.release()).not.toThrow();
     const tex = mNose as unknown as { dispose: ReturnType<typeof vi.fn> };
     expect(tex.dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('makes each release handle idempotent without refcount underflow or duplicate LRU keys', () => {
+    const handle = acquireSet('car', 'mercedes:en', SLOTS, (slot) => makeTexture(`m-${slot}`));
+
+    handle.release();
+    handle.release();
+    handle.release();
+
+    expect(getCacheStats('car')).toMatchObject({
+      entries: 1,
+      referencedEntries: 0,
+      totalReferences: 0,
+      inactiveOrderLength: 1,
+    });
+  });
+
+  it('does not let a stale handle mutate a replacement entry with the same key', () => {
+    const stale = acquireSet('car', 'mercedes:en', SLOTS, (slot) => makeTexture(`old-${slot}`));
+    __resetCacheForTests();
+
+    const replacement = acquireSet('car', 'mercedes:en', SLOTS, (slot) =>
+      makeTexture(`new-${slot}`),
+    );
+    stale.release();
+
+    expect(getCacheStats('car')).toMatchObject({
+      entries: 1,
+      referencedEntries: 1,
+      totalReferences: 1,
+    });
+    replacement.release();
+    expect(getCacheStats('car').totalReferences).toBe(0);
+  });
+
+  it('keeps resources valid until every overlapping consumer releases', () => {
+    const first = acquireSet('car', 'mercedes:en', SLOTS, (slot) => makeTexture(`shared-${slot}`));
+    const second = acquireSet('car', 'mercedes:en', SLOTS, (slot) => makeTexture(`unused-${slot}`));
+    const nose = first.textures.get('nose') as unknown as {
+      dispose: ReturnType<typeof vi.fn>;
+    };
+
+    disposeAll('car');
+    expect(getCacheStats('car')).toMatchObject({ totalReferences: 2, pendingDisposals: 1 });
+    first.release();
+    expect(nose.dispose).not.toHaveBeenCalled();
+    second.release();
+    expect(nose.dispose).toHaveBeenCalledTimes(1);
+    expect(getCacheStats('car').entries).toBe(0);
+  });
+
+  it('survives repeated route mount and teardown cycles without retained references', () => {
+    for (let cycle = 0; cycle < 5; cycle += 1) {
+      const car = acquireSet('car', `team-${cycle}`, SLOTS, (slot) =>
+        makeTexture(`${cycle}-${slot}`),
+      );
+      const studio = acquireTexture('studio', `team-${cycle}:vi`, 'north', () =>
+        makeTexture(`${cycle}-north`),
+      );
+
+      disposeAll();
+      car.release();
+      studio.release();
+
+      expect(getCacheStats('car')).toMatchObject({ entries: 0, totalReferences: 0 });
+      expect(getCacheStats('studio')).toMatchObject({ entries: 0, totalReferences: 0 });
+    }
   });
 });
