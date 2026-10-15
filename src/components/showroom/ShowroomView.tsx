@@ -18,6 +18,8 @@ import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
@@ -137,8 +139,25 @@ export const ShowroomView: React.FC = () => {
   // Active Camera Preset
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
   const [presetTrigger, setPresetTrigger] = useState<number>(0);
-  // 3D Visualizer auto-rotation
-  const [autoRotate, setAutoRotate] = useState<boolean>(true);
+
+  // ── Reduced motion (M3B.2) ──
+  // Tracks `prefers-reduced-motion: reduce` live so a mid-session preference
+  // change is honored. Auto-rotation starts OFF for affected users while the
+  // scene still renders on demand; manual camera, hotspot and livery controls
+  // and every piece of UI remain fully functional.
+  const reducedMotion = useReducedMotion();
+  const [autoRotate, setAutoRotate] = useState<boolean>(() => getDefaultAutoRotate(reducedMotion));
+  const prevReducedMotionRef = useRef(reducedMotion);
+
+  // When the preference turns ON, stop auto-rotation. When it turns OFF we do
+  // not force rotation back on; the user keeps control. Either way the scene
+  // revision includes the flag so the frame invalidator repaints without a
+  // reload.
+  useEffect(() => {
+    if (prevReducedMotionRef.current === reducedMotion) return;
+    prevReducedMotionRef.current = reducedMotion;
+    if (reducedMotion) setAutoRotate(false);
+  }, [reducedMotion]);
 
   // Engineering Hotspots Visibility (Clean default view matching studio photo)
   const [showHotspots, setShowHotspots] = useState<boolean>(false);
@@ -177,7 +196,7 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
-  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}`;
+  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}`;
 
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
@@ -365,7 +384,7 @@ export const ShowroomView: React.FC = () => {
           <Canvas
             shadows
             dpr={[1, 1.25]}
-            frameloop={isCanvasActive ? 'demand' : 'never'}
+            frameloop={getFrameLoopMode(isCanvasActive)}
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
             gl={{
               antialias: false,
@@ -409,6 +428,7 @@ export const ShowroomView: React.FC = () => {
               cameraPreset={cameraPreset}
               presetTrigger={presetTrigger}
               autoRotate={autoRotate}
+              reducedMotion={reducedMotion}
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
               zoomDirection={zoomDirection}

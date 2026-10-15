@@ -280,3 +280,17 @@ Evidence and deployment:
 - Implementation SHA `f6bde5474d9692ef3fa58e8cd466a76abc14f202` passed [CI run 38667313537](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667313537). Vercel deployed the branch preview at the protected [Preview alias](https://podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app) returning the expected SSO redirect.
 - [Preview Smoke run 38667377888](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667377888) passed target validation. k6 setup and the live smoke were explicitly skipped because `VERCEL_PROTECTION_BYPASS` is not configured; no live smoke or high-load request was sent to Preview or Production.
 - Docker publishing is not applicable to `perf/**` and did not run. Stop after M3B.1 for review before M3B.2; do not merge into main.
+
+## M3B.2 result — Showroom motion lifecycle and reduced motion
+
+M3B.2 builds on the M3B.1 demand renderer and adds an explicit motion-state model plus full `prefers-reduced-motion` support, without touching geometry, materials, textures, reflection, DPR, lighting, camera presets, or any F1 data source.
+
+- `src/components/showroom/showroomMotionState.ts` (new) defines nine motion states (`initial`, `autoRotate`, `orbit`, `damping`, `preset`, `static`, `hidden`, `offscreen`, `contextLost`). Only the five active states request frames; the settled scene resolves to `static` and keeps M3B.1's zero recurring draws. The Canvas frame-loop mapping (`demand`/`never`) is unchanged.
+- `src/hooks/useReducedMotion.ts` (new) tracks `prefers-reduced-motion: reduce` live, including mid-session changes while the Showroom is open, with a listener that is removed on unmount (no duplicate callbacks).
+- `ShowroomView.tsx` defaults auto-rotation to OFF for reduced-motion users, stops it immediately when the preference turns ON mid-session, and includes the flag in `sceneRevision` so the frame invalidator repaints without a reload.
+- `CameraController.tsx` receives `reducedMotion` and, under it, forces OrbitControls auto-rotation off, disables damping, and shortens the post-drag tail from 2,000 ms to 0 ms so drags settle instantly with no trailing frames. Manual orbit, wheel-zoom, presets, hotspots, and livery switching are untouched and remain fully functional.
+- `src/index.css` extends the existing reduced-motion media query to disable ten continuously looping utility animations (pulse, ping, bounce, spin, float, glow, marquee, stream, entrance) covering the Showroom HUD indicator dots. One-shot feedback animations remain so every control stays visible.
+
+Local verification on the implementation worktree: ESLint pass, Prettier format pass, 30 test files / 224 tests pass (+9 new motion/reduced-motion tests), coverage unchanged at 63.2% statements, production build passes with initial JavaScript at 109.7 KiB gzip (budget 180 KiB), Showroom chunk 90.95 KiB gzip (+0.29), and `vendor-three` unchanged at 249.28 KiB gzip and route-isolated.
+
+Browser-instrumented QA and Lighthouse evidence for M3B.2 are **pending execution** with the same harness as M3B.1 and are tracked with explicit `pending` markers in [`m3/m3b2-results.md`](m3/m3b2-results.md), [`m3/artifacts/m3b2-before-after.csv`](m3/artifacts/m3b2-before-after.csv), and [`m3/artifacts/m3b2-interaction-qa.json`](m3/artifacts/m3b2-interaction-qa.json); no unexecuted browser measurement is claimed. Full results, pending-measurement list, and rollback steps are in [`m3/m3b2-results.md`](m3/m3b2-results.md).
