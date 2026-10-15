@@ -180,6 +180,11 @@ routes.
 ## Gate decision
 
 Local application, lifecycle, browser, resource, Lighthouse, visual, test, and
-build gates are **GO for branch review**. Merge and Production remain **NO-GO**
-until exact final documentation commit CI and Vercel Preview are verified. Do
-not start M3B.4 until this gate is reviewed.
+build gates are **GO for branch review**. Verification commit `42e8dab` passed
+[GitHub CI](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38701776728)
+and its [Vercel Preview](https://podiumeffetdesol-48i89qopg-bao-bung-bu.vercel.app)
+reported success. The
+[Preview Smoke workflow](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38701859055)
+validated the target, then skipped k6 setup and the live smoke step; no executed
+live smoke result is claimed. Merge and Production remain **NO-GO** pending
+review. Do not start M3B.4 until this gate is reviewed.
