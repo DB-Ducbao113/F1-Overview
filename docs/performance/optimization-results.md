@@ -294,3 +294,26 @@ M3B.2 builds on the M3B.1 demand renderer and adds an explicit motion-state mode
 Local verification on the implementation worktree: ESLint pass, Prettier format pass, 30 test files / 224 tests pass (+9 new motion/reduced-motion tests), coverage unchanged at 63.2% statements, production build passes with initial JavaScript at 109.7 KiB gzip (budget 180 KiB), Showroom chunk 90.95 KiB gzip (+0.29), and `vendor-three` unchanged at 249.28 KiB gzip and route-isolated.
 
 Browser-instrumented QA and Lighthouse evidence for M3B.2 are **pending execution** with the same harness as M3B.1 and are tracked with explicit `pending` markers in [`m3/m3b2-results.md`](m3/m3b2-results.md), [`m3/artifacts/m3b2-before-after.csv`](m3/artifacts/m3b2-before-after.csv), and [`m3/artifacts/m3b2-interaction-qa.json`](m3/artifacts/m3b2-interaction-qa.json); no unexecuted browser measurement is claimed. Full results, pending-measurement list, and rollback steps are in [`m3/m3b2-results.md`](m3/m3b2-results.md).
+
+## M3B.2 final verification and M3B.3 result � texture cache
+
+M3B.2's pending browser/Lighthouse evidence gate is closed in
+[`m3/m3b2-final-verification.md`](m3/m3b2-final-verification.md): static idle
+(0 rAF / 0 draws), mobile 4x CPU-throttled idle (0/0), motion lifecycle QA,
+and three-run Lighthouse per profile are recorded; secondary windows that rely
+on unchanged M3B.1 code paths are explicitly marked not re-executed.
+
+M3B.3 adds a bounded, reference-counted procedural texture cache
+(`src/components/showroom/showroomTextureCache.ts`) with two namespaces (car,
+studio), keys including team and language, and retention of the active set
+plus one inactive set. `F1Car3DModel` and `StudioW15Stage` acquire through the
+cache and release references instead of disposing; route unmount disposes
+everything. Ten unit tests cover hits/misses, refcounts, eviction, key
+separation, no-disposed-reuse, concurrent same-key acquisition, and
+stale-handle safety. Livery-switch long tasks: cold generation unchanged
+(476 ms first Ferrari), cache-hit return 122 ms, rapid-cycle p50 180 ms with
+all post-first-generation tasks under the 200 ms target. Zero recurring idle
+draws hold on desktop and 4x-throttled mobile. Lighthouse medians (Desktop 46,
+Mobile 31) overlap the M3B.1 baseline within run variance; a paired re-run is
+registered as follow-up. Full details, exact files, and rollback are in
+[`m3/m3b3-results.md`](m3/m3b3-results.md).

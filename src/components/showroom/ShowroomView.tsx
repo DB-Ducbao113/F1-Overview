@@ -20,6 +20,7 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
+import { disposeAll } from './showroomTextureCache';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
@@ -176,6 +177,13 @@ export const ShowroomView: React.FC = () => {
     () => typeof document === 'undefined' || document.visibilityState === 'visible',
   );
   const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+
+  // ── M3B.3: on route unmount, dispose every cached procedural texture. ──
+  // The Showroom is the only consumer; when it unmounts the WebGL context is
+  // torn down and retained GPU textures must be released with it.
+  useEffect(() => {
+    return () => disposeAll();
+  }, []);
 
   useEffect(() => {
     const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');

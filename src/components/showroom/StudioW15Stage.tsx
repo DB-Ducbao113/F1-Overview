@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { acquireSet, STUDIO_TEXTURE_REVISION } from './showroomTextureCache';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import {
@@ -9,6 +10,10 @@ import {
   createDriversWallTexture,
   createAchievementsWallTexture,
 } from './StudioBackdropTexture';
+
+// Stable slot list for the bounded studio texture cache (module scope so the
+// acquireSet useMemo dependency stays referentially equal across renders).
+const STUDIO_SLOTS = ['north', 'south', 'west', 'east'] as const;
 
 interface StudioW15StageProps {
   teamId: TeamId;
@@ -30,17 +35,40 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   const invalidate = useThree((state) => state.invalidate);
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
 
-  // 1. North Wall: Official Constructor Premiere Branding (CADILLAC FORMULA 1)
-  const northTexture = useMemo(() => createTeamBackdropTexture(teamId, lang), [teamId, lang]);
+  // ── M3B.3: acquire the four studio backdrops through the bounded cache ──
+  // Cache key includes language so a language switch can never reuse a
+  // wrong-language backdrop. The component holds references only while it
+  // renders and releases them on unmount/StrictMode cleanup; the cache owns
+  // texture lifetime and disposal.
 
-  // 2. South Wall: Machine Technical Dossier (CADILLAC MAC-26 / W15 / SF-24)
-  const southTexture = useMemo(() => createTechnicalBackdropTexture(teamId, lang), [teamId, lang]);
+  const { textures: backdropTextures, release: releaseStudioTextures } = useMemo(
+    () =>
+      acquireSet(
+        'studio',
+        `${teamId}:${lang}:studio-v${STUDIO_TEXTURE_REVISION}`,
+        STUDIO_SLOTS,
+        (slot) => {
+          switch (slot) {
+            case 'north':
+              return createTeamBackdropTexture(teamId, lang);
+            case 'south':
+              return createTechnicalBackdropTexture(teamId, lang);
+            case 'west':
+              return createDriversWallTexture(teamId, lang);
+            case 'east':
+              return createAchievementsWallTexture(teamId, lang);
+            default:
+              throw new Error(`Unknown studio texture slot: ${slot}`);
+          }
+        },
+      ),
+    [teamId, lang],
+  );
 
-  // 3. West Wall (Left): Drivers Hall of Fame (Danh sách tay đua đã từng thi đấu)
-  const westTexture = useMemo(() => createDriversWallTexture(teamId, lang), [teamId, lang]);
-
-  // 4. East Wall (Right): All-Time Constructor Achievements (Thành tích toàn thời gian)
-  const eastTexture = useMemo(() => createAchievementsWallTexture(teamId, lang), [teamId, lang]);
+  const northTexture = backdropTextures.get('north')!;
+  const southTexture = backdropTextures.get('south')!;
+  const westTexture = backdropTextures.get('west')!;
+  const eastTexture = backdropTextures.get('east')!;
 
   useEffect(() => {
     invalidate();
@@ -48,12 +76,11 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
 
   useEffect(() => {
     return () => {
-      northTexture.dispose();
-      southTexture.dispose();
-      westTexture.dispose();
-      eastTexture.dispose();
+      // M3B.3: release the cache reference; never dispose textures the cache
+      // may still own for the retained inactive set.
+      releaseStudioTextures();
     };
-  }, [northTexture, southTexture, westTexture, eastTexture]);
+  }, [releaseStudioTextures]);
 
   // Lightened studio so near-black carbon (suspension/diffuser/wings) keeps silhouette.
   // Was '#0b0d12' walls + '#07080c' floor — black parts dissolved into background.

@@ -3,6 +3,7 @@ import { useGLTF, Html } from '@react-three/drei';
 import { useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
+import { acquireSet, CAR_TEXTURE_REVISION } from './showroomTextureCache';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
@@ -28,6 +29,20 @@ interface F1Car3DModelProps {
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
 const MODEL_SCALE = 0.105;
+
+// Stable slot list for the bounded texture cache (module scope so the
+// acquireSet useMemo dependency stays referentially equal across renders).
+const CAR_SLOTS = [
+  'nose',
+  'bodywork',
+  'wings',
+  'floor',
+  'suspensionMirrors',
+  'diffuserRainLight',
+  'cockpit',
+  'halo',
+  'wheel',
+] as const;
 
 // ── Realistic C42 Formula 1 GLB Model with Photorealistic PBR Livery ──
 const RealF1CarMesh: React.FC<{
@@ -75,42 +90,52 @@ const RealF1CarMesh: React.FC<{
     });
   }, [scene]);
 
-  // Generate authentic UV textures mapped directly to the car's 3D primitives (ZERO floating planes)
-  const noseTex = useMemo(
-    () => generateNoseTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const bodyworkTex = useMemo(
-    () => generateBodyworkTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const wingsTex = useMemo(
-    () => generateWingsTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const floorTex = useMemo(() => generateFloorTexture(teamId, livery), [teamId, livery]);
-  const suspensionMirrorsTex = useMemo(
-    () => generateSuspensionMirrorsTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const diffuserRainLightTex = useMemo(
-    () => generateDiffuserRainLightTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const cockpitTex = useMemo(() => generateCockpitTexture(teamId, livery), [teamId, livery]);
-  const haloTex = useMemo(
-    () => generateHaloTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-
-  // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
+  // ── M3B.3: acquire procedural car textures through the bounded cache ──
+  // The cache owns texture lifetime; this component only holds a reference
+  // for as long as it renders and releases it on unmount/StrictMode cleanup.
   const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
 
-  // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
-  const wheelTex = useMemo(
-    () => generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image),
+  const { textures: cachedTextures, release: releaseCarTextures } = useMemo(
+    () =>
+      acquireSet('car', `${teamId}:car-v${CAR_TEXTURE_REVISION}`, CAR_SLOTS, (slot) => {
+        switch (slot) {
+          case 'nose':
+            return generateNoseTexture(teamId, livery, sponsors);
+          case 'bodywork':
+            return generateBodyworkTexture(teamId, livery, sponsors);
+          case 'wings':
+            return generateWingsTexture(teamId, livery, sponsors);
+          case 'floor':
+            return generateFloorTexture(teamId, livery);
+          case 'suspensionMirrors':
+            return generateSuspensionMirrorsTexture(teamId, livery);
+          case 'diffuserRainLight':
+            return generateDiffuserRainLightTexture(teamId, livery);
+          case 'cockpit':
+            return generateCockpitTexture(teamId, livery);
+          case 'halo':
+            return generateHaloTexture(teamId, livery, sponsors);
+          case 'wheel':
+            return generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image);
+          default:
+            throw new Error(`Unknown car texture slot: ${slot}`);
+        }
+      }),
+    // baseWheelTex.image is decoded once by useLoader; the generated wheel
+    // texture bakes its pixels in, so the loader result is a generation
+    // input, not part of the cache key (the source file is static).
     [teamId, livery, sponsors, baseWheelTex],
   );
+
+  const noseTex = cachedTextures.get('nose')!;
+  const bodyworkTex = cachedTextures.get('bodywork')!;
+  const wingsTex = cachedTextures.get('wings')!;
+  const floorTex = cachedTextures.get('floor')!;
+  const suspensionMirrorsTex = cachedTextures.get('suspensionMirrors')!;
+  const diffuserRainLightTex = cachedTextures.get('diffuserRainLight')!;
+  const cockpitTex = cachedTextures.get('cockpit')!;
+  const haloTex = cachedTextures.get('halo')!;
+  const wheelTex = cachedTextures.get('wheel')!;
 
   // Apply authentic team livery & sponsor graphics directly to the 3D car mesh
   useEffect(() => {
@@ -271,29 +296,25 @@ const RealF1CarMesh: React.FC<{
     return () => {
       activeMaterialsRef.current.forEach((m) => m.dispose());
       activeMaterialsRef.current = [];
-      noseTex.dispose();
-      bodyworkTex.dispose();
-      wingsTex.dispose();
-      floorTex.dispose();
-      wheelTex.dispose();
-      cockpitTex.dispose();
-      haloTex.dispose();
-      suspensionMirrorsTex.dispose();
-      diffuserRainLightTex.dispose();
+      // M3B.3: textures are owned by the bounded cache — release the
+      // reference instead of disposing them (StrictMode-safe).
+      releaseCarTextures();
     };
   }, [
     clonedScene,
     teamId,
     livery,
+    cachedTextures,
     noseTex,
     bodyworkTex,
     wingsTex,
     floorTex,
-    wheelTex,
-    cockpitTex,
-    haloTex,
     suspensionMirrorsTex,
     diffuserRainLightTex,
+    cockpitTex,
+    haloTex,
+    wheelTex,
+    releaseCarTextures,
     invalidate,
   ]);
 

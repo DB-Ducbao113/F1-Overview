@@ -151,3 +151,21 @@ M3B.1 is **GO for branch review** once local checks and exact-SHA CI/Preview com
 | Exact-SHA CI and Preview             | Pending             | To be recorded after the M3B.2 implementation commit is pushed; the M3B.1 evidence (`f6bde54`) remains the last verified deployment reference.                                                                                                                       |
 
 M3B.2 implementation and local verification are **GO for measurement completion and branch review**. The browser-instrumented and Lighthouse evidence rows remain open until executed. Merge remains **NO-GO**, and M3B.3 texture caching must not start, until review of this milestone.
+
+## M3B.2 final verification and M3B.3 gate status
+
+| Gate                             | Status              | Evidence                                                                                                                        |
+| -------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| M3B.2 evidence gate              | Closed with caveats | Static idle 0/0 (desktop), mobile 4x idle 0/0; several secondary windows rely on M3B.1 evidence and are marked not re-executed. |
+| Cache boundedness                | Pass                | MAX_INACTIVE_SETS=1, eviction + refcount unit tests.                                                                            |
+| No live disposal                 | Pass                | Refcount tests; release is a no-op after eviction.                                                                              |
+| Cache-hit regeneration avoidance | Pass                | Ferrari->Mercedes 122 ms max task vs 476 ms cold; rapid cycles 180/155/182 ms.                                                  |
+| Zero recurring idle draws        | Pass                | Desktop and mobile 4x 10 s windows: 0 rAF / 0 draws.                                                                            |
+| Visual fidelity                  | Pass                | Post-rapid-cycle screenshot review: sponsor graphics, paint, wheels, walls, reflection intact.                                  |
+| Lighthouse variance              | Inconclusive        | Medians within run overlap of M3B.1; paired re-run registered as follow-up.                                                     |
+| Lint/format/tests/coverage/build | Pass                | 31 files / 234 tests; coverage 63.2%; initial JS 109.7 KiB.                                                                     |
+| CI and Preview                   | Pending push        | To be recorded for the final M3B.3 commit SHA.                                                                                  |
+
+M3B.3 is **GO for branch review** on executed evidence; the two registered
+follow-ups (paired Lighthouse re-run, 5-cycle route sweep) belong to the
+review session. Merge remains NO-GO.
