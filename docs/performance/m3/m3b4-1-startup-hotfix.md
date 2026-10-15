@@ -4,7 +4,7 @@
 
 - Branch: `perf/speed-insights-v2`.
 - Fixed M3B.4 baseline: `1f7b0e2d8bcf14098a185ef0caeadaf2fa45f0b3`.
-- Final candidate SHA: recorded in the release-gate follow-up after commit.
+- Final measured implementation SHA: `fd586ef0990fea709a1a26e97e13f33579afdfdd`.
 - Browser: Chrome 155.0.8059.40; Lighthouse 13.0.3.
 - Local production builds were served from separate immutable output folders on ports 4191 and 4192.
 - Five Lighthouse runs per profile and build were alternated to reduce ordering drift. Every run used a fresh headless Chrome profile and disabled cache.
@@ -100,9 +100,11 @@ Raw evidence:
 
 ## Validation and release decision
 
-Final local validation passed: ESLint, Prettier, 33 test files / 246 tests, coverage at 63.2% statements / 59.8% branches / 68.51% functions / 63.96% lines, and the production build plus bundle gate. Initial JavaScript is 109.7 KiB gzip against the 180 KiB budget; the Showroom chunk is 94.28 KiB gzip and the route-isolated `vendor-three` chunk remains 249.28 KiB gzip. Exact-SHA CI, Vercel Preview and Preview Smoke results are recorded after push. Preview live smoke may be skipped when the repository protection-bypass secret is absent; this is reported separately from executed checks.
+Final local validation passed: ESLint, Prettier, 33 test files / 246 tests, coverage at 63.2% statements / 59.8% branches / 68.51% functions / 63.96% lines, and the production build plus bundle gate. Initial JavaScript is 109.7 KiB gzip against the 180 KiB budget; the Showroom chunk is 94.28 KiB gzip and the route-isolated `vendor-three` chunk remains 249.28 KiB gzip.
 
-M3B.4.1 is **GO for branch review** based on measured startup, TBT, interaction, lifecycle and visual evidence. It remains **NO-GO for merge or Production** until the exact final SHA passes CI and Preview verification and the user reviews this gate. M3B.5 and M3C have not started.
+Implementation SHA `fd586ef0990fea709a1a26e97e13f33579afdfdd` passed [CI run 38729067774](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729067774). Vercel reported the matching [Preview deployment](https://podiumeffetdesol-bh6vxewia-bao-bung-bu.vercel.app) Ready. [Preview Smoke run 38729151914](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729151914) passed target validation; `Set up k6` and `Run short live smoke test` were explicitly skipped because the protection bypass secret is absent, so no live/high-load request was sent to Preview or Production.
+
+M3B.4.1 is **GO for branch review** based on measured startup, TBT, interaction, lifecycle, visual, exact-SHA CI and Preview evidence. It remains **NO-GO for merge or Production** until the user reviews this gate. M3B.5 and M3C have not started.
 
 ## Rollback
 
