@@ -253,3 +253,24 @@ Evidence and documentation:
 - Implementation SHA `c2a92537ff244ac9d96eb64a3161071012e73410` passed [CI run 38552026235](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38552026235). Vercel reported the matching deployment Ready in its [deployment dashboard](https://vercel.com/bao-bung-bu/podiumeffetdesol/8sHTVcbfeT9ehYEZ8twQieBFhbdP). The branch [Preview alias](https://podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app) is protected and returns the expected SSO redirect to unauthenticated requests.
 - [Preview Smoke run 38552129395](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38552129395) passed target validation. k6 setup and the live smoke were explicitly skipped because `VERCEL_PROTECTION_BYPASS` is not configured; no live smoke or high-load request was sent to Preview or Production.
 - Docker publishing is not applicable to `perf/**` and did not run. Local lab results do not establish Production field improvement because M2 is not merged.
+
+## M3B.1 result — Showroom demand-driven rendering
+
+M3B.1 changes the visible Showroom Canvas from a continuous frame loop to demand rendering while retaining the existing hidden-tab and off-screen `never` states. Explicit invalidation covers initial/model/material readiness, preset and orbit camera motion, damping, auto-rotation, livery and backdrop textures, hotspots/Drei HTML state, resize, language, visibility restoration, and WebGL restoration. No separate RAF loop, quality reduction, texture cache, shader warm-up, adaptive DPR, or responsive redesign was introduced.
+
+Three cold Lighthouse runs per profile produced these medians against the M3A baseline:
+
+| Profile | Metric      |       M3A |     M3B.1 | Change |
+| ------- | ----------- | --------: | --------: | -----: |
+| Desktop | Score       |        45 |        47 |     +2 |
+| Desktop | LCP         |  2,799 ms |  2,785 ms | -14 ms |
+| Desktop | TBT         |  4,078 ms |  2,925 ms | -28.3% |
+| Desktop | Main thread |  8,238 ms |  6,358 ms | -22.8% |
+| Mobile  | Score       |        31 |        31 |      0 |
+| Mobile  | LCP         | 16,367 ms | 16,336 ms | -31 ms |
+| Mobile  | TBT         | 14,160 ms | 13,125 ms |  -7.3% |
+| Mobile  | Main thread | 28,722 ms | 27,678 ms |  -3.6% |
+
+With auto-rotation off and the camera settled, the final instrumented ten-second window contains zero RAF callbacks and zero WebGL draws. Camera presets, orbit drag plus damping, livery switching, hotspot open/close, language, resize, hidden-tab restoration, off-screen restoration, and WebGL context restoration all repaint and return to zero recurring draws. Auto-rotation remains continuous: 285 callbacks and 31,768 indexed draws over ten seconds, comparable to M3A's 278 callbacks and 30,963 draws over 10.55 seconds.
+
+Before/after screenshots at 390, 768, 1280, 1440, and 1920 use the same overview camera, Mercedes livery, lighting, DPR, and auto-rotation-off state. Visual review found no quality or layout change, and document overflow remains zero. Full results, raw Lighthouse reports, interaction JSON, Chrome traces, CSV, screenshots, risks, and rollback steps are in [`m3/m3b1-results.md`](m3/m3b1-results.md).

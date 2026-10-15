@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import {
@@ -26,6 +27,7 @@ interface StudioW15StageProps {
  * 6. High-Fidelity Mirror Floor: Reflects the car, podium outline, and all 4 thematic exhibition walls in 360°
  */
 export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = 'vi' }) => {
+  const invalidate = useThree((state) => state.invalidate);
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
 
   // 1. North Wall: Official Constructor Premiere Branding (CADILLAC FORMULA 1)
@@ -39,6 +41,10 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
 
   // 4. East Wall (Right): All-Time Constructor Achievements (Thành tích toàn thời gian)
   const eastTexture = useMemo(() => createAchievementsWallTexture(teamId, lang), [teamId, lang]);
+
+  useEffect(() => {
+    invalidate();
+  }, [eastTexture, invalidate, northTexture, southTexture, westTexture]);
 
   useEffect(() => {
     return () => {

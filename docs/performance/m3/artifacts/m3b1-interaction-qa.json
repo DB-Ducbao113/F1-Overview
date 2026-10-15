@@ -1,0 +1,276 @@
+{
+  "metadata": {
+    "url": "http://127.0.0.1:4175/showroom",
+    "capturedAt": "2026-10-14T16:21:44.324Z",
+    "browser": "Chrome/155.0.8059.40"
+  },
+  "scenarios": {
+    "idleAutoRotateOff": {
+      "firstFiveSeconds": {
+        "durationMs": 22602,
+        "rafCallbacks": 0,
+        "rafCallbackMs": 0,
+        "drawElements": 0,
+        "drawArrays": 0,
+        "frameIntervalP50Ms": null,
+        "frameIntervalP95Ms": null,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      },
+      "tenSecondsCumulative": {
+        "durationMs": 27617,
+        "rafCallbacks": 0,
+        "rafCallbackMs": 0,
+        "drawElements": 0,
+        "drawArrays": 0,
+        "frameIntervalP50Ms": null,
+        "frameIntervalP95Ms": null,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      },
+      "passed": true
+    },
+    "autoRotateOn": {
+      "durationMs": 37670,
+      "rafCallbacks": 285,
+      "rafCallbackMs": 499.2,
+      "drawElements": 31768,
+      "drawArrays": 1425,
+      "frameIntervalP50Ms": 37.6,
+      "frameIntervalP95Ms": 39.6,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "traceMainTaskMs": 31578.5,
+      "traceGpuTaskMs": 526.44,
+      "passed": true
+    },
+    "cameraPresetTransition": {
+      "durationMs": 46168,
+      "rafCallbacks": 6,
+      "rafCallbackMs": 11.7,
+      "drawElements": 744,
+      "drawArrays": 30,
+      "frameIntervalP50Ms": 7.6,
+      "frameIntervalP95Ms": 8.2,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "cameraPresetSettledIdle": {
+      "durationMs": 51178,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "orbitDragAndDamping": {
+      "durationMs": 59712,
+      "rafCallbacks": 70,
+      "rafCallbackMs": 126.4,
+      "drawElements": 7608,
+      "drawArrays": 350,
+      "frameIntervalP50Ms": 37.9,
+      "frameIntervalP95Ms": 39.3,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "orbitSettledIdle": {
+      "durationMs": 64726,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "liverySwitch": {
+      "durationMs": 69773,
+      "rafCallbacks": 2,
+      "rafCallbackMs": 242,
+      "drawElements": 362,
+      "drawArrays": 10,
+      "frameIntervalP50Ms": 256.44,
+      "frameIntervalP95Ms": 256.44,
+      "longTaskCount": 2,
+      "longTaskTotalMs": 307,
+      "maxLongTaskMs": 240,
+      "passed": true
+    },
+    "liverySettledIdle": {
+      "durationMs": 74778,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "hotspotOpen": {
+      "durationMs": 81381,
+      "rafCallbacks": 3,
+      "rafCallbackMs": 5.6,
+      "drawElements": 283,
+      "drawArrays": 10,
+      "frameIntervalP50Ms": 28.83,
+      "frameIntervalP95Ms": 28.83,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "hotspotSettledIdle": {
+      "durationMs": 87400,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "languageChange": {
+      "durationMs": 88939,
+      "rafCallbacks": 1,
+      "rafCallbackMs": 3,
+      "drawElements": 185,
+      "drawArrays": 5,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "resize": {
+      "durationMs": 91972,
+      "rafCallbacks": 2,
+      "rafCallbackMs": 5.8,
+      "drawElements": 216,
+      "drawArrays": 10,
+      "frameIntervalP50Ms": 4.67,
+      "frameIntervalP95Ms": 4.67,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "offscreenPause": {
+      "durationMs": 96491,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "passed": true
+    },
+    "offscreenRestore": {
+      "durationMs": 97999,
+      "rafCallbacks": 3,
+      "rafCallbackMs": 5.7,
+      "drawElements": 290,
+      "drawArrays": 10,
+      "frameIntervalP50Ms": 7.7,
+      "frameIntervalP95Ms": 7.7,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "hiddenTabPause": {
+      "durationMs": 103567,
+      "rafCallbacks": 0,
+      "rafCallbackMs": 0,
+      "drawElements": 0,
+      "drawArrays": 0,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "visibilityState": "hidden",
+      "passed": true
+    },
+    "visibilityRestore": {
+      "durationMs": 105079,
+      "rafCallbacks": 2,
+      "rafCallbackMs": 6,
+      "drawElements": 364,
+      "drawArrays": 10,
+      "frameIntervalP50Ms": 6.2,
+      "frameIntervalP95Ms": 6.2,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "webglContextRestore": {
+      "supported": true,
+      "durationMs": 108607,
+      "rafCallbacks": 1,
+      "rafCallbackMs": 292.9,
+      "drawElements": 182,
+      "drawArrays": 5,
+      "frameIntervalP50Ms": null,
+      "frameIntervalP95Ms": null,
+      "longTaskCount": 1,
+      "longTaskTotalMs": 293,
+      "maxLongTaskMs": 293,
+      "passed": true
+    },
+    "viewport390": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "viewport768": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "viewport1280": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "viewport1440": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "viewport1920": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "autoRotateTrace": {
+      "durationMs": 132029,
+      "rafCallbacks": 271,
+      "rafCallbackMs": 517.5,
+      "drawElements": 30253,
+      "drawArrays": 1355,
+      "frameIntervalP50Ms": 38.3,
+      "frameIntervalP95Ms": 39.7,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0,
+      "traceMainTaskMs": 31834.74,
+      "traceGpuTaskMs": 490.1
+    }
+  }
+}
