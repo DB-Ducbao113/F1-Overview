@@ -106,7 +106,11 @@ Documentation and evidence:
 
 ## Validation
 
-Final local checks and exact-SHA CI/Preview results are recorded in `release-gates.md` after the final commit is pushed. Raw evidence includes Lighthouse reports, compressed Chrome traces, CPU profiles, interaction JSON and screenshots.
+Final local checks passed: ESLint, Prettier, 33 test files / 246 tests, coverage at 63.2% statements, and production build/bundle check with 109.7 KiB initial JavaScript against the 180 KiB budget. The Showroom chunk is 93.62 KiB gzip and `vendor-three` remains route-isolated at 249.28 KiB gzip.
+
+Implementation SHA `fb1184918df6e5e5e673c00956aaddc2ef0a6466` passed [CI run 38718226381](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718226381). Vercel reported the matching deployment Ready in its [deployment dashboard](https://vercel.com/bao-bung-bu/podiumeffetdesol/By3TRFajdrJX2uRNnMgp4WLNXTed); the protected [branch Preview alias](https://podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app) returned the expected 302 SSO redirect to an unauthenticated request. [Preview Smoke run 38718313823](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718313823) passed target validation. Its k6 setup and live smoke steps were skipped because the protection bypass secret is absent, so no high-load request was sent to Preview or Production.
+
+Raw evidence includes Lighthouse reports, compressed Chrome traces, CPU profiles, interaction JSON and screenshots. The documentation-only follow-up commit is verified separately after push because a commit cannot contain its own SHA.
 
 ## Known risks
 
