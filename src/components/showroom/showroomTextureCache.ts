@@ -93,6 +93,11 @@ const disposeEntry = (entry: CacheEntry): void => {
   entry.textures.clear();
 };
 
+const disposeTextureMap = (textures: Map<string, Texture>): void => {
+  textures.forEach((texture) => safeDispose(texture));
+  textures.clear();
+};
+
 const evictIfNeeded = (ns: TextureNamespace): void => {
   const state = namespaces[ns];
   while (state.inactiveOrder.length > MAX_INACTIVE_SETS) {
@@ -168,43 +173,43 @@ export interface AcquireResult {
   key: string;
 }
 
-/**
- * Acquire a set of textures for a livery set key.
- *
- * `generate` runs only on a miss and must return a fresh texture per slot.
- * At most one generation happens per key: a synchronous, single-threaded
- * generation plus entry insertion inside the same guard means concurrent
- * requests (two components mounting simultaneously) share one entry.
- */
-export const acquireSet = (
-  ns: TextureNamespace,
-  setKey: string,
-  slotNames: readonly string[],
-  generate: (slot: string) => Texture,
-): AcquireResult => {
+/** Acquire an already-generated set without starting synchronous work. */
+export const acquireExistingSet = (ns: TextureNamespace, setKey: string): AcquireResult | null => {
   const state = namespaces[ns];
   const existing = state.entries.get(setKey);
+  if (!existing) return null;
 
+  if (existing.refCount === 0) removeFromInactive(state, setKey);
+  existing.refCount += 1;
+  existing.disposeWhenUnused = false;
+  existing.lastUsed = performance.now();
+  state.hits += 1;
+  evictIfNeeded(ns);
+  return {
+    textures: existing.textures,
+    release: createRelease(ns, setKey, existing),
+    hit: true,
+    key: setKey,
+  };
+};
+
+/**
+ * Commit a fully-generated set atomically. If another committed consumer won
+ * the race, its entry is reused and the redundant prepared textures are
+ * disposed immediately.
+ */
+export const acquirePreparedSet = (
+  ns: TextureNamespace,
+  setKey: string,
+  textures: Map<string, Texture>,
+): AcquireResult => {
+  const existing = acquireExistingSet(ns, setKey);
   if (existing) {
-    if (existing.refCount === 0) removeFromInactive(state, setKey);
-    existing.refCount += 1;
-    existing.disposeWhenUnused = false;
-    existing.lastUsed = performance.now();
-    state.hits += 1;
-    evictIfNeeded(ns);
-    return {
-      textures: existing.textures,
-      release: createRelease(ns, setKey, existing),
-      hit: true,
-      key: setKey,
-    };
+    disposeTextureMap(textures);
+    return existing;
   }
 
-  // Miss: generate each requested slot once, then insert atomically.
-  const textures = new Map<string, Texture>();
-  for (const slot of slotNames) {
-    textures.set(slot, generate(slot));
-  }
+  const state = namespaces[ns];
   const entry: CacheEntry = {
     id: Symbol(setKey),
     textures,
@@ -221,6 +226,36 @@ export const acquireSet = (
     hit: false,
     key: setKey,
   };
+};
+
+/** Dispose a generated set that never reached the cache (cancelled render). */
+export const disposePreparedSet = (textures: Map<string, Texture>): void => {
+  disposeTextureMap(textures);
+};
+
+/**
+ * Acquire a set of textures for a livery set key.
+ *
+ * `generate` runs only on a miss and must return a fresh texture per slot.
+ * At most one generation happens per key: a synchronous, single-threaded
+ * generation plus entry insertion inside the same guard means concurrent
+ * requests (two components mounting simultaneously) share one entry.
+ */
+export const acquireSet = (
+  ns: TextureNamespace,
+  setKey: string,
+  slotNames: readonly string[],
+  generate: (slot: string) => Texture,
+): AcquireResult => {
+  const existing = acquireExistingSet(ns, setKey);
+  if (existing) return existing;
+
+  // Miss: generate each requested slot once, then insert atomically.
+  const textures = new Map<string, Texture>();
+  for (const slot of slotNames) {
+    textures.set(slot, generate(slot));
+  }
+  return acquirePreparedSet(ns, setKey, textures);
 };
 
 /** Acquire a single texture (convenience for the four studio backdrops). */

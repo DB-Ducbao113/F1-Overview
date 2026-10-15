@@ -4,13 +4,14 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController, CameraPreset } from './CameraController';
-import { Showroom3DLoader } from './Showroom3DLoader';
+import { ShowroomLoadingPanel } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
+import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
@@ -208,6 +209,8 @@ export const ShowroomView: React.FC = () => {
     () => typeof document === 'undefined' || document.visibilityState === 'visible',
   );
   const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+  const [contextRevision, setContextRevision] = useState(0);
+  const [usableSceneKey, setUsableSceneKey] = useState<string | null>(null);
 
   // ── M3B.3: on route unmount, dispose every cached procedural texture. ──
   // The Showroom is the only consumer; when it unmounts the WebGL context is
@@ -244,7 +247,14 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
+  const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
+  const isSceneUsable = usableSceneKey === startupSceneKey;
   const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}`;
+
+  const handleWebGLContextStateChange = useCallback((isLost: boolean) => {
+    setIsWebGLContextLost(isLost);
+    if (!isLost) setContextRevision((revision) => revision + 1);
+  }, []);
 
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
@@ -442,14 +452,19 @@ export const ShowroomView: React.FC = () => {
             }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
-            <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
+            <WebGLContextGuard onContextStateChange={handleWebGLContextStateChange} />
             <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
             <ShowroomResourceDiagnostics />
+            <ShowroomStartupCoordinator
+              sceneKey={startupSceneKey}
+              active={isCanvasActive}
+              onFirstUsableFrame={setUsableSceneKey}
+            />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 
             {/* F1 3D Car Model with Suspense Loading HUD */}
-            <Suspense fallback={<Showroom3DLoader />}>
+            <Suspense fallback={null}>
               <F1Car3DModel
                 teamId={selectedTeamId}
                 activeHotspot={activeHotspot}
@@ -477,6 +492,7 @@ export const ShowroomView: React.FC = () => {
               cameraPreset={cameraPreset}
               presetTrigger={presetTrigger}
               autoRotate={autoRotate}
+              startupReady={isSceneUsable}
               reducedMotion={reducedMotion}
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
@@ -484,6 +500,12 @@ export const ShowroomView: React.FC = () => {
             />
           </Canvas>
         </ErrorBoundary>
+
+        {!isSceneUsable && !isWebGLContextLost && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-studio-950/35 pointer-events-none">
+            <ShowroomLoadingPanel />
+          </div>
+        )}
 
         {isWebGLContextLost && (
           <div className="absolute inset-0 z-30">

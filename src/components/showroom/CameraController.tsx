@@ -26,6 +26,8 @@ interface CameraControllerProps {
   cameraPreset?: CameraPreset | null;
   presetTrigger?: number; // Increment to force re-transition even if same preset is clicked
   autoRotate: boolean;
+  /** Hold camera animation until the first complete scene frame is ready. */
+  startupReady?: boolean;
   /** M3B.2: settle damping instantly and never auto-rotate for reduced-motion users. */
   reducedMotion?: boolean;
   enableWheelZoom?: boolean;
@@ -98,6 +100,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     cameraPreset,
     presetTrigger = 0,
     autoRotate,
+    startupReady = true,
     reducedMotion = false,
     enableWheelZoom = false, // Default false: mouse wheel scrolls webpage, doesn't trap user
     zoomTrigger = 0,
@@ -154,6 +157,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
 
     useFrame((_, delta) => {
       if (!controlsRef.current) return;
+      if (!startupReady) return;
 
       if (isTransitioning.current) {
         const factor = Math.min(delta * 3.5, 1);
@@ -202,7 +206,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         minDistance={0.8}
         maxDistance={14.0}
         enableZoom={enableWheelZoom} // If false, mouse wheel scrolls web page naturally
-        autoRotate={autoRotate && !activeHotspot && !reducedMotion}
+        autoRotate={startupReady && autoRotate && !activeHotspot && !reducedMotion}
         autoRotateSpeed={0.8}
         onStart={() => {
           // User manually dragged the mouse: pause programmatic transition

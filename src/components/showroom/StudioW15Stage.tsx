@@ -105,7 +105,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   if (!backdropTextures) return null;
 
   return (
-    <group position={[0, 0, 0]}>
+    <group name="showroom-studio" position={[0, 0, 0]}>
       {/* ── Studio Ambient & Global Photometric Lighting ── */}
       <ambientLight intensity={1.7} color="#ffffff" />
 

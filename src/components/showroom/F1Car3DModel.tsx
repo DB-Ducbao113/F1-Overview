@@ -332,6 +332,7 @@ const RealF1CarMesh: React.FC<{
 
   return (
     <primitive
+      name="showroom-car"
       object={clonedScene}
       scale={[MODEL_SCALE, MODEL_SCALE, MODEL_SCALE]}
       rotation={[0, Math.PI, 0]}

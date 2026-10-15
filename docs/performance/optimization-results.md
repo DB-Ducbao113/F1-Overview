@@ -317,3 +317,20 @@ draws hold on desktop and 4x-throttled mobile. Lighthouse medians (Desktop 46,
 Mobile 31) overlap the M3B.1 baseline within run variance; a paired re-run is
 registered as follow-up. Full details, exact files, and rollback are in
 [`m3/m3b3-results.md`](m3/m3b3-results.md).
+
+## M3B.4 result — Showroom WebGL initialization
+
+M3B.4 keeps all visual resources and moves procedural initialization into bounded, cancellable tasks. Car and studio texture sets are prepared one slot at a time and committed atomically through the hardened cache. The 512 px wheel texture now reads its physical 512 × 512 backing store instead of allocating and scanning an unused logical 1024 × 1024 region. `ShowroomStartupCoordinator` waits for the named car/studio roots, uses `WebGLRenderer.compileAsync` with a compatibility fallback, requests a submitted frame, and then dismisses the loader.
+
+The required fixed-build, alternating five-run Lighthouse comparison produced these medians:
+
+| Profile | Baseline TBT | M3B.4 TBT | Change | Baseline main thread | M3B.4 main thread |                LCP |
+| ------- | -----------: | --------: | -----: | -------------------: | ----------------: | -----------------: |
+| Desktop |     5,299 ms |  4,790 ms |  -9.6% |            10,613 ms |         10,209 ms |   2,869 → 2,859 ms |
+| Mobile  |    20,808 ms | 18,702 ms | -10.1% |            40,429 ms |         33,819 ms | 16,480 → 16,478 ms |
+
+Idle with auto-rotation off remains at zero RAF callbacks and zero WebGL draws for ten seconds. Camera presets, orbit/damping, auto-rotation, livery, hotspots, language, resize, hidden/off-screen restoration and context restoration passed instrumented browser QA. Five widths from 390 to 1920 px have zero overflow and same-camera screenshots show no visible quality change.
+
+The stricter complete-frame readiness gate increases the measured first-usable proxy from about 4,301 to 7,223 ms desktop and 5,820 to 9,384 ms mobile. Both absolute TBT targets also remain unmet. M3B.4 is therefore **NO-GO for Production** despite the verified reduction in blocking work. Full evidence, experiments, risks and rollback are in [`m3/m3b4-results.md`](m3/m3b4-results.md), with raw reports in [`m3/artifacts/m3b4/`](m3/artifacts/m3b4/).
+
+Local validation passes: ESLint, Prettier, 33 test files / 246 tests, coverage (63.2% statements), and production build/bundle budget. The Showroom chunk is 93.62 KiB gzip and `vendor-three` remains 249.28 KiB gzip. Exact final SHA, CI and Preview are recorded in the release gates after push.

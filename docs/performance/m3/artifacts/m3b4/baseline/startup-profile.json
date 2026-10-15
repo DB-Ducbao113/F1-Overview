@@ -1,0 +1,2018 @@
+[
+  {
+    "timing": {
+      "firstDrawMs": 973.6,
+      "loaderSeenMs": 3961.6,
+      "loaderGoneMs": 4288.8,
+      "controlsReadyMs": 9.7,
+      "firstUsableMs": 4288.8
+    },
+    "webgl": {
+      "draws": 333,
+      "texImage2D": 14,
+      "texSubImage2D": 17,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.40000003576278687,
+        "texSubImage2D": 0.40000003576278687,
+        "compileShader": 0,
+        "linkProgram": 0.3999999761581421
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 112.4,
+        "durationMs": 88
+      },
+      {
+        "startMs": 294.8,
+        "durationMs": 422
+      },
+      {
+        "startMs": 719.2,
+        "durationMs": 151
+      },
+      {
+        "startMs": 871.1,
+        "durationMs": 62
+      },
+      {
+        "startMs": 937.3,
+        "durationMs": 3015
+      },
+      {
+        "startMs": 3976.1,
+        "durationMs": 312
+      },
+      {
+        "startMs": 4288.9,
+        "durationMs": 4766
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 1933.699999988079,
+        "duration": 31.600000023841858,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 1934,
+        "duration": 52.599999994039536,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 2008,
+        "duration": 28.900000005960464,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 2798.5999999940395,
+        "duration": 2.9000000059604645,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 8593.54,
+      "maxTaskMs": 773.18,
+      "count": 445
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3670.63
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3669.54
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 393.86
+      },
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 363.48
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 239.07
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 234.88
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 123.67
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 84.34
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 43.77
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 26.18
+      },
+      {
+        "functionName": "So",
+        "url": "http://127.0.0.1:4184/assets/vendor-react-B62-MmwA.js",
+        "line": 37,
+        "selfMs": 21.55
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 20.35
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 16.79
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 14.85
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 14.29
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 13.21
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 13.01
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.76
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.6
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.5
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 7.58
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 7.2
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 6.71
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 6.19
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 6.14
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 6.02
+      },
+      {
+        "functionName": "setSize",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3802,
+        "selfMs": 5.85
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 5.79
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 4.91
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 4.7
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 4.68
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 4.03
+      },
+      {
+        "functionName": "y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3750,
+        "selfMs": 3.86
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 3.77
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 3.54
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 3.39
+      },
+      {
+        "functionName": "wasm-function[2]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 3.32
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 44,
+        "selfMs": 2.93
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 2.78
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 2.75
+      }
+    ],
+    "profile": "desktop",
+    "run": 1
+  },
+  {
+    "timing": {
+      "firstDrawMs": 1047,
+      "loaderSeenMs": 4045.1,
+      "loaderGoneMs": 4329.8,
+      "controlsReadyMs": 11.4,
+      "firstUsableMs": 4329.8
+    },
+    "webgl": {
+      "draws": 333,
+      "texImage2D": 14,
+      "texSubImage2D": 17,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.09999999403953552,
+        "texSubImage2D": 0.5999999940395355,
+        "compileShader": 0,
+        "linkProgram": 0.09999999403953552
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 140.5,
+        "durationMs": 76
+      },
+      {
+        "startMs": 274.6,
+        "durationMs": 480
+      },
+      {
+        "startMs": 757,
+        "durationMs": 164
+      },
+      {
+        "startMs": 921.5,
+        "durationMs": 79
+      },
+      {
+        "startMs": 1007.9,
+        "durationMs": 3028
+      },
+      {
+        "startMs": 4060.9,
+        "durationMs": 268
+      },
+      {
+        "startMs": 4329.8,
+        "durationMs": 4326
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 1722.300000011921,
+        "duration": 19,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 1722.5999999940395,
+        "duration": 41.20000001788139,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 1784.800000011921,
+        "duration": 26.5,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 2636,
+        "duration": 3.0999999940395355,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 8201.86,
+      "maxTaskMs": 787.34,
+      "count": 465
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3706.86
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3238.18
+      },
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 727.94
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 450.65
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 203.58
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 190.59
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 112.88
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 77.05
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 52.64
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 26.32
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 20.27
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 18.59
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 14.93
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 13.75
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.93
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.8
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 12.75
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 11.25
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 9.48
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 8.71
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 7.86
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 7.79
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 7.33
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 6.84
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 6.15
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 6.02
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 5.98
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 5.47
+      },
+      {
+        "functionName": "Yo",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 5,
+        "selfMs": 5.41
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 4.88
+      },
+      {
+        "functionName": "u",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3931,
+        "selfMs": 4.87
+      },
+      {
+        "functionName": "setSize",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3802,
+        "selfMs": 4.77
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 4.32
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 3.28
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 3.26
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 1,
+        "selfMs": 3.18
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 2.8
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 2.76
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 2.7
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 2.68
+      }
+    ],
+    "profile": "desktop",
+    "run": 2
+  },
+  {
+    "timing": {
+      "firstDrawMs": 852.3,
+      "loaderSeenMs": 3583.2,
+      "loaderGoneMs": 3844,
+      "controlsReadyMs": 2.5,
+      "firstUsableMs": 3844
+    },
+    "webgl": {
+      "draws": 333,
+      "texImage2D": 14,
+      "texSubImage2D": 17,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.20000001788139343,
+        "texSubImage2D": 0.7000000178813934,
+        "compileShader": 0,
+        "linkProgram": 0.29999998211860657
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 83.3,
+        "durationMs": 71
+      },
+      {
+        "startMs": 243.8,
+        "durationMs": 357
+      },
+      {
+        "startMs": 602.9,
+        "durationMs": 127
+      },
+      {
+        "startMs": 730.8,
+        "durationMs": 50
+      },
+      {
+        "startMs": 784.9,
+        "durationMs": 2790
+      },
+      {
+        "startMs": 3596.7,
+        "durationMs": 247
+      },
+      {
+        "startMs": 3844,
+        "durationMs": 4188
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 1477.5,
+        "duration": 13.099999994039536,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 1477.699999988079,
+        "duration": 34.099999994039536,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 1531.0999999940395,
+        "duration": 19.80000001192093,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 2199.2999999821186,
+        "duration": 2.7000000178813934,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 7693.11,
+      "maxTaskMs": 720.97,
+      "count": 461
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3523.06
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3035.62
+      },
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 1288.18
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 336.82
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 204.86
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 183.4
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 138.01
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 77.17
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 43.65
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 38.02
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 21.63
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 15.47
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 14.99
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.04
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 10.71
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 10.7
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 10.63
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 9.72
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 7.57
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 6.96
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 6.45
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 6.3
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 6
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 4.94
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 4.93
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 4.87
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 4.86
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 4.32
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 4.23
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 3.95
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 3.74
+      },
+      {
+        "functionName": "bg",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3824,
+        "selfMs": 2.91
+      },
+      {
+        "functionName": "l",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 2.75
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 1,
+        "selfMs": 2.7
+      },
+      {
+        "functionName": "u",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3931,
+        "selfMs": 2.7
+      },
+      {
+        "functionName": "ve",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3802,
+        "selfMs": 2.69
+      },
+      {
+        "functionName": "wasm-function[2]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 2.62
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 2.34
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 2.23
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 2.2
+      }
+    ],
+    "profile": "desktop",
+    "run": 3
+  },
+  {
+    "timing": {
+      "firstDrawMs": 2325.9,
+      "loaderSeenMs": 5491.8,
+      "loaderGoneMs": 6107.6,
+      "controlsReadyMs": 28.4,
+      "firstUsableMs": 6107.6
+    },
+    "webgl": {
+      "draws": 369,
+      "texImage2D": 14,
+      "texSubImage2D": 15,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.699999988079071,
+        "texSubImage2D": 2.9000000059604645,
+        "compileShader": 0.09999999403953552,
+        "linkProgram": 2.5999999940395355
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 93,
+        "durationMs": 69
+      },
+      {
+        "startMs": 255.9,
+        "durationMs": 95
+      },
+      {
+        "startMs": 391.1,
+        "durationMs": 299
+      },
+      {
+        "startMs": 771.7,
+        "durationMs": 340
+      },
+      {
+        "startMs": 1119.4,
+        "durationMs": 691
+      },
+      {
+        "startMs": 1810.6,
+        "durationMs": 322
+      },
+      {
+        "startMs": 2156.5,
+        "durationMs": 3288
+      },
+      {
+        "startMs": 5625.8,
+        "durationMs": 482
+      },
+      {
+        "startMs": 6228.2,
+        "durationMs": 4559
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 4139.799999982119,
+        "duration": 10.900000005960464,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 4140.5,
+        "duration": 28.299999982118607,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 4274.199999988079,
+        "duration": 43.400000005960464,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 5919.9000000059605,
+        "duration": 2.699999988079071,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 8106.1,
+      "maxTaskMs": 741.56,
+      "count": 438
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 5395.21
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3516.98
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3507.66
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 582.57
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 304.7
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 257.44
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 202.3
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 153.86
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 135.62
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 76.55
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 69.76
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 58.31
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 56.05
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 47.36
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 47.23
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 45.43
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 38.01
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 34.88
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 34.58
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 28.81
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 26.96
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 26.76
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 25.75
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 24.27
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 1,
+        "selfMs": 22.02
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 20.44
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 20.16
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 14.91
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 13.96
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 13.88
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.59
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 44,
+        "selfMs": 12.27
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 11.4
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 11.37
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 11.23
+      },
+      {
+        "functionName": "wasm-function[2]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 11.17
+      },
+      {
+        "functionName": "u",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3931,
+        "selfMs": 11.09
+      },
+      {
+        "functionName": "l",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.9
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.8
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 10.74
+      }
+    ],
+    "profile": "mobile",
+    "run": 1
+  },
+  {
+    "timing": {
+      "firstDrawMs": 2120.4,
+      "loaderSeenMs": 4989.3,
+      "loaderGoneMs": 5564.9,
+      "controlsReadyMs": 9.6,
+      "firstUsableMs": 5564.9
+    },
+    "webgl": {
+      "draws": 369,
+      "texImage2D": 14,
+      "texSubImage2D": 15,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.6000000238418579,
+        "texSubImage2D": 2.9000000059604645,
+        "compileShader": 0.5999999642372131,
+        "linkProgram": 2.5000000298023224
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 102.5,
+        "durationMs": 57
+      },
+      {
+        "startMs": 249.1,
+        "durationMs": 97
+      },
+      {
+        "startMs": 387.3,
+        "durationMs": 306
+      },
+      {
+        "startMs": 773,
+        "durationMs": 315
+      },
+      {
+        "startMs": 1094.3,
+        "durationMs": 629
+      },
+      {
+        "startMs": 1723.8,
+        "durationMs": 254
+      },
+      {
+        "startMs": 1995.6,
+        "durationMs": 2950
+      },
+      {
+        "startMs": 5094.2,
+        "durationMs": 471
+      },
+      {
+        "startMs": 5565.2,
+        "durationMs": 4569
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 3233.600000023842,
+        "duration": 10.5,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 3235.4000000059605,
+        "duration": 25.400000005960464,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 3353.4000000059605,
+        "duration": 40.30000001192093,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 4913.600000023842,
+        "duration": 2.5,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 7679.42,
+      "maxTaskMs": 711.02,
+      "count": 433
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 5979.76
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3408.4
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3259.7
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 477.41
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 299.23
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 239.15
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 196.06
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 146.74
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 118.97
+      },
+      {
+        "functionName": "So",
+        "url": "http://127.0.0.1:4184/assets/vendor-react-B62-MmwA.js",
+        "line": 37,
+        "selfMs": 88.71
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 67.19
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 66.73
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 56.37
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 54.99
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 50.98
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 41.99
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 40.39
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 39.6
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 37.78
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 29.79
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 29.38
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 28.26
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 23.38
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 22.44
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 21.67
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 21.43
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 17.27
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 16.06
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 1,
+        "selfMs": 15.32
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 14.96
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 14.49
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 14.22
+      },
+      {
+        "functionName": "u",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3931,
+        "selfMs": 14
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 12.76
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 12.34
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 10.83
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 44,
+        "selfMs": 10.67
+      },
+      {
+        "functionName": "l",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.42
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 9.73
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 9.16
+      }
+    ],
+    "profile": "mobile",
+    "run": 2
+  },
+  {
+    "timing": {
+      "firstDrawMs": 2068.5,
+      "loaderSeenMs": 4925.5,
+      "loaderGoneMs": 5478.6,
+      "controlsReadyMs": 7.4,
+      "firstUsableMs": 5478.6
+    },
+    "webgl": {
+      "draws": 369,
+      "texImage2D": 14,
+      "texSubImage2D": 15,
+      "compileShader": 46,
+      "linkProgram": 23,
+      "apiMs": {
+        "texImage2D": 0.800000011920929,
+        "texSubImage2D": 2.600000023841858,
+        "compileShader": 0.40000003576278687,
+        "linkProgram": 0.8999999761581421
+      }
+    },
+    "longTasks": [
+      {
+        "startMs": 97.1,
+        "durationMs": 55
+      },
+      {
+        "startMs": 245.4,
+        "durationMs": 97
+      },
+      {
+        "startMs": 377.9,
+        "durationMs": 293
+      },
+      {
+        "startMs": 750.9,
+        "durationMs": 312
+      },
+      {
+        "startMs": 1070.7,
+        "durationMs": 592
+      },
+      {
+        "startMs": 1663.3,
+        "durationMs": 254
+      },
+      {
+        "startMs": 1935.9,
+        "durationMs": 2946
+      },
+      {
+        "startMs": 5030.2,
+        "durationMs": 448
+      },
+      {
+        "startMs": 5588.8,
+        "durationMs": 4439
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "startTime": 2877.600000023842,
+        "duration": 10.399999976158142,
+        "transferSize": 92809,
+        "decodedBodySize": 337685
+      },
+      {
+        "name": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "startTime": 2879.2000000178814,
+        "duration": 26,
+        "transferSize": 249577,
+        "decodedBodySize": 917635
+      },
+      {
+        "name": "http://127.0.0.1:4184/models/c42.v2.glb",
+        "startTime": 2993.2000000178814,
+        "duration": 42.400000005960464,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      {
+        "name": "http://127.0.0.1:4184/textures/wheel_base.webp",
+        "startTime": 4501.5,
+        "duration": 2.7000000178813934,
+        "transferSize": 38092,
+        "decodedBodySize": 37792
+      }
+    ],
+    "renderer": null,
+    "gpu": {
+      "totalTaskMs": 7670.94,
+      "maxTaskMs": 765.5,
+      "count": 419
+    },
+    "cpuTopFunctions": [
+      {
+        "functionName": "(idle)",
+        "url": "",
+        "line": 0,
+        "selfMs": 6047.71
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3542.53
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 3117.07
+      },
+      {
+        "functionName": "(program)",
+        "url": "",
+        "line": 0,
+        "selfMs": 495.18
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "",
+        "line": 43,
+        "selfMs": 292.54
+      },
+      {
+        "functionName": "getContext",
+        "url": "",
+        "line": 0,
+        "selfMs": 233.76
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 195.04
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 131.85
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 109.17
+      },
+      {
+        "functionName": "So",
+        "url": "http://127.0.0.1:4184/assets/vendor-react-B62-MmwA.js",
+        "line": 37,
+        "selfMs": 87.26
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 65.56
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 65.15
+      },
+      {
+        "functionName": "c",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 50.85
+      },
+      {
+        "functionName": "_y",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3828,
+        "selfMs": 45.52
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 43.96
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 43.13
+      },
+      {
+        "functionName": "t",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 41.89
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 39.68
+      },
+      {
+        "functionName": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "selfMs": 35.45
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 30.27
+      },
+      {
+        "functionName": "f",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 26.03
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 23.8
+      },
+      {
+        "functionName": "Oi",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 22.1
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 21.49
+      },
+      {
+        "functionName": "g",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 157,
+        "selfMs": 20.4
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 18.56
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 15.84
+      },
+      {
+        "functionName": "dv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 15.71
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 1,
+        "selfMs": 15.67
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 14.11
+      },
+      {
+        "functionName": "wasm-function[4]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 14.05
+      },
+      {
+        "functionName": "Mu",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3701,
+        "selfMs": 13.02
+      },
+      {
+        "functionName": "u",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3931,
+        "selfMs": 12.1
+      },
+      {
+        "functionName": "wasm-function[2]",
+        "url": "wasm://wasm/9bb51b96",
+        "line": 1,
+        "selfMs": 11.51
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 11.26
+      },
+      {
+        "functionName": "Ni",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3802,
+        "selfMs": 11
+      },
+      {
+        "functionName": "P",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3743,
+        "selfMs": 10.96
+      },
+      {
+        "functionName": "(anonymous)",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.83
+      },
+      {
+        "functionName": "mv",
+        "url": "http://127.0.0.1:4184/assets/vendor-three-DwPGbDo3.js",
+        "line": 3709,
+        "selfMs": 10.81
+      },
+      {
+        "functionName": "l",
+        "url": "http://127.0.0.1:4184/assets/ShowroomView-GnTquPyN.js",
+        "line": 1,
+        "selfMs": 10.17
+      }
+    ],
+    "profile": "mobile",
+    "run": 3
+  }
+]

@@ -1,6 +1,9 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import {
   acquireSet,
+  acquireExistingSet,
+  acquirePreparedSet,
+  disposePreparedSet,
   acquireTexture,
   disposeAll,
   getCacheStats,
@@ -147,6 +150,49 @@ describe('showroomTextureCache', () => {
     const stats = getCacheStats('car');
     expect(stats.misses).toBe(1);
     expect(stats.hits).toBe(1);
+  });
+
+  it('commits a prepared set and reuses it without synchronous regeneration', () => {
+    const prepared = new Map(SLOTS.map((slot) => [slot, makeTexture(`prepared-${slot}`)]));
+    const first = acquirePreparedSet('car', 'mercedes:prepared', prepared);
+    const second = acquireExistingSet('car', 'mercedes:prepared');
+
+    expect(first.hit).toBe(false);
+    expect(second?.hit).toBe(true);
+    expect(second?.textures).toBe(first.textures);
+    first.release();
+    second?.release();
+  });
+
+  it('disposes redundant prepared textures when another consumer wins the key race', () => {
+    const winnerTextures = new Map(SLOTS.map((slot) => [slot, makeTexture(`winner-${slot}`)]));
+    const loserTextures = new Map(SLOTS.map((slot) => [slot, makeTexture(`loser-${slot}`)]));
+    const loserNose = loserTextures.get('nose') as unknown as {
+      dispose: ReturnType<typeof vi.fn>;
+    };
+
+    const winner = acquirePreparedSet('car', 'mercedes:race', winnerTextures);
+    const joined = acquirePreparedSet('car', 'mercedes:race', loserTextures);
+
+    expect(joined.hit).toBe(true);
+    expect(joined.textures).toBe(winner.textures);
+    expect(loserNose.dispose).toHaveBeenCalledTimes(1);
+    expect(loserTextures.size).toBe(0);
+    winner.release();
+    joined.release();
+  });
+
+  it('disposes every texture from an interrupted prepared set', () => {
+    const prepared = new Map(SLOTS.map((slot) => [slot, makeTexture(`cancelled-${slot}`)]));
+    const textures = [...prepared.values()] as unknown as Array<{
+      dispose: ReturnType<typeof vi.fn>;
+    }>;
+
+    disposePreparedSet(prepared);
+
+    expect(prepared.size).toBe(0);
+    textures.forEach((texture) => expect(texture.dispose).toHaveBeenCalledTimes(1));
+    expect(getCacheStats('car').entries).toBe(0);
   });
 
   it('retains a returning key across React cleanup-before-setup ordering', async () => {
