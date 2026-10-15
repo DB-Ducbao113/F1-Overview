@@ -190,7 +190,7 @@ export const App: React.FC = () => {
         />
       </div>
 
-      <main className="flex-1 pt-16">
+      <main className="min-h-screen flex-1 pt-16">
         <F1PageTransition pathname={location.pathname}>
           <Suspense
             fallback={

@@ -1,0 +1,110 @@
+{
+  "home-to-season-2026": {
+    "clicked": true,
+    "pathname": "/season/2026",
+    "profiler": [
+      {
+        "id": "SeasonRoute",
+        "phase": "mount",
+        "actualDuration": 15.599999994039536,
+        "baseDuration": 9.400000035762787,
+        "startTime": 5970.5,
+        "commitTime": 5988.199999988079
+      },
+      {
+        "id": "SeasonRoute",
+        "phase": "update",
+        "actualDuration": 8.900000005960464,
+        "baseDuration": 6.800000011920929,
+        "startTime": 5990.0999999940395,
+        "commitTime": 5999.199999988079
+      }
+    ],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/ChampionshipView.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/StandingsTable.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/RaceCalendar.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/RaceResults.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/pages/TeamsDirectoryPage.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/pages/DriversDirectoryPage.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/data/drivers.ts",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/PracticeClassificationModal.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/QualifyingClassificationModal.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/components/championship/RaceClassificationModal.tsx",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/src/data/teamSeasons.ts",
+        "type": "Script"
+      },
+      {
+        "url": "http://127.0.0.1:5175/node_modules/.vite/deps/react-dom.js?v=a437e402",
+        "type": "Script"
+      }
+    ],
+    "longTasks": [],
+    "totalLongTaskMs": 0
+  },
+  "home-to-teams": {
+    "clicked": true,
+    "pathname": "/teams",
+    "profiler": [
+      {
+        "id": "TeamsRoute",
+        "phase": "mount",
+        "actualDuration": 20.899999976158142,
+        "baseDuration": 10.099999964237213,
+        "startTime": 8534.300000011921,
+        "commitTime": 8559
+      }
+    ],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:5175/images/teams/w15.webp",
+        "type": "Image"
+      },
+      {
+        "url": "http://127.0.0.1:5175/images/teams/rb20.webp",
+        "type": "Image"
+      },
+      {
+        "url": "http://127.0.0.1:5175/images/teams/racingbulls.webp",
+        "type": "Image"
+      },
+      {
+        "url": "http://127.0.0.1:5175/images/teams/alpine.webp",
+        "type": "Image"
+      }
+    ],
+    "longTasks": [],
+    "totalLongTaskMs": 0
+  }
+}

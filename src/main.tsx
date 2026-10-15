@@ -5,7 +5,7 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { SpeedInsightsRoute } from './components/analytics/SpeedInsightsRoute';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -13,13 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <App />
         <Analytics mode={import.meta.env.PROD ? 'production' : 'development'} />
-        <SpeedInsights
-          sampleRate={1}
-          beforeSend={(event) => {
-            const pathname = new URL(event.url).pathname;
-            return { ...event, route: pathname };
-          }}
-        />
+        <SpeedInsightsRoute />
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>,

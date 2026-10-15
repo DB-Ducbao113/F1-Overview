@@ -1,0 +1,30 @@
+{
+  "refresh": {
+    "introVisible": true,
+    "lights": 10
+  },
+  "skipDismissed": true,
+  "escapeDismissed": true,
+  "reducedMotion": {
+    "matches": true,
+    "phase": "launch",
+    "speedAnimation": "none",
+    "brandAnimation": "podiumQuietFadeIn"
+  },
+  "resources": {
+    "heroRequests": 1,
+    "heroReady": true,
+    "navLogo": "http://127.0.0.1:4174/logo/logo-full.webp"
+  },
+  "carouselInitial": {
+    "panels": 11,
+    "loadedImages": 3,
+    "expanded": -1
+  },
+  "keyboard": {
+    "expanded": 1,
+    "focused": 1
+  },
+  "pointer": 5,
+  "touch": 7
+}

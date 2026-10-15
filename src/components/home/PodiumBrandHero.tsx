@@ -18,6 +18,8 @@ export const PodiumBrandHero: React.FC = () => {
         src="/images/podium-diffuser-hero-v2.webp"
         alt=""
         aria-hidden="true"
+        width={2172}
+        height={724}
         className="absolute inset-0 h-full w-full object-cover object-[50%_60%] podium-hero-image"
         {...{ fetchpriority: 'high' }}
         decoding="async"

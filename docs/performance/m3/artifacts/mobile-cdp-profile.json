@@ -1,0 +1,81 @@
+{
+  "environment": {
+    "browser": "Chrome/155.0.8059.40",
+    "viewport": "390x844",
+    "cpuThrottle": 4
+  },
+  "initial": {
+    "elapsed": 6343,
+    "draw": 3222.5,
+    "loader": false
+  },
+  "paused": {
+    "title": "Tạm dừng tự xoay 360°",
+    "label": "Tự xoay 360°"
+  },
+  "started": {
+    "title": "Bật tự xoay 360°",
+    "label": "Tự xoay 360°"
+  },
+  "idle": {
+    "raf": 586,
+    "rafMs": 9838.899999946356,
+    "gl": {
+      "texImage2D": {
+        "calls": 0,
+        "ms": 0
+      },
+      "compileShader": {
+        "calls": 0,
+        "ms": 0
+      },
+      "linkProgram": {
+        "calls": 0,
+        "ms": 0
+      },
+      "drawElements": {
+        "calls": 58014,
+        "ms": 293.5999999344349
+      },
+      "drawArrays": {
+        "calls": 2930,
+        "ms": 16.600000083446503
+      }
+    }
+  },
+  "autorotate": {
+    "raf": 607,
+    "rafMs": 9426.500000327826,
+    "gl": {
+      "texImage2D": {
+        "calls": 0,
+        "ms": 0
+      },
+      "compileShader": {
+        "calls": 0,
+        "ms": 0
+      },
+      "linkProgram": {
+        "calls": 0,
+        "ms": 0
+      },
+      "drawElements": {
+        "calls": 56288,
+        "ms": 259.2999995946884
+      },
+      "drawArrays": {
+        "calls": 3035,
+        "ms": 19.900000005960464
+      }
+    }
+  },
+  "metrics": {
+    "metrics": []
+  },
+  "heap": {
+    "usedSize": 16102228,
+    "totalSize": 34340864,
+    "embedderHeapUsedSize": 6142704,
+    "backingStorageSize": 8829524
+  }
+}

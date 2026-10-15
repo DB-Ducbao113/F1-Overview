@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Access-Control-Allow-Origin: *
+Age: 2558
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline
+Content-Length: 3992
+Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://images.unsplash.com https://server.arcgisonline.com https://*.tile.openstreetmap.org; media-src 'self' blob:; connect-src 'self' https://api.jolpi.ca https://api.openf1.org https://vitals.vercel-insights.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'
+Content-Type: text/html; charset=utf-8
+Cross-Origin-Embedder-Policy-Report-Only: require-corp
+Cross-Origin-Opener-Policy-Report-Only: same-origin
+Date: Wed, 14 Oct 2026 05:14:49 GMT
+Etag: "03d2a8faaf70172b86f52bdd77d40202"
+Last-Modified: Wed, 14 Oct 2026 04:32:11 GMT
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+Referrer-Policy: strict-origin-when-cross-origin
+Server: Vercel
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Vercel-Cache: HIT
+X-Vercel-Id: hkg1::4prz5-1791954889834-a2c30e7d62a3
+

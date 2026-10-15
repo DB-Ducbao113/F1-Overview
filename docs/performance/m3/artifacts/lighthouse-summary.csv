@@ -1,0 +1,7 @@
+﻿"file","formFactor","score","fcpMs","lcpMs","speedIndexMs","tbtMs","cls","interactiveMs","mainThreadMs","transferBytes","requests"
+"showroom-desktop-run1.json","desktop","45","587","2815","4336","4080","0.0012","5311","8275","2993678","26"
+"showroom-desktop-run2.json","desktop","45","580","2795","4013","3748","0.0012","4973","7663","2993678","26"
+"showroom-desktop-run3.json","desktop","45","581","2799","4341","4078","0.0012","5231","8238","2993678","26"
+"showroom-mobile-run1.json","mobile","31","2896","16352","10387","14086","0","19387","28711","3005396","27"
+"showroom-mobile-run2.json","mobile","31","2900","16367","10614","14160","0","19438","28722","3005396","27"
+"showroom-mobile-run3.json","mobile","31","2900","16367","10607","14262","0","19543","28855","3005396","27"

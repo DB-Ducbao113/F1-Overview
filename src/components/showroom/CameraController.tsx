@@ -99,8 +99,10 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     zoomTrigger = 0,
     zoomDirection = null,
   }) => {
-    const { camera } = useThree();
+    const { camera, invalidate } = useThree();
     const controlsRef = useRef<OrbitControlsImpl>(null);
+    const isInteracting = useRef(false);
+    const dampingUntil = useRef(0);
 
     const desiredPos = useRef(DEFAULT_POS.clone());
     const desiredTarget = useRef(DEFAULT_TARGET.clone());
@@ -118,7 +120,8 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         desiredTarget.current.set(...p.target);
         isTransitioning.current = true;
       }
-    }, [activeHotspot, cameraPreset, presetTrigger]);
+      invalidate();
+    }, [activeHotspot, cameraPreset, presetTrigger, invalidate]);
 
     // Handle programmatic Zoom In / Zoom Out triggered from UI HUD buttons
     useEffect(() => {
@@ -134,7 +137,8 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
       direction.normalize().multiplyScalar(newDist);
       camera.position.copy(target.clone().add(direction));
       controlsRef.current.update();
-    }, [zoomTrigger, zoomDirection, camera]);
+      invalidate();
+    }, [zoomTrigger, zoomDirection, camera, invalidate]);
 
     useFrame((_, delta) => {
       if (!controlsRef.current) return;
@@ -155,6 +159,26 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
           isTransitioning.current = false;
         }
       }
+
+      const now = performance.now();
+      const dampingActive = dampingUntil.current > now;
+      if (dampingUntil.current > 0 && !dampingActive) {
+        dampingUntil.current = 0;
+        // OrbitControls keeps emitting `change` for an asymptotically small
+        // damping delta. Flush that remainder after the visible damping tail
+        // so Drei's change listener cannot keep a demand loop alive forever.
+        controlsRef.current.enableDamping = false;
+        controlsRef.current.update();
+      }
+
+      if (
+        isTransitioning.current ||
+        isInteracting.current ||
+        dampingActive ||
+        (autoRotate && !activeHotspot)
+      ) {
+        invalidate();
+      }
     });
 
     return (
@@ -171,6 +195,16 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         onStart={() => {
           // User manually dragged the mouse: pause programmatic transition
           isTransitioning.current = false;
+          isInteracting.current = true;
+          dampingUntil.current = 0;
+          if (controlsRef.current) controlsRef.current.enableDamping = true;
+          invalidate();
+        }}
+        onChange={() => invalidate()}
+        onEnd={() => {
+          isInteracting.current = false;
+          dampingUntil.current = performance.now() + 2000;
+          invalidate();
         }}
       />
     );

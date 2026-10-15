@@ -55,6 +55,19 @@ const WebGLContextGuard: React.FC<{
   return null;
 };
 
+const ShowroomFrameInvalidator: React.FC<{
+  active: boolean;
+  sceneRevision: string;
+}> = ({ active, sceneRevision }) => {
+  const { invalidate, size } = useThree();
+
+  useEffect(() => {
+    if (active) invalidate();
+  }, [active, invalidate, sceneRevision, size.height, size.width]);
+
+  return null;
+};
+
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
   carModelName,
@@ -164,6 +177,7 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
+  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}`;
 
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
@@ -351,7 +365,7 @@ export const ShowroomView: React.FC = () => {
           <Canvas
             shadows
             dpr={[1, 1.25]}
-            frameloop={isCanvasActive ? 'always' : 'never'}
+            frameloop={isCanvasActive ? 'demand' : 'never'}
             camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
             gl={{
               antialias: false,
@@ -362,6 +376,7 @@ export const ShowroomView: React.FC = () => {
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
+            <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage teamId={selectedTeamId} lang={lang} />
 

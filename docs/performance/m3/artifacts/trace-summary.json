@@ -1,0 +1,2080 @@
+{
+  "showroom-autorotate-desktop.trace.json.gz": {
+    "eventCount": 33312,
+    "durationMs": 10033.123,
+    "threads": {
+      "0:0": "swapper",
+      "13948:6580": "CrRendererMain",
+      "32784:27680": "PerfettoTrace",
+      "20764:1440": "PerfettoTrace",
+      "20764:31148": "CrBrowserMain",
+      "13948:33508": "PerfettoTrace",
+      "20764:32436": "Chrome_DevToolsHandlerThread",
+      "32784:30348": "VizCompositorThread",
+      "32784:32680": "GpuVSyncThread",
+      "32784:11308": "CrGpuMain",
+      "13948:23112": "Compositor",
+      "13948:25448": "Chrome_ChildIOThread",
+      "13948:9248": "ThreadPoolServiceThread",
+      "20764:31436": "Chrome_IOThread",
+      "13948:6836": "ThreadPoolForegroundWorker",
+      "13948:16972": "ThreadPoolForegroundWorker",
+      "13948:16724": "ThreadPoolForegroundWorker",
+      "13948:14636": "ThreadPoolForegroundWorker",
+      "13948:32360": "ThreadPoolForegroundWorker",
+      "13948:5576": "ThreadPoolForegroundWorker",
+      "13948:23944": "ThreadPoolForegroundWorker",
+      "20764:5836": "ThreadPoolServiceThread",
+      "32784:25560": "Chrome_ChildIOThread",
+      "13948:30308": "ThreadPoolForegroundWorker",
+      "20764:10520": "CacheThread_BlockFile",
+      "20764:32736": "MemoryInfra"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 4714,
+        "totalMs": 19960,
+        "maxMs": 47.89
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 1621,
+        "totalMs": 923.55,
+        "maxMs": 38.97
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 263,
+        "totalMs": 783.35,
+        "maxMs": 38.43
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 283,
+        "totalMs": 775.97,
+        "maxMs": 38.4
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 1636,
+        "totalMs": 507.82,
+        "maxMs": 0.97
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 10717,
+        "totalMs": 484.42,
+        "maxMs": 2.62
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 115,
+        "totalMs": 48.5,
+        "maxMs": 35.42
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 112,
+        "totalMs": 48.15,
+        "maxMs": 35.42
+      },
+      {
+        "name": "main:Commit",
+        "calls": 263,
+        "totalMs": 37.02,
+        "maxMs": 0.39
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 2,
+        "totalMs": 35.42,
+        "maxMs": 35.42
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 263,
+        "totalMs": 26.63,
+        "maxMs": 0.23
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 263,
+        "totalMs": 18.01,
+        "maxMs": 0.18
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 3760,
+        "totalMs": 4.42,
+        "maxMs": 0.03
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 76,
+        "totalMs": 4.05,
+        "maxMs": 0.3
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 11,
+        "totalMs": 3.93,
+        "maxMs": 0.69
+      },
+      {
+        "name": "main:IntersectionObserverController::computeIntersections",
+        "calls": 526,
+        "totalMs": 3.72,
+        "maxMs": 0.04
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 11,
+        "totalMs": 3.42,
+        "maxMs": 0.62
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 11,
+        "totalMs": 3.31,
+        "maxMs": 0.61
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 11,
+        "totalMs": 1.93,
+        "maxMs": 0.36
+      },
+      {
+        "name": "main:HitTest",
+        "calls": 20,
+        "totalMs": 1.63,
+        "maxMs": 0.17
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 10,
+        "totalMs": 0.78,
+        "maxMs": 0.16
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 263,
+        "totalMs": 0.62,
+        "maxMs": 0.03
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL",
+        "calls": 10,
+        "totalMs": 0.58,
+        "maxMs": 0.2
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_FINALIZE",
+        "calls": 11,
+        "totalMs": 0.38,
+        "maxMs": 0.13
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+        "calls": 11,
+        "totalMs": 0.37,
+        "maxMs": 0.07
+      },
+      {
+        "name": "main:V8.BytecodeBudgetInterrupt",
+        "calls": 82,
+        "totalMs": 0.37,
+        "maxMs": 0.04
+      },
+      {
+        "name": "main:PageTimingMetricsSender::SendNow",
+        "calls": 8,
+        "totalMs": 0.24,
+        "maxMs": 0.04
+      },
+      {
+        "name": "other:MetricsWebContentsObserver::UpdateTiming",
+        "calls": 8,
+        "totalMs": 0.2,
+        "maxMs": 0.03
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_IDENTIFY",
+        "calls": 11,
+        "totalMs": 0.18,
+        "maxMs": 0.02
+      },
+      {
+        "name": "main:V8.BytecodeBudgetInterruptWithStackCheck",
+        "calls": 32,
+        "totalMs": 0.16,
+        "maxMs": 0.01
+      }
+    ],
+    "longTasks": []
+  },
+  "showroom-autorotate-mobile.trace.json.gz": {
+    "eventCount": 76633,
+    "durationMs": 30918.299,
+    "threads": {
+      "0:0": "swapper",
+      "14212:33584": "CrRendererMain",
+      "14168:32080": "PerfettoTrace",
+      "33144:22664": "PerfettoTrace",
+      "33144:25948": "CrRendererMain",
+      "23676:14880": "PerfettoTrace",
+      "23676:29480": "CrBrowserMain",
+      "14212:21840": "PerfettoTrace",
+      "14168:23420": "GpuVSyncThread",
+      "14168:27364": "VizCompositorThread",
+      "14168:17244": "CrGpuMain",
+      "14212:24068": "Compositor",
+      "23676:24672": "Chrome_DevToolsHandlerThread",
+      "14212:5512": "Chrome_ChildIOThread",
+      "23676:3208": "ThreadPoolServiceThread",
+      "23676:13140": "Chrome_IOThread",
+      "14212:32940": "ThreadPoolForegroundWorker",
+      "14212:32008": "ThreadPoolForegroundWorker",
+      "14212:26348": "ThreadPoolForegroundWorker",
+      "14212:30864": "ThreadPoolForegroundWorker",
+      "14212:31308": "ThreadPoolForegroundWorker",
+      "14212:31104": "ThreadPoolForegroundWorker",
+      "14212:9492": "ThreadPoolForegroundWorker",
+      "14212:29856": "ThreadPoolForegroundWorker",
+      "14212:25044": "ThreadPoolServiceThread",
+      "14168:30776": "Chrome_ChildIOThread",
+      "23676:14420": "CacheThread_BlockFile",
+      "23676:29748": "MemoryInfra",
+      "14212:18736": "ThreadPoolForegroundWorker",
+      "14212:33556": "ThreadPoolForegroundWorker",
+      "14212:24084": "ThreadPoolForegroundWorker"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 15623,
+        "totalMs": 16603.89,
+        "maxMs": 23.04
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 4176,
+        "totalMs": 9648.68,
+        "maxMs": 241
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 523,
+        "totalMs": 8378.73,
+        "maxMs": 237.96
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 543,
+        "totalMs": 8300.84,
+        "maxMs": 237.76
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 27019,
+        "totalMs": 2239.07,
+        "maxMs": 2.98
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 6839,
+        "totalMs": 1237.9,
+        "maxMs": 23.02
+      },
+      {
+        "name": "main:Commit",
+        "calls": 522,
+        "totalMs": 318.54,
+        "maxMs": 1.8
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 140,
+        "totalMs": 306.11,
+        "maxMs": 225.51
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 140,
+        "totalMs": 304.48,
+        "maxMs": 225.51
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 523,
+        "totalMs": 271.69,
+        "maxMs": 1.59
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 2,
+        "totalMs": 225.35,
+        "maxMs": 225.35
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 522,
+        "totalMs": 168.48,
+        "maxMs": 0.98
+      },
+      {
+        "name": "main:IntersectionObserverController::computeIntersections",
+        "calls": 1044,
+        "totalMs": 55.19,
+        "maxMs": 0.61
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 19,
+        "totalMs": 30.89,
+        "maxMs": 4.43
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 5011,
+        "totalMs": 24.31,
+        "maxMs": 0.18
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 15,
+        "totalMs": 20.57,
+        "maxMs": 2.2
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 15,
+        "totalMs": 15.98,
+        "maxMs": 1.62
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 15,
+        "totalMs": 15.47,
+        "maxMs": 1.61
+      },
+      {
+        "name": "main:MajorGC",
+        "calls": 1,
+        "totalMs": 11.47,
+        "maxMs": 11.47
+      },
+      {
+        "name": "main:V8.GC_MARK_COMPACTOR",
+        "calls": 1,
+        "totalMs": 11.26,
+        "maxMs": 11.26
+      },
+      {
+        "name": "main:HitTest",
+        "calls": 20,
+        "totalMs": 8.48,
+        "maxMs": 0.77
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 131,
+        "totalMs": 7.22,
+        "maxMs": 0.27
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 522,
+        "totalMs": 6.59,
+        "maxMs": 0.18
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 15,
+        "totalMs": 6.58,
+        "maxMs": 0.61
+      },
+      {
+        "name": "main:PageTimingMetricsSender::SendNow",
+        "calls": 47,
+        "totalMs": 6.3,
+        "maxMs": 0.58
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 10,
+        "totalMs": 4.74,
+        "maxMs": 0.78
+      },
+      {
+        "name": "main:V8.GC_MC_INCREMENTAL",
+        "calls": 11,
+        "totalMs": 4.68,
+        "maxMs": 1.83
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_SWEEPING",
+        "calls": 7,
+        "totalMs": 4.37,
+        "maxMs": 0.92
+      },
+      {
+        "name": "main:V8.GC_MC_EVACUATE",
+        "calls": 2,
+        "totalMs": 4.21,
+        "maxMs": 4.21
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+        "calls": 15,
+        "totalMs": 3.25,
+        "maxMs": 0.41
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "RunTask",
+        "ms": 240.997,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FireAnimationFrame",
+        "ms": 237.963,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 237.765,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 225.511,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 225.509,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 225.349,
+        "cat": "v8.execute",
+        "url": null
+      }
+    ]
+  },
+  "showroom-camera-transition-desktop.trace.json.gz": {
+    "eventCount": 15401,
+    "durationMs": 4070.458,
+    "threads": {
+      "0:0": "swapper",
+      "13948:6580": "CrRendererMain",
+      "32784:27680": "PerfettoTrace",
+      "20764:1440": "PerfettoTrace",
+      "13948:33508": "PerfettoTrace",
+      "20764:31148": "CrBrowserMain",
+      "20764:32436": "Chrome_DevToolsHandlerThread",
+      "13948:23112": "Compositor",
+      "32784:30348": "VizCompositorThread",
+      "20764:31436": "Chrome_IOThread",
+      "32784:32680": "GpuVSyncThread",
+      "32784:11308": "CrGpuMain",
+      "13948:25448": "Chrome_ChildIOThread",
+      "13948:16972": "ThreadPoolForegroundWorker",
+      "13948:6836": "ThreadPoolForegroundWorker",
+      "13948:16724": "ThreadPoolForegroundWorker",
+      "13948:23944": "ThreadPoolForegroundWorker",
+      "13948:5576": "ThreadPoolForegroundWorker",
+      "13948:14636": "ThreadPoolForegroundWorker",
+      "13948:32360": "ThreadPoolForegroundWorker",
+      "13948:30308": "ThreadPoolForegroundWorker",
+      "32784:25560": "Chrome_ChildIOThread",
+      "20764:10520": "CacheThread_BlockFile",
+      "20764:5836": "ThreadPoolServiceThread",
+      "13948:9248": "ThreadPoolServiceThread"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 2351,
+        "totalMs": 8073.44,
+        "maxMs": 37.65
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 736,
+        "totalMs": 524.66,
+        "maxMs": 61.92
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 200,
+        "totalMs": 373.6,
+        "maxMs": 5.23
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 118,
+        "totalMs": 370.71,
+        "maxMs": 5.28
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 1050,
+        "totalMs": 322.23,
+        "maxMs": 32.55
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 4241,
+        "totalMs": 230.83,
+        "maxMs": 2.14
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 63,
+        "totalMs": 65.02,
+        "maxMs": 58.15
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 63,
+        "totalMs": 64.82,
+        "maxMs": 58.15
+      },
+      {
+        "name": "main:EvaluateScript",
+        "calls": 1,
+        "totalMs": 61.88,
+        "maxMs": 61.88
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 1,
+        "totalMs": 58.14,
+        "maxMs": 58.14
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 118,
+        "totalMs": 20.14,
+        "maxMs": 1.72
+      },
+      {
+        "name": "main:Commit",
+        "calls": 118,
+        "totalMs": 18.26,
+        "maxMs": 0.4
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 118,
+        "totalMs": 10.08,
+        "maxMs": 0.43
+      },
+      {
+        "name": "main:Paint",
+        "calls": 21,
+        "totalMs": 6.49,
+        "maxMs": 0.7
+      },
+      {
+        "name": "main:RunMicrotasks",
+        "calls": 3,
+        "totalMs": 3.16,
+        "maxMs": 3.08
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 40,
+        "totalMs": 3.12,
+        "maxMs": 0.19
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 118,
+        "totalMs": 2.59,
+        "maxMs": 0.46
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 5,
+        "totalMs": 2.47,
+        "maxMs": 0.56
+      },
+      {
+        "name": "other:RasterTask",
+        "calls": 44,
+        "totalMs": 2.46,
+        "maxMs": 0.27
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 1905,
+        "totalMs": 2.4,
+        "maxMs": 0.03
+      },
+      {
+        "name": "main:Layout",
+        "calls": 1,
+        "totalMs": 2.28,
+        "maxMs": 2.28
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 5,
+        "totalMs": 2.19,
+        "maxMs": 0.5
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 5,
+        "totalMs": 2.14,
+        "maxMs": 0.49
+      },
+      {
+        "name": "main:IntersectionObserverController::computeIntersections",
+        "calls": 236,
+        "totalMs": 1.81,
+        "maxMs": 0.05
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 41,
+        "totalMs": 1.58,
+        "maxMs": 0.23
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 5,
+        "totalMs": 1.33,
+        "maxMs": 0.31
+      },
+      {
+        "name": "main:HitTest",
+        "calls": 8,
+        "totalMs": 0.66,
+        "maxMs": 0.12
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL",
+        "calls": 2,
+        "totalMs": 0.27,
+        "maxMs": 0.21
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_FINALIZE",
+        "calls": 5,
+        "totalMs": 0.26,
+        "maxMs": 0.11
+      },
+      {
+        "name": "main:V8.BytecodeBudgetInterrupt",
+        "calls": 53,
+        "totalMs": 0.24,
+        "maxMs": 0.02
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "RunTask",
+        "ms": 61.924,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "EvaluateScript",
+        "ms": 61.881,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 58.15,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 58.146,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 58.142,
+        "cat": "v8.execute",
+        "url": null
+      }
+    ]
+  },
+  "showroom-hotspot-actual-desktop.trace.json.gz": {
+    "eventCount": 17732,
+    "durationMs": 4091.201,
+    "threads": {
+      "0:0": "swapper",
+      "7052:31856": "CrRendererMain",
+      "10364:31652": "PerfettoTrace",
+      "24232:20756": "CrBrowserMain",
+      "24232:7120": "PerfettoTrace",
+      "7052:9684": "PerfettoTrace",
+      "33728:12052": "PerfettoTrace",
+      "17608:27440": "PerfettoTrace",
+      "17608:24236": "CrRendererMain",
+      "33728:31260": "CrRendererMain",
+      "24232:22376": "Chrome_DevToolsHandlerThread",
+      "24232:18720": "Chrome_IOThread",
+      "7052:31324": "Chrome_ChildIOThread",
+      "7052:18056": "ThreadPoolForegroundWorker",
+      "10364:30620": "GpuVSyncThread",
+      "10364:24052": "VizCompositorThread",
+      "7052:31640": "Compositor",
+      "10364:23428": "CrGpuMain",
+      "10364:10416": "Chrome_ChildIOThread",
+      "7052:33556": "ThreadPoolForegroundWorker",
+      "7052:21840": "ThreadPoolForegroundWorker",
+      "7052:30484": "ThreadPoolForegroundWorker",
+      "7052:2464": "ThreadPoolForegroundWorker",
+      "7052:27032": "ThreadPoolForegroundWorker",
+      "7052:22036": "ThreadPoolForegroundWorker",
+      "7052:33440": "ThreadPoolForegroundWorker",
+      "7052:28700": "ThreadPoolForegroundWorker",
+      "7052:4892": "ThreadPoolServiceThread",
+      "24232:14712": "ThreadPoolServiceThread",
+      "24232:21032": "CacheThread_BlockFile",
+      "24232:33676": "MemoryInfra",
+      "7052:31308": "ThreadPoolForegroundWorker",
+      "7052:9084": "ThreadPoolForegroundWorker"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 2439,
+        "totalMs": 8125.12,
+        "maxMs": 38.61
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 800,
+        "totalMs": 518.81,
+        "maxMs": 46.26
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 1170,
+        "totalMs": 292.63,
+        "maxMs": 37.9
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 288,
+        "totalMs": 267.7,
+        "maxMs": 5.26
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 106,
+        "totalMs": 253.83,
+        "maxMs": 3.73
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 3704,
+        "totalMs": 232.33,
+        "maxMs": 2.56
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 104,
+        "totalMs": 50.18,
+        "maxMs": 43.53
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 103,
+        "totalMs": 49.94,
+        "maxMs": 43.53
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 106,
+        "totalMs": 46.02,
+        "maxMs": 0.67
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 2,
+        "totalMs": 43.53,
+        "maxMs": 43.52
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 106,
+        "totalMs": 41.17,
+        "maxMs": 5.95
+      },
+      {
+        "name": "main:Layout",
+        "calls": 4,
+        "totalMs": 22.47,
+        "maxMs": 20.57
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 21,
+        "totalMs": 20.29,
+        "maxMs": 3
+      },
+      {
+        "name": "other:RasterTask",
+        "calls": 83,
+        "totalMs": 17.35,
+        "maxMs": 3.65
+      },
+      {
+        "name": "main:Commit",
+        "calls": 106,
+        "totalMs": 16.17,
+        "maxMs": 0.33
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 106,
+        "totalMs": 15.35,
+        "maxMs": 0.78
+      },
+      {
+        "name": "main:Paint",
+        "calls": 63,
+        "totalMs": 12.33,
+        "maxMs": 1.19
+      },
+      {
+        "name": "other:V8.GC_BACKGROUND_SAFEPOINT",
+        "calls": 1,
+        "totalMs": 6.81,
+        "maxMs": 6.81
+      },
+      {
+        "name": "main:RunMicrotasks",
+        "calls": 9,
+        "totalMs": 6.14,
+        "maxMs": 4.12
+      },
+      {
+        "name": "other:V8.GC_BACKGROUND_UNPARK",
+        "calls": 2,
+        "totalMs": 5.72,
+        "maxMs": 5.19
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 71,
+        "totalMs": 3.91,
+        "maxMs": 0.33
+      },
+      {
+        "name": "main:MajorGC",
+        "calls": 1,
+        "totalMs": 3.38,
+        "maxMs": 3.38
+      },
+      {
+        "name": "main:V8.GC_MARK_COMPACTOR",
+        "calls": 1,
+        "totalMs": 3.34,
+        "maxMs": 3.34
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_SWEEPING",
+        "calls": 7,
+        "totalMs": 3.31,
+        "maxMs": 0.68
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 22,
+        "totalMs": 3.18,
+        "maxMs": 0.28
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 2395,
+        "totalMs": 2.87,
+        "maxMs": 0.02
+      },
+      {
+        "name": "main:V8.GC_MC_INCREMENTAL",
+        "calls": 38,
+        "totalMs": 2.83,
+        "maxMs": 0.3
+      },
+      {
+        "name": "other:ImageDecodeTask",
+        "calls": 1,
+        "totalMs": 2.45,
+        "maxMs": 2.45
+      },
+      {
+        "name": "other:Decode LazyPixelRef",
+        "calls": 1,
+        "totalMs": 2.43,
+        "maxMs": 2.43
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 3,
+        "totalMs": 1.56,
+        "maxMs": 0.61
+      }
+    ],
+    "longTasks": []
+  },
+  "showroom-idle-mobile.trace.json.gz": {
+    "eventCount": 74851,
+    "durationMs": 10021.017,
+    "threads": {
+      "0:0": "swapper",
+      "14212:33584": "CrRendererMain",
+      "14168:32080": "PerfettoTrace",
+      "23676:14880": "PerfettoTrace",
+      "23676:29480": "CrBrowserMain",
+      "14212:21840": "PerfettoTrace",
+      "33144:22664": "PerfettoTrace",
+      "33144:25948": "CrRendererMain",
+      "14168:17244": "CrGpuMain",
+      "14168:27364": "VizCompositorThread",
+      "14168:23420": "GpuVSyncThread",
+      "23676:24672": "Chrome_DevToolsHandlerThread",
+      "14212:24068": "Compositor",
+      "14212:5512": "Chrome_ChildIOThread",
+      "14212:32940": "ThreadPoolForegroundWorker",
+      "14212:31104": "ThreadPoolForegroundWorker",
+      "14212:32008": "ThreadPoolForegroundWorker",
+      "14212:26348": "ThreadPoolForegroundWorker",
+      "14212:31308": "ThreadPoolForegroundWorker",
+      "23676:13140": "Chrome_IOThread",
+      "23676:3208": "ThreadPoolServiceThread",
+      "14212:25044": "ThreadPoolServiceThread",
+      "14212:29856": "ThreadPoolForegroundWorker",
+      "14168:30776": "Chrome_ChildIOThread",
+      "14212:30864": "ThreadPoolForegroundWorker",
+      "14212:9492": "ThreadPoolForegroundWorker",
+      "23676:29748": "MemoryInfra",
+      "14212:18736": "ThreadPoolForegroundWorker",
+      "14212:33556": "ThreadPoolForegroundWorker",
+      "14212:24084": "ThreadPoolForegroundWorker"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 15562,
+        "totalMs": 15751.14,
+        "maxMs": 21.6
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 4135,
+        "totalMs": 9554.02,
+        "maxMs": 44.24
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 506,
+        "totalMs": 8306.55,
+        "maxMs": 42.26
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 526,
+        "totalMs": 8230.8,
+        "maxMs": 42.22
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 25563,
+        "totalMs": 2180.82,
+        "maxMs": 2.71
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 6593,
+        "totalMs": 1211.07,
+        "maxMs": 0.75
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 290,
+        "totalMs": 352.25,
+        "maxMs": 183.86
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 290,
+        "totalMs": 349.4,
+        "maxMs": 183.84
+      },
+      {
+        "name": "main:Commit",
+        "calls": 507,
+        "totalMs": 305.47,
+        "maxMs": 1.83
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 507,
+        "totalMs": 258.62,
+        "maxMs": 1.21
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 2,
+        "totalMs": 183.84,
+        "maxMs": 183.84
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 507,
+        "totalMs": 162.79,
+        "maxMs": 0.8
+      },
+      {
+        "name": "main:IntersectionObserverController::computeIntersections",
+        "calls": 1014,
+        "totalMs": 46.15,
+        "maxMs": 0.38
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 18,
+        "totalMs": 28.95,
+        "maxMs": 4.15
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 4781,
+        "totalMs": 25.13,
+        "maxMs": 0.39
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 19,
+        "totalMs": 25.07,
+        "maxMs": 1.78
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 19,
+        "totalMs": 19.51,
+        "maxMs": 1.42
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 19,
+        "totalMs": 17.98,
+        "maxMs": 1.41
+      },
+      {
+        "name": "main:MajorGC",
+        "calls": 1,
+        "totalMs": 14.09,
+        "maxMs": 14.09
+      },
+      {
+        "name": "main:V8.GC_MARK_COMPACTOR",
+        "calls": 1,
+        "totalMs": 14.05,
+        "maxMs": 14.05
+      },
+      {
+        "name": "main:HitTest",
+        "calls": 20,
+        "totalMs": 9.09,
+        "maxMs": 0.82
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 19,
+        "totalMs": 7.55,
+        "maxMs": 0.6
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 507,
+        "totalMs": 7.38,
+        "maxMs": 0.2
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 154,
+        "totalMs": 6.97,
+        "maxMs": 0.34
+      },
+      {
+        "name": "main:V8.BytecodeBudgetInterrupt",
+        "calls": 235,
+        "totalMs": 5.79,
+        "maxMs": 0.37
+      },
+      {
+        "name": "main:PageTimingMetricsSender::SendNow",
+        "calls": 44,
+        "totalMs": 4.67,
+        "maxMs": 0.37
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_SWEEPING",
+        "calls": 7,
+        "totalMs": 4.27,
+        "maxMs": 0.9
+      },
+      {
+        "name": "main:V8.GC_MC_EVACUATE",
+        "calls": 2,
+        "totalMs": 4.03,
+        "maxMs": 4.02
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+        "calls": 19,
+        "totalMs": 3.94,
+        "maxMs": 0.39
+      },
+      {
+        "name": "main:V8.GC_MC_EVACUATE_UPDATE_POINTERS",
+        "calls": 1,
+        "totalMs": 3.4,
+        "maxMs": 3.4
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "V8.StackGuard",
+        "ms": 183.86,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 183.843,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 183.838,
+        "cat": "v8.execute",
+        "url": null
+      }
+    ]
+  },
+  "showroom-livery-switch-desktop.trace.json.gz": {
+    "eventCount": 17891,
+    "durationMs": 5192.915,
+    "threads": {
+      "0:0": "swapper",
+      "7052:31856": "CrRendererMain",
+      "7052:9684": "PerfettoTrace",
+      "24232:20756": "CrBrowserMain",
+      "24232:7120": "PerfettoTrace",
+      "17608:24236": "CrRendererMain",
+      "17608:27440": "PerfettoTrace",
+      "33728:12052": "PerfettoTrace",
+      "33728:31260": "CrRendererMain",
+      "7052:31640": "Compositor",
+      "10364:31652": "PerfettoTrace",
+      "10364:24052": "VizCompositorThread",
+      "24232:22376": "Chrome_DevToolsHandlerThread",
+      "10364:23428": "CrGpuMain",
+      "24232:18720": "Chrome_IOThread",
+      "10364:30620": "GpuVSyncThread",
+      "7052:31324": "Chrome_ChildIOThread",
+      "10364:10416": "Chrome_ChildIOThread",
+      "24232:32704": "CompositorTileWorker1",
+      "7052:18056": "ThreadPoolForegroundWorker",
+      "7052:33556": "ThreadPoolForegroundWorker",
+      "7052:21840": "ThreadPoolForegroundWorker",
+      "7052:33440": "ThreadPoolForegroundWorker",
+      "7052:27032": "ThreadPoolForegroundWorker",
+      "7052:28700": "ThreadPoolForegroundWorker",
+      "7052:22036": "ThreadPoolForegroundWorker",
+      "7052:31308": "ThreadPoolForegroundWorker",
+      "7052:30484": "ThreadPoolForegroundWorker",
+      "7052:2464": "ThreadPoolForegroundWorker",
+      "7052:9084": "ThreadPoolForegroundWorker",
+      "24232:14712": "ThreadPoolServiceThread",
+      "7052:4892": "ThreadPoolServiceThread"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 2426,
+        "totalMs": 10245.86,
+        "maxMs": 139.89
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 1086,
+        "totalMs": 1037.7,
+        "maxMs": 358.6
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 175,
+        "totalMs": 926.77,
+        "maxMs": 358.09
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 130,
+        "totalMs": 826.33,
+        "maxMs": 358.12
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 812,
+        "totalMs": 780.51,
+        "maxMs": 139.88
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 5080,
+        "totalMs": 287.02,
+        "maxMs": 3.17
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 148,
+        "totalMs": 150.91,
+        "maxMs": 133.87
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 146,
+        "totalMs": 150.83,
+        "maxMs": 133.87
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 1,
+        "totalMs": 133.86,
+        "maxMs": 133.86
+      },
+      {
+        "name": "other:RasterTask",
+        "calls": 25,
+        "totalMs": 32.01,
+        "maxMs": 10.84
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 21,
+        "totalMs": 21.59,
+        "maxMs": 3.02
+      },
+      {
+        "name": "main:Commit",
+        "calls": 130,
+        "totalMs": 15.61,
+        "maxMs": 0.31
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 134,
+        "totalMs": 15.29,
+        "maxMs": 1.28
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 134,
+        "totalMs": 9.57,
+        "maxMs": 0.73
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 50,
+        "totalMs": 5.61,
+        "maxMs": 1.61
+      },
+      {
+        "name": "main:Layout",
+        "calls": 9,
+        "totalMs": 5.6,
+        "maxMs": 4.37
+      },
+      {
+        "name": "main:RunMicrotasks",
+        "calls": 4,
+        "totalMs": 5.52,
+        "maxMs": 5.06
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 45,
+        "totalMs": 3.62,
+        "maxMs": 0.3
+      },
+      {
+        "name": "main:MajorGC",
+        "calls": 1,
+        "totalMs": 3.1,
+        "maxMs": 3.1
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_SWEEPING",
+        "calls": 11,
+        "totalMs": 3.06,
+        "maxMs": 0.62
+      },
+      {
+        "name": "main:V8.GC_MARK_COMPACTOR",
+        "calls": 1,
+        "totalMs": 3.05,
+        "maxMs": 3.05
+      },
+      {
+        "name": "main:Paint",
+        "calls": 9,
+        "totalMs": 2.95,
+        "maxMs": 1.16
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 6,
+        "totalMs": 2.64,
+        "maxMs": 0.63
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 6,
+        "totalMs": 2.29,
+        "maxMs": 0.54
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 6,
+        "totalMs": 2.23,
+        "maxMs": 0.53
+      },
+      {
+        "name": "main:UpdateLayer",
+        "calls": 1830,
+        "totalMs": 2.22,
+        "maxMs": 0.03
+      },
+      {
+        "name": "main:IntersectionObserverController::computeIntersections",
+        "calls": 260,
+        "totalMs": 1.66,
+        "maxMs": 0.07
+      },
+      {
+        "name": "main:V8.GC_MC_INCREMENTAL",
+        "calls": 11,
+        "totalMs": 1.4,
+        "maxMs": 0.4
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 130,
+        "totalMs": 1.33,
+        "maxMs": 0.62
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 6,
+        "totalMs": 1.31,
+        "maxMs": 0.34
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "RunTask",
+        "ms": 358.603,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FireAnimationFrame",
+        "ms": 358.121,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 358.089,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-three-ClyKBY73.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 139.371,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FireAnimationFrame",
+        "ms": 138.85,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 138.803,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-three-ClyKBY73.js"
+      },
+      {
+        "name": "V8.StackGuard",
+        "ms": 133.868,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.HandleInterrupts",
+        "ms": 133.865,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "V8.InvokeApiInterruptCallbacks",
+        "ms": 133.861,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 101.592,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 87.178,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      }
+    ]
+  },
+  "showroom-route-init-desktop.trace.json.gz": {
+    "eventCount": 8037,
+    "durationMs": 2663.901,
+    "threads": {
+      "0:0": "swapper",
+      "20764:31148": "CrBrowserMain",
+      "20764:1440": "PerfettoTrace",
+      "32784:27680": "PerfettoTrace",
+      "13948:6580": "CrRendererMain",
+      "13948:33508": "PerfettoTrace",
+      "20764:32436": "Chrome_DevToolsHandlerThread",
+      "32784:32680": "GpuVSyncThread",
+      "32784:30348": "VizCompositorThread",
+      "13948:23112": "Compositor",
+      "20764:31436": "Chrome_IOThread",
+      "13948:25448": "Chrome_ChildIOThread",
+      "20764:5836": "ThreadPoolServiceThread",
+      "32784:11308": "CrGpuMain",
+      "13948:6836": "ThreadPoolForegroundWorker",
+      "32784:25560": "Chrome_ChildIOThread",
+      "13948:16972": "ThreadPoolForegroundWorker",
+      "20764:21032": "CompositorTileWorker1",
+      "13948:23944": "ThreadPoolForegroundWorker",
+      "13948:16724": "ThreadPoolForegroundWorker",
+      "13948:30308": "ThreadPoolForegroundWorker",
+      "20764:10520": "CacheThread_BlockFile",
+      "13948:9248": "ThreadPoolServiceThread",
+      "13948:14636": "ThreadPoolForegroundWorker",
+      "13948:5576": "ThreadPoolForegroundWorker",
+      "13948:32360": "ThreadPoolForegroundWorker",
+      "13948:17012": "ThreadPoolForegroundWorker",
+      "13948:32144": "ThreadPoolForegroundWorker",
+      "13948:19552": "ThreadPoolForegroundWorker"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 1115,
+        "totalMs": 4991.13,
+        "maxMs": 331.75
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 328,
+        "totalMs": 2197.81,
+        "maxMs": 331.7
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 239,
+        "totalMs": 604.89,
+        "maxMs": 249.76
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 47,
+        "totalMs": 415.81,
+        "maxMs": 249.69
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 3204,
+        "totalMs": 146.01,
+        "maxMs": 4.48
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 159,
+        "totalMs": 44.16,
+        "maxMs": 34.42
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 160,
+        "totalMs": 43.93,
+        "maxMs": 34.42
+      },
+      {
+        "name": "other:BackgroundJSStreamManager::RunScriptStreamingTask",
+        "calls": 2,
+        "totalMs": 38.83,
+        "maxMs": 28.12
+      },
+      {
+        "name": "other:v8.parseOnBackground",
+        "calls": 2,
+        "totalMs": 38.82,
+        "maxMs": 28.11
+      },
+      {
+        "name": "main:EvaluateScript",
+        "calls": 2,
+        "totalMs": 37.32,
+        "maxMs": 36.69
+      },
+      {
+        "name": "main:Layout",
+        "calls": 8,
+        "totalMs": 36.71,
+        "maxMs": 36.01
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 1,
+        "totalMs": 34.36,
+        "maxMs": 34.36
+      },
+      {
+        "name": "other:v8.parseOnBackgroundParsing",
+        "calls": 14,
+        "totalMs": 32.71,
+        "maxMs": 8.08
+      },
+      {
+        "name": "other:RasterTask",
+        "calls": 51,
+        "totalMs": 26.18,
+        "maxMs": 5.06
+      },
+      {
+        "name": "main:RunMicrotasks",
+        "calls": 15,
+        "totalMs": 21.31,
+        "maxMs": 17.63
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 28,
+        "totalMs": 16.21,
+        "maxMs": 2.35
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 14,
+        "totalMs": 11.52,
+        "maxMs": 7.93
+      },
+      {
+        "name": "main:v8.evaluateModule",
+        "calls": 1,
+        "totalMs": 8.26,
+        "maxMs": 8.26
+      },
+      {
+        "name": "other:v8.parseOnBackgroundWaiting",
+        "calls": 12,
+        "totalMs": 6.06,
+        "maxMs": 1.47
+      },
+      {
+        "name": "main:Paint",
+        "calls": 21,
+        "totalMs": 5.71,
+        "maxMs": 1.61
+      },
+      {
+        "name": "other:V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL",
+        "calls": 22,
+        "totalMs": 5.62,
+        "maxMs": 0.67
+      },
+      {
+        "name": "main:MajorGC",
+        "calls": 1,
+        "totalMs": 3.58,
+        "maxMs": 3.58
+      },
+      {
+        "name": "main:V8.GC_MARK_COMPACTOR",
+        "calls": 1,
+        "totalMs": 3.41,
+        "maxMs": 3.41
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 4,
+        "totalMs": 3.03,
+        "maxMs": 0.92
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 4,
+        "totalMs": 2.84,
+        "maxMs": 0.89
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE",
+        "calls": 4,
+        "totalMs": 2.79,
+        "maxMs": 0.87
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_SWEEPING",
+        "calls": 7,
+        "totalMs": 2.65,
+        "maxMs": 0.56
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 42,
+        "totalMs": 2.62,
+        "maxMs": 1.9
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+        "calls": 4,
+        "totalMs": 1.96,
+        "maxMs": 0.7
+      },
+      {
+        "name": "main:V8.GC_MC_INCREMENTAL",
+        "calls": 19,
+        "totalMs": 1.83,
+        "maxMs": 0.39
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "RunTask",
+        "ms": 249.759,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 249.694,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 199.243,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 138.781,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      }
+    ]
+  },
+  "showroom-route-init-mobile.trace.json.gz": {
+    "eventCount": 23482,
+    "durationMs": 6345.014,
+    "threads": {
+      "0:0": "swapper",
+      "14168:32080": "PerfettoTrace",
+      "23676:14880": "PerfettoTrace",
+      "23676:29480": "CrBrowserMain",
+      "33144:25948": "CrRendererMain",
+      "33144:22664": "PerfettoTrace",
+      "14212:21840": "PerfettoTrace",
+      "14212:33584": "CrRendererMain",
+      "23676:24672": "Chrome_DevToolsHandlerThread",
+      "14168:27364": "VizCompositorThread",
+      "14168:23420": "GpuVSyncThread",
+      "14168:30776": "Chrome_ChildIOThread",
+      "14168:17244": "CrGpuMain",
+      "23676:13140": "Chrome_IOThread",
+      "14212:5512": "Chrome_ChildIOThread",
+      "23676:14420": "CacheThread_BlockFile",
+      "14212:24068": "Compositor",
+      "14212:32940": "ThreadPoolForegroundWorker",
+      "14212:27760": "Font thread",
+      "14212:32008": "ThreadPoolForegroundWorker",
+      "14212:26348": "ThreadPoolForegroundWorker",
+      "14212:31104": "ThreadPoolForegroundWorker",
+      "14212:31308": "ThreadPoolForegroundWorker",
+      "23676:1516": "CompositorTileWorker1",
+      "33144:32644": "Chrome_ChildIOThread",
+      "33144:30156": "Compositor",
+      "14168:9924": "Window owner thread",
+      "23676:3208": "ThreadPoolServiceThread",
+      "14212:25044": "ThreadPoolServiceThread",
+      "23676:29748": "MemoryInfra",
+      "14212:29856": "ThreadPoolForegroundWorker",
+      "14212:9492": "ThreadPoolForegroundWorker",
+      "14212:33556": "ThreadPoolForegroundWorker",
+      "14212:18736": "ThreadPoolForegroundWorker",
+      "14212:24084": "ThreadPoolForegroundWorker",
+      "14212:30864": "ThreadPoolForegroundWorker"
+    },
+    "top": [
+      {
+        "name": "gpu:RunTask",
+        "calls": 4021,
+        "totalMs": 11164.56,
+        "maxMs": 302.08
+      },
+      {
+        "name": "main:RunTask",
+        "calls": 1265,
+        "totalMs": 6324.73,
+        "maxMs": 2491.03
+      },
+      {
+        "name": "main:FunctionCall",
+        "calls": 120,
+        "totalMs": 4589.77,
+        "maxMs": 2483.27
+      },
+      {
+        "name": "gpu:GPUTask",
+        "calls": 723,
+        "totalMs": 4138.43,
+        "maxMs": 302.07
+      },
+      {
+        "name": "main:FireAnimationFrame",
+        "calls": 5,
+        "totalMs": 3265.57,
+        "maxMs": 2483.31
+      },
+      {
+        "name": "other:RunTask",
+        "calls": 10369,
+        "totalMs": 1006.03,
+        "maxMs": 313.95
+      },
+      {
+        "name": "main:Layout",
+        "calls": 22,
+        "totalMs": 554.73,
+        "maxMs": 259.31
+      },
+      {
+        "name": "main:UpdateLayoutTree",
+        "calls": 25,
+        "totalMs": 99.08,
+        "maxMs": 46.42
+      },
+      {
+        "name": "main:RunMicrotasks",
+        "calls": 25,
+        "totalMs": 93.72,
+        "maxMs": 72.89
+      },
+      {
+        "name": "main:v8.evaluateModule",
+        "calls": 2,
+        "totalMs": 82.95,
+        "maxMs": 43.87
+      },
+      {
+        "name": "other:BackgroundJSStreamManager::RunScriptStreamingTask",
+        "calls": 7,
+        "totalMs": 60.65,
+        "maxMs": 30.2
+      },
+      {
+        "name": "other:v8.parseOnBackground",
+        "calls": 7,
+        "totalMs": 60.51,
+        "maxMs": 30.19
+      },
+      {
+        "name": "main:V8.StackGuard",
+        "calls": 277,
+        "totalMs": 56.61,
+        "maxMs": 16.61
+      },
+      {
+        "name": "other:v8.parseOnBackgroundParsing",
+        "calls": 15,
+        "totalMs": 55.99,
+        "maxMs": 18.93
+      },
+      {
+        "name": "main:V8.HandleInterrupts",
+        "calls": 276,
+        "totalMs": 54.83,
+        "maxMs": 16.6
+      },
+      {
+        "name": "main:DocumentLoader::CommitNavigation",
+        "calls": 6,
+        "totalMs": 52.3,
+        "maxMs": 46.72
+      },
+      {
+        "name": "main:DocumentLoader::StartLoadingResponse",
+        "calls": 6,
+        "totalMs": 46.27,
+        "maxMs": 43.93
+      },
+      {
+        "name": "main:DocumentLoader::CreateParserPostCommit",
+        "calls": 6,
+        "totalMs": 44.48,
+        "maxMs": 43.92
+      },
+      {
+        "name": "main:Paint",
+        "calls": 36,
+        "totalMs": 38.21,
+        "maxMs": 8.4
+      },
+      {
+        "name": "main:EventDispatch",
+        "calls": 93,
+        "totalMs": 27.92,
+        "maxMs": 4.2
+      },
+      {
+        "name": "main:Decode LazyPixelRef",
+        "calls": 1,
+        "totalMs": 23.74,
+        "maxMs": 23.74
+      },
+      {
+        "name": "other:V8.GC_MC_BACKGROUND_MARKING",
+        "calls": 12,
+        "totalMs": 20.99,
+        "maxMs": 3.03
+      },
+      {
+        "name": "main:V8.InvokeApiInterruptCallbacks",
+        "calls": 2,
+        "totalMs": 16.6,
+        "maxMs": 16.6
+      },
+      {
+        "name": "other:RasterTask",
+        "calls": 242,
+        "totalMs": 13.47,
+        "maxMs": 2.36
+      },
+      {
+        "name": "main:PrePaint",
+        "calls": 17,
+        "totalMs": 13.02,
+        "maxMs": 4.81
+      },
+      {
+        "name": "main:MinorGC",
+        "calls": 8,
+        "totalMs": 12.88,
+        "maxMs": 3.04
+      },
+      {
+        "name": "main:Layerize",
+        "calls": 11,
+        "totalMs": 12.05,
+        "maxMs": 3.2
+      },
+      {
+        "name": "main:DecodedDataDocumentParser::AppendBytes",
+        "calls": 5,
+        "totalMs": 11.84,
+        "maxMs": 8.83
+      },
+      {
+        "name": "main:V8.BytecodeBudgetInterrupt",
+        "calls": 933,
+        "totalMs": 11.63,
+        "maxMs": 0.36
+      },
+      {
+        "name": "main:V8.GC_SCAVENGER",
+        "calls": 8,
+        "totalMs": 10.71,
+        "maxMs": 2.82
+      }
+    ],
+    "longTasks": [
+      {
+        "name": "RunTask",
+        "ms": 2491.034,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FireAnimationFrame",
+        "ms": 2483.306,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 2483.271,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 1033.665,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 735.342,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FireAnimationFrame",
+        "ms": 730.715,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 730.543,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 711.45,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 326.136,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 295.749,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 282.01,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "Layout",
+        "ms": 259.309,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "Layout",
+        "ms": 259.178,
+        "cat": "devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 253.415,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 250.552,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 117.58,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 115.355,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 73.241,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "RunMicrotasks",
+        "ms": 72.894,
+        "cat": "v8.execute",
+        "url": null
+      },
+      {
+        "name": "RunTask",
+        "ms": 57.884,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 57.68,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 56.459,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      },
+      {
+        "name": "FunctionCall",
+        "ms": 56.243,
+        "cat": "devtools.timeline",
+        "url": "http://127.0.0.1:4174/assets/vendor-react-B62-MmwA.js"
+      },
+      {
+        "name": "RunTask",
+        "ms": 52.853,
+        "cat": "disabled-by-default-devtools.timeline",
+        "url": null
+      }
+    ]
+  }
+}

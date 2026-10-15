@@ -72,12 +72,44 @@
         }
       }
     </script>
-    <!-- Keep the display set compact until self-hosted font assets are added. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- The two variable families are split into Latin and Vietnamese subsets. -->
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/inter-vietnamese.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/playfair-display-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/playfair-display-vietnamese.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!-- The homepage LCP image is otherwise discovered only after React mounts. -->
+    <link
+      rel="preload"
+      href="/images/podium-diffuser-hero-v2.webp"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      href="/logo/logo-compact.png"
+      as="image"
+      type="image/png"
+      media="(max-width: 639px)"
+      fetchpriority="high"
     />
   </head>
   <body>

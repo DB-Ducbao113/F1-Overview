@@ -7,6 +7,7 @@ import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { ViewportImage } from '../common/ViewportImage';
 import { getTeamTextColor } from '../../utils/teamColors';
 
 const SEASONS: SeasonYear[] = [2026, 2025, 2024];
@@ -137,11 +138,9 @@ export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
                       {/* Team Car Showcase Banner */}
                       {team.imageUrl && (
                         <div className="relative aspect-[16/7] overflow-hidden bg-studio-950">
-                          <img
+                          <ViewportImage
                             src={team.imageUrl}
                             alt={profile.fullName}
-                            loading="lazy"
-                            decoding="async"
                             className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />

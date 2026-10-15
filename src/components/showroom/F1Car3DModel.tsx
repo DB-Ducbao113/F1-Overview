@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useGLTF, Html } from '@react-three/drei';
-import { useLoader } from '@react-three/fiber';
+import { useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
@@ -34,6 +34,7 @@ const RealF1CarMesh: React.FC<{
   teamId: TeamId;
 }> = ({ teamId }) => {
   const { scene } = useGLTF('/models/c42.v2.glb');
+  const invalidate = useThree((state) => state.invalidate);
   const livery = getTeam3DLivery(teamId);
   const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
 
@@ -265,6 +266,8 @@ const RealF1CarMesh: React.FC<{
       }
     });
 
+    invalidate();
+
     return () => {
       activeMaterialsRef.current.forEach((m) => m.dispose());
       activeMaterialsRef.current = [];
@@ -291,6 +294,7 @@ const RealF1CarMesh: React.FC<{
     haloTex,
     suspensionMirrorsTex,
     diffuserRainLightTex,
+    invalidate,
   ]);
 
   return (

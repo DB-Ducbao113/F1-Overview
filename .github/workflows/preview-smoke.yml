@@ -1,0 +1,46 @@
+name: Preview Smoke Test
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    # Vercel marks Preview deployments with this GitHub environment. This keeps
+    # the workflow from ever constructing a target from a production deployment.
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment == 'Preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      TARGET_URL: ${{ github.event.deployment_status.target_url }}
+      PRODUCTION_HOST: podiumeds.vercel.app
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate preview target
+        id: preview
+        shell: bash
+        run: |
+          test -n "$TARGET_URL"
+          echo "BASE_URL=$TARGET_URL" >> "$GITHUB_ENV"
+          echo "ALLOWED_STAGING_HOST=$(node -p 'new URL(process.env.TARGET_URL).hostname')" >> "$GITHUB_ENV"
+          if [ -z "$VERCEL_PROTECTION_BYPASS" ]; then
+            echo "smoke_enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Preview smoke skipped::Vercel Deployment Protection is enabled but VERCEL_PROTECTION_BYPASS is not configured. The successful deployment status is retained; no k6 requests were sent."
+          else
+            echo "smoke_enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up k6
+        if: steps.preview.outputs.smoke_enabled == 'true'
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run short live smoke test
+        if: steps.preview.outputs.smoke_enabled == 'true'
+        run: k6 run scripts/load-test/smoke.js

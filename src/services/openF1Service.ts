@@ -174,10 +174,11 @@ class OpenF1Service {
       return cached.data as T;
     }
 
-    // Same-origin proxy only (dev Vite proxy and prod serverless share the
-    // same path/allowlist contract). No direct upstream fallback: it doubles
-    // requests against the 30 req/min quota and bypasses proxy cache/CSP.
-    const url = `/api/openf1/${endpoint}${queryString ? `?${queryString}` : ''}`;
+    // Dev Vite maps path segments to OpenF1. The Vercel function uses a query
+    // allowlist, so production must pass the endpoint explicitly.
+    const url = import.meta.env.DEV
+      ? `/api/openf1/${endpoint}${queryString ? `?${queryString}` : ''}`
+      : `/api/openf1?${new URLSearchParams({ endpoint, ...Object.fromEntries(query.entries()) }).toString()}`;
 
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(8000) });

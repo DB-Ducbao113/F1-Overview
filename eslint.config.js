@@ -37,4 +37,13 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['scripts/load-test/**/*.js'],
+    languageOptions: {
+      globals: {
+        __ENV: 'readonly',
+        __ITER: 'readonly',
+      },
+    },
+  },
 ]);
