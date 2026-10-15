@@ -7,9 +7,20 @@
     "note": "Browser-instrumented scenarios are pending execution with the M3B.1 harness. Local static checks (lint/format/tests/coverage/build) were executed and are recorded below. No unexecuted browser measurement is fabricated."
   },
   "localStaticChecks": {
-    "lint": { "passed": true },
-    "formatCheck": { "passed": true, "note": "one Prettier pass over touched files" },
-    "tests": { "passed": true, "files": 30, "tests": 224, "previousFiles": 29, "previousTests": 215 },
+    "lint": {
+      "passed": true
+    },
+    "formatCheck": {
+      "passed": true,
+      "note": "one Prettier pass over touched files"
+    },
+    "tests": {
+      "passed": true,
+      "files": 30,
+      "tests": 224,
+      "previousFiles": 29,
+      "previousTests": 215
+    },
     "coverage": {
       "passed": true,
       "statementsPct": 63.2,
@@ -37,7 +48,13 @@
       "offscreen",
       "contextLost"
     ],
-    "frameRequestingStates": ["initial", "autoRotate", "orbit", "damping", "preset"],
+    "frameRequestingStates": [
+      "initial",
+      "autoRotate",
+      "orbit",
+      "damping",
+      "preset"
+    ],
     "reducedMotion": {
       "autoRotateDefault": false,
       "autoRotateForcedOffInCamera": true,
@@ -94,14 +111,35 @@
       "status": "pending",
       "expected": "renders during contact and the 2 s tail for normal users; 0 draws in settled 5 s"
     },
-    "liverySwitch": { "status": "pending", "expected": "finite draws then settled idle" },
-    "hotspotOpen": { "status": "pending", "expected": "finite draws then settled idle" },
-    "hiddenTab3s": { "status": "pending", "expected": "0 callbacks and 0 draws" },
-    "offscreen3s": { "status": "pending", "expected": "0 callbacks and 0 draws" },
-    "contextRestore": { "status": "pending", "expected": "restored frame renders once" },
+    "liverySwitch": {
+      "status": "pending",
+      "expected": "finite draws then settled idle"
+    },
+    "hotspotOpen": {
+      "status": "pending",
+      "expected": "finite draws then settled idle"
+    },
+    "hiddenTab3s": {
+      "status": "pending",
+      "expected": "0 callbacks and 0 draws"
+    },
+    "offscreen3s": {
+      "status": "pending",
+      "expected": "0 callbacks and 0 draws"
+    },
+    "contextRestore": {
+      "status": "pending",
+      "expected": "restored frame renders once"
+    },
     "viewportOverflow": {
       "status": "pending",
-      "widths": [390, 768, 1280, 1440, 1920],
+      "widths": [
+        390,
+        768,
+        1280,
+        1440,
+        1920
+      ],
       "expected": "0 px document overflow at every width; no frozen frames; no camera jumps"
     }
   },
