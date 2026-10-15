@@ -1,0 +1,346 @@
+{
+  "metadata": {
+    "url": "http://127.0.0.1:4192/showroom",
+    "capturedAt": "2026-10-15T11:30:04.020Z"
+  },
+  "scenarios": {
+    "readinessContract": {
+      "texturesReady": 2289.800000011921,
+      "carReady": 3945.800000011921,
+      "studioReady": 2457.5,
+      "requiredResourcesReady": 3945.800000011921,
+      "compile": {
+        "startTime": 3945.800000011921,
+        "duration": 1025.699999988079
+      },
+      "firstCompleteSubmittedFrame": 5022.800000011921,
+      "loaderHidden": 5025.0999999940395,
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 21
+        },
+        "render": {
+          "frame": 58,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "passed": true
+    },
+    "idleFiveSeconds": {
+      "before": 210,
+      "after": 210,
+      "recurringFrames": 0,
+      "passed": true
+    },
+    "cameraPreset": {
+      "before": 210,
+      "after": 229,
+      "passed": true
+    },
+    "autoRotate": {
+      "before": 229,
+      "whileEnabled": 626,
+      "settled": 876,
+      "idle": 876,
+      "passed": true
+    },
+    "orbitDrag": {
+      "firstInteraction": 22400.30000001192,
+      "settled": 1562,
+      "idle": 1562,
+      "passed": true
+    },
+    "languageSwitch": {
+      "panoramaLabel": "4-Wall Panorama",
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        }
+      },
+      "passed": true
+    },
+    "liverySwitch": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 3
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 63,
+          "textures": 44
+        },
+        "render": {
+          "frame": 1614,
+          "calls": 60,
+          "triangles": 237872,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "passed": true
+    },
+    "reducedMotion": {
+      "before": 1626,
+      "settled": 1661,
+      "idle": 1661,
+      "passed": true
+    },
+    "contextRestore": {
+      "supported": true,
+      "passed": true
+    },
+    "routeCycles": {
+      "items": [
+        {
+          "cycle": 1,
+          "cache": {
+            "car": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            },
+            "studio": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            }
+          },
+          "renderer": {
+            "memory": {
+              "geometries": 61,
+              "textures": 21
+            },
+            "render": {
+              "frame": 40,
+              "calls": 49,
+              "triangles": 237840,
+              "points": 0,
+              "lines": 0
+            },
+            "programs": 24
+          },
+          "passed": true
+        },
+        {
+          "cycle": 2,
+          "cache": {
+            "car": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            },
+            "studio": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            }
+          },
+          "renderer": {
+            "memory": {
+              "geometries": 61,
+              "textures": 21
+            },
+            "render": {
+              "frame": 46,
+              "calls": 49,
+              "triangles": 237840,
+              "points": 0,
+              "lines": 0
+            },
+            "programs": 24
+          },
+          "passed": true
+        },
+        {
+          "cycle": 3,
+          "cache": {
+            "car": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            },
+            "studio": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            }
+          },
+          "renderer": {
+            "memory": {
+              "geometries": 61,
+              "textures": 21
+            },
+            "render": {
+              "frame": 46,
+              "calls": 49,
+              "triangles": 237840,
+              "points": 0,
+              "lines": 0
+            },
+            "programs": 24
+          },
+          "passed": true
+        },
+        {
+          "cycle": 4,
+          "cache": {
+            "car": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            },
+            "studio": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            }
+          },
+          "renderer": {
+            "memory": {
+              "geometries": 61,
+              "textures": 21
+            },
+            "render": {
+              "frame": 40,
+              "calls": 49,
+              "triangles": 237840,
+              "points": 0,
+              "lines": 0
+            },
+            "programs": 24
+          },
+          "passed": true
+        },
+        {
+          "cycle": 5,
+          "cache": {
+            "car": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            },
+            "studio": {
+              "entries": 1,
+              "referencedEntries": 1,
+              "totalReferences": 1,
+              "pendingDisposals": 0,
+              "inactiveOrderLength": 0,
+              "hits": 0,
+              "misses": 1
+            }
+          },
+          "renderer": {
+            "memory": {
+              "geometries": 61,
+              "textures": 21
+            },
+            "render": {
+              "frame": 40,
+              "calls": 49,
+              "triangles": 237840,
+              "points": 0,
+              "lines": 0
+            },
+            "programs": 24
+          },
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  },
+  "passed": true
+}

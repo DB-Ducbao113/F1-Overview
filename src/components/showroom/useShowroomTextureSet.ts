@@ -36,6 +36,7 @@ export const useShowroomTextureSet = (
     if (existing) {
       effectHandle = existing;
       pendingHandleRef.current = existing;
+      performance.mark(`showroom:${namespace}:textures-ready`);
       setHandle(existing);
       return () => {
         cancelled = true;
@@ -76,6 +77,7 @@ export const useShowroomTextureSet = (
           start: `showroom:${namespace}:texture-generation:start`,
           end: `showroom:${namespace}:texture-generation:end`,
         });
+        performance.mark(`showroom:${namespace}:textures-ready`);
         if (cancelled) acquired.release();
         else {
           pendingHandleRef.current = acquired;

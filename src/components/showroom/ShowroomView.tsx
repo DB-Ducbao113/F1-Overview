@@ -211,6 +211,11 @@ export const ShowroomView: React.FC = () => {
   const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
   const [contextRevision, setContextRevision] = useState(0);
   const [usableSceneKey, setUsableSceneKey] = useState<string | null>(null);
+  const [readySceneParts, setReadySceneParts] = useState<{
+    key: string;
+    car: boolean;
+    studio: boolean;
+  }>({ key: '', car: false, studio: false });
 
   // ── M3B.3: on route unmount, dispose every cached procedural texture. ──
   // The Showroom is the only consumer; when it unmounts the WebGL context is
@@ -249,11 +254,29 @@ export const ShowroomView: React.FC = () => {
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
   const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
   const isSceneUsable = usableSceneKey === startupSceneKey;
+  const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
+  const isStudioReady = readySceneParts.key === startupSceneKey && readySceneParts.studio;
   const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}`;
+
+  useEffect(() => {
+    if (isSceneUsable) performance.mark('showroom:loader-hidden');
+  }, [isSceneUsable]);
 
   const handleWebGLContextStateChange = useCallback((isLost: boolean) => {
     setIsWebGLContextLost(isLost);
     if (!isLost) setContextRevision((revision) => revision + 1);
+  }, []);
+
+  const handleScenePartReady = useCallback((sceneKey: string, part: 'car' | 'studio') => {
+    setReadySceneParts((current) => {
+      const next =
+        current.key === sceneKey
+          ? { ...current, [part]: true }
+          : { key: sceneKey, car: part === 'car', studio: part === 'studio' };
+      return current.key === next.key && current.car === next.car && current.studio === next.studio
+        ? current
+        : next;
+    });
   }, []);
 
   const handleToggleHotspots = useCallback(() => {
@@ -458,10 +481,17 @@ export const ShowroomView: React.FC = () => {
             <ShowroomStartupCoordinator
               sceneKey={startupSceneKey}
               active={isCanvasActive}
+              carReady={isCarReady}
+              studioReady={isStudioReady}
               onFirstUsableFrame={setUsableSceneKey}
             />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage teamId={selectedTeamId} lang={lang} />
+            <StudioW15Stage
+              teamId={selectedTeamId}
+              lang={lang}
+              readinessKey={startupSceneKey}
+              onScenePartReady={handleScenePartReady}
+            />
 
             {/* F1 3D Car Model with Suspense Loading HUD */}
             <Suspense fallback={null}>
@@ -471,6 +501,8 @@ export const ShowroomView: React.FC = () => {
                 onSelectHotspot={handleSelectHotspot}
                 lang={lang}
                 showHotspots={showHotspots}
+                readinessKey={startupSceneKey}
+                onScenePartReady={handleScenePartReady}
               />
             </Suspense>
 

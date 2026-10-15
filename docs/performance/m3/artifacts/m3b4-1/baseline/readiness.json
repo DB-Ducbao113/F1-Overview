@@ -1,0 +1,572 @@
+[
+  {
+    "label": "baseline",
+    "profile": "desktop",
+    "run": 1,
+    "elapsedWallMs": 11341,
+    "firstDraw": 2824,
+    "firstDrawAfterResources": 7020.4000000059605,
+    "firstCompleteSubmittedFrame": 10710.799999982119,
+    "drawElements": 2121,
+    "drawArrays": 90,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 6966.5999999940395,
+    "studioReady": 3021.699999988079,
+    "allTexturesReady": 6966.5999999940395,
+    "compileStart": 7003,
+    "shaderCompilationComplete": 10705.699999988079,
+    "loaderHidden": 10737.699999988079,
+    "firstInteraction": 10828.5,
+    "interactionResponseMs": 54.900000005960464,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 21
+      },
+      "render": {
+        "frame": 142,
+        "calls": 55,
+        "triangles": 237862,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "desktop",
+    "run": 2,
+    "elapsedWallMs": 9657,
+    "firstDraw": 2307.300000011921,
+    "firstDrawAfterResources": 5930.200000017881,
+    "firstCompleteSubmittedFrame": 9073.90000000596,
+    "drawElements": 2135,
+    "drawArrays": 90,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 5914.700000017881,
+    "studioReady": 2625.300000011921,
+    "allTexturesReady": 5914.700000017881,
+    "compileStart": 5918,
+    "shaderCompilationComplete": 9069.40000000596,
+    "loaderHidden": 9102.09999999404,
+    "firstInteraction": 9147.700000017881,
+    "interactionResponseMs": 43.20000001788139,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 21
+      },
+      "render": {
+        "frame": 142,
+        "calls": 55,
+        "triangles": 237862,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "desktop",
+    "run": 3,
+    "elapsedWallMs": 8290,
+    "firstDraw": 1661.9000000059605,
+    "firstDrawAfterResources": 4948.800000011921,
+    "firstCompleteSubmittedFrame": 7701.700000017881,
+    "drawElements": 2247,
+    "drawArrays": 95,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 4928.9000000059605,
+    "studioReady": 1791.300000011921,
+    "allTexturesReady": 4928.9000000059605,
+    "compileStart": 4936.4000000059605,
+    "shaderCompilationComplete": 7701.200000017881,
+    "loaderHidden": 7755.200000017881,
+    "firstInteraction": 7781.200000017881,
+    "interactionResponseMs": 24,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 21
+      },
+      "render": {
+        "frame": 149,
+        "calls": 55,
+        "triangles": 237862,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "desktop",
+    "run": 4,
+    "elapsedWallMs": 8574,
+    "firstDraw": 1775.4000000059605,
+    "firstDrawAfterResources": 4828.800000011921,
+    "firstCompleteSubmittedFrame": 7993.699999988079,
+    "drawElements": 2294,
+    "drawArrays": 100,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 4795.5999999940395,
+    "studioReady": 1894.199999988079,
+    "allTexturesReady": 4795.5999999940395,
+    "compileStart": 4816.4000000059605,
+    "shaderCompilationComplete": 7994.199999988079,
+    "loaderHidden": 8031.0999999940395,
+    "firstInteraction": 8062.5999999940395,
+    "interactionResponseMs": 29.5,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 21
+      },
+      "render": {
+        "frame": 151,
+        "calls": 55,
+        "triangles": 237862,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "desktop",
+    "run": 5,
+    "elapsedWallMs": 8032,
+    "firstDraw": 1793,
+    "firstDrawAfterResources": 4847.799999982119,
+    "firstCompleteSubmittedFrame": 7470.0999999940395,
+    "drawElements": 2056,
+    "drawArrays": 90,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 4810.4000000059605,
+    "studioReady": 1908.699999988079,
+    "allTexturesReady": 4810.4000000059605,
+    "compileStart": 4830.5,
+    "shaderCompilationComplete": 7464.299999982119,
+    "loaderHidden": 7492.9000000059605,
+    "firstInteraction": 7525.0999999940395,
+    "interactionResponseMs": 29.80000001192093,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 21
+      },
+      "render": {
+        "frame": 137,
+        "calls": 55,
+        "triangles": 237862,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "mobile",
+    "run": 1,
+    "elapsedWallMs": 14171,
+    "firstDraw": 3009.7999999821186,
+    "firstDrawAfterResources": 10080.399999976158,
+    "firstCompleteSubmittedFrame": 13126.299999982119,
+    "drawElements": 1431,
+    "drawArrays": 70,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 9966.299999982119,
+    "studioReady": 4269.299999982119,
+    "allTexturesReady": 9966.299999982119,
+    "compileStart": 9994.299999982119,
+    "shaderCompilationComplete": 13129,
+    "loaderHidden": 13306.899999976158,
+    "firstInteraction": 13635.5,
+    "interactionResponseMs": 209.60000002384186,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 20
+      },
+      "render": {
+        "frame": 114,
+        "calls": 46,
+        "triangles": 216772,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "mobile",
+    "run": 2,
+    "elapsedWallMs": 13353,
+    "firstDraw": 3072,
+    "firstDrawAfterResources": 8163.9000000059605,
+    "firstCompleteSubmittedFrame": 11727.199999988079,
+    "drawElements": 1745,
+    "drawArrays": 85,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 8053.9000000059605,
+    "studioReady": 4057.7999999821186,
+    "allTexturesReady": 8053.9000000059605,
+    "compileStart": 8073.5999999940395,
+    "shaderCompilationComplete": 11731.199999988079,
+    "loaderHidden": 12282.299999982119,
+    "firstInteraction": 12835.799999982119,
+    "interactionResponseMs": 370,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 20
+      },
+      "render": {
+        "frame": 135,
+        "calls": 46,
+        "triangles": 216772,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "mobile",
+    "run": 3,
+    "elapsedWallMs": 12540,
+    "firstDraw": 2996.0999999940395,
+    "firstDrawAfterResources": 8563.800000011921,
+    "firstCompleteSubmittedFrame": 11315.200000017881,
+    "drawElements": 2876,
+    "drawArrays": 145,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 8446.59999999404,
+    "studioReady": 3903,
+    "allTexturesReady": 8446.59999999404,
+    "compileStart": 8472.40000000596,
+    "shaderCompilationComplete": 11318.90000000596,
+    "loaderHidden": 11492,
+    "firstInteraction": 12009.09999999404,
+    "interactionResponseMs": 419.5,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 20
+      },
+      "render": {
+        "frame": 219,
+        "calls": 46,
+        "triangles": 216772,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "mobile",
+    "run": 4,
+    "elapsedWallMs": 10886,
+    "firstDraw": 2557.7999999821186,
+    "firstDrawAfterResources": 7212.799999982119,
+    "firstCompleteSubmittedFrame": 9654.299999982119,
+    "drawElements": 2025,
+    "drawArrays": 100,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 7113.0999999940395,
+    "studioReady": 3377.199999988079,
+    "allTexturesReady": 7113.0999999940395,
+    "compileStart": 7128.299999982119,
+    "shaderCompilationComplete": 9656.40000000596,
+    "loaderHidden": 9833.40000000596,
+    "firstInteraction": 10367.799999982119,
+    "interactionResponseMs": 427.39999997615814,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 20
+      },
+      "render": {
+        "frame": 156,
+        "calls": 46,
+        "triangles": 216772,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  },
+  {
+    "label": "baseline",
+    "profile": "mobile",
+    "run": 5,
+    "elapsedWallMs": 11009,
+    "firstDraw": 2891.800000011921,
+    "firstDrawAfterResources": 7402,
+    "firstCompleteSubmittedFrame": 9882,
+    "drawElements": 2213,
+    "drawArrays": 110,
+    "texImageCalls": 14,
+    "compileShaderCalls": 50,
+    "linkProgramCalls": 25,
+    "completionScheduled": true,
+    "carReady": 7314.800000011921,
+    "studioReady": 3696.300000011921,
+    "allTexturesReady": 7314.800000011921,
+    "compileStart": 7328.600000023842,
+    "shaderCompilationComplete": 9884.200000017881,
+    "loaderHidden": 10049.800000011921,
+    "firstInteraction": 10479.700000017881,
+    "interactionResponseMs": 313.7000000178814,
+    "renderer": {
+      "memory": {
+        "geometries": 61,
+        "textures": 20
+      },
+      "render": {
+        "frame": 170,
+        "calls": 46,
+        "triangles": 216772,
+        "points": 0,
+        "lines": 0
+      },
+      "programs": 25
+    },
+    "cache": {
+      "car": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      },
+      "studio": {
+        "entries": 1,
+        "referencedEntries": 1,
+        "totalReferences": 1,
+        "pendingDisposals": 0,
+        "inactiveOrderLength": 0,
+        "hits": 0,
+        "misses": 1
+      }
+    }
+  }
+]

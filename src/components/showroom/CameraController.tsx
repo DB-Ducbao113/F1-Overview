@@ -109,6 +109,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     const { camera, invalidate } = useThree();
     const controlsRef = useRef<OrbitControlsImpl>(null);
     const isInteracting = useRef(false);
+    const firstInteractionMarked = useRef(false);
     const dampingUntil = useRef(0);
 
     const desiredPos = useRef(DEFAULT_POS.clone());
@@ -158,6 +159,11 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     useFrame((_, delta) => {
       if (!controlsRef.current) return;
       if (!startupReady) return;
+
+      if (isInteracting.current && !firstInteractionMarked.current) {
+        firstInteractionMarked.current = true;
+        performance.mark('showroom:first-camera-interaction');
+      }
 
       if (isTransitioning.current) {
         const factor = Math.min(delta * 3.5, 1);

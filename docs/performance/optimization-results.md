@@ -334,3 +334,22 @@ Idle with auto-rotation off remains at zero RAF callbacks and zero WebGL draws f
 The stricter complete-frame readiness gate increases the measured first-usable proxy from about 4,301 to 7,223 ms desktop and 5,820 to 9,384 ms mobile. Both absolute TBT targets also remain unmet. M3B.4 is therefore **NO-GO for Production** despite the verified reduction in blocking work. Full evidence, experiments, risks and rollback are in [`m3/m3b4-results.md`](m3/m3b4-results.md), with raw reports in [`m3/artifacts/m3b4/`](m3/artifacts/m3b4/).
 
 Local validation passes: ESLint, Prettier, 33 test files / 246 tests, coverage (63.2% statements), and production build/bundle budget. The Showroom chunk is 93.62 KiB gzip and `vendor-three` remains 249.28 KiB gzip. Implementation SHA `fb1184918df6e5e5e673c00956aaddc2ef0a6466` passed [CI 38718226381](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718226381), Vercel reported the matching Preview Ready, and [Preview Smoke 38718313823](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718313823) passed target validation with k6/live smoke explicitly skipped.
+
+## M3B.4.1 result — Showroom startup readiness hotfix
+
+M3B.4.1 removes the startup race in which React Three Fiber's automatic render ran after `compileAsync` began and forced the same full scene through a competing synchronous render path. The startup coordinator now owns the render pass, waits for explicit committed car/studio texture and material readiness, skips competing draws during compilation, submits one complete frame and only then clears the loader. Demand rendering and every visual resource remain unchanged.
+
+Five cold readiness runs reduced median loader removal from 8,031 to 4,940 ms desktop and 11,492 to 7,335 ms on 4x CPU-throttled mobile. Median first successful interaction improved from 8,063 to 4,976 ms desktop and 12,009 to 7,586 ms mobile.
+
+The fixed-build alternating five-run Lighthouse comparison also preserved and improved M3B.4's blocking-work result:
+
+| Profile | Metric      |     M3B.4 |   M3B.4.1 |         Change |
+| ------- | ----------- | --------: | --------: | -------------: |
+| Desktop | TBT         |  2,137 ms |  1,870 ms |         -12.5% |
+| Desktop | Main thread |  5,210 ms |  4,177 ms |         -19.8% |
+| Desktop | LCP         |  2,848 ms |  2,846 ms |          -2 ms |
+| Mobile  | TBT         | 12,160 ms |  9,229 ms |         -24.1% |
+| Mobile  | Main thread | 19,461 ms | 14,510 ms |         -25.4% |
+| Mobile  | LCP         | 16,477 ms | 16,560 ms | +83 ms / +0.5% |
+
+Executed browser QA passed the complete readiness order, settled zero-draw idle, camera/preset/auto-rotation, livery, language, live reduced motion, WebGL restore and five route enter/exit cycles. Same-state captures at 390, 768, 1280, 1440 and 1920 px were pixel-identical with zero overflow. Full measurements, raw reports, screenshots, exact files and rollback are in [`m3/m3b4-1-startup-hotfix.md`](m3/m3b4-1-startup-hotfix.md).

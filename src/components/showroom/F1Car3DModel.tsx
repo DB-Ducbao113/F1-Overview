@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect, useCallback } from 'react';
+import React, { useRef, useMemo, useEffect, useLayoutEffect, useCallback } from 'react';
 import { useGLTF, Html } from '@react-three/drei';
 import { useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -26,6 +26,8 @@ interface F1Car3DModelProps {
   onSelectHotspot: (hotspot: HotspotItem) => void;
   lang: 'vi' | 'en';
   showHotspots?: boolean;
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
 }
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
@@ -48,10 +50,12 @@ const CAR_SLOTS = [
 // ── Realistic C42 Formula 1 GLB Model with Photorealistic PBR Livery ──
 const RealF1CarMesh: React.FC<{
   teamId: TeamId;
-}> = ({ teamId }) => {
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
+}> = ({ teamId, readinessKey, onScenePartReady }) => {
   const { scene } = useGLTF('/models/c42.v2.glb');
   const invalidate = useThree((state) => state.invalidate);
-  const livery = getTeam3DLivery(teamId);
+  const livery = useMemo(() => getTeam3DLivery(teamId), [teamId]);
   const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
 
   // Clone scene hierarchy (no procedural vertex deformation).
@@ -76,9 +80,16 @@ const RealF1CarMesh: React.FC<{
   // Keep references to original pristine GLTF materials (so tire textures stay sharp)
   const originalMaterialsRef = useRef<Map<string, any>>(new Map());
   const activeMaterialsRef = useRef<THREE.Material[]>([]);
+  const readinessKeyRef = useRef(readinessKey);
+  const onScenePartReadyRef = useRef(onScenePartReady);
 
-  // Capture original materials on initial scene load
-  useEffect(() => {
+  useLayoutEffect(() => {
+    readinessKeyRef.current = readinessKey;
+    onScenePartReadyRef.current = onScenePartReady;
+  }, [onScenePartReady, readinessKey]);
+
+  // Capture originals before the later layout effect replaces materials.
+  useLayoutEffect(() => {
     if (!scene) return;
     scene.traverse((child: any) => {
       if (child.isMesh && child.material) {
@@ -137,8 +148,9 @@ const RealF1CarMesh: React.FC<{
   const haloTex = cachedTextures?.get('halo');
   const wheelTex = cachedTextures?.get('wheel');
 
-  // Apply authentic team livery & sponsor graphics directly to the 3D car mesh
-  useEffect(() => {
+  // Apply all required livery materials before R3F can submit the car's first
+  // frame. This also makes the explicit readiness signal truthful.
+  useLayoutEffect(() => {
     if (
       !clonedScene ||
       !noseTex ||
@@ -152,6 +164,8 @@ const RealF1CarMesh: React.FC<{
       !wheelTex
     )
       return;
+
+    performance.mark('showroom:car:material-application:start');
 
     // Dispose old dynamic materials to prevent WebGL memory leaks
     activeMaterialsRef.current.forEach((m) => m.dispose());
@@ -303,6 +317,12 @@ const RealF1CarMesh: React.FC<{
       }
     });
 
+    performance.mark('showroom:car:material-application:end');
+    performance.measure('showroom:car:material-application', {
+      start: 'showroom:car:material-application:start',
+      end: 'showroom:car:material-application:end',
+    });
+    onScenePartReadyRef.current(readinessKeyRef.current, 'car');
     invalidate();
 
     return () => {
@@ -326,6 +346,14 @@ const RealF1CarMesh: React.FC<{
     invalidate,
   ]);
 
+  // Language changes create a new startup key while the car's textures and
+  // materials remain valid. Re-announce readiness without rebuilding them.
+  useEffect(() => {
+    if (cachedTextures && activeMaterialsRef.current.length > 0) {
+      onScenePartReady(readinessKey, 'car');
+    }
+  }, [cachedTextures, onScenePartReady, readinessKey]);
+
   // Acquisition completes after commit. Keep the cloned GLB out of the R3F
   // scene graph for that empty pass so Three.js initializes it only once.
   if (!cachedTextures) return null;
@@ -348,11 +376,17 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   onSelectHotspot,
   lang,
   showHotspots = false,
+  readinessKey,
+  onScenePartReady,
 }) => {
   return (
     <group position={[0, 0, 0]}>
       {/* Photorealistic Formula 1 Car with direct UV-mapped liveries & PBR materials */}
-      <RealF1CarMesh teamId={teamId} />
+      <RealF1CarMesh
+        teamId={teamId}
+        readinessKey={readinessKey}
+        onScenePartReady={onScenePartReady}
+      />
 
       {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}
       {(showHotspots || activeHotspot !== null) &&

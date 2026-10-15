@@ -1,0 +1,496 @@
+{
+  "chrome": "155",
+  "lighthouse": "13.0.3",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline",
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline",
+    "baseline",
+    "candidate"
+  ],
+  "rows": [
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "run": 1,
+      "score": 46,
+      "fcpMs": 586,
+      "lcpMs": 2857,
+      "tbtMs": 2121,
+      "cls": 0.0023,
+      "mainThreadMs": 5127,
+      "longestTaskMs": 954,
+      "transferBytes": 2996962,
+      "requests": 26
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "run": 1,
+      "score": 46,
+      "fcpMs": 582,
+      "lcpMs": 2846,
+      "tbtMs": 1697,
+      "cls": 0.0023,
+      "mainThreadMs": 4177,
+      "longestTaskMs": 710,
+      "transferBytes": 2997625,
+      "requests": 26
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "run": 2,
+      "score": 47,
+      "fcpMs": 583,
+      "lcpMs": 2866,
+      "tbtMs": 3171,
+      "cls": 0.0023,
+      "mainThreadMs": 4452,
+      "longestTaskMs": 1833,
+      "transferBytes": 2997625,
+      "requests": 26
+    },
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "run": 2,
+      "score": 46,
+      "fcpMs": 584,
+      "lcpMs": 2848,
+      "tbtMs": 2095,
+      "cls": 0.0023,
+      "mainThreadMs": 5099,
+      "longestTaskMs": 967,
+      "transferBytes": 2996962,
+      "requests": 26
+    },
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "run": 3,
+      "score": 45,
+      "fcpMs": 581,
+      "lcpMs": 2848,
+      "tbtMs": 3699,
+      "cls": 0.0023,
+      "mainThreadMs": 6472,
+      "longestTaskMs": 1881,
+      "transferBytes": 2996962,
+      "requests": 26
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "run": 3,
+      "score": 46,
+      "fcpMs": 582,
+      "lcpMs": 2849,
+      "tbtMs": 1870,
+      "cls": 0.0023,
+      "mainThreadMs": 4458,
+      "longestTaskMs": 863,
+      "transferBytes": 2997625,
+      "requests": 26
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "run": 4,
+      "score": 47,
+      "fcpMs": 580,
+      "lcpMs": 2843,
+      "tbtMs": 2326,
+      "cls": 0.0023,
+      "mainThreadMs": 4040,
+      "longestTaskMs": 1466,
+      "transferBytes": 2997625,
+      "requests": 26
+    },
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "run": 4,
+      "score": 46,
+      "fcpMs": 579,
+      "lcpMs": 2839,
+      "tbtMs": 2137,
+      "cls": 0.0023,
+      "mainThreadMs": 5210,
+      "longestTaskMs": 1025,
+      "transferBytes": 2996962,
+      "requests": 26
+    },
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "run": 5,
+      "score": 45,
+      "fcpMs": 580,
+      "lcpMs": 2844,
+      "tbtMs": 2156,
+      "cls": 0.0023,
+      "mainThreadMs": 5285,
+      "longestTaskMs": 1069,
+      "transferBytes": 2996962,
+      "requests": 26
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "run": 5,
+      "score": 46,
+      "fcpMs": 580,
+      "lcpMs": 2840,
+      "tbtMs": 1630,
+      "cls": 0.0023,
+      "mainThreadMs": 4066,
+      "longestTaskMs": 719,
+      "transferBytes": 2997625,
+      "requests": 26
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "run": 1,
+      "score": 33,
+      "fcpMs": 2900,
+      "lcpMs": 16477,
+      "tbtMs": 12160,
+      "cls": 0.0001,
+      "mainThreadMs": 19365,
+      "longestTaskMs": 7181,
+      "transferBytes": 3008680,
+      "requests": 27
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "run": 1,
+      "score": 33,
+      "fcpMs": 2905,
+      "lcpMs": 16565,
+      "tbtMs": 9395,
+      "cls": 0.0001,
+      "mainThreadMs": 14590,
+      "longestTaskMs": 5487,
+      "transferBytes": 3009343,
+      "requests": 27
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "run": 2,
+      "score": 33,
+      "fcpMs": 2906,
+      "lcpMs": 16564,
+      "tbtMs": 9096,
+      "cls": 0.0001,
+      "mainThreadMs": 14244,
+      "longestTaskMs": 5622,
+      "transferBytes": 3009343,
+      "requests": 27
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "run": 2,
+      "score": 33,
+      "fcpMs": 2907,
+      "lcpMs": 16477,
+      "tbtMs": 12142,
+      "cls": 0.0001,
+      "mainThreadMs": 19461,
+      "longestTaskMs": 7100,
+      "transferBytes": 3008680,
+      "requests": 27
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "run": 3,
+      "score": 33,
+      "fcpMs": 2905,
+      "lcpMs": 16412,
+      "tbtMs": 12156,
+      "cls": 0.0001,
+      "mainThreadMs": 19484,
+      "longestTaskMs": 7022,
+      "transferBytes": 3008680,
+      "requests": 27
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "run": 3,
+      "score": 33,
+      "fcpMs": 2899,
+      "lcpMs": 16551,
+      "tbtMs": 9227,
+      "cls": 0.0001,
+      "mainThreadMs": 14510,
+      "longestTaskMs": 5688,
+      "transferBytes": 3009343,
+      "requests": 27
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "run": 4,
+      "score": 33,
+      "fcpMs": 2903,
+      "lcpMs": 16560,
+      "tbtMs": 9229,
+      "cls": 0.0001,
+      "mainThreadMs": 14469,
+      "longestTaskMs": 5680,
+      "transferBytes": 3009343,
+      "requests": 27
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "run": 4,
+      "score": 33,
+      "fcpMs": 2899,
+      "lcpMs": 16464,
+      "tbtMs": 12294,
+      "cls": 0.0001,
+      "mainThreadMs": 19777,
+      "longestTaskMs": 7042,
+      "transferBytes": 3008680,
+      "requests": 27
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "run": 5,
+      "score": 33,
+      "fcpMs": 2902,
+      "lcpMs": 16478,
+      "tbtMs": 12260,
+      "cls": 0.0001,
+      "mainThreadMs": 19456,
+      "longestTaskMs": 7267,
+      "transferBytes": 3008680,
+      "requests": 27
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "run": 5,
+      "score": 33,
+      "fcpMs": 2903,
+      "lcpMs": 16470,
+      "tbtMs": 9363,
+      "cls": 0.0001,
+      "mainThreadMs": 14711,
+      "longestTaskMs": 5566,
+      "transferBytes": 3009343,
+      "requests": 27
+    }
+  ],
+  "medians": [
+    {
+      "variant": "baseline",
+      "profile": "desktop",
+      "score": 46,
+      "scoreSpread": {
+        "min": 45,
+        "max": 46
+      },
+      "fcpMs": 581,
+      "fcpMsSpread": {
+        "min": 579,
+        "max": 586
+      },
+      "lcpMs": 2848,
+      "lcpMsSpread": {
+        "min": 2839,
+        "max": 2857
+      },
+      "tbtMs": 2137,
+      "tbtMsSpread": {
+        "min": 2095,
+        "max": 3699
+      },
+      "cls": 0.0023,
+      "clsSpread": {
+        "min": 0.0023,
+        "max": 0.0023
+      },
+      "mainThreadMs": 5210,
+      "mainThreadMsSpread": {
+        "min": 5099,
+        "max": 6472
+      },
+      "longestTaskMs": 1025,
+      "longestTaskMsSpread": {
+        "min": 954,
+        "max": 1881
+      },
+      "transferBytes": 2996962,
+      "transferBytesSpread": {
+        "min": 2996962,
+        "max": 2996962
+      },
+      "requests": 26,
+      "requestsSpread": {
+        "min": 26,
+        "max": 26
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "desktop",
+      "score": 46,
+      "scoreSpread": {
+        "min": 46,
+        "max": 47
+      },
+      "fcpMs": 582,
+      "fcpMsSpread": {
+        "min": 580,
+        "max": 583
+      },
+      "lcpMs": 2846,
+      "lcpMsSpread": {
+        "min": 2840,
+        "max": 2866
+      },
+      "tbtMs": 1870,
+      "tbtMsSpread": {
+        "min": 1630,
+        "max": 3171
+      },
+      "cls": 0.0023,
+      "clsSpread": {
+        "min": 0.0023,
+        "max": 0.0023
+      },
+      "mainThreadMs": 4177,
+      "mainThreadMsSpread": {
+        "min": 4040,
+        "max": 4458
+      },
+      "longestTaskMs": 863,
+      "longestTaskMsSpread": {
+        "min": 710,
+        "max": 1833
+      },
+      "transferBytes": 2997625,
+      "transferBytesSpread": {
+        "min": 2997625,
+        "max": 2997625
+      },
+      "requests": 26,
+      "requestsSpread": {
+        "min": 26,
+        "max": 26
+      }
+    },
+    {
+      "variant": "baseline",
+      "profile": "mobile",
+      "score": 33,
+      "scoreSpread": {
+        "min": 33,
+        "max": 33
+      },
+      "fcpMs": 2902,
+      "fcpMsSpread": {
+        "min": 2899,
+        "max": 2907
+      },
+      "lcpMs": 16477,
+      "lcpMsSpread": {
+        "min": 16412,
+        "max": 16478
+      },
+      "tbtMs": 12160,
+      "tbtMsSpread": {
+        "min": 12142,
+        "max": 12294
+      },
+      "cls": 0.0001,
+      "clsSpread": {
+        "min": 0.0001,
+        "max": 0.0001
+      },
+      "mainThreadMs": 19461,
+      "mainThreadMsSpread": {
+        "min": 19365,
+        "max": 19777
+      },
+      "longestTaskMs": 7100,
+      "longestTaskMsSpread": {
+        "min": 7022,
+        "max": 7267
+      },
+      "transferBytes": 3008680,
+      "transferBytesSpread": {
+        "min": 3008680,
+        "max": 3008680
+      },
+      "requests": 27,
+      "requestsSpread": {
+        "min": 27,
+        "max": 27
+      }
+    },
+    {
+      "variant": "candidate",
+      "profile": "mobile",
+      "score": 33,
+      "scoreSpread": {
+        "min": 33,
+        "max": 33
+      },
+      "fcpMs": 2903,
+      "fcpMsSpread": {
+        "min": 2899,
+        "max": 2906
+      },
+      "lcpMs": 16560,
+      "lcpMsSpread": {
+        "min": 16470,
+        "max": 16565
+      },
+      "tbtMs": 9229,
+      "tbtMsSpread": {
+        "min": 9096,
+        "max": 9395
+      },
+      "cls": 0.0001,
+      "clsSpread": {
+        "min": 0.0001,
+        "max": 0.0001
+      },
+      "mainThreadMs": 14510,
+      "mainThreadMsSpread": {
+        "min": 14244,
+        "max": 14711
+      },
+      "longestTaskMs": 5622,
+      "longestTaskMsSpread": {
+        "min": 5487,
+        "max": 5688
+      },
+      "transferBytes": 3009343,
+      "transferBytesSpread": {
+        "min": 3009343,
+        "max": 3009343
+      },
+      "requests": 27,
+      "requestsSpread": {
+        "min": 27,
+        "max": 27
+      }
+    }
+  ]
+}

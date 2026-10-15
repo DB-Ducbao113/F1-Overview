@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { STUDIO_TEXTURE_REVISION } from './showroomTextureCache';
@@ -38,6 +38,8 @@ const StudioReflectorFloor = React.memo(() => (
 interface StudioW15StageProps {
   teamId: TeamId;
   lang?: 'vi' | 'en';
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
 }
 
 /**
@@ -51,7 +53,12 @@ interface StudioW15StageProps {
  * 5. 4 Sealed Corners (NW, NE, SW, SE): Chamfered architectural columns with floor-to-ceiling LED light pillars
  * 6. High-Fidelity Mirror Floor: Reflects the car, podium outline, and all 4 thematic exhibition walls in 360°
  */
-export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = 'vi' }) => {
+export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
+  teamId,
+  lang = 'vi',
+  readinessKey,
+  onScenePartReady,
+}) => {
   const invalidate = useThree((state) => state.invalidate);
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
 
@@ -91,9 +98,21 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
   const westTexture = backdropTextures?.get('west');
   const eastTexture = backdropTextures?.get('east');
 
-  useEffect(() => {
-    if (backdropTextures) invalidate();
-  }, [backdropTextures, eastTexture, invalidate, northTexture, southTexture, westTexture]);
+  useLayoutEffect(() => {
+    if (backdropTextures) {
+      onScenePartReady(readinessKey, 'studio');
+      invalidate();
+    }
+  }, [
+    backdropTextures,
+    eastTexture,
+    invalidate,
+    northTexture,
+    onScenePartReady,
+    readinessKey,
+    southTexture,
+    westTexture,
+  ]);
 
   // Lightened studio so near-black carbon (suspension/diffuser/wings) keeps silhouette.
   // Was '#0b0d12' walls + '#07080c' floor — black parts dissolved into background.
