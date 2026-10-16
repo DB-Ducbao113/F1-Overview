@@ -257,3 +257,20 @@ Release 2 recommendation: **GO for merge into main on explicit user
 approval**. Full report, regression matrix, and rollback plan are in
 docs/performance/release-2-*.md. Production deploy remains a separate
 explicit step.
+
+## Release 2 RC final gate status (SHA 0a03b3d)
+
+| Gate                                               | Status                  | Evidence                                                                                                                                                                                                                                          |
+| -------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shell bundle contract (main check-showroom-bundle) | Pass                    | The branch inline Canvas made the merged CI fail on vendor-three; fixed by splitting the full Canvas subtree into a lazy-loaded ShowroomScene (Suspense). build:check passes: "Showroom shell: no static WebGL dependency", initial JS 109.9 KiB. |
+| CI on exact SHA 0a03b3d                            | Pass                    | CI run 38870263218 success; Preview Smoke run 38870375036 success (target validation; k6 smoke SKIP as designed without the bypass secret).                                                                                                       |
+| Vercel Preview                                     | Deployed, SSO-protected | podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app returns the expected 302 SSO redirect (protection intact).                                                                                                                     |
+| Post-split smoke                                   | Pass                    | Mobile 390 + desktop 1280: canvas renders via the lazy scene, orbit drag works, static idle 5 s = 0 rAF / 0 draws (M3B.1 intact through the lazy boundary).                                                                                       |
+| Paired Lighthouse vs main                          | Pass (improvement)      | Desktop TBT 5,109->2,888 ms (-43%), score 45=45; Mobile TBT 19,055->14,844 ms (-22%), score 31->34; LCP/CLS deltas inside noise. 20 raw reports under m3/artifacts/release2/lighthouse.                                                           |
+| Local gates                                        | Pass                    | format, lint, 38 files / 272 tests, coverage 63.2%, build.                                                                                                                                                                                        |
+| Known limitations                                  | Documented              | Mobile LCP ~16.6 s and TBT ~14.8 s (startup-dominated, not promised fixed); M3B.4.1 readiness-gate first-frame regression remains open.                                                                                                           |
+
+**Release 2 recommendation: GO for merge into `main` on explicit user
+approval.** Full evidence: release-2-final-report.md,
+release-2-regression-matrix.md, release-2-rollback-plan.md. Merge and any
+production deploy remain the user'\''s explicit action.
