@@ -355,3 +355,22 @@ The fixed-build alternating five-run Lighthouse comparison also preserved and im
 Executed browser QA passed the complete readiness order, settled zero-draw idle, camera/preset/auto-rotation, livery, language, live reduced motion, WebGL restore and five route enter/exit cycles. Same-state captures at 390, 768, 1280, 1440 and 1920 px were pixel-identical with zero overflow. Full measurements, raw reports, screenshots, exact files and rollback are in [`m3/m3b4-1-startup-hotfix.md`](m3/m3b4-1-startup-hotfix.md).
 
 Implementation SHA `fd586ef0990fea709a1a26e97e13f33579afdfdd` passed [CI 38729067774](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729067774), and the matching [Vercel Preview](https://podiumeffetdesol-bh6vxewia-bao-bung-bu.vercel.app) reported Ready. [Preview Smoke 38729151914](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729151914) passed target validation; k6 setup and live smoke were explicitly skipped because the protection bypass secret is absent.
+
+## M3C result � Mobile Showroom UX and responsive composition
+
+M3C redesigns the mobile Showroom composition only: on viewports up to
+1023 px the Control Dock starts collapsed and opens as a full-width bottom
+sheet, the team badge collapses to a one-line pill, and the Quick HUD gains
+safe-area padding. The desktop composition above the breakpoint is unchanged.
+No renderer, DPR, reflection, texture, or scheduling source changed.
+
+Measured with the same CDP harness before/after: control overlap over the
+car focus zone falls from 6 controls / 17,900 px2 to 0 at 390 px and from
+9,800 px2 to 0 at 768 px; document overflow stays 0 px at all nine audited
+widths (320-1920). Interaction QA passes sheet open/close, camera preset from
+the sheet, zoom, auto-rotate, and orbit drag, with a 5 s post-interaction
+idle window recording 0 rAF / 0 draws (M3B.1 demand rendering intact).
+Paired Lighthouse 5x5 against the branch HEAD build shows no material
+regression (mobile score 31->32, LCP -65 ms, TBT +141 ms inside spread;
+desktop deltas inside spread). Full details, artifacts, and rollback are in
+[`m3/m3c-results.md`](m3/m3c-results.md).

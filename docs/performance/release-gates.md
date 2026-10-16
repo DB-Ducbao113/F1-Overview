@@ -221,3 +221,22 @@ M3B.4.1 is **GO for branch review**. Merge and Production remain **NO-GO** until
 | Local gate                   | Pass                  | Lint, format, 33 files / 246 tests, build all pass at clean M3B.4.1 head.                                                                                                                                  |
 
 Decision: **no adaptive change shipped** per the acceptance rule ("if no experiment provides a meaningful performance gain without visible degradation, ship no adaptive changes and report the result"). Branch remains at the M3B.4.1 head; M3B.4.1's own open items (startup readiness regression, TBT/LCP targets) are unchanged and remain the next priority. A real-device measurement campaign is the recorded path to reopen adaptive quality later.
+
+## M3C mobile Showroom UX gate status
+
+| Gate                         | Status                 | Evidence                                                                                                                                                                |
+| ---------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Car as visual focus (mobile) | Pass                   | Overlap harness: 390px 6 controls/17,900 px2 over the car focus zone -> 0; 768px 9,800 -> 0.                                                                            |
+| All functions reachable      | Pass                   | Browser interaction script: sheet open/close, preset click from sheet, zoom, auto-rotate, orbit drag all pass.                                                          |
+| Desktop composition          | Unchanged              | 1024-1920 captures match the pre-M3C baseline set; dock/badge markup unchanged above the breakpoint.                                                                    |
+| Document overflow            | Pass                   | 0 px at all nine audited widths (320-1920).                                                                                                                             |
+| Touch targets / a11y         | Pass                   | Existing aria-labels kept; sheet is not a dialog (no focus trap); 44 px floor constant documented; safe-area inset applied to the bottom HUD.                           |
+| Reduced motion               | Pass (inherited)       | M3B.2 CSS block covers the sheet (one-shot fade-in only; no new continuous animation).                                                                                  |
+| Renderer / demand rendering  | Pass                   | Idle 5 s after full interaction sequence: 0 rAF / 0 draws; no renderer/DPR/reflection/texture/scheduling change.                                                        |
+| Paired Lighthouse 5x5        | No material regression | Mobile medians: score 31->32, LCP -65 ms, TBT +141 ms (~0.7%, inside spread), CLS +0.0001. Desktop: score -1, TBT -757 ms, all inside run spread; not claimed as gains. |
+| Local gates                  | Pass                   | Lint, format, 34 files / 251 tests, production build.                                                                                                                   |
+| CI and Preview               | Pending push           | To be recorded for the final M3C SHA after push.                                                                                                                        |
+
+Decision: **GO for branch review**. Merge remains NO-GO; Release 2 full
+verification is proposed after M3C review before merging Showroom
+optimizations to main.

@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "milestone": "M3C",
+    "capturedAt": "2026-10-16",
+    "harness": "Chrome headless (patchright), vite preview production build, CDP bounding-box overlap measurement + rAF/draw instrumentation",
+    "breakpoint": "<=1023 px width-based"
+  },
+  "viewports": {
+    "mobile320x568": { "screenshot": "m3c-final-320x568.png", "overflowPx": 0, "sheetMode": true, "badgeCompact": true, "carVisible": true },
+    "mobile375x667": { "screenshot": "m3c-final-375x667.png", "overflowPx": 0, "sheetMode": true, "carVisible": true },
+    "mobile390x844": { "screenshot": "m3c-final-390x844.png", "overflowPx": 0, "sheetMode": true, "carVisible": true, "focusZoneOverlaps": 0 },
+    "mobile430x932": { "screenshot": "m3c-final-430x932.png", "overflowPx": 0, "sheetMode": true, "carVisible": true },
+    "tablet768x1024": { "screenshot": "m3c-final-768x1024.png", "overflowPx": 0, "sheetMode": true, "carVisible": true, "focusZoneOverlaps": 0 },
+    "tablet1024x768": { "screenshot": "m3c-final-1024x768.png", "overflowPx": 0, "desktopComposition": true },
+    "desktop1280x900": { "screenshot": "m3c-final-1280x900.png", "overflowPx": 0, "desktopComposition": true, "visualDeltaVsBaseline": "none" },
+    "desktop1440x1000": { "screenshot": "m3c-final-1440x1000.png", "overflowPx": 0, "desktopComposition": true },
+    "desktop1920x1080": { "screenshot": "m3c-final-1920x1080.png", "overflowPx": 0, "desktopComposition": true }
+  },
+  "controlStates": {
+    "sheetOpen390": { "screenshot": "m3c-AFTER-sheet-open-390.png", "verified": "dock toggle opens full-width bottom sheet; presets/hotspots/autorotate/blueprint reachable" },
+    "postInteraction390": { "screenshot": "m3c-AFTER-final-390.png", "verified": "after preset click + zoom + autorotate toggle + orbit drag; idle 5s = 0 rAF / 0 draws" },
+    "hotspotBar390": { "screenshot": "m3c-final-hotspots-390.png", "verified": "hotspot selector bar below canvas unaffected" },
+    "collapsedDefault": { "verified": "dock starts collapsed on mobile; desktop unchanged expanded" }
+  },
+  "checks": {
+    "carClearlyVisible": true,
+    "noControlOverlapsCarFeatures": true,
+    "noDocumentOverflow": true,
+    "noClippedButtons": true,
+    "noHiddenHotspotControls": true,
+    "noModalBehindDock": true,
+    "noKeyboardFocusTraps": "sheet is not a dialog; no focus trap introduced",
+    "desktopCompositionUnchanged": true,
+    "safeAreaApplied": "QuickHUD wrapped with env(safe-area-inset-bottom)",
+    "reducedMotionHonored": "M3B.2 CSS block applies to sheet (uses existing one-shot animate-fade-in)"
+  },
+  "overlapAudit": {
+    "before390": { "overlappingControls": 6, "totalOverlapPx2": 17900, "rootCause": "default-expanded floating dock panel" },
+    "after390": { "overlappingControls": 0, "totalOverlapPx2": 0 },
+    "before768": { "totalOverlapPx2": 9800 },
+    "after768": { "totalOverlapPx2": 0 }
+  },
+  "interactionEvidence": {
+    "steps": ["sheet-open", "preset-click-from-sheet", "sheet-close", "zoom-in", "autorotate-toggle", "orbit-drag"],
+    "consoleErrorsReal": 0,
+    "localAnalytics404": "expected under vite preview (known local-only artifact)",
+    "idle5sAfterInteractions": { "rafCallbacks": 0, "indexedDraws": 0 }
+  }
+}

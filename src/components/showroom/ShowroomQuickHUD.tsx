@@ -62,7 +62,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
       onSelectPreset(PANO_CYCLE[nextIdx].id);
     };
     return (
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+      <div className="relative bottom-4 left-1/2 -translate-x-1/2 w-fit z-20 pointer-events-auto">
         <div className="flex items-center gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/90 shadow-2xl shadow-black/80 text-white select-none">
           {/* ── 1. Wheel Mode Segmented Toggle ── */}
           <div className="flex items-center bg-studio-900/90 rounded-xl p-1 border border-studio-800 gap-1">

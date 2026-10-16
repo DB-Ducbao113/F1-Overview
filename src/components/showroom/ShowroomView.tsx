@@ -22,6 +22,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
 import { disposeAll, getCacheStats } from './showroomTextureCache';
+import { resolveMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
@@ -252,6 +253,13 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
+
+  //M3C: resolve the mobile composition once per mount. Mobile = coarse
+  // pointer at or below 1023 px; desktop keeps the floating dock exactly as
+  // before.
+  const [mobileLayout] = useState<ReturnType<typeof resolveMobileLayout>>(() =>
+    resolveMobileLayout(typeof window === 'undefined' ? 1920 : window.innerWidth),
+  );
   const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
   const isSceneUsable = usableSceneKey === startupSceneKey;
   const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
@@ -419,16 +427,31 @@ export const ShowroomView: React.FC = () => {
 
         {/* Top Left Floating Team Badge with Official Logo */}
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
-            <div className="flex items-center gap-2">
+          <div
+            className={
+              mobileLayout.isMobileLayout
+                ? 'p-2 rounded-2xl bg-studio-950/85 border border-studio-800/80 shadow-xl flex items-center gap-1.5 max-w-[190px]'
+                : 'p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs'
+            }
+          >
+            <div className="flex items-center gap-2 min-w-0">
               <ConstructorLogo teamId={selectedTeamId} size="sm" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                {team.name} · {livery.carModelName}
+              <span
+                className={
+                  mobileLayout.isMobileLayout
+                    ? 'text-[10px] font-black uppercase tracking-wider text-white truncate'
+                    : 'text-[10px] font-black uppercase tracking-widest text-studio-400'
+                }
+              >
+                {team.name}
+                {!mobileLayout.isMobileLayout && <> · {livery.carModelName}</>}
               </span>
             </div>
-            <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
-              {team.fullName}
-            </h2>
+            {!mobileLayout.isMobileLayout && (
+              <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
+                {team.fullName}
+              </h2>
+            )}
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
               <p className="truncate">⚡ {team.powerUnit}</p>
               <p className="text-studio-400">Trụ sở: {team.base}</p>
@@ -448,6 +471,7 @@ export const ShowroomView: React.FC = () => {
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
             onOpenSchematic={() => setIsSchematicOpen(true)}
+            isMobileLayout={mobileLayout.isMobileLayout}
           />
         </div>
 
@@ -551,18 +575,20 @@ export const ShowroomView: React.FC = () => {
         )}
 
         {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
-        <ShowroomQuickHUD
-          enableWheelZoom={enableWheelZoom}
-          onToggleWheelZoom={handleToggleWheelZoom}
-          onZoom={handleZoom}
-          onResetView={handleResetView}
-          autoRotate={autoRotate}
-          onToggleAutoRotate={handleToggleAutoRotate}
-          cameraPreset={cameraPreset}
-          onSelectPreset={handleSelectPreset}
-          lang={lang}
-          onOpenSchematic={() => setIsSchematicOpen(true)}
-        />
+        <div className="absolute inset-x-0 bottom-0 pb-[env(safe-area-inset-bottom)] pointer-events-none m3c-hud-safe">
+          <ShowroomQuickHUD
+            enableWheelZoom={enableWheelZoom}
+            onToggleWheelZoom={handleToggleWheelZoom}
+            onZoom={handleZoom}
+            onResetView={handleResetView}
+            autoRotate={autoRotate}
+            onToggleAutoRotate={handleToggleAutoRotate}
+            cameraPreset={cameraPreset}
+            onSelectPreset={handleSelectPreset}
+            lang={lang}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
+          />
+        </div>
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
         <HotspotDetailsModal
