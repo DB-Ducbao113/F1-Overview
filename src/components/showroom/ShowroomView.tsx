@@ -1,15 +1,10 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
-import { F1Car3DModel } from './F1Car3DModel';
-import { CameraController, CameraPreset } from './CameraController';
-import { Showroom3DLoader } from './Showroom3DLoader';
+import type { CameraPreset } from './CameraController';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
-import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
 
@@ -24,49 +19,16 @@ import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 
+const ShowroomScene = lazy(() =>
+  import('./ShowroomScene').then((module) => ({ default: module.ShowroomScene })),
+);
+
 interface WebGLFallbackProps {
   teamName: string;
   carModelName: string;
   primaryColor: string;
   lang: 'vi' | 'en';
 }
-
-const WebGLContextGuard: React.FC<{
-  onContextStateChange: (isLost: boolean) => void;
-}> = ({ onContextStateChange }) => {
-  const { gl } = useThree();
-
-  useEffect(() => {
-    const canvas = gl.domElement;
-    const handleLost = (event: Event) => {
-      event.preventDefault();
-      onContextStateChange(true);
-    };
-    const handleRestored = () => onContextStateChange(false);
-
-    canvas.addEventListener('webglcontextlost', handleLost);
-    canvas.addEventListener('webglcontextrestored', handleRestored);
-    return () => {
-      canvas.removeEventListener('webglcontextlost', handleLost);
-      canvas.removeEventListener('webglcontextrestored', handleRestored);
-    };
-  }, [gl, onContextStateChange]);
-
-  return null;
-};
-
-const ShowroomFrameInvalidator: React.FC<{
-  active: boolean;
-  sceneRevision: string;
-}> = ({ active, sceneRevision }) => {
-  const { invalidate, size } = useThree();
-
-  useEffect(() => {
-    if (active) invalidate();
-  }, [active, invalidate, sceneRevision, size.height, size.width]);
-
-  return null;
-};
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -331,7 +293,9 @@ export const ShowroomView: React.FC = () => {
             </h2>
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
               <p className="truncate">⚡ {team.powerUnit}</p>
-              <p className="text-studio-400">Trụ sở: {team.base}</p>
+              <p className="text-studio-400">
+                {lang === 'vi' ? 'Trụ sở:' : 'Base:'} {team.base}
+              </p>
             </div>
           </div>
         </div>
@@ -362,58 +326,33 @@ export const ShowroomView: React.FC = () => {
             />
           }
         >
-          <Canvas
-            shadows
-            dpr={[1, 1.25]}
-            frameloop={isCanvasActive ? 'demand' : 'never'}
-            camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-            gl={{
-              antialias: false,
-              alpha: true,
-              powerPreference: 'high-performance',
-              toneMappingExposure: 1.2,
-            }}
-            className="w-full h-full cursor-grab active:cursor-grabbing"
+          <Suspense
+            fallback={
+              <div
+                role="status"
+                className="absolute inset-0 flex items-center justify-center bg-studio-950 text-sm text-studio-300"
+              >
+                {lang === 'vi' ? 'Đang chuẩn bị showroom 3D…' : 'Preparing the 3D showroom…'}
+              </div>
+            }
           >
-            <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
-            <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
-            {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage teamId={selectedTeamId} lang={lang} />
-
-            {/* F1 3D Car Model with Suspense Loading HUD */}
-            <Suspense fallback={<Showroom3DLoader />}>
-              <F1Car3DModel
-                teamId={selectedTeamId}
-                activeHotspot={activeHotspot}
-                onSelectHotspot={handleSelectHotspot}
-                lang={lang}
-                showHotspots={showHotspots}
-              />
-            </Suspense>
-
-            {/* Dynamic Ground Contact Shadows */}
-            <ContactShadows
-              position={[0, 0, 0]}
-              opacity={0.9}
-              scale={10}
-              blur={2.0}
-              far={4.5}
-              frames={1}
-              resolution={256}
-              color="#000000"
-            />
-
-            {/* Smooth Camera Controller & OrbitControls */}
-            <CameraController
+            <ShowroomScene
+              selectedTeamId={selectedTeamId}
+              lang={lang}
+              isCanvasActive={isCanvasActive}
+              sceneRevision={sceneRevision}
               activeHotspot={activeHotspot}
+              handleSelectHotspot={handleSelectHotspot}
+              showHotspots={showHotspots}
               cameraPreset={cameraPreset}
               presetTrigger={presetTrigger}
               autoRotate={autoRotate}
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
               zoomDirection={zoomDirection}
+              onContextStateChange={setIsWebGLContextLost}
             />
-          </Canvas>
+          </Suspense>
         </ErrorBoundary>
 
         {isWebGLContextLost && (

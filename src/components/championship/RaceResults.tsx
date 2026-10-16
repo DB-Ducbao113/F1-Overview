@@ -254,7 +254,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                     : 'bg-studio-100 text-studio-600 hover:bg-studio-200 hover:text-studio-950'
                 }`}
               >
-                <span>{getTeamDisplayName(team.teamName)}</span>
+                <span>{getTeamDisplayName(team.teamName, season)}</span>
                 {team.podiums > 0 && (
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
@@ -282,7 +282,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
           {selectedTeamFilter !== 'all' && (
             <p className="text-xs text-studio-500 mt-1 max-w-md mx-auto">
               {lang === 'vi'
-                ? `Đội ${selectedTeamFilter} chưa có chặng nào kết thúc trên bục Podium trong mùa giải ${season}. Hãy bấm vào "Xem kết quả chi tiết" ở các chặng để xem thứ hạng hoàn thành của đội.`
+                ? `Đội ${selectedTeamFilter} chưa có chặng nào kết thúc trong top 3 trong mùa giải ${season}. Hãy bấm vào "Xem kết quả chi tiết" ở các chặng để xem thứ hạng hoàn thành của đội.`
                 : `Team ${selectedTeamFilter} has not achieved podium finishes in season ${season}.`}
             </p>
           )}
@@ -362,7 +362,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {getTeamDisplayName(res.podium.p1.team)}
+                        {getTeamDisplayName(res.podium.p1.team, season)}
                       </span>
                     </div>
                   </div>
@@ -403,7 +403,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {getTeamDisplayName(res.podium.p2.team)}
+                        {getTeamDisplayName(res.podium.p2.team, season)}
                       </span>
                     </div>
                   </div>
@@ -444,7 +444,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                           ),
                         }}
                       >
-                        {getTeamDisplayName(res.podium.p3.team)}
+                        {getTeamDisplayName(res.podium.p3.team, season)}
                       </span>
                     </div>
                   </div>
@@ -566,7 +566,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                                 ),
                               }}
                             >
-                              {getTeamDisplayName(res.podium.p1.team)}
+                              {getTeamDisplayName(res.podium.p1.team, season)}
                             </span>
                             <span className="text-studio-500"> · {res.podium.p1.time}</span>
                           </span>
@@ -597,7 +597,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                             ),
                           }}
                         >
-                          {getTeamDisplayName(res.podium.p2.team)}
+                          {getTeamDisplayName(res.podium.p2.team, season)}
                         </span>
                         <span className="text-studio-500"> ({res.podium.p2.gap})</span>
                       </span>
@@ -626,7 +626,7 @@ export const RaceResults: React.FC<RaceResultsProps> = React.memo(({ season }) =
                             ),
                           }}
                         >
-                          {getTeamDisplayName(res.podium.p3.team)}
+                          {getTeamDisplayName(res.podium.p3.team, season)}
                         </span>
                         <span className="text-studio-500"> ({res.podium.p3.gap})</span>
                       </span>

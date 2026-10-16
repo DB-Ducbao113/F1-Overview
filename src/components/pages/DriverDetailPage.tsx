@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Flag, Trophy, Box, Award, Medal } from 'lucide-react';
-import { DRIVERS_DATA, getDriverCareerStats } from '../../data/drivers';
-import { TEAMS_DATA } from '../../data/teams';
+import { DRIVERS_DATA, getDriverCareerStats, getDriverNumber } from '../../data/drivers';
+import { getTeamSeasonProfile } from '../../data/teamSeasons';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
-import { SeasonYear, TeamId } from '../../types';
+import { SeasonYear } from '../../types';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamTextColor } from '../../utils/teamColors';
 
@@ -43,20 +44,10 @@ export const DriverDetailPage: React.FC = () => {
   }
 
   const season = entry?.season ?? 2026;
+  const driverNumber = driverId ? getDriverNumber(driverId, season) : undefined;
   const careerUpToSeason = getDriverCareerStats(driverId, season);
   const teamId = entry?.teamId ?? driver?.teamId ?? 'ferrari';
-  const team = TEAMS_DATA[teamId] ?? {
-    id: (teamId as TeamId) || 'ferrari',
-    name: entry?.teamName || 'Formula 1 Team',
-    fullName: entry?.teamName || 'Formula 1 Team',
-    base: 'Formula 1',
-    teamPrincipal: 'Team Principal',
-    powerUnit: 'F1 V6 Turbo Hybrid',
-    primaryColor: '#e10600',
-    accentColor: '#ffffff',
-    highlightColor: '#18181b',
-    drivers: [],
-  };
+  const teamLabel = getTeamDisplayName(teamId, season);
   const teamColor = getTeamTextColor(teamId, true);
   const name = driver?.name ?? entry?.driverName ?? 'Driver';
   const code = driver?.code ?? entry?.driverCode ?? 'DRV';
@@ -146,7 +137,7 @@ export const DriverDetailPage: React.FC = () => {
                     className="px-2 py-0.5 rounded-md text-[11px] font-black font-mono uppercase text-white shadow-xs"
                     style={{ backgroundColor: teamColor }}
                   >
-                    #{driver.number}
+                    #{driverNumber}
                   </span>
                 )}
               </div>
@@ -163,7 +154,7 @@ export const DriverDetailPage: React.FC = () => {
                   className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md transition-all border border-white/10"
                 >
                   <ConstructorLogo teamId={teamId} size="sm" />
-                  <span>{team.fullName}</span>
+                  <span>{getTeamSeasonProfile(teamId, season)?.fullName ?? teamLabel}</span>
                   <ArrowRight className="h-3.5 w-3.5 text-studio-400" />
                 </Link>
 
@@ -195,7 +186,8 @@ export const DriverDetailPage: React.FC = () => {
                       {lang === 'vi' ? 'Sự nghiệp' : 'Career'}:{' '}
                       <strong className="text-white">{career.careerWins}</strong>{' '}
                       {lang === 'vi' ? 'thắng' : 'wins'} ·{' '}
-                      <strong className="text-white">{career.podiums}</strong> podium
+                      <strong className="text-white">{career.podiums}</strong>{' '}
+                      {lang === 'vi' ? 'lần lên bục' : career.podiums === 1 ? 'podium' : 'podiums'}
                     </span>
                   </div>
                 )}
@@ -239,7 +231,7 @@ export const DriverDetailPage: React.FC = () => {
                         className="block font-display text-5xl sm:text-6xl font-black tracking-tight"
                         style={{ color: teamColor }}
                       >
-                        #{driver?.number ?? entry?.rank}
+                        #{driverNumber ?? '—'}
                       </span>
                       <span className="block font-mono text-sm font-bold tracking-widest text-white/90">
                         {code}
@@ -291,13 +283,13 @@ export const DriverDetailPage: React.FC = () => {
                 <Stat
                   icon={<Award className="h-4 w-4 text-emerald-500" />}
                   label={lang === 'vi' ? `Chiến thắng mùa ${season}` : `Season ${season} Wins`}
-                  value={`${entry.wins} ${lang === 'vi' ? 'chặng' : 'wins'}`}
+                  value={`${entry.wins} ${lang === 'vi' ? 'chiến thắng' : entry.wins === 1 ? 'win' : 'wins'}`}
                   subValue={lang === 'vi' ? 'Về nhất Grand Prix mùa này' : 'Grand Prix victories'}
                 />
                 <Stat
                   icon={<Medal className="h-4 w-4 text-amber-400" />}
-                  label={lang === 'vi' ? `Podium mùa ${season}` : `Season ${season} Podiums`}
-                  value={`${entry.podiums} ${lang === 'vi' ? 'chặng' : 'podiums'}`}
+                  label={lang === 'vi' ? `Lần lên bục mùa ${season}` : `Season ${season} Podiums`}
+                  value={`${entry.podiums} ${lang === 'vi' ? 'lần lên bục' : entry.podiums === 1 ? 'podium' : 'podiums'}`}
                   subValue={lang === 'vi' ? 'Top 3 về đích mùa này' : 'Top 3 finishes'}
                 />
               </div>
@@ -316,7 +308,7 @@ export const DriverDetailPage: React.FC = () => {
                     </span>
                   </h3>
                   <span className="text-[11px] font-mono text-studio-400">
-                    {code} {driver?.number ? `· #${driver.number}` : ''}
+                    {code} {driverNumber ? `· #${driverNumber}` : ''}
                   </span>
                 </div>
                 <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
@@ -336,12 +328,12 @@ export const DriverDetailPage: React.FC = () => {
                   />
                   <Stat
                     icon={<Medal className="h-4 w-4 text-emerald-500" />}
-                    label={lang === 'vi' ? 'Tổng số lần lên bục Podium' : 'Career Total Podiums'}
+                    label={lang === 'vi' ? 'Tổng số lần lên bục' : 'Career Total Podiums'}
                     value={`${career.podiums}`}
                     subValue={
                       season < 2026
                         ? lang === 'vi'
-                          ? `Tính đến hết mùa ${season}: ${careerUpToSeason.podiums} podium`
+                          ? `Tính đến hết mùa ${season}: ${careerUpToSeason.podiums} lần lên bục`
                           : `Through ${season}: ${careerUpToSeason.podiums} podiums`
                         : lang === 'vi'
                           ? 'Top 3 trọn sự nghiệp F1'
@@ -351,7 +343,7 @@ export const DriverDetailPage: React.FC = () => {
                   <Stat
                     icon={<Flag className="h-4 w-4 text-sky-500" />}
                     label={lang === 'vi' ? 'Số xe & Quốc tịch' : 'Car Number & Nation'}
-                    value={`${driver?.number ? `#${driver.number} · ` : ''}${country || flag}`}
+                    value={`${driverNumber ? `#${driverNumber} · ` : ''}${country || flag}`}
                     subValue={driver?.shortName || name}
                   />
                 </div>
@@ -362,12 +354,12 @@ export const DriverDetailPage: React.FC = () => {
           <Stat
             icon={<Trophy className="h-4 w-4 text-amber-500" />}
             label={lang === 'vi' ? 'Thành tích toàn sự nghiệp F1' : 'All-time F1 career record'}
-            value={`${career.careerWins} wins · ${career.podiums} podiums`}
+            value={`${career.careerWins} ${lang === 'vi' ? 'chiến thắng' : 'wins'} · ${career.podiums} ${lang === 'vi' ? 'lần lên bục' : 'podiums'}`}
           />
         )}
         <p className="text-[11px] text-studio-500">
           {lang === 'vi'
-            ? 'Thứ hạng, điểm và kết quả mùa giải được trích xuất từ dữ liệu xếp hạng chính thức. Kỷ lục sự nghiệp thể hiện toàn bộ chiến thắng và podium của tay đua trong lịch sử F1.'
+            ? 'Thứ hạng, điểm và kết quả mùa giải được trích xuất từ dữ liệu xếp hạng chính thức. Kỷ lục sự nghiệp thể hiện toàn bộ chiến thắng và số lần lên bục của tay đua trong lịch sử F1.'
             : 'Season rank, points, and results are sourced from official standings. Career records reflect all-time F1 victories and podium finishes.'}
         </p>
         <Link
@@ -377,8 +369,8 @@ export const DriverDetailPage: React.FC = () => {
           <Box className="h-4 w-4 text-f1red" />
           <span>
             {lang === 'vi'
-              ? `Khám phá Showroom 3D xe ${team.name}`
-              : `Explore ${team.name} in 3D Showroom`}
+              ? `Khám phá Showroom 3D xe ${teamLabel}`
+              : `Explore ${teamLabel} in 3D Showroom`}
           </span>
           <ArrowRight className="h-4 w-4" />
         </Link>

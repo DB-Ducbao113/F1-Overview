@@ -1,16 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { getStartLightsFrame, START_LIGHT_CUE, START_LIGHT_TIMING } from './startLightsTiming';
 import './F1StartLightsPreloader.css';
+import { markStartLightsSeen, shouldShowStartLights } from './startLightsSession';
 
 export const F1StartLightsPreloader: React.FC = () => {
+  const [eligible] = useState(shouldShowStartLights);
   const [frame, setFrame] = useState(() => getStartLightsFrame(0));
   const [startedAt] = useState(() => performance.now());
   const [dismissed, setDismissed] = useState(false);
   const dismiss = useCallback(() => setDismissed(true), []);
-  const visible = !dismissed && frame.phase !== 'complete';
+  const visible = eligible && !dismissed && frame.phase !== 'complete';
 
   useEffect(() => {
     if (!visible) return;
+    markStartLightsSeen();
     const update = () => setFrame(getStartLightsFrame(performance.now() - startedAt));
     const deadlines = [
       ...Array.from(

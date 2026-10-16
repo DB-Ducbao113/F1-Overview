@@ -6,6 +6,7 @@ import { TeamId } from '../../types';
 import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getNearbyCarIndexes, INITIAL_CAR_INDEX } from './carStageLoading';
+import { getDriverNumber } from '../../data/drivers';
 
 interface PosterCar {
   id: string;
@@ -40,7 +41,7 @@ const POSTER_CARS: PosterCar[] = [
     watermark: 'MCLAREN',
     color: '#ff8000',
     imageUrl: '/images/teams/mcl38.webp',
-    drivers: 'Lando Norris #4 · Oscar Piastri #81',
+    drivers: `Lando Norris #${getDriverNumber('norris')} · Oscar Piastri #${getDriverNumber('piastri')}`,
   },
   {
     id: 'rb22',
@@ -51,7 +52,7 @@ const POSTER_CARS: PosterCar[] = [
     watermark: 'RED BULL',
     color: '#050f26',
     imageUrl: '/images/teams/rb20.webp',
-    drivers: 'Max Verstappen #1 · Isack Hadjar #6',
+    drivers: `Max Verstappen #${getDriverNumber('verstappen')} · Isack Hadjar #${getDriverNumber('hadjar')}`,
   },
   {
     id: 'w17',

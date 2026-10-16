@@ -425,7 +425,9 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
       <div
         className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 shadow-xl transition-all ${className}`}
       >
-        {renderLogoSvg()}
+        <span aria-hidden="true" className="inline-flex shrink-0">
+          {renderLogoSvg()}
+        </span>
         <div className="flex flex-col text-left">
           <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300 font-black flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -442,7 +444,9 @@ export const ConstructorLogo: React.FC<ConstructorLogoProps> = ({
   // Standard inline logo with optional text
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      {renderLogoSvg()}
+      <span aria-hidden="true" className="inline-flex shrink-0">
+        {renderLogoSvg()}
+      </span>
       {showText && (
         <span className="font-display text-xs sm:text-sm font-black tracking-wide text-white uppercase">
           {getTeamLabel()}

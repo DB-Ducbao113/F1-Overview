@@ -263,7 +263,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                     }`}
                   >
                     <span className="text-[9px] uppercase tracking-wider">
-                      {isVi ? 'VÒNG' : 'RND'}
+                      {isVi ? 'VÒNG' : 'RND'}{' '}
                     </span>
                     <span className="text-sm font-black leading-none">{gp.round}</span>
                   </div>
@@ -531,7 +531,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                           <div className="flex items-center justify-between text-[11px] text-studio-600">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3 text-studio-400" />
-                              {!isFinished && gp.venueUtcOffset !== undefined
+                              {gp.venueUtcOffset !== undefined
                                 ? (() => {
                                     const vn = toVietnamTime(session.timeStr, gp.venueUtcOffset);
                                     const dayLabel =
@@ -543,7 +543,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                                             vn.dayShift,
                                             lang,
                                           )}`;
-                                    return `${vn.time} giờ Việt Nam${dayLabel}`;
+                                    return `${vn.time} UTC+7${dayLabel}`;
                                   })()
                                 : session.timeStr}
                             </span>

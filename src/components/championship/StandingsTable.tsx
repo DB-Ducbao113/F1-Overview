@@ -107,7 +107,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                       style={{ backgroundColor: leaderConstructorColor }}
                     />
                     <span style={{ color: leaderConstructorColor }}>
-                      {getTeamDisplayName(leaderConstructor.teamName)}
+                      {getTeamDisplayName(leaderConstructor.teamName, season)}
                     </span>
                     <span className="inline-flex items-center gap-1 font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
                       {leaderConstructor.points || 0}
@@ -245,7 +245,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                             className="font-bold hover:underline truncate max-w-[140px] sm:max-w-none block text-xs"
                             style={{ color: driverColor }}
                           >
-                            {getTeamDisplayName(driver.teamName)}
+                            {getTeamDisplayName(driver.teamName, season)}
                           </Link>
                         </div>
                       </td>
@@ -320,7 +320,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
                             className="font-extrabold text-xs sm:text-sm hover:underline"
                             style={{ color: teamColor }}
                           >
-                            {getTeamDisplayName(c.teamName)}
+                            {getTeamDisplayName(c.teamName, season)}
                           </Link>
                         </div>
                       </td>

@@ -6,7 +6,6 @@ interface F1PageTransitionProps {
 }
 
 export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, children }) => {
-  const [displayChildren, setDisplayChildren] = useState(children);
   const [isWiping, setIsWiping] = useState(false);
   const prevPathRef = useRef(pathname);
 
@@ -14,17 +13,14 @@ export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, ch
     if (prevPathRef.current !== pathname) {
       prevPathRef.current = pathname;
       setIsWiping(true);
-      setDisplayChildren(children);
 
       const timer = setTimeout(() => {
         setIsWiping(false);
       }, 420);
 
       return () => clearTimeout(timer);
-    } else {
-      setDisplayChildren(children);
     }
-  }, [pathname, children]);
+  }, [pathname]);
 
   return (
     <div className="relative w-full">
@@ -43,8 +39,8 @@ export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, ch
       )}
 
       {/* ── 3D Perspective Page Entrance Container ── */}
-      <div key={pathname} className="animate-f1-depth-enter will-change-transform">
-        {displayChildren}
+      <div key={pathname} className="animate-f1-depth-enter">
+        {children}
       </div>
     </div>
   );

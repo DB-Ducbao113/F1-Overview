@@ -59,7 +59,7 @@ export const AboutPage: React.FC = () => {
 
       {/* Creator Profile Section */}
       <section className="bg-gradient-to-br from-studio-900 to-studio-950 text-white rounded-2xl p-6 sm:p-8 mb-10 shadow-lg border border-studio-800">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <div className="flex flex-col items-start gap-6">
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-f1red to-yellow-500 flex items-center justify-center text-white shadow-md shrink-0">
             <User className="w-9 h-9" />
           </div>

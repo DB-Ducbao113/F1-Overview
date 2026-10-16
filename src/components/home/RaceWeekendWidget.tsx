@@ -259,7 +259,7 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
               </span>
               <span className="text-studio-300">|</span>
               <span className="text-studio-500 font-mono text-[11px]">
-                {lang === 'vi' ? 'Giờ Việt Nam (UTC+7)' : 'Vietnam time (UTC+7)'}
+                {lang === 'vi' ? 'Việt Nam (UTC+7)' : 'Vietnam (UTC+7)'}
               </span>
             </div>
 
@@ -439,7 +439,7 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
                     className={`inline-flex items-center gap-1 text-[10px] font-mono ${isRace ? 'text-studio-300' : 'text-studio-500'}`}
                   >
                     <span>{session.local.time}</span>
-                    <span>{lang === 'vi' ? 'giờ VN' : 'UTC+7'}</span>
+                    <span>UTC+7</span>
                   </span>
                 </div>
               );

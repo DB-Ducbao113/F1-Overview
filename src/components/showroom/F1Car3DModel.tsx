@@ -33,6 +33,10 @@ const MODEL_SCALE = 0.105;
 const RealF1CarMesh: React.FC<{
   teamId: TeamId;
 }> = ({ teamId }) => {
+  // Resolve assets before generating UV textures so Suspense retries do not
+  // discard and regenerate the expensive textures while the wheel image loads.
+  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
+
   const { scene } = useGLTF('/models/c42.v2.glb');
   const invalidate = useThree((state) => state.invalidate);
   const livery = getTeam3DLivery(teamId);
@@ -102,9 +106,6 @@ const RealF1CarMesh: React.FC<{
     () => generateHaloTexture(teamId, livery, sponsors),
     [teamId, livery, sponsors],
   );
-
-  // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
-  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
 
   // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
   const wheelTex = useMemo(

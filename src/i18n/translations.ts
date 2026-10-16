@@ -28,7 +28,7 @@ export const t = {
       team: 'Đội đua',
       points: 'Điểm',
       wins: 'Thắng',
-      podiums: 'Podium',
+      podiums: 'Lần lên bục',
       engine: 'Động cơ',
     },
     footer: {

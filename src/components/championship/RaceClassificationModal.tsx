@@ -48,7 +48,9 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-f1red bg-f1red/15 px-2.5 py-0.5 rounded-full border border-f1red/30">
-                {isVi ? `Vòng ${race.round}` : `Round ${race.round}`} · {race.season}
+                {isVi
+                  ? `Vòng ${race.round} · ${race.season}`
+                  : `Round ${race.round} · ${race.season}`}
               </span>
               {race.isSynthesized ? (
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
@@ -108,7 +110,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                 {race.winner.driver}
               </span>
               <span className="text-studio-500 font-mono">
-                ({getTeamDisplayName(race.winner.team)})
+                ({getTeamDisplayName(race.winner.team, race.season)})
               </span>
               <span className="font-mono text-amber-400 ml-1 font-bold">{race.winner.time}</span>
             </div>
@@ -210,7 +212,7 @@ export const RaceClassificationModal: React.FC<RaceClassificationModalProps> = (
                             color: getTeamTextColor(entry.teamId || entry.teamName, true),
                           }}
                         >
-                          {getTeamDisplayName(entry.teamName)}
+                          {getTeamDisplayName(entry.teamName, race.season)}
                         </span>
                       </td>
 

@@ -1,6 +1,13 @@
 import { F1Driver, SeasonYear } from '../types';
 import { STANDINGS_DATA } from './championship/standings';
 
+/** Race numbers are seasonal: the reigning champion can choose number 1. */
+export function getDriverNumber(driverId: string, season: SeasonYear = 2026): number | undefined {
+  if (driverId === 'verstappen') return season === 2026 ? 3 : 1;
+  if (driverId === 'norris') return season === 2026 ? 1 : 4;
+  return DRIVERS_DATA[driverId]?.number;
+}
+
 /**
  * Historical F1 Career Records prior to the 2024 Championship season (pre-2024 baseline).
  * Source: Official FIA Formula One Historical Statistics (formula1.com / StatsF1).
@@ -101,7 +108,7 @@ const RAW_DRIVERS_DATA: Record<string, F1Driver> = {
   // McLaren
   norris: {
     id: 'norris',
-    number: 4,
+    number: 1,
     code: 'NOR',
     name: 'Lando Norris',
     shortName: 'L. Norris',
@@ -129,7 +136,7 @@ const RAW_DRIVERS_DATA: Record<string, F1Driver> = {
   // Red Bull
   verstappen: {
     id: 'verstappen',
-    number: 1,
+    number: 3,
     code: 'VER',
     name: 'Max Verstappen',
     shortName: 'M. Verstappen',
