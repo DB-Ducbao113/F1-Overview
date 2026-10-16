@@ -1,17 +1,17 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
-import { F1Car3DModel } from './F1Car3DModel';
-import { CameraController, CameraPreset } from './CameraController';
-import { ShowroomLoadingPanel } from './Showroom3DLoader';
+import { CameraPreset } from './CameraController';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
-import { StudioW15Stage } from './StudioW15Stage';
+const LazyShowroomLoadingPanel = lazy(() =>
+  import('./Showroom3DLoader').then((module) => ({ default: module.ShowroomLoadingPanel })),
+);
+const ShowroomScene = lazy(() =>
+  import('./ShowroomScene').then((module) => ({ default: module.ShowroomScene })),
+);
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
-import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
@@ -47,62 +47,6 @@ type ShowroomDiagnosticsWindow = Window & {
 const diagnosticsEnabled = (): boolean =>
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).has('showroomDiagnostics');
-
-const WebGLContextGuard: React.FC<{
-  onContextStateChange: (isLost: boolean) => void;
-}> = ({ onContextStateChange }) => {
-  const { gl } = useThree();
-
-  useEffect(() => {
-    const canvas = gl.domElement;
-    const handleLost = (event: Event) => {
-      event.preventDefault();
-      onContextStateChange(true);
-    };
-    const handleRestored = () => onContextStateChange(false);
-
-    canvas.addEventListener('webglcontextlost', handleLost);
-    canvas.addEventListener('webglcontextrestored', handleRestored);
-    return () => {
-      canvas.removeEventListener('webglcontextlost', handleLost);
-      canvas.removeEventListener('webglcontextrestored', handleRestored);
-    };
-  }, [gl, onContextStateChange]);
-
-  return null;
-};
-
-const ShowroomFrameInvalidator: React.FC<{
-  active: boolean;
-  sceneRevision: string;
-}> = ({ active, sceneRevision }) => {
-  const { invalidate, size } = useThree();
-
-  useEffect(() => {
-    if (active) invalidate();
-  }, [active, invalidate, sceneRevision, size.height, size.width]);
-
-  return null;
-};
-
-const ShowroomResourceDiagnostics: React.FC = () => {
-  const { gl } = useThree();
-
-  useEffect(() => {
-    if (!diagnosticsEnabled()) return;
-    const diagnosticsWindow = window as ShowroomDiagnosticsWindow;
-    diagnosticsWindow.__SHOWROOM_RENDERER_STATS__ = () => ({
-      memory: { ...gl.info.memory },
-      render: { ...gl.info.render },
-      programs: gl.info.programs?.length ?? 0,
-    });
-    return () => {
-      delete diagnosticsWindow.__SHOWROOM_RENDERER_STATS__;
-    };
-  }, [gl]);
-
-  return null;
-};
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -496,65 +440,18 @@ export const ShowroomView: React.FC = () => {
             />
           }
         >
-          <Canvas
-            shadows
-            dpr={[1, 1.25]}
-            frameloop={getFrameLoopMode(isCanvasActive)}
-            camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-            gl={{
-              antialias: false,
-              alpha: true,
-              powerPreference: 'high-performance',
-              toneMappingExposure: 1.2,
-            }}
-            className="w-full h-full cursor-grab active:cursor-grabbing"
-          >
-            <WebGLContextGuard onContextStateChange={handleWebGLContextStateChange} />
-            <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
-            <ShowroomResourceDiagnostics />
-            <ShowroomStartupCoordinator
-              sceneKey={startupSceneKey}
-              active={isCanvasActive}
-              carReady={isCarReady}
-              studioReady={isStudioReady}
-              onFirstUsableFrame={setUsableSceneKey}
-            />
-            {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage
-              teamId={selectedTeamId}
+          <Suspense fallback={null}>
+            <ShowroomScene
+              selectedTeamId={selectedTeamId}
               lang={lang}
-              readinessKey={startupSceneKey}
-              onScenePartReady={handleScenePartReady}
-            />
-
-            {/* F1 3D Car Model with Suspense Loading HUD */}
-            <Suspense fallback={null}>
-              <F1Car3DModel
-                teamId={selectedTeamId}
-                activeHotspot={activeHotspot}
-                onSelectHotspot={handleSelectHotspot}
-                lang={lang}
-                showHotspots={showHotspots}
-                readinessKey={startupSceneKey}
-                onScenePartReady={handleScenePartReady}
-              />
-            </Suspense>
-
-            {/* Dynamic Ground Contact Shadows */}
-            <ContactShadows
-              position={[0, 0, 0]}
-              opacity={0.9}
-              scale={10}
-              blur={2.0}
-              far={4.5}
-              frames={1}
-              resolution={256}
-              color="#000000"
-            />
-
-            {/* Smooth Camera Controller & OrbitControls */}
-            <CameraController
+              isCanvasActive={isCanvasActive}
+              frameloopMode={getFrameLoopMode(isCanvasActive)}
+              sceneRevision={sceneRevision}
               activeHotspot={activeHotspot}
+              handleSelectHotspot={handleSelectHotspot}
+              showHotspots={showHotspots}
+              startupSceneKey={startupSceneKey}
+              handleScenePartReady={handleScenePartReady}
               cameraPreset={cameraPreset}
               presetTrigger={presetTrigger}
               autoRotate={autoRotate}
@@ -563,13 +460,19 @@ export const ShowroomView: React.FC = () => {
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
               zoomDirection={zoomDirection}
+              onContextStateChange={setIsWebGLContextLost}
+              isCarReady={isCarReady}
+              isStudioReady={isStudioReady}
+              setUsableSceneKey={setUsableSceneKey}
             />
-          </Canvas>
+          </Suspense>
         </ErrorBoundary>
 
         {!isSceneUsable && !isWebGLContextLost && (
           <div className="absolute inset-0 z-30 flex items-center justify-center bg-studio-950/35 pointer-events-none">
-            <ShowroomLoadingPanel />
+            <Suspense fallback={null}>
+              <LazyShowroomLoadingPanel />
+            </Suspense>
           </div>
         )}
 
