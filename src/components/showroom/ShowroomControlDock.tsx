@@ -287,7 +287,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
               <button
                 type="button"
                 onClick={onResetView}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                className="p-1.5 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-[26px] sm:min-h-[26px] flex items-center justify-center"
                 title={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset view'}
                 aria-label="Reset view"
               >
@@ -298,7 +298,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
               <button
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                className="p-1.5 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-[26px] sm:min-h-[26px] flex items-center justify-center"
                 title={
                   isExpanded
                     ? lang === 'vi'

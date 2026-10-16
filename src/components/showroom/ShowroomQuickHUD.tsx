@@ -126,7 +126,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
             <button
               type="button"
               onClick={() => onZoom('out')}
-              className="p-1.5 text-studio-300 hover:text-white hover:bg-studio-800 rounded-lg transition-colors cursor-pointer"
+              className="p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-studio-300 hover:text-white hover:bg-studio-800 rounded-lg transition-colors cursor-pointer"
               title={lang === 'vi' ? 'Thu nhỏ xe (-)' : 'Zoom Out (-)'}
               aria-label={lang === 'vi' ? 'Thu nhỏ xe' : 'Zoom Out'}
             >
@@ -136,7 +136,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
             <button
               type="button"
               onClick={() => onZoom('in')}
-              className="p-1.5 text-studio-300 hover:text-white hover:bg-studio-800 rounded-lg transition-colors cursor-pointer"
+              className="p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-studio-300 hover:text-white hover:bg-studio-800 rounded-lg transition-colors cursor-pointer"
               title={lang === 'vi' ? 'Phóng to xe (+)' : 'Zoom In (+)'}
               aria-label={lang === 'vi' ? 'Phóng to xe' : 'Zoom In'}
             >
@@ -154,7 +154,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
               <button
                 type="button"
                 onClick={handleNextPano}
-                className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
+                className={`p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1.5 rounded-xl border flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
                   currentPanoIdx >= 0
                     ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-sm'
                     : 'bg-studio-900/90 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
@@ -190,7 +190,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
             <button
               type="button"
               onClick={onToggleAutoRotate}
-              className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
+              className={`p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1.5 rounded-xl border flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer ${
                 autoRotate
                   ? 'bg-sky-500/20 text-sky-300 border-sky-500/60 shadow-sm'
                   : 'bg-studio-900/90 text-studio-400 border-studio-800 hover:text-white hover:bg-studio-800'
@@ -218,7 +218,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
             <button
               type="button"
               onClick={onResetView}
-              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-studio-900/90 text-studio-400 hover:text-white hover:bg-studio-800 border border-studio-800 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer"
+              className="p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1.5 rounded-xl bg-studio-900/90 text-studio-400 hover:text-white hover:bg-studio-800 border border-studio-800 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer"
               title={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset to default camera view'}
               aria-label={lang === 'vi' ? 'Đặt lại góc nhìn' : 'Reset View'}
             >
@@ -231,7 +231,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
               <button
                 type="button"
                 onClick={onOpenSchematic}
-                className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-gradient-to-r from-red-600/30 to-amber-500/20 text-amber-300 hover:text-white hover:from-red-600/50 hover:to-amber-500/40 border border-amber-500/50 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
+                className="p-2.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1.5 rounded-xl bg-gradient-to-r from-red-600/30 to-amber-500/20 text-amber-300 hover:text-white hover:from-red-600/50 hover:to-amber-500/40 border border-amber-500/50 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
                 title={
                   lang === 'vi'
                     ? 'So sánh xe 3D với Bản Vẽ Kỹ Thuật CAD 2D Gốc & Bảng màu'

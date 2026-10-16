@@ -22,7 +22,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
 import { disposeAll, getCacheStats } from './showroomTextureCache';
-import { resolveMobileLayout } from './showroomMobileLayout';
+import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
@@ -254,12 +254,20 @@ export const ShowroomView: React.FC = () => {
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
 
-  //M3C: resolve the mobile composition once per mount. Mobile = coarse
-  // pointer at or below 1023 px; desktop keeps the floating dock exactly as
-  // before.
-  const [mobileLayout] = useState<ReturnType<typeof resolveMobileLayout>>(() =>
-    resolveMobileLayout(typeof window === 'undefined' ? 1920 : window.innerWidth),
+  //M3C: mobile composition reacts to viewport-width crossings of the 1023 px
+  // breakpoint (rotation / window resize). The subscription fires only when
+  // the boolean flips, so ordinary resizes never re-render the Showroom.
+  const [isMobileLayout, setIsMobileLayout] = useState<boolean>(
+    () =>
+      resolveMobileLayout(typeof window === 'undefined' ? 1920 : window.innerWidth).isMobileLayout,
   );
+
+  useEffect(() => {
+    const unsubscribe = subscribeMobileLayout(setIsMobileLayout);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
   const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
   const isSceneUsable = usableSceneKey === startupSceneKey;
   const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
@@ -370,7 +378,7 @@ export const ShowroomView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsSchematicOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
                 title={
                   lang === 'vi'
                     ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
@@ -384,7 +392,7 @@ export const ShowroomView: React.FC = () => {
               <button
                 type="button"
                 onClick={scrollToDossier}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
               >
                 <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Technical Dossier'}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-f1red" />
@@ -429,7 +437,7 @@ export const ShowroomView: React.FC = () => {
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
           <div
             className={
-              mobileLayout.isMobileLayout
+              isMobileLayout
                 ? 'p-2 rounded-2xl bg-studio-950/85 border border-studio-800/80 shadow-xl flex items-center gap-1.5 max-w-[190px]'
                 : 'p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs'
             }
@@ -438,16 +446,16 @@ export const ShowroomView: React.FC = () => {
               <ConstructorLogo teamId={selectedTeamId} size="sm" />
               <span
                 className={
-                  mobileLayout.isMobileLayout
+                  isMobileLayout
                     ? 'text-[10px] font-black uppercase tracking-wider text-white truncate'
                     : 'text-[10px] font-black uppercase tracking-widest text-studio-400'
                 }
               >
                 {team.name}
-                {!mobileLayout.isMobileLayout && <> · {livery.carModelName}</>}
+                {!isMobileLayout && <> · {livery.carModelName}</>}
               </span>
             </div>
-            {!mobileLayout.isMobileLayout && (
+            {!isMobileLayout && (
               <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
                 {team.fullName}
               </h2>
@@ -471,7 +479,7 @@ export const ShowroomView: React.FC = () => {
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
             onOpenSchematic={() => setIsSchematicOpen(true)}
-            isMobileLayout={mobileLayout.isMobileLayout}
+            isMobileLayout={isMobileLayout}
           />
         </div>
 

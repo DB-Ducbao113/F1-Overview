@@ -26,6 +26,38 @@ export const resolveMobileLayout = (viewportWidth: number): MobileLayoutState =>
   };
 };
 
+/**
+ * Subscribes to viewport-width crossing of the mobile breakpoint and returns
+ * an unsubscribe handle. Fires only when the boolean actually flips, so
+ * crossing the threshold (rotation, window resize) is reactive while normal
+ * resizes within one mode do not re-render the Showroom.
+ */
+export const subscribeMobileLayout = (
+  onChange: (isMobileLayout: boolean) => void,
+): (() => void) | null => {
+  if (typeof window === 'undefined') return null;
+
+  let current = window.innerWidth <= MOBILE_BREAKPOINT_PX;
+  let raf = 0;
+  const handle = () => {
+    if (raf) return;
+    raf = window.requestAnimationFrame(() => {
+      raf = 0;
+      const next = window.innerWidth <= MOBILE_BREAKPOINT_PX;
+      if (next !== current) {
+        current = next;
+        onChange(next);
+      }
+    });
+  };
+  window.addEventListener('resize', handle, { passive: true });
+
+  return () => {
+    window.removeEventListener('resize', handle);
+    if (raf) window.cancelAnimationFrame(raf);
+  };
+};
+
 /** Accessible tap-target floor for mobile controls (WCAG 2.5.5 / Material 48px). */
 export const MIN_TOUCH_TARGET_PX = 44;
 
