@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "milestone": "M3B.5",
+    "capturedAt": "2026-10-16",
+    "environment": "Chrome headless (patchright driver), Windows workstation, vite preview production build, CDP main-world instrumentation",
+    "note": "Headless screenshots quantize the reflector to a visible moire pattern in BOTH baseline and candidate captures at 390 px; treated as a capture artifact, not a shipped-quality judgment. Relative same-state comparisons are valid."
+  },
+  "viewportProbes": {
+    "desktop1280": { "cssWidth": 1280, "dpr": "baseline 1.25 (policy absent — no change shipped)", "overflowPx": 0 },
+    "desktop1440": { "cssWidth": 1440, "overflowPx": 0 },
+    "desktop1920": { "cssWidth": 1920, "overflowPx": 0 },
+    "mobile390": { "cssWidth": 390, "overflowPx": 0, "adaptiveDprProbe": "backing=cssWidth (DPR 1.0) when candidate wired; baseline backing=487.5 (DPR 1.25)" },
+    "mobile768": { "cssWidth": 768, "overflowPx": 0, "adaptiveDprProbe": "backing=cssWidth (DPR 1.0) when candidate wired; baseline backing=960 (DPR 1.25)" }
+  },
+  "screenshots": [
+    { "file": "m3b5-desktop-1280.png", "state": "candidate-wired desktop full quality", "review": "car, sponsor graphics, wheels, studio walls, controls all intact; no degradation vs baseline reference" },
+    { "file": "m3b5-desktop-1440.png", "state": "candidate-wired desktop full quality", "review": "intact" },
+    { "file": "m3b5-desktop-1920.png", "state": "candidate-wired desktop full quality", "review": "intact" },
+    { "file": "m3b5-mobile-390.png", "state": "candidate DPR=1 (reflector 512)", "review": "controls intact; floor moire present — identical artifact in baseline capture" },
+    { "file": "m3b5-BASELINE-390.png", "state": "M3B.4.1 baseline DPR=1.25", "review": "same floor moire artifact — confirms capture-related, not policy regression" },
+    { "file": "m3b5-mobile-768.png", "state": "candidate DPR=1", "review": "intact controls, same moire artifact class" }
+  ],
+  "findings": {
+    "moireAttribution": "Present identically in baseline (DPR 1.25, reflector 512) and candidate (DPR 1, reflector 512) headless captures at 390 px. The 256 px reflector experiment showed the same class of artifact with zero additional frame-time gain at DPR 1, so the reflector downgrade was rejected.",
+    "desktopQuality": "Desktop path never altered by the policy (fine pointer = full quality); screenshots confirm no change.",
+    "decision": "No adaptive change shipped; DPR/reflector/shadows/materials remain exactly at the M3B.4.1 reviewed state."
+  }
+}
