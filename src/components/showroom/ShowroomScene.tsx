@@ -5,6 +5,7 @@ import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController } from './CameraController';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
+import { ensureSafeCompileAsync } from './safeCompileAsync';
 import { ShowroomLoadingPanel, Showroom3DLoader } from './Showroom3DLoader';
 import type { HotspotItem } from '../../data/showroom/hotspotsData';
 import type { TeamId } from '../../types';
@@ -146,6 +147,9 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
       toneMappingExposure: 1.2,
     }}
     className="w-full h-full cursor-grab active:cursor-grabbing"
+    onCreated={({ gl }) => {
+      ensureSafeCompileAsync(gl);
+    }}
   >
     <WebGLContextGuard onContextStateChange={onContextStateChange} />
     <ShowroomStartupCoordinator

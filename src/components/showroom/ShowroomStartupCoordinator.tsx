@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 
+import { ensureSafeCompileAsync } from './safeCompileAsync';
+
 interface ShowroomStartupCoordinatorProps {
   sceneKey: string;
   active: boolean;
@@ -77,6 +79,7 @@ export const ShowroomStartupCoordinator: React.FC<ShowroomStartupCoordinatorProp
       phaseRef.current = 'compiling';
       performance.mark('showroom:required-resources-ready');
       performance.mark('showroom:compile:start');
+      ensureSafeCompileAsync(gl);
       const compileAsync = gl.compileAsync?.bind(gl);
       const compilation = compileAsync
         ? compileAsync(scene, camera)
