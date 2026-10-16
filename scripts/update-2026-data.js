@@ -129,6 +129,15 @@ function mapTeamId(constructorId) {
   return CONSTRUCTOR_MAP[constructorId] || constructorId;
 }
 
+const GRAND_PRIX_NAME_MAP = {
+  'Bahrain Grand Prix in Malaysia': 'Malaysia Grand Prix',
+  'Barcelona Grand Prix': 'Barcelona-Catalunya Grand Prix',
+};
+
+function mapGrandPrixName(raceName) {
+  return GRAND_PRIX_NAME_MAP[raceName] || raceName;
+}
+
 // ─── HTTP fetch helper ─────────────────────────────────────────────────────
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -296,7 +305,7 @@ function generateRaceResults(races) {
 
       return `  {
     round: ${race.round},
-    grandPrix: '${race.raceName.replace(/'/g, "\\'")}',
+    grandPrix: '${mapGrandPrixName(race.raceName).replace(/'/g, "\\'")}',
     circuit: '${(race.Circuit?.circuitName || 'Circuit').replace(/'/g, "\\'")}',
     season: 2026,
     dataSource: 'Jolpica F1 API',

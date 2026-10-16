@@ -5,7 +5,7 @@ import { F1StartLightsPreloader } from './F1StartLightsPreloader';
 import { getStartLightsFrame, START_LIGHT_CUE, START_LIGHT_TIMING } from './startLightsTiming';
 
 describe('F1StartLightsPreloader', () => {
-  it('renders immediately on every fresh App mount without a storage gate', () => {
+  it('renders immediately for an eligible first visit', () => {
     const html = renderToStaticMarkup(<F1StartLightsPreloader />);
     expect(html).toContain('F1 Start Lights Preloader');
     expect(html).toContain('PREPARING GRID...');

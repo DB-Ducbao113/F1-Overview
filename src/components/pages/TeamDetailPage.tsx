@@ -8,6 +8,7 @@ import { getTeamSeasonProfile } from '../../data/teamSeasons';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { SeasonYear, TeamId } from '../../types';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getTeamDisplayName } from '../../utils/teamNames';
 import { getTeamTextColor } from '../../utils/teamColors';
 
 export const TeamDetailPage: React.FC = () => {
@@ -123,7 +124,7 @@ export const TeamDetailPage: React.FC = () => {
                       className="text-xs font-black uppercase tracking-[0.25em]"
                       style={{ color: darkTeamColor }}
                     >
-                      {team.name} · {season}
+                      {getTeamDisplayName(team.id, season)} · {season}
                     </span>
                   </div>
                   <h1 className="font-display text-4xl sm:text-6xl font-black uppercase tracking-tight">

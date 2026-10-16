@@ -147,7 +147,13 @@ export function resolveTeamId(raw?: string): TeamId | null {
   if (clean.includes('mercedes')) return 'mercedes';
   if (clean.includes('aston')) return 'astonmartin';
   if (clean.includes('alpine')) return 'alpine';
-  if (clean.includes('racingbulls') || clean.includes('vcarb') || clean.includes('cashapp'))
+  if (
+    clean === 'rb' ||
+    clean.startsWith('rbf1') ||
+    clean.includes('racingbulls') ||
+    clean.includes('vcarb') ||
+    clean.includes('cashapp')
+  )
     return 'racingbulls';
   if (clean.includes('haas')) return 'haas';
   if (clean.includes('williams')) return 'williams';

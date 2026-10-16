@@ -3,6 +3,14 @@ import { CALENDAR_2026, CALENDAR_2024, CALENDAR_2025, getCalendarBySeason } from
 import { RACE_RESULTS_2026 } from './results';
 
 describe('Race Calendar Multi-Season Support', () => {
+  it('only marks Singapore as a Sprint weekend from 2026', () => {
+    for (const season of [2024, 2025] as const) {
+      const race = getCalendarBySeason(season).find((gp) => gp.country === 'Singapore')!;
+      expect(race.hasSprint).toBe(false);
+      expect(race.sessions.sprint).toBeUndefined();
+    }
+    expect(CALENDAR_2026.find((gp) => gp.country === 'Singapore')?.hasSprint).toBe(true);
+  });
   it('returns appropriate calendars per season via getCalendarBySeason', () => {
     const cal2024 = getCalendarBySeason(2024);
     expect(cal2024.length).toBe(24);

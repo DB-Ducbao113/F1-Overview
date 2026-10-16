@@ -32,7 +32,7 @@ describe('SchematicComparisonModal Component', () => {
     );
     expect(html).toContain('BẢN VẼ KỸ THUẬT CAD 2D');
     expect(html).toContain('/images/showroom/schematics/mercedes.webp');
-    expect(html).toContain('MERC-W15-AERO-8K');
+    expect(html).toContain('MERC-W17-AERO-8K');
   });
 
   it('supports English localization properly', () => {

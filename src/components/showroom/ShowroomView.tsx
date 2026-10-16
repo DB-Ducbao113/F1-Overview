@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Canvas, useThree } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
@@ -8,8 +8,8 @@ import { ShowroomLoadingPanel } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
-import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
+import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
@@ -462,7 +462,9 @@ export const ShowroomView: React.FC = () => {
             )}
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
               <p className="truncate">⚡ {team.powerUnit}</p>
-              <p className="text-studio-400">Trụ sở: {team.base}</p>
+              <p className="text-studio-400">
+                {lang === 'vi' ? 'Trụ sở:' : 'Base:'} {team.base}
+              </p>
             </div>
           </div>
         </div>

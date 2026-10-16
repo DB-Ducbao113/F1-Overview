@@ -1,3 +1,4 @@
+import { CARS_2026 } from '../cars/2026';
 import { TeamId } from '../../types';
 
 export interface Team3DLivery {
@@ -69,7 +70,7 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamId: 'ferrari',
     teamName: 'Ferrari',
     fullName: 'Scuderia Ferrari HP',
-    carModelName: 'Ferrari SF-24 / SF-26',
+    carModelName: 'Ferrari SF-26 · 2026',
     shortCarName: 'SF-26',
     carImage: '/images/teams/sf24.webp',
     powerUnit: 'Ferrari 066/12 1.6L V6 Turbo Hybrid',
@@ -126,8 +127,8 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     teamId: 'mercedes',
     teamName: 'Mercedes',
     fullName: 'Mercedes-AMG PETRONAS Formula One Team',
-    carModelName: 'Mercedes-AMG F1 W15 · 2024 reference model',
-    shortCarName: 'W15',
+    carModelName: 'Mercedes-AMG F1 W17 · 2026',
+    shortCarName: 'W17',
     carImage: '/images/teams/w15.webp',
     powerUnit: 'Mercedes-AMG M15 E Performance 1.6L V6 Turbo Hybrid',
     powerUnitSupplier: 'Mercedes-AMG High Performance Powertrains (Brixworth, UK)',
@@ -180,9 +181,9 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     powertrainNoteEn:
       'Mercedes-AMG M15 power unit setting the benchmark in thermodynamic efficiency and sustained hybrid energy harvesting across full race distances.',
     schematicImage: '/images/showroom/schematics/mercedes.webp',
-    schematicCode: 'MERC-W15-AERO-8K',
-    schematicTitleVi: 'Bản vẽ kỹ thuật khí động học 8K Mercedes-AMG F1 W15',
-    schematicTitleEn: 'Mercedes-AMG F1 W15 8K Aerodynamic Blueprint',
+    schematicCode: 'MERC-W17-AERO-8K',
+    schematicTitleVi: 'Bản vẽ kỹ thuật khí động học 8K Mercedes-AMG F1 W17',
+    schematicTitleEn: 'Mercedes-AMG F1 W17 8K Aerodynamic Blueprint',
   },
 
   mclaren: {
@@ -698,6 +699,18 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     schematicTitleEn: 'Cadillac F1 Chassis & Aerodynamic 8K Schematic (MAC-26)',
   },
 };
+
+// The showroom and team pages share the same current-season car identity.
+// The underlying C42 geometry and schematic images remain illustrative references.
+for (const car of CARS_2026) {
+  const livery = TEAM_3D_LIVERIES[car.teamId];
+  if (livery) {
+    livery.carModelName = `${car.name} · ${car.season}`;
+    livery.shortCarName = car.shortName;
+    livery.schematicTitleVi = `Sơ đồ minh họa — ${car.name} · ${car.season}`;
+    livery.schematicTitleEn = `Illustrative schematic — ${car.name} · ${car.season}`;
+  }
+}
 
 export const getTeam3DLivery = (teamId: TeamId): Team3DLivery => {
   return TEAM_3D_LIVERIES[teamId] || TEAM_3D_LIVERIES.ferrari;

@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Search, Trophy } from 'lucide-react';
 import { STANDINGS_DATA } from '../../data/championship';
-import { TEAMS_DATA } from '../../data/teams';
-import { DRIVERS_DATA } from '../../data/drivers';
+import { DRIVERS_DATA, getDriverNumber } from '../../data/drivers';
 import { SeasonYear, TeamId } from '../../types';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { ConstructorLogo } from '../common/ConstructorLogo';
@@ -26,6 +25,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
     const [query, setQuery] = useState('');
     useEffect(() => {
       setSeason(initialSeason);
+      setTeamId('all');
     }, [initialSeason]);
     const drivers = useMemo(() => {
       const normalized = query.trim().toLowerCase();
@@ -74,7 +74,10 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                 {lang === 'vi' ? 'Mùa giải' : 'Season'}
                 <select
                   value={season}
-                  onChange={(event) => setSeason(Number(event.target.value) as SeasonYear)}
+                  onChange={(event) => {
+                    setSeason(Number(event.target.value) as SeasonYear);
+                    setTeamId('all');
+                  }}
                   className="rounded-xl border border-studio-200 bg-studio-50 px-3 py-3 text-sm font-bold text-studio-900 outline-none focus:border-f1red"
                 >
                   {SEASONS.map((year) => (
@@ -93,9 +96,9 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                 className="max-w-48 rounded-xl border border-studio-200 bg-studio-50 px-3 py-3 text-sm font-bold text-studio-900 outline-none focus:border-f1red"
               >
                 <option value="all">{lang === 'vi' ? 'Tất cả đội' : 'All teams'}</option>
-                {Object.values(TEAMS_DATA).map((team) => (
-                  <option value={team.id} key={team.id}>
-                    {team.name}
+                {STANDINGS_DATA[season].constructors.map((team) => (
+                  <option value={team.teamId} key={team.teamId}>
+                    {getTeamDisplayName(team.teamId, season)}
                   </option>
                 ))}
               </select>
@@ -121,6 +124,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {drivers.map((driver) => {
                 const profile = DRIVERS_DATA[driver.driverId];
+                const driverNumber = getDriverNumber(driver.driverId, season);
                 const portraitUrl = profile?.imageUrl;
                 const teamColor = getTeamTextColor(driver.teamId, false);
 
@@ -144,7 +148,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center font-display font-black text-white/20 text-4xl">
-                          #{profile?.number || driver.rank}
+                          #{driverNumber ?? '—'}
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
@@ -172,12 +176,12 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                           <span className="flex items-center gap-1.5">
                             <span className="text-base">{driver.countryFlag}</span>
                             <span>{driver.driverCode}</span>
-                            {profile?.number && (
-                              <span className="text-studio-400 font-mono">#{profile.number}</span>
+                            {driverNumber && (
+                              <span className="text-studio-400 font-mono">#{driverNumber}</span>
                             )}
                           </span>
                           <span className="text-[11px] font-mono font-bold text-studio-400 uppercase">
-                            {driver.teamId}
+                            {getTeamDisplayName(driver.teamId, season)}
                           </span>
                         </div>
                         <h2 className="mt-2 font-display text-xl sm:text-2xl font-black text-studio-950 group-hover:text-f1red transition-colors">
@@ -186,7 +190,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                         <div className="mt-1.5 flex items-center gap-2 text-xs font-semibold text-studio-600">
                           <ConstructorLogo teamId={driver.teamId} size="sm" />
                           <span>
-                            {getTeamDisplayName(driver.teamName)} · {season}
+                            {getTeamDisplayName(driver.teamName, season)} · {season}
                           </span>
                         </div>
                       </div>
@@ -203,7 +207,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                             <strong className="block text-lg font-black text-studio-900">
                               {driver.podiums}
                             </strong>
-                            Podiums
+                            {lang === 'vi' ? 'Lần lên bục' : 'Podiums'}
                           </span>
                         </div>
                         <span className="text-right">

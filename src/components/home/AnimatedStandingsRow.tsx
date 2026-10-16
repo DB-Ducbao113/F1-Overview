@@ -117,8 +117,9 @@ export const AnimatedStandingsRow: React.FC<AnimatedStandingsRowProps> = ({
             </span>
           </span>
           <span className="text-[10px] text-studio-400 block mt-1">
-            {wins} {lang === 'vi' ? 'thắng' : wins === 1 ? 'win' : 'wins'} · {podiums}{' '}
-            {lang === 'vi' ? 'lần lên bục' : podiums === 1 ? 'podium' : 'podiums'}
+            {lang === 'vi'
+              ? `${wins} chiến thắng · ${podiums} lần lên bục`
+              : `${wins} ${wins === 1 ? 'win' : 'wins'} · ${podiums} ${podiums === 1 ? 'podium' : 'podiums'}`}
           </span>
         </div>
 
