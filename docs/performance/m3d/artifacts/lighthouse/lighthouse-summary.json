@@ -1,0 +1,350 @@
+{
+  "homepage": {
+    "desktop": [
+      {
+        "run": 1,
+        "durationMs": 20205,
+        "score": 100,
+        "fcp": 459,
+        "lcp": 784,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 593,
+        "mainThread": 382
+      },
+      {
+        "run": 2,
+        "durationMs": 10110,
+        "score": 100,
+        "fcp": 460,
+        "lcp": 782,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 623,
+        "mainThread": 400
+      },
+      {
+        "run": 3,
+        "durationMs": 11112,
+        "score": 100,
+        "fcp": 460,
+        "lcp": 780,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 614,
+        "mainThread": 399
+      },
+      {
+        "run": 4,
+        "durationMs": 10112,
+        "score": 100,
+        "fcp": 460,
+        "lcp": 779,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 638,
+        "mainThread": 411
+      },
+      {
+        "run": 5,
+        "durationMs": 11137,
+        "score": 100,
+        "fcp": 465,
+        "lcp": 787,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 706,
+        "mainThread": 487
+      }
+    ],
+    "mobile": [
+      {
+        "run": 1,
+        "durationMs": 10110,
+        "score": 84,
+        "fcp": 2232,
+        "lcp": 4159,
+        "tbt": 42,
+        "cls": 0,
+        "speedIndex": 2232,
+        "mainThread": 1378
+      },
+      {
+        "run": 2,
+        "durationMs": 11141,
+        "score": 84,
+        "fcp": 2136,
+        "lcp": 4186,
+        "tbt": 63,
+        "cls": 0,
+        "speedIndex": 2136,
+        "mainThread": 1581
+      },
+      {
+        "run": 3,
+        "durationMs": 11135,
+        "score": 84,
+        "fcp": 2227,
+        "lcp": 4150,
+        "tbt": 36,
+        "cls": 0,
+        "speedIndex": 2227,
+        "mainThread": 1468
+      },
+      {
+        "run": 4,
+        "durationMs": 11132,
+        "score": 84,
+        "fcp": 2233,
+        "lcp": 4163,
+        "tbt": 47,
+        "cls": 0,
+        "speedIndex": 2233,
+        "mainThread": 1430
+      },
+      {
+        "run": 5,
+        "durationMs": 10136,
+        "score": 84,
+        "fcp": 2231,
+        "lcp": 4158,
+        "tbt": 44,
+        "cls": 0,
+        "speedIndex": 2231,
+        "mainThread": 1332
+      }
+    ]
+  },
+  "season2026": {
+    "desktop": [
+      {
+        "run": 1,
+        "durationMs": 10122,
+        "score": 100,
+        "fcp": 437,
+        "lcp": 752,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 475,
+        "mainThread": 240
+      },
+      {
+        "run": 2,
+        "durationMs": 10114,
+        "score": 100,
+        "fcp": 441,
+        "lcp": 759,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 479,
+        "mainThread": 248
+      },
+      {
+        "run": 3,
+        "durationMs": 10107,
+        "score": 100,
+        "fcp": 443,
+        "lcp": 761,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 495,
+        "mainThread": 268
+      },
+      {
+        "run": 4,
+        "durationMs": 10114,
+        "score": 100,
+        "fcp": 444,
+        "lcp": 764,
+        "tbt": 0,
+        "cls": 0,
+        "speedIndex": 552,
+        "mainThread": 312
+      },
+      {
+        "run": 5,
+        "durationMs": 10121,
+        "score": 100,
+        "fcp": 440,
+        "lcp": 757,
+        "tbt": 0,
+        "cls": 0.0001,
+        "speedIndex": 488,
+        "mainThread": 260
+      }
+    ],
+    "mobile": [
+      {
+        "run": 1,
+        "durationMs": 10114,
+        "score": 85,
+        "fcp": 2151,
+        "lcp": 3999,
+        "tbt": 37,
+        "cls": 0,
+        "speedIndex": 2151,
+        "mainThread": 979
+      },
+      {
+        "run": 2,
+        "durationMs": 9110,
+        "score": 85,
+        "fcp": 2150,
+        "lcp": 3996,
+        "tbt": 33,
+        "cls": 0,
+        "speedIndex": 2150,
+        "mainThread": 943
+      },
+      {
+        "run": 3,
+        "durationMs": 10103,
+        "score": 85,
+        "fcp": 2158,
+        "lcp": 4013,
+        "tbt": 48,
+        "cls": 0,
+        "speedIndex": 2158,
+        "mainThread": 984
+      },
+      {
+        "run": 4,
+        "durationMs": 9115,
+        "score": 85,
+        "fcp": 2152,
+        "lcp": 4000,
+        "tbt": 36,
+        "cls": 0,
+        "speedIndex": 2152,
+        "mainThread": 967
+      },
+      {
+        "run": 5,
+        "durationMs": 9088,
+        "score": 85,
+        "fcp": 2148,
+        "lcp": 3992,
+        "tbt": 28,
+        "cls": 0,
+        "speedIndex": 2148,
+        "mainThread": 899
+      }
+    ]
+  },
+  "showroom": {
+    "desktop": [
+      {
+        "run": 1,
+        "durationMs": 12158,
+        "score": 49,
+        "fcp": 600,
+        "lcp": 2872,
+        "tbt": 2022,
+        "cls": 0.0001,
+        "speedIndex": 2304,
+        "mainThread": 3466
+      },
+      {
+        "run": 2,
+        "durationMs": 12116,
+        "score": 49,
+        "fcp": 603,
+        "lcp": 2845,
+        "tbt": 1958,
+        "cls": 0.0001,
+        "speedIndex": 2294,
+        "mainThread": 3411
+      },
+      {
+        "run": 3,
+        "durationMs": 12126,
+        "score": 49,
+        "fcp": 602,
+        "lcp": 2843,
+        "tbt": 1959,
+        "cls": 0.0001,
+        "speedIndex": 2276,
+        "mainThread": 3423
+      },
+      {
+        "run": 4,
+        "durationMs": 12113,
+        "score": 49,
+        "fcp": 601,
+        "lcp": 2843,
+        "tbt": 1900,
+        "cls": 0.0001,
+        "speedIndex": 2269,
+        "mainThread": 3315
+      },
+      {
+        "run": 5,
+        "durationMs": 12138,
+        "score": 49,
+        "fcp": 605,
+        "lcp": 2863,
+        "tbt": 1905,
+        "cls": 0.0001,
+        "speedIndex": 2303,
+        "mainThread": 3449
+      }
+    ],
+    "mobile": [
+      {
+        "run": 1,
+        "durationMs": 12116,
+        "score": 35,
+        "fcp": 3056,
+        "lcp": 16613,
+        "tbt": 8022,
+        "cls": 0.0001,
+        "speedIndex": 5574,
+        "mainThread": 12472
+      },
+      {
+        "run": 2,
+        "durationMs": 12124,
+        "score": 35,
+        "fcp": 3059,
+        "lcp": 16743,
+        "tbt": 8674,
+        "cls": 0.0001,
+        "speedIndex": 5634,
+        "mainThread": 12947
+      },
+      {
+        "run": 3,
+        "durationMs": 11140,
+        "score": 35,
+        "fcp": 3063,
+        "lcp": 16626,
+        "tbt": 8205,
+        "cls": 0.0001,
+        "speedIndex": 5606,
+        "mainThread": 12484
+      },
+      {
+        "run": 4,
+        "durationMs": 12131,
+        "score": 35,
+        "fcp": 3060,
+        "lcp": 16621,
+        "tbt": 8441,
+        "cls": 0.0001,
+        "speedIndex": 5639,
+        "mainThread": 12844
+      },
+      {
+        "run": 5,
+        "durationMs": 12146,
+        "score": 35,
+        "fcp": 3059,
+        "lcp": 16617,
+        "tbt": 8500,
+        "cls": 0.0001,
+        "speedIndex": 5595,
+        "mainThread": 12927
+      }
+    ]
+  }
+}
