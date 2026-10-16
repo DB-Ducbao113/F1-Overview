@@ -1,6 +1,8 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { STUDIO_TEXTURE_REVISION } from './showroomTextureCache';
+import { useShowroomTextureSet } from './useShowroomTextureSet';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import {
@@ -10,9 +12,34 @@ import {
   createAchievementsWallTexture,
 } from './StudioBackdropTexture';
 
+// Stable slot list for the bounded studio texture cache (module scope so the
+// acquireSet useMemo dependency stays referentially equal across renders).
+const STUDIO_SLOTS = ['north', 'south', 'west', 'east'] as const;
+
+const StudioReflectorFloor = React.memo(() => (
+  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
+    <planeGeometry args={[24, 24]} />
+    <MeshReflectorMaterial
+      blur={[300, 100]}
+      resolution={512}
+      mirror={0.55}
+      mixBlur={0.6}
+      mixStrength={2.0}
+      roughness={0.32}
+      depthScale={1.2}
+      minDepthThreshold={0.4}
+      maxDepthThreshold={1.4}
+      color="#2a303b"
+      metalness={0.4}
+    />
+  </mesh>
+));
+
 interface StudioW15StageProps {
   teamId: TeamId;
   lang?: 'vi' | 'en';
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
 }
 
 /**
@@ -26,42 +53,78 @@ interface StudioW15StageProps {
  * 5. 4 Sealed Corners (NW, NE, SW, SE): Chamfered architectural columns with floor-to-ceiling LED light pillars
  * 6. High-Fidelity Mirror Floor: Reflects the car, podium outline, and all 4 thematic exhibition walls in 360°
  */
-export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = 'vi' }) => {
+export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
+  teamId,
+  lang = 'vi',
+  readinessKey,
+  onScenePartReady,
+}) => {
   const invalidate = useThree((state) => state.invalidate);
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
 
-  // 1. North Wall: Official Constructor Premiere Branding (CADILLAC FORMULA 1)
-  const northTexture = useMemo(() => createTeamBackdropTexture(teamId, lang), [teamId, lang]);
+  // ── M3B.3: acquire the four studio backdrops through the bounded cache ──
+  // Cache key includes language so a language switch can never reuse a
+  // wrong-language backdrop. The component holds references only while it
+  // renders and releases them on unmount/StrictMode cleanup; the cache owns
+  // texture lifetime and disposal.
 
-  // 2. South Wall: Machine Technical Dossier (CADILLAC MAC-26 / W15 / SF-24)
-  const southTexture = useMemo(() => createTechnicalBackdropTexture(teamId, lang), [teamId, lang]);
+  const generateBackdropTexture = useCallback(
+    (slot: string) => {
+      switch (slot) {
+        case 'north':
+          return createTeamBackdropTexture(teamId, lang);
+        case 'south':
+          return createTechnicalBackdropTexture(teamId, lang);
+        case 'west':
+          return createDriversWallTexture(teamId, lang);
+        case 'east':
+          return createAchievementsWallTexture(teamId, lang);
+        default:
+          throw new Error(`Unknown studio texture slot: ${slot}`);
+      }
+    },
+    [teamId, lang],
+  );
 
-  // 3. West Wall (Left): Drivers Hall of Fame (Danh sách tay đua đã từng thi đấu)
-  const westTexture = useMemo(() => createDriversWallTexture(teamId, lang), [teamId, lang]);
+  const backdropTextures = useShowroomTextureSet(
+    'studio',
+    `${teamId}:${lang}:studio-v${STUDIO_TEXTURE_REVISION}`,
+    STUDIO_SLOTS,
+    generateBackdropTexture,
+  );
 
-  // 4. East Wall (Right): All-Time Constructor Achievements (Thành tích toàn thời gian)
-  const eastTexture = useMemo(() => createAchievementsWallTexture(teamId, lang), [teamId, lang]);
+  const northTexture = backdropTextures?.get('north');
+  const southTexture = backdropTextures?.get('south');
+  const westTexture = backdropTextures?.get('west');
+  const eastTexture = backdropTextures?.get('east');
 
-  useEffect(() => {
-    invalidate();
-  }, [eastTexture, invalidate, northTexture, southTexture, westTexture]);
-
-  useEffect(() => {
-    return () => {
-      northTexture.dispose();
-      southTexture.dispose();
-      westTexture.dispose();
-      eastTexture.dispose();
-    };
-  }, [northTexture, southTexture, westTexture, eastTexture]);
+  useLayoutEffect(() => {
+    if (backdropTextures) {
+      onScenePartReady(readinessKey, 'studio');
+      invalidate();
+    }
+  }, [
+    backdropTextures,
+    eastTexture,
+    invalidate,
+    northTexture,
+    onScenePartReady,
+    readinessKey,
+    southTexture,
+    westTexture,
+  ]);
 
   // Lightened studio so near-black carbon (suspension/diffuser/wings) keeps silhouette.
   // Was '#0b0d12' walls + '#07080c' floor — black parts dissolved into background.
   const studioWallColor = '#232a35';
   const panelFrameColor = '#2b323e';
 
+  // Avoid attaching an untextured studio during the commit-safe acquisition
+  // pass. The ready pass mounts the unchanged scene resources once.
+  if (!backdropTextures) return null;
+
   return (
-    <group position={[0, 0, 0]}>
+    <group name="showroom-studio" position={[0, 0, 0]}>
       {/* ── Studio Ambient & Global Photometric Lighting ── */}
       <ambientLight intensity={1.7} color="#ffffff" />
 
@@ -438,22 +501,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
       {/* ══════════════════════════════════════════════════════════════
           7. POLISHED LUXURY MIRROR FLOOR (MeshReflectorMaterial)
           ══════════════════════════════════════════════════════════════ */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
-        <planeGeometry args={[24, 24]} />
-        <MeshReflectorMaterial
-          blur={[300, 100]}
-          resolution={512}
-          mirror={0.55}
-          mixBlur={0.6}
-          mixStrength={2.0}
-          roughness={0.32}
-          depthScale={1.2}
-          minDepthThreshold={0.4}
-          maxDepthThreshold={1.4}
-          color="#2a303b"
-          metalness={0.4}
-        />
-      </mesh>
+      <StudioReflectorFloor />
 
       {/* ══════════════════════════════════════════════════════════════
           8. FLOOR DISPLAY PERIMETER BOX (cadillac.webp Podium Outline)

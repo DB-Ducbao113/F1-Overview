@@ -1,9 +1,15 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import type { CameraPreset } from './CameraController';
+import { CameraPreset } from './CameraController';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
+const LazyShowroomLoadingPanel = lazy(() =>
+  import('./Showroom3DLoader').then((module) => ({ default: module.ShowroomLoadingPanel })),
+);
+const ShowroomScene = lazy(() =>
+  import('./ShowroomScene').then((module) => ({ default: module.ShowroomScene })),
+);
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
@@ -13,15 +19,15 @@ import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
+import { disposeAll, getCacheStats } from './showroomTextureCache';
+import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
-
-const ShowroomScene = lazy(() =>
-  import('./ShowroomScene').then((module) => ({ default: module.ShowroomScene })),
-);
 
 interface WebGLFallbackProps {
   teamName: string;
@@ -29,6 +35,18 @@ interface WebGLFallbackProps {
   primaryColor: string;
   lang: 'vi' | 'en';
 }
+
+type ShowroomDiagnosticsWindow = Window & {
+  __SHOWROOM_CACHE_STATS__?: () => {
+    car: ReturnType<typeof getCacheStats>;
+    studio: ReturnType<typeof getCacheStats>;
+  };
+  __SHOWROOM_RENDERER_STATS__?: () => unknown;
+};
+
+const diagnosticsEnabled = (): boolean =>
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).has('showroomDiagnostics');
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -99,8 +117,25 @@ export const ShowroomView: React.FC = () => {
   // Active Camera Preset
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
   const [presetTrigger, setPresetTrigger] = useState<number>(0);
-  // 3D Visualizer auto-rotation
-  const [autoRotate, setAutoRotate] = useState<boolean>(true);
+
+  // ── Reduced motion (M3B.2) ──
+  // Tracks `prefers-reduced-motion: reduce` live so a mid-session preference
+  // change is honored. Auto-rotation starts OFF for affected users while the
+  // scene still renders on demand; manual camera, hotspot and livery controls
+  // and every piece of UI remain fully functional.
+  const reducedMotion = useReducedMotion();
+  const [autoRotate, setAutoRotate] = useState<boolean>(() => getDefaultAutoRotate(reducedMotion));
+  const prevReducedMotionRef = useRef(reducedMotion);
+
+  // When the preference turns ON, stop auto-rotation. When it turns OFF we do
+  // not force rotation back on; the user keeps control. Either way the scene
+  // revision includes the flag so the frame invalidator repaints without a
+  // reload.
+  useEffect(() => {
+    if (prevReducedMotionRef.current === reducedMotion) return;
+    prevReducedMotionRef.current = reducedMotion;
+    if (reducedMotion) setAutoRotate(false);
+  }, [reducedMotion]);
 
   // Engineering Hotspots Visibility (Clean default view matching studio photo)
   const [showHotspots, setShowHotspots] = useState<boolean>(false);
@@ -119,6 +154,29 @@ export const ShowroomView: React.FC = () => {
     () => typeof document === 'undefined' || document.visibilityState === 'visible',
   );
   const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+  const [contextRevision, setContextRevision] = useState(0);
+  const [usableSceneKey, setUsableSceneKey] = useState<string | null>(null);
+  const [readySceneParts, setReadySceneParts] = useState<{
+    key: string;
+    car: boolean;
+    studio: boolean;
+  }>({ key: '', car: false, studio: false });
+
+  // ── M3B.3: on route unmount, dispose every cached procedural texture. ──
+  // The Showroom is the only consumer; when it unmounts the WebGL context is
+  // torn down and retained GPU textures must be released with it.
+  useEffect(() => {
+    return () => disposeAll();
+  }, []);
+
+  useEffect(() => {
+    if (!diagnosticsEnabled()) return;
+    const diagnosticsWindow = window as ShowroomDiagnosticsWindow;
+    diagnosticsWindow.__SHOWROOM_CACHE_STATS__ = () => ({
+      car: getCacheStats('car'),
+      studio: getCacheStats('studio'),
+    });
+  }, []);
 
   useEffect(() => {
     const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
@@ -139,7 +197,47 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
-  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}`;
+
+  //M3C: mobile composition reacts to viewport-width crossings of the 1023 px
+  // breakpoint (rotation / window resize). The subscription fires only when
+  // the boolean flips, so ordinary resizes never re-render the Showroom.
+  const [isMobileLayout, setIsMobileLayout] = useState<boolean>(
+    () =>
+      resolveMobileLayout(typeof window === 'undefined' ? 1920 : window.innerWidth).isMobileLayout,
+  );
+
+  useEffect(() => {
+    const unsubscribe = subscribeMobileLayout(setIsMobileLayout);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+  const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
+  const isSceneUsable = usableSceneKey === startupSceneKey;
+  const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
+  const isStudioReady = readySceneParts.key === startupSceneKey && readySceneParts.studio;
+  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}`;
+
+  useEffect(() => {
+    if (isSceneUsable) performance.mark('showroom:loader-hidden');
+  }, [isSceneUsable]);
+
+  const handleWebGLContextStateChange = useCallback((isLost: boolean) => {
+    setIsWebGLContextLost(isLost);
+    if (!isLost) setContextRevision((revision) => revision + 1);
+  }, []);
+
+  const handleScenePartReady = useCallback((sceneKey: string, part: 'car' | 'studio') => {
+    setReadySceneParts((current) => {
+      const next =
+        current.key === sceneKey
+          ? { ...current, [part]: true }
+          : { key: sceneKey, car: part === 'car', studio: part === 'studio' };
+      return current.key === next.key && current.car === next.car && current.studio === next.studio
+        ? current
+        : next;
+    });
+  }, []);
 
   const handleToggleHotspots = useCallback(() => {
     setShowHotspots((prev) => !prev);
@@ -224,7 +322,7 @@ export const ShowroomView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsSchematicOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
                 title={
                   lang === 'vi'
                     ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
@@ -238,7 +336,7 @@ export const ShowroomView: React.FC = () => {
               <button
                 type="button"
                 onClick={scrollToDossier}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
               >
                 <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Technical Dossier'}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-f1red" />
@@ -281,16 +379,31 @@ export const ShowroomView: React.FC = () => {
 
         {/* Top Left Floating Team Badge with Official Logo */}
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
-            <div className="flex items-center gap-2">
+          <div
+            className={
+              isMobileLayout
+                ? 'p-2 rounded-2xl bg-studio-950/85 border border-studio-800/80 shadow-xl flex items-center gap-1.5 max-w-[190px]'
+                : 'p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs'
+            }
+          >
+            <div className="flex items-center gap-2 min-w-0">
               <ConstructorLogo teamId={selectedTeamId} size="sm" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                {team.name} · {livery.carModelName}
+              <span
+                className={
+                  isMobileLayout
+                    ? 'text-[10px] font-black uppercase tracking-wider text-white truncate'
+                    : 'text-[10px] font-black uppercase tracking-widest text-studio-400'
+                }
+              >
+                {team.name}
+                {!isMobileLayout && <> · {livery.carModelName}</>}
               </span>
             </div>
-            <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
-              {team.fullName}
-            </h2>
+            {!isMobileLayout && (
+              <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
+                {team.fullName}
+              </h2>
+            )}
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
               <p className="truncate">⚡ {team.powerUnit}</p>
               <p className="text-studio-400">
@@ -312,6 +425,7 @@ export const ShowroomView: React.FC = () => {
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
             onOpenSchematic={() => setIsSchematicOpen(true)}
+            isMobileLayout={isMobileLayout}
           />
         </div>
 
@@ -326,34 +440,41 @@ export const ShowroomView: React.FC = () => {
             />
           }
         >
-          <Suspense
-            fallback={
-              <div
-                role="status"
-                className="absolute inset-0 flex items-center justify-center bg-studio-950 text-sm text-studio-300"
-              >
-                {lang === 'vi' ? 'Đang chuẩn bị showroom 3D…' : 'Preparing the 3D showroom…'}
-              </div>
-            }
-          >
+          <Suspense fallback={null}>
             <ShowroomScene
               selectedTeamId={selectedTeamId}
               lang={lang}
               isCanvasActive={isCanvasActive}
+              frameloopMode={getFrameLoopMode(isCanvasActive)}
               sceneRevision={sceneRevision}
               activeHotspot={activeHotspot}
               handleSelectHotspot={handleSelectHotspot}
               showHotspots={showHotspots}
+              startupSceneKey={startupSceneKey}
+              handleScenePartReady={handleScenePartReady}
               cameraPreset={cameraPreset}
               presetTrigger={presetTrigger}
               autoRotate={autoRotate}
+              startupReady={isSceneUsable}
+              reducedMotion={reducedMotion}
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
               zoomDirection={zoomDirection}
               onContextStateChange={setIsWebGLContextLost}
+              isCarReady={isCarReady}
+              isStudioReady={isStudioReady}
+              setUsableSceneKey={setUsableSceneKey}
             />
           </Suspense>
         </ErrorBoundary>
+
+        {!isSceneUsable && !isWebGLContextLost && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-studio-950/35 pointer-events-none">
+            <Suspense fallback={null}>
+              <LazyShowroomLoadingPanel />
+            </Suspense>
+          </div>
+        )}
 
         {isWebGLContextLost && (
           <div className="absolute inset-0 z-30">
@@ -367,18 +488,20 @@ export const ShowroomView: React.FC = () => {
         )}
 
         {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
-        <ShowroomQuickHUD
-          enableWheelZoom={enableWheelZoom}
-          onToggleWheelZoom={handleToggleWheelZoom}
-          onZoom={handleZoom}
-          onResetView={handleResetView}
-          autoRotate={autoRotate}
-          onToggleAutoRotate={handleToggleAutoRotate}
-          cameraPreset={cameraPreset}
-          onSelectPreset={handleSelectPreset}
-          lang={lang}
-          onOpenSchematic={() => setIsSchematicOpen(true)}
-        />
+        <div className="absolute inset-x-0 bottom-0 pb-[env(safe-area-inset-bottom)] pointer-events-none m3c-hud-safe">
+          <ShowroomQuickHUD
+            enableWheelZoom={enableWheelZoom}
+            onToggleWheelZoom={handleToggleWheelZoom}
+            onZoom={handleZoom}
+            onResetView={handleResetView}
+            autoRotate={autoRotate}
+            onToggleAutoRotate={handleToggleAutoRotate}
+            cameraPreset={cameraPreset}
+            onSelectPreset={handleSelectPreset}
+            lang={lang}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
+          />
+        </div>
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
         <HotspotDetailsModal

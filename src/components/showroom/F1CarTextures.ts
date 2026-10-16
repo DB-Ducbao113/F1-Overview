@@ -11,6 +11,7 @@ export function createUVTexture(
   width: number,
   height: number,
   draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void,
+  contextOptions?: CanvasRenderingContext2DSettings,
 ): THREE.CanvasTexture {
   if (typeof document === 'undefined') {
     const fallbackTexture = new THREE.CanvasTexture(null as any);
@@ -22,7 +23,7 @@ export function createUVTexture(
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', contextOptions);
   if (ctx) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
@@ -4620,115 +4621,126 @@ export function generateWheelTexture(
   _sponsors?: TeamSponsorConfig,
   baseImage?: CanvasImageSource | null,
 ): THREE.CanvasTexture {
-  return createUVTexture(512, 512, (ctx, w, h) => {
-    const primaryHex = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
-    const secondaryHex = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
-    const coverHex = livery.wheelCoverColor || '#121417';
-    const rimHex = livery.wheelRimColor || livery.wheelAccentColor || '#ffffff';
-    const compound = livery.wheelPirelliCompound || 'soft';
+  return createUVTexture(
+    512,
+    512,
+    (ctx, w, h) => {
+      const primaryHex = livery.wheelAccentColor || livery.accentColor || '#ffdf00';
+      const secondaryHex = livery.wheelSecondaryColor || livery.highlightColor || '#ffffff';
+      const coverHex = livery.wheelCoverColor || '#121417';
+      const rimHex = livery.wheelRimColor || livery.wheelAccentColor || '#ffffff';
+      const compound = livery.wheelPirelliCompound || 'soft';
 
-    const parseHex = (hex: string) => {
-      const clean = hex.replace('#', '');
-      const num = parseInt(
-        clean.length === 3
-          ? clean
-              .split('')
-              .map((c) => c + c)
-              .join('')
-          : clean,
-        16,
-      );
-      return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
-    };
+      const parseHex = (hex: string) => {
+        const clean = hex.replace('#', '');
+        const num = parseInt(
+          clean.length === 3
+            ? clean
+                .split('')
+                .map((c) => c + c)
+                .join('')
+            : clean,
+          16,
+        );
+        return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+      };
 
-    const primaryRgb = parseHex(primaryHex);
-    const secondaryRgb = parseHex(secondaryHex);
-    const rimRgb = parseHex(rimHex);
-    const compColorRgb =
-      compound === 'soft'
-        ? [225, 6, 0] // Pirelli Soft Red
-        : compound === 'medium'
-          ? [254, 209, 0] // Pirelli Medium Yellow
-          : [255, 255, 255]; // Pirelli Hard White
+      const primaryRgb = parseHex(primaryHex);
+      const secondaryRgb = parseHex(secondaryHex);
+      const rimRgb = parseHex(rimHex);
+      const compColorRgb =
+        compound === 'soft'
+          ? [225, 6, 0] // Pirelli Soft Red
+          : compound === 'medium'
+            ? [254, 209, 0] // Pirelli Medium Yellow
+            : [255, 255, 255]; // Pirelli Hard White
 
-    if (baseImage) {
-      ctx.drawImage(baseImage, 0, 0, w, h);
-      const imgData = ctx.getImageData(0, 0, w, h);
-      const data = imgData.data;
+      if (baseImage) {
+        ctx.drawImage(baseImage, 0, 0, w, h);
+        // getImageData ignores the active 0.5 transform. Reading the logical
+        // 1024² area allocated four times more pixels than the physical 512²
+        // canvas, then discarded the out-of-bounds three quarters on writeback.
+        // Read only the physical pixels; this preserves every visible pixel.
+        const pixelWidth = ctx.canvas.width;
+        const pixelHeight = ctx.canvas.height;
+        const imgData = ctx.getImageData(0, 0, pixelWidth, pixelHeight);
+        const data = imgData.data;
 
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          const idx = (y * w + x) << 2;
-          const r = data[idx];
-          const g = data[idx + 1];
-          const b = data[idx + 2];
+        for (let y = 0; y < pixelHeight; y++) {
+          for (let x = 0; x < pixelWidth; x++) {
+            const idx = (y * pixelWidth + x) << 2;
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
 
-          // 1. Alfa Romeo Red pixel recolor (wheel aero vanes, lower rim flange)
-          if (r > 115 && g < 75 && b < 75) {
-            const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 180;
-            const target = y < 420 ? primaryRgb : rimRgb;
-            data[idx] = Math.min(255, Math.round(target[0] * lum));
-            data[idx + 1] = Math.min(255, Math.round(target[1] * lum));
-            data[idx + 2] = Math.min(255, Math.round(target[2] * lum));
-          }
-          // 2. Alfa Romeo White vanes on upper aero disc
-          else if (y < 420 && r > 195 && g > 195 && b > 195) {
-            data[idx] = Math.round(secondaryRgb[0] * 0.2 + 14);
-            data[idx + 1] = Math.round(secondaryRgb[1] * 0.2 + 14);
-            data[idx + 2] = Math.round(secondaryRgb[2] * 0.2 + 16);
-          }
-          // 3. Pirelli tire compound stripe
-          else if (x >= 230 && x <= 600 && y >= 640 && y <= 980) {
-            const dt = Math.hypot(x - 416, y - 810);
-            if (dt >= 180 && dt <= 218 && r > 200 && g > 200 && b > 200) {
-              data[idx] = compColorRgb[0];
-              data[idx + 1] = compColorRgb[1];
-              data[idx + 2] = compColorRgb[2];
+            // 1. Alfa Romeo Red pixel recolor (wheel aero vanes, lower rim flange)
+            if (r > 115 && g < 75 && b < 75) {
+              const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 180;
+              const target = y < 420 ? primaryRgb : rimRgb;
+              data[idx] = Math.min(255, Math.round(target[0] * lum));
+              data[idx + 1] = Math.min(255, Math.round(target[1] * lum));
+              data[idx + 2] = Math.min(255, Math.round(target[2] * lum));
+            }
+            // 2. Alfa Romeo White vanes on upper aero disc
+            else if (y < 420 && r > 195 && g > 195 && b > 195) {
+              data[idx] = Math.round(secondaryRgb[0] * 0.2 + 14);
+              data[idx + 1] = Math.round(secondaryRgb[1] * 0.2 + 14);
+              data[idx + 2] = Math.round(secondaryRgb[2] * 0.2 + 16);
+            }
+            // 3. Pirelli tire compound stripe
+            else if (x >= 230 && x <= 600 && y >= 640 && y <= 980) {
+              const dt = Math.hypot(x - 416, y - 810);
+              if (dt >= 180 && dt <= 218 && r > 200 && g > 200 && b > 200) {
+                data[idx] = compColorRgb[0];
+                data[idx + 1] = compColorRgb[1];
+                data[idx + 2] = compColorRgb[2];
+              }
             }
           }
         }
+        ctx.putImageData(imgData, 0, 0);
+      } else {
+        // Fallback procedural background
+        ctx.fillStyle = '#0f1115';
+        ctx.fillRect(0, 0, w, h);
+        drawCarbonWeave(ctx, w, h, coverHex);
       }
-      ctx.putImageData(imgData, 0, 0);
-    } else {
-      // Fallback procedural background
-      ctx.fillStyle = '#0f1115';
-      ctx.fillRect(0, 0, w, h);
-      drawCarbonWeave(ctx, w, h, coverHex);
-    }
 
-    // ── High-Precision Procedural Wheel Rendering ──
-    const cx = 454;
-    const cy = 190;
+      // ── High-Precision Procedural Wheel Rendering ──
+      const cx = 454;
+      const cy = 190;
 
-    // Direct branch based on actual car photo construction:
-    // Mercedes & Cadillac: Exposed BBS Multi-Spoke Magnesium Rims
-    // Other teams: Full Aerodynamic Carbon Wheel Covers with Team Graphics
-    if (teamId === 'mercedes') {
-      drawBBSMultiSpokeWheel(
-        ctx,
-        cx,
-        cy,
-        '#d8dce2', // BBS Silver spoke body
-        '#ffffff', // Specular highlight
-        '#4a505b', // Shadow bevel
-        '#00a19c', // PETRONAS Cyan hex lock nut
-        true, // isMercedes
-      );
-    } else if (teamId === 'cadillac') {
-      drawBBSMultiSpokeWheel(
-        ctx,
-        cx,
-        cy,
-        '#d4af37', // Imperial Champagne Gold spoke body
-        '#fae596', // Specular highlight
-        '#685210', // Shadow bevel
-        '#d4af37', // Imperial Gold hex lock nut
-        false, // isMercedes (uses Cadillac crest)
-      );
-    } else {
-      drawTeamAeroWheelCover(ctx, cx, cy, teamId, livery);
-    }
-  });
+      // Direct branch based on actual car photo construction:
+      // Mercedes & Cadillac: Exposed BBS Multi-Spoke Magnesium Rims
+      // Other teams: Full Aerodynamic Carbon Wheel Covers with Team Graphics
+      if (teamId === 'mercedes') {
+        drawBBSMultiSpokeWheel(
+          ctx,
+          cx,
+          cy,
+          '#d8dce2', // BBS Silver spoke body
+          '#ffffff', // Specular highlight
+          '#4a505b', // Shadow bevel
+          '#00a19c', // PETRONAS Cyan hex lock nut
+          true, // isMercedes
+        );
+      } else if (teamId === 'cadillac') {
+        drawBBSMultiSpokeWheel(
+          ctx,
+          cx,
+          cy,
+          '#d4af37', // Imperial Champagne Gold spoke body
+          '#fae596', // Specular highlight
+          '#685210', // Shadow bevel
+          '#d4af37', // Imperial Gold hex lock nut
+          false, // isMercedes (uses Cadillac crest)
+        );
+      } else {
+        drawTeamAeroWheelCover(ctx, cx, cy, teamId, livery);
+      }
+    },
+    { willReadFrequently: true },
+  );
 }
 
 // ─────────────────────────────────────────────────────────────

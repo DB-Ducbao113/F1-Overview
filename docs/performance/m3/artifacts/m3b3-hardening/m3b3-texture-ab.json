@@ -1,0 +1,474 @@
+{
+  "language": [
+    {
+      "step": "initial",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 26,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "English",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 25
+          },
+          "render": {
+            "frame": 38,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Tiếng Việt",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 25
+          },
+          "render": {
+            "frame": 50,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "English",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 2,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 25
+          },
+          "render": {
+            "frame": 62,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Tiếng Việt",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 3,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 25
+          },
+          "render": {
+            "frame": 74,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "English",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 4,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 25
+          },
+          "render": {
+            "frame": 86,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    }
+  ],
+  "teams": [
+    {
+      "step": "initial",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 21
+          },
+          "render": {
+            "frame": 33,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Ferrari",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 45,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "McLaren",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 3
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 3
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 57,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Mercedes",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 4
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 4
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 69,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Ferrari",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 5
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 5
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 81,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    },
+    {
+      "step": "Mercedes",
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 1,
+            "misses": 5
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 34
+          },
+          "render": {
+            "frame": 93,
+            "calls": 47,
+            "triangles": 237836,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        }
+      }
+    }
+  ]
+}

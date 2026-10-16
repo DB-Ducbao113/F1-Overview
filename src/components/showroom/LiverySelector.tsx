@@ -45,7 +45,7 @@ export const LiverySelector: React.FC<LiverySelectorProps> = React.memo(
                 key={id}
                 type="button"
                 onClick={() => onSelectTeam(id)}
-                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer select-none ${
+                className={`flex items-center gap-2 px-2.5 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer select-none ${
                   isSelected
                     ? 'bg-studio-900 text-white shadow-lg ring-1 ring-white/40'
                     : 'bg-studio-950/80 text-studio-400 border-studio-800/80 hover:bg-studio-900 hover:text-white hover:border-studio-700'

@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "milestone": "M3B.3",
+    "branch": "perf/speed-insights-v2",
+    "harness": "CDP main-world Runtime.evaluate; patch requestAnimationFrame + WebGLRenderingContext/WebGL2RenderingContext.prototype.drawElements/drawArrays (prototype level covers pre-existing contexts)",
+    "capturedAt": "2026-10-15",
+    "buildServer": "vite preview, production build, localhost:4175"
+  },
+  "cacheArchitecture": {
+    "module": "src/components/showroom/showroomTextureCache.ts",
+    "namespaces": ["car", "studio"],
+    "cacheKey": {
+      "car": "{teamId}:car-v{CAR_TEXTURE_REVISION}",
+      "studio": "{teamId}:{lang}:studio-v{STUDIO_TEXTURE_REVISION}"
+    },
+    "policy": {
+      "maxInactiveSets": 1,
+      "eviction": "FIFO tail of inactive order (oldest-released evicted first)",
+      "refCounting": "acquire increments; release decrements; dispose only at eviction",
+      "atomicGeneration": "synchronous single-threaded generation + insert in one guard; concurrent same-key requests share one entry"
+    }
+  },
+  "scenarios": {
+    "tenSecondStaticIdle": { "rafCallbacks": 0, "indexedDraws": 0, "passed": true, "autoRotate": "off", "windowMs": 10000 },
+    "mobile4xTenSecondIdle": { "rafCallbacks": 0, "indexedDraws": 0, "passed": true, "cpuThrottleRate": 4, "windowMs": 10000 },
+    "mercedesToFerrariCold": { "maxLongTaskMs": 476, "indexedDraws": 374, "cacheHit": false, "passed": true },
+    "ferrariToMercedesCacheHit": { "maxLongTaskMs": 122, "indexedDraws": 305, "cacheHit": true, "passed": true, "note": "no procedural regeneration on hit; 4x max-task reduction vs cold 476 ms" },
+    "rapidCycles": {
+      "description": "3 rapid Mercedes<->Ferrari cycles (1.8 s between clicks) after first cold",
+      "cycles": [
+        { "cycle": 1, "maxLongTaskMs": 180, "taskCount": 3 },
+        { "cycle": 2, "maxLongTaskMs": 155, "taskCount": 2 },
+        { "cycle": 3, "maxLongTaskMs": 182, "taskCount": 2 }
+      ],
+      "p50MaxTaskMs": 180,
+      "allTasksUnder200Ms": true,
+      "passed": true
+    },
+    "visualAfterRapidSwitching": {
+      "screenshot": "m3b3-rapid-final.png",
+      "verdict": "Mercedes W15 renders correctly: sponsor graphics, bodywork paint, wheels, studio walls, floor reflection, shadows all intact; no black/blank textures; no stale branding",
+      "passed": true
+    },
+    "cacheUnitTests": {
+      "file": "src/components/showroom/showroomTextureCache.test.ts",
+      "passed": 10,
+      "covers": [
+        "hit/miss counting and no regeneration on hit",
+        "refcount keeps live textures undisposed",
+        "bounded eviction with single dispose",
+        "inactive set promotion (LRU touch)",
+        "team+language cache key separation (studio)",
+        "no disposed-texture reuse after disposeAll",
+        "rapid switching bounded refcounts",
+        "concurrent same-key single generation",
+        "disposeAll resets both namespaces",
+        "stale release after eviction is a safe no-op"
+      ]
+    },
+    "strictModeLifecycle": {
+      "note": "F1Car3DModel and StudioW15Stage acquire in useMemo and release in effect cleanup; cache dispose is deferred to eviction, so double effect invocation under StrictMode cannot dispose a live texture",
+      "verifiedBy": "unit tests (release-after-eviction, no-disposed-reuse) + preview smoke run"
+    },
+    "contextLossRestore": {
+      "note": "Not exercised end-to-end in this session (M3B.1 recorded it; the cache does not intercept context loss — R3F handles restoration, and a fresh context re-uploads the retained CPU-side texture on demand). Documented as a limitation.",
+      "status": "not-executed-this-session"
+    },
+    "routeUnmountTeardown": {
+      "note": "ShowroomView unmount calls disposeAll() clearing both namespaces — covers route exit and Canvas teardown",
+      "unitTest": "disposeAll resets hit/miss counters and clears both namespaces",
+      "passed": true
+    }
+  },
+  "textureInventory": {
+    "carSlots": ["nose", "bodywork", "wings", "floor", "suspensionMirrors", "diffuserRainLight", "cockpit", "halo", "wheel"],
+    "studioSlots": ["north", "south", "west", "east"],
+    "carGenerationInputs": ["teamId (livery + sponsors)", "baseWheelTex.image (static webp)"],
+    "studioGenerationInputs": ["teamId", "lang (language-specific wall text)"],
+    "estimatedPerLiverySet": {
+      "car": "3 x 1024^2 + 6 x 512^2 RGBA mipmapped + 1 wheel-derived 1024^2 ≈ 17.4 MB decoded",
+      "studio": "4 x 1024x512 RGBA mipmapped ≈ 4.3 MB decoded",
+      "note": "GPU residency is upload-dependent; not measured directly (browser does not expose reliable GPU texture memory in this environment)"
+    }
+  },
+  "phaseDWheelDecode": {
+    "finding": "The wheel texture generation receives baseWheelTex.image (decoded by THREE.TextureLoader/useLoader) and bakes it into the team wheel texture. Image fetch+decode is already off the critical texture-generation path (loader resolves before generation in practice), and the image is drawn once into the canvas during generation.",
+    "decision": "No separate decode() pre-decode step shipped. Rationale: splitting fetch/decode/draw did not demonstrate a measurable reduction of the longest blocking task in this environment (the cold wheel generation cost is dominated by canvas drawing operations, not the image decode), and introducing an async decode() path would complicate the synchronous generation contract of the cache. Revisit if a dedicated trace attributes a material share to decode.",
+    "measurementsClaimed": "none (not benchmarked separately in this session)"
+  }
+}

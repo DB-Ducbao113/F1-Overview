@@ -4,6 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { HotspotItem } from '../../data/showroom/hotspotsData';
+import { getDampingTailMs } from './showroomMotionState';
 
 export type CameraPreset =
   | 'overview'
@@ -25,6 +26,10 @@ interface CameraControllerProps {
   cameraPreset?: CameraPreset | null;
   presetTrigger?: number; // Increment to force re-transition even if same preset is clicked
   autoRotate: boolean;
+  /** Hold camera animation until the first complete scene frame is ready. */
+  startupReady?: boolean;
+  /** M3B.2: settle damping instantly and never auto-rotate for reduced-motion users. */
+  reducedMotion?: boolean;
   enableWheelZoom?: boolean;
   zoomTrigger?: number; // Increment to trigger programmatic zoom
   zoomDirection?: 'in' | 'out' | null;
@@ -95,6 +100,8 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     cameraPreset,
     presetTrigger = 0,
     autoRotate,
+    startupReady = true,
+    reducedMotion = false,
     enableWheelZoom = false, // Default false: mouse wheel scrolls webpage, doesn't trap user
     zoomTrigger = 0,
     zoomDirection = null,
@@ -102,6 +109,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     const { camera, invalidate } = useThree();
     const controlsRef = useRef<OrbitControlsImpl>(null);
     const isInteracting = useRef(false);
+    const firstInteractionMarked = useRef(false);
     const dampingUntil = useRef(0);
 
     const desiredPos = useRef(DEFAULT_POS.clone());
@@ -140,8 +148,22 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
       invalidate();
     }, [zoomTrigger, zoomDirection, camera, invalidate]);
 
+    useEffect(() => {
+      if (!reducedMotion || !controlsRef.current) return;
+      dampingUntil.current = 0;
+      controlsRef.current.enableDamping = false;
+      controlsRef.current.update();
+      invalidate();
+    }, [invalidate, reducedMotion]);
+
     useFrame((_, delta) => {
       if (!controlsRef.current) return;
+      if (!startupReady) return;
+
+      if (isInteracting.current && !firstInteractionMarked.current) {
+        firstInteractionMarked.current = true;
+        performance.mark('showroom:first-camera-interaction');
+      }
 
       if (isTransitioning.current) {
         const factor = Math.min(delta * 3.5, 1);
@@ -175,7 +197,7 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
         isTransitioning.current ||
         isInteracting.current ||
         dampingActive ||
-        (autoRotate && !activeHotspot)
+        (autoRotate && !activeHotspot && !reducedMotion)
       ) {
         invalidate();
       }
@@ -184,26 +206,26 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     return (
       <OrbitControls
         ref={controlsRef}
-        enableDamping
+        enableDamping={!reducedMotion}
         dampingFactor={0.06}
         maxPolarAngle={Math.PI / 2 + 0.02} // Prevent camera going below floor
         minDistance={0.8}
         maxDistance={14.0}
         enableZoom={enableWheelZoom} // If false, mouse wheel scrolls web page naturally
-        autoRotate={autoRotate && !activeHotspot}
+        autoRotate={startupReady && autoRotate && !activeHotspot && !reducedMotion}
         autoRotateSpeed={0.8}
         onStart={() => {
           // User manually dragged the mouse: pause programmatic transition
           isTransitioning.current = false;
           isInteracting.current = true;
           dampingUntil.current = 0;
-          if (controlsRef.current) controlsRef.current.enableDamping = true;
+          if (controlsRef.current) controlsRef.current.enableDamping = !reducedMotion;
           invalidate();
         }}
         onChange={() => invalidate()}
         onEnd={() => {
           isInteracting.current = false;
-          dampingUntil.current = performance.now() + 2000;
+          dampingUntil.current = performance.now() + getDampingTailMs(reducedMotion);
           invalidate();
         }}
       />

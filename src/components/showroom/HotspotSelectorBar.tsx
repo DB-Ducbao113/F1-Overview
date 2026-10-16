@@ -54,7 +54,7 @@ export const HotspotSelectorBar: React.FC<HotspotSelectorBarProps> = React.memo(
                   key={h.id}
                   type="button"
                   onClick={() => onSelectHotspot(h)}
-                  className={`flex items-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer ${
+                  className={`flex items-center gap-2 py-2 px-3 min-h-[44px] sm:min-h-0 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer ${
                     isSelected
                       ? 'bg-gradient-to-r from-f1red to-red-700 text-white border-white/60 shadow-lg shadow-f1red/30 scale-105'
                       : 'bg-studio-900/90 text-studio-300 border-studio-800 hover:bg-studio-850 hover:text-white hover:border-studio-700'

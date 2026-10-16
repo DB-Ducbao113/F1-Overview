@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "milestone": "M3B.2",
+    "branch": "perf/speed-insights-v2",
+    "baseline": "M3B.1 artifacts/m3b1-interaction-qa.json",
+    "capturedAt": "PENDING",
+    "note": "Browser-instrumented scenarios are pending execution with the M3B.1 harness. Local static checks (lint/format/tests/coverage/build) were executed and are recorded below. No unexecuted browser measurement is fabricated."
+  },
+  "localStaticChecks": {
+    "lint": {
+      "passed": true
+    },
+    "formatCheck": {
+      "passed": true,
+      "note": "one Prettier pass over touched files"
+    },
+    "tests": {
+      "passed": true,
+      "files": 30,
+      "tests": 224,
+      "previousFiles": 29,
+      "previousTests": 215
+    },
+    "coverage": {
+      "passed": true,
+      "statementsPct": 63.2,
+      "branchesPct": 59.8,
+      "functionsPct": 68.51,
+      "linesPct": 63.96
+    },
+    "build": {
+      "passed": true,
+      "initialJsGzipKiB": 109.7,
+      "budgetGzipKiB": 180,
+      "showroomChunkGzipKiB": 90.95,
+      "vendorThreeGzipKiB": 249.28
+    }
+  },
+  "implementation": {
+    "motionStates": [
+      "initial",
+      "autoRotate",
+      "orbit",
+      "damping",
+      "preset",
+      "static",
+      "hidden",
+      "offscreen",
+      "contextLost"
+    ],
+    "frameRequestingStates": [
+      "initial",
+      "autoRotate",
+      "orbit",
+      "damping",
+      "preset"
+    ],
+    "reducedMotion": {
+      "autoRotateDefault": false,
+      "autoRotateForcedOffInCamera": true,
+      "dampingTailMs": 0,
+      "dampingEnabled": false,
+      "livePreferenceTracking": true,
+      "sceneRevisionIncludesFlag": true,
+      "cssContinuousAnimationsDisabled": [
+        "animate-pulse",
+        "animate-ping",
+        "animate-bounce",
+        "animate-spin",
+        "animate-float-gentle",
+        "animate-pulse-cyan",
+        "animate-glow-red",
+        "animate-car-entrance",
+        "animate-ticker-marquee",
+        "animate-streamline"
+      ],
+      "preservedControls": [
+        "manual orbit drag",
+        "wheel zoom mode",
+        "programmatic zoom buttons",
+        "camera presets",
+        "hotspot open/close",
+        "livery switching",
+        "language switching"
+      ]
+    }
+  },
+  "scenarios": {
+    "staticIdle": {
+      "status": "pending",
+      "expected": "0 RAF callbacks and 0 draws over a settled window, matching M3B.1",
+      "unitTestCoverage": "resolveMotionState settled input -> 'static', shouldRequestFrames -> false"
+    },
+    "reducedMotionIdle": {
+      "status": "pending",
+      "expected": "auto-rotation defaults off; 0 RAF callbacks and 0 draws; no damping tail after drag"
+    },
+    "reducedMotionPreferenceChangeWhileOpen": {
+      "status": "pending",
+      "expected": "turning ON stops auto-rotation and repaints once via sceneRevision; turning OFF does not force rotation back on"
+    },
+    "autoRotateOn": {
+      "status": "pending",
+      "expected": "comparable to M3B.1 285 callbacks / 31,768 indexed draws over 10 s; continuous by design"
+    },
+    "cameraPresetTransition": {
+      "status": "pending",
+      "expected": "finite frames during lerp, 0 draws in settled 5 s, matching M3B.1"
+    },
+    "orbitDragAndDamping": {
+      "status": "pending",
+      "expected": "renders during contact and the 2 s tail for normal users; 0 draws in settled 5 s"
+    },
+    "liverySwitch": {
+      "status": "pending",
+      "expected": "finite draws then settled idle"
+    },
+    "hotspotOpen": {
+      "status": "pending",
+      "expected": "finite draws then settled idle"
+    },
+    "hiddenTab3s": {
+      "status": "pending",
+      "expected": "0 callbacks and 0 draws"
+    },
+    "offscreen3s": {
+      "status": "pending",
+      "expected": "0 callbacks and 0 draws"
+    },
+    "contextRestore": {
+      "status": "pending",
+      "expected": "restored frame renders once"
+    },
+    "viewportOverflow": {
+      "status": "pending",
+      "widths": [
+        390,
+        768,
+        1280,
+        1440,
+        1920
+      ],
+      "expected": "0 px document overflow at every width; no frozen frames; no camera jumps"
+    }
+  },
+  "unitTests": {
+    "file": "src/components/showroom/showroomMotionState.test.ts",
+    "passed": 9,
+    "covers": [
+      "settled scene resolves to static without frame requests",
+      "all five active states request frames",
+      "hidden/off-screen/contextLost pause frames",
+      "state precedence: preset > orbit > damping > autoRotate",
+      "reduced motion disables auto-rotate default and damping tail",
+      "reduced-motion damping input resolves to static",
+      "frame loop mode demand/never mapping",
+      "reduced-motion subscription live-updates and unsubscribes",
+      "safe null behavior without matchMedia"
+    ]
+  }
+}

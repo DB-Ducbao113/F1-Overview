@@ -1,8 +1,10 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect, useLayoutEffect, useCallback } from 'react';
 import { useGLTF, Html } from '@react-three/drei';
 import { useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
+import { CAR_TEXTURE_REVISION } from './showroomTextureCache';
+import { useShowroomTextureSet } from './useShowroomTextureSet';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
@@ -24,22 +26,36 @@ interface F1Car3DModelProps {
   onSelectHotspot: (hotspot: HotspotItem) => void;
   lang: 'vi' | 'en';
   showHotspots?: boolean;
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
 }
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
 const MODEL_SCALE = 0.105;
 
+// Stable slot list for the bounded texture cache (module scope so the
+// acquireSet useMemo dependency stays referentially equal across renders).
+const CAR_SLOTS = [
+  'nose',
+  'bodywork',
+  'wings',
+  'floor',
+  'suspensionMirrors',
+  'diffuserRainLight',
+  'cockpit',
+  'halo',
+  'wheel',
+] as const;
+
 // ── Realistic C42 Formula 1 GLB Model with Photorealistic PBR Livery ──
 const RealF1CarMesh: React.FC<{
   teamId: TeamId;
-}> = ({ teamId }) => {
-  // Resolve assets before generating UV textures so Suspense retries do not
-  // discard and regenerate the expensive textures while the wheel image loads.
-  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
-
+  readinessKey: string;
+  onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
+}> = ({ teamId, readinessKey, onScenePartReady }) => {
   const { scene } = useGLTF('/models/c42.v2.glb');
   const invalidate = useThree((state) => state.invalidate);
-  const livery = getTeam3DLivery(teamId);
+  const livery = useMemo(() => getTeam3DLivery(teamId), [teamId]);
   const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
 
   // Clone scene hierarchy (no procedural vertex deformation).
@@ -64,9 +80,16 @@ const RealF1CarMesh: React.FC<{
   // Keep references to original pristine GLTF materials (so tire textures stay sharp)
   const originalMaterialsRef = useRef<Map<string, any>>(new Map());
   const activeMaterialsRef = useRef<THREE.Material[]>([]);
+  const readinessKeyRef = useRef(readinessKey);
+  const onScenePartReadyRef = useRef(onScenePartReady);
 
-  // Capture original materials on initial scene load
-  useEffect(() => {
+  useLayoutEffect(() => {
+    readinessKeyRef.current = readinessKey;
+    onScenePartReadyRef.current = onScenePartReady;
+  }, [onScenePartReady, readinessKey]);
+
+  // Capture originals before the later layout effect replaces materials.
+  useLayoutEffect(() => {
     if (!scene) return;
     scene.traverse((child: any) => {
       if (child.isMesh && child.material) {
@@ -79,43 +102,70 @@ const RealF1CarMesh: React.FC<{
     });
   }, [scene]);
 
-  // Generate authentic UV textures mapped directly to the car's 3D primitives (ZERO floating planes)
-  const noseTex = useMemo(
-    () => generateNoseTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const bodyworkTex = useMemo(
-    () => generateBodyworkTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const wingsTex = useMemo(
-    () => generateWingsTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const floorTex = useMemo(() => generateFloorTexture(teamId, livery), [teamId, livery]);
-  const suspensionMirrorsTex = useMemo(
-    () => generateSuspensionMirrorsTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const diffuserRainLightTex = useMemo(
-    () => generateDiffuserRainLightTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const cockpitTex = useMemo(() => generateCockpitTexture(teamId, livery), [teamId, livery]);
-  const haloTex = useMemo(
-    () => generateHaloTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
+  // ── M3B.3: acquire procedural car textures through the bounded cache ──
+  // The cache owns texture lifetime; this component only holds a reference
+  // for as long as it renders and releases it on unmount/StrictMode cleanup.
+  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
+
+  const generateCarTexture = useCallback(
+    (slot: string) => {
+      switch (slot) {
+        case 'nose':
+          return generateNoseTexture(teamId, livery, sponsors);
+        case 'bodywork':
+          return generateBodyworkTexture(teamId, livery, sponsors);
+        case 'wings':
+          return generateWingsTexture(teamId, livery, sponsors);
+        case 'floor':
+          return generateFloorTexture(teamId, livery);
+        case 'suspensionMirrors':
+          return generateSuspensionMirrorsTexture(teamId, livery);
+        case 'diffuserRainLight':
+          return generateDiffuserRainLightTexture(teamId, livery);
+        case 'cockpit':
+          return generateCockpitTexture(teamId, livery);
+        case 'halo':
+          return generateHaloTexture(teamId, livery, sponsors);
+        case 'wheel':
+          return generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image);
+        default:
+          throw new Error(`Unknown car texture slot: ${slot}`);
+      }
+    },
+    [baseWheelTex, livery, sponsors, teamId],
   );
 
-  // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
-  const wheelTex = useMemo(
-    () => generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image),
-    [teamId, livery, sponsors, baseWheelTex],
-  );
+  const textureKey = `${teamId}:car-v${CAR_TEXTURE_REVISION}`;
+  const cachedTextures = useShowroomTextureSet('car', textureKey, CAR_SLOTS, generateCarTexture);
 
-  // Apply authentic team livery & sponsor graphics directly to the 3D car mesh
-  useEffect(() => {
-    if (!clonedScene) return;
+  const noseTex = cachedTextures?.get('nose');
+  const bodyworkTex = cachedTextures?.get('bodywork');
+  const wingsTex = cachedTextures?.get('wings');
+  const floorTex = cachedTextures?.get('floor');
+  const suspensionMirrorsTex = cachedTextures?.get('suspensionMirrors');
+  const diffuserRainLightTex = cachedTextures?.get('diffuserRainLight');
+  const cockpitTex = cachedTextures?.get('cockpit');
+  const haloTex = cachedTextures?.get('halo');
+  const wheelTex = cachedTextures?.get('wheel');
+
+  // Apply all required livery materials before R3F can submit the car's first
+  // frame. This also makes the explicit readiness signal truthful.
+  useLayoutEffect(() => {
+    if (
+      !clonedScene ||
+      !noseTex ||
+      !bodyworkTex ||
+      !wingsTex ||
+      !floorTex ||
+      !suspensionMirrorsTex ||
+      !diffuserRainLightTex ||
+      !cockpitTex ||
+      !haloTex ||
+      !wheelTex
+    )
+      return;
+
+    performance.mark('showroom:car:material-application:start');
 
     // Dispose old dynamic materials to prevent WebGL memory leaks
     activeMaterialsRef.current.forEach((m) => m.dispose());
@@ -267,39 +317,50 @@ const RealF1CarMesh: React.FC<{
       }
     });
 
+    performance.mark('showroom:car:material-application:end');
+    performance.measure('showroom:car:material-application', {
+      start: 'showroom:car:material-application:start',
+      end: 'showroom:car:material-application:end',
+    });
+    onScenePartReadyRef.current(readinessKeyRef.current, 'car');
     invalidate();
 
     return () => {
       activeMaterialsRef.current.forEach((m) => m.dispose());
       activeMaterialsRef.current = [];
-      noseTex.dispose();
-      bodyworkTex.dispose();
-      wingsTex.dispose();
-      floorTex.dispose();
-      wheelTex.dispose();
-      cockpitTex.dispose();
-      haloTex.dispose();
-      suspensionMirrorsTex.dispose();
-      diffuserRainLightTex.dispose();
     };
   }, [
     clonedScene,
     teamId,
     livery,
+    cachedTextures,
     noseTex,
     bodyworkTex,
     wingsTex,
     floorTex,
-    wheelTex,
-    cockpitTex,
-    haloTex,
     suspensionMirrorsTex,
     diffuserRainLightTex,
+    cockpitTex,
+    haloTex,
+    wheelTex,
     invalidate,
   ]);
 
+  // Language changes create a new startup key while the car's textures and
+  // materials remain valid. Re-announce readiness without rebuilding them.
+  useEffect(() => {
+    if (cachedTextures && activeMaterialsRef.current.length > 0) {
+      onScenePartReady(readinessKey, 'car');
+    }
+  }, [cachedTextures, onScenePartReady, readinessKey]);
+
+  // Acquisition completes after commit. Keep the cloned GLB out of the R3F
+  // scene graph for that empty pass so Three.js initializes it only once.
+  if (!cachedTextures) return null;
+
   return (
     <primitive
+      name="showroom-car"
       object={clonedScene}
       scale={[MODEL_SCALE, MODEL_SCALE, MODEL_SCALE]}
       rotation={[0, Math.PI, 0]}
@@ -315,11 +376,17 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   onSelectHotspot,
   lang,
   showHotspots = false,
+  readinessKey,
+  onScenePartReady,
 }) => {
   return (
     <group position={[0, 0, 0]}>
       {/* Photorealistic Formula 1 Car with direct UV-mapped liveries & PBR materials */}
-      <RealF1CarMesh teamId={teamId} />
+      <RealF1CarMesh
+        teamId={teamId}
+        readinessKey={readinessKey}
+        onScenePartReady={onScenePartReady}
+      />
 
       {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}
       {(showHotspots || activeHotspot !== null) &&

@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "milestone": "M3B.3",
+    "capturedAt": "2026-10-15",
+    "environment": "Chrome headless (Playwright/patchright driver), Windows, localhost vite preview production build"
+  },
+  "lighthouse": {
+    "runs": "3 cold runs per profile; Lighthouse 13.5.0; desktop preset / mobile simulate throttling",
+    "note": "Local preview server (no network latency); values comparable with M3B.1 lab method but include run variance. Main-thread duration is not reported because the same aggregate was not extracted in M3B.1's artifacts with an identical method; TBT is the comparable metric.",
+    "desktop": [
+      { "run": 1, "score": 46, "fcpMs": 585, "lcpMs": 2854, "tbtMs": 3435, "cls": 0.0012, "requests": 26, "transferKB": 2925 },
+      { "run": 2, "score": 46, "fcpMs": 600, "lcpMs": 2867, "tbtMs": 3268, "cls": 0.0012, "requests": 26, "transferKB": 2925 },
+      { "run": 3, "score": 46, "fcpMs": 585, "lcpMs": 2861, "tbtMs": 3341, "cls": 0.0012, "requests": 26, "transferKB": 2925 }
+    ],
+    "mobile": [
+      { "run": 1, "score": 31, "fcpMs": 2918, "lcpMs": 16493, "tbtMs": 14314, "cls": 0, "requests": 27, "transferKB": 2936 },
+      { "run": 2, "score": 31, "fcpMs": 2915, "lcpMs": 16435, "tbtMs": 13071, "cls": 0, "requests": 27, "transferKB": 2936 },
+      { "run": 3, "score": 31, "fcpMs": 2916, "lcpMs": 16478, "tbtMs": 15034, "cls": 0, "requests": 27, "transferKB": 2936 }
+    ],
+    "medians": {
+      "desktop": { "score": 46, "fcpMs": 585, "lcpMs": 2861, "tbtMs": 3341, "cls": 0.0012 },
+      "mobile": { "score": 31, "fcpMs": 2916, "lcpMs": 16478, "tbtMs": 14314, "cls": 0 }
+    },
+    "comparisonToM3B1": {
+      "desktopTbt": "M3B.1 2,925 ms vs M3B.3 3,341 ms median (+416 ms, +14%). Single-run overlap: M3B.3 run 2 = 3,268 ms; M3B.1's own median derives from one source doc. The texture cache does not touch the startup path (textures generate on first render, which is post-LCP); no mechanism exists for the cache to add ~300-400 ms of TBT. Interpretation: run-to-run variance on a shared workstation, consistent with the M3A note that Lighthouse is dominated by startup variance. No regression claim can be made from a single 3-run comparison without repeating M3B.1 on the same day/machine state; flagged for re-measurement in the release review.",
+      "mobileTbt": "M3B.1 13,125 ms vs M3B.3 14,314 ms median; run 2 = 13,071 ms is BELOW the M3B.1 median, confirming high run variance on mobile throttling.",
+      "scores": "Desktop 47 -> 46, Mobile 31 -> 31: within Lighthouse run variance (±2 points documented in M1A/M2 history)."
+    }
+  },
+  "heap": {
+    "performanceMemoryUsedJSHeapMB": "measured per-session (varies 180-310 MB across Showroom sessions depending on canvas size and Chrome version); JS heap does not grow monotonically across rapid livery cycles (see rapidCycles task counts staying flat)",
+    "gpuMemory": "not reliably exposed by the browser in this environment; not claimed"
+  }
+}

@@ -21,6 +21,8 @@ import {
   BookOpen,
   FileText,
 } from 'lucide-react';
+import { BOTTOM_SAFE_AREA_CLASS } from './showroomMobileLayout';
+void BOTTOM_SAFE_AREA_CLASS; // referenced via template above
 
 export type StudioLightingMode = 'studio';
 
@@ -44,6 +46,8 @@ interface ShowroomControlDockProps {
   onToggleHotspots?: () => void;
   // 2D Schematic Blueprint Comparison
   onOpenSchematic?: () => void;
+  /** M3C: mobile bottom-sheet composition flag (coarse pointer, <=1023 px). */
+  isMobileLayout?: boolean;
 }
 
 // 4 Panoramic Wall Tour Steps
@@ -82,8 +86,11 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     showHotspots = false,
     onToggleHotspots,
     onOpenSchematic,
+    isMobileLayout = false,
   }) => {
-    const [isExpanded, setIsExpanded] = useState<boolean>(true);
+    // M3C: on mobile the dock starts collapsed so the 3D car is the first
+    // thing the visitor sees; desktop keeps the previous expanded default.
+    const [isExpanded, setIsExpanded] = useState<boolean>(() => !isMobileLayout);
     const [presetCategory, setPresetCategory] = useState<'pano' | 'direct' | 'car'>('pano');
     const [isTouring, setIsTouring] = useState<boolean>(false);
 
@@ -246,10 +253,25 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
       },
     ];
 
+    const sheetShell = isMobileLayout
+      ? 'fixed inset-x-2 bottom-2 z-30 pb-[env(safe-area-inset-bottom)]'
+      : '';
     return (
-      <div className="flex flex-col items-end pointer-events-auto">
-        {/* ── Main Compact Floating Control Dock ── */}
-        <div className="rounded-2xl bg-studio-950/92 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2 sm:p-2.5 text-white w-[290px] sm:w-[320px] transition-all">
+      <div
+        className={
+          isMobileLayout
+            ? `z-30 pointer-events-auto ${sheetShell}`
+            : 'flex flex-col items-end pointer-events-auto'
+        }
+      >
+        {/* ── Main Compact Floating Control Dock (desktop) / Bottom Sheet (mobile, M3C) ── */}
+        <div
+          className={
+            isMobileLayout
+              ? 'rounded-2xl bg-studio-950/95 border border-studio-800 shadow-2xl p-2 text-white w-full max-h-[70dvh] overflow-y-auto overscroll-contain'
+              : 'rounded-2xl bg-studio-950/92 backdrop-blur-2xl border border-studio-800 shadow-2xl p-2 sm:p-2.5 text-white w-[290px] sm:w-[320px] transition-all'
+          }
+        >
           {/* Header Bar */}
           <div className="flex items-center justify-between pb-1.5 border-b border-studio-800/80 mb-2">
             <div className="flex items-center gap-1.5">
@@ -265,7 +287,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
               <button
                 type="button"
                 onClick={onResetView}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                className="p-1.5 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-[26px] sm:min-h-[26px] flex items-center justify-center"
                 title={lang === 'vi' ? 'Đặt lại góc nhìn mặc định' : 'Reset view'}
                 aria-label="Reset view"
               >
@@ -276,7 +298,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
               <button
                 type="button"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="p-1 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[26px] min-h-[26px] flex items-center justify-center"
+                className="p-1.5 rounded-md text-studio-400 hover:text-white hover:bg-studio-800 transition-colors cursor-pointer min-w-[44px] min-h-[44px] sm:min-w-[26px] sm:min-h-[26px] flex items-center justify-center"
                 title={
                   isExpanded
                     ? lang === 'vi'

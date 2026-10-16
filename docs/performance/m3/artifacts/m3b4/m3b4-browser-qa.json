@@ -1,0 +1,1639 @@
+{
+  "capturedAt": "2026-10-15T09:36:43.662Z",
+  "baselineUrl": "http://127.0.0.1:4184/showroom",
+  "candidateUrl": "http://127.0.0.1:4185/showroom",
+  "scenarios": {
+    "baselineViewport390": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "baselineViewport768": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "baselineViewport1280": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "baselineViewport1440": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "baselineViewport1920": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "candidateViewport390": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "candidateViewport768": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "candidateViewport1280": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "candidateViewport1440": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "candidateViewport1920": {
+      "overflowPx": 0,
+      "passed": true
+    },
+    "initialReady": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 738.1,
+          "duration": 391.5
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 738.3,
+          "duration": 25.2
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 784,
+          "duration": 41.5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 907.6,
+          "duration": 59.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 999.3,
+          "duration": 74.9
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 2435.5,
+          "duration": 11.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 2435.5,
+          "duration": 97.9
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 2450.2,
+          "duration": 9.7
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 2465.6,
+          "duration": 7.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 2479.2,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 2487.5,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 2488.3,
+          "duration": 4.3
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 2496.4,
+          "duration": 6.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 2505.9,
+          "duration": 4.4
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 2512.1,
+          "duration": 19.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 2561.2,
+          "duration": 924.9
+        }
+      ],
+      "heap": 21131156
+    },
+    "coldLiverySwitch": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 0,
+          "misses": 2
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 62,
+          "textures": 39
+        },
+        "render": {
+          "frame": 59,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 25
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 738.1,
+          "duration": 391.5
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 738.3,
+          "duration": 25.2
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 784,
+          "duration": 41.5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 907.6,
+          "duration": 59.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 999.3,
+          "duration": 74.9
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 2435.5,
+          "duration": 11.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 2435.5,
+          "duration": 97.9
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 2450.2,
+          "duration": 9.7
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 2465.6,
+          "duration": 7.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 2479.2,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 2487.5,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 2488.3,
+          "duration": 4.3
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 2496.4,
+          "duration": 6.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 2505.9,
+          "duration": 4.4
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 2512.1,
+          "duration": 19.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 2561.2,
+          "duration": 924.9
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 5167.8,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 5167.8,
+          "duration": 88.4
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 5169.6,
+          "duration": 5.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 5169.6,
+          "duration": 103.5
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 5185.1,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 5192.4,
+          "duration": 5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 5200.2,
+          "duration": 5.1
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 5216.3,
+          "duration": 19.7
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 5242.4,
+          "duration": 6.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 5255.1,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 5256.4,
+          "duration": 0.3
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 5256.8,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 5259.9,
+          "duration": 1
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 5261,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 5263.4,
+          "duration": 7.5
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 5302.9,
+          "duration": 1600.8
+        }
+      ],
+      "heap": 26913621
+    },
+    "repeatLiverySwitch": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 63,
+          "textures": 44
+        },
+        "render": {
+          "frame": 78,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 25
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 738.1,
+          "duration": 391.5
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 738.3,
+          "duration": 25.2
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 784,
+          "duration": 41.5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 907.6,
+          "duration": 59.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 999.3,
+          "duration": 74.9
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 2435.5,
+          "duration": 11.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 2435.5,
+          "duration": 97.9
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 2450.2,
+          "duration": 9.7
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 2465.6,
+          "duration": 7.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 2479.2,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 2487.5,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 2488.3,
+          "duration": 4.3
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 2496.4,
+          "duration": 6.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 2505.9,
+          "duration": 4.4
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 2512.1,
+          "duration": 19.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 2561.2,
+          "duration": 924.9
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 5167.8,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 5167.8,
+          "duration": 88.4
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 5169.6,
+          "duration": 5.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 5169.6,
+          "duration": 103.5
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 5185.1,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 5192.4,
+          "duration": 5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 5200.2,
+          "duration": 5.1
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 5216.3,
+          "duration": 19.7
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 5242.4,
+          "duration": 6.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 5255.1,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 5256.4,
+          "duration": 0.3
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 5256.8,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 5259.9,
+          "duration": 1
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 5261,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 5263.4,
+          "duration": 7.5
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 5302.9,
+          "duration": 1600.8
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 7996.8,
+          "duration": 616.8
+        }
+      ],
+      "heap": 29355759
+    },
+    "languageSwitch": {
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 3
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 62,
+          "textures": 49
+        },
+        "render": {
+          "frame": 98,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 29
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 738.1,
+          "duration": 391.5
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 738.3,
+          "duration": 25.2
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 784,
+          "duration": 41.5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 907.6,
+          "duration": 59.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 999.3,
+          "duration": 74.9
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 2435.5,
+          "duration": 11.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 2435.5,
+          "duration": 97.9
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 2450.2,
+          "duration": 9.7
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 2465.6,
+          "duration": 7.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 2479.2,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 2487.5,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 2488.3,
+          "duration": 4.3
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 2496.4,
+          "duration": 6.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 2505.9,
+          "duration": 4.4
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 2512.1,
+          "duration": 19.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 2561.2,
+          "duration": 924.9
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 5167.8,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 5167.8,
+          "duration": 88.4
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 5169.6,
+          "duration": 5.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 5169.6,
+          "duration": 103.5
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 5185.1,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 5192.4,
+          "duration": 5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 5200.2,
+          "duration": 5.1
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 5216.3,
+          "duration": 19.7
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 5242.4,
+          "duration": 6.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 5255.1,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 5256.4,
+          "duration": 0.3
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 5256.8,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 5259.9,
+          "duration": 1
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 5261,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 5263.4,
+          "duration": 7.5
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 5302.9,
+          "duration": 1600.8
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 7996.8,
+          "duration": 616.8
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 9685.5,
+          "duration": 2.7
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 9685.5,
+          "duration": 202.9
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 9692.6,
+          "duration": 2.7
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 9864.2,
+          "duration": 3.9
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 9877.4,
+          "duration": 5.2
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 9907.1,
+          "duration": 426.1
+        }
+      ],
+      "heap": 20133007,
+      "englishControls": true
+    },
+    "contextRestore": {
+      "supported": true,
+      "cache": {
+        "car": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 2
+        },
+        "studio": {
+          "entries": 2,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 1,
+          "hits": 1,
+          "misses": 3
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 61,
+          "textures": 21
+        },
+        "render": {
+          "frame": 19,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 23
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 738.1,
+          "duration": 391.5
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 738.3,
+          "duration": 25.2
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 784,
+          "duration": 41.5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 907.6,
+          "duration": 59.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 999.3,
+          "duration": 74.9
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 2435.5,
+          "duration": 11.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 2435.5,
+          "duration": 97.9
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 2450.2,
+          "duration": 9.7
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 2465.6,
+          "duration": 7.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 2479.2,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 2487.5,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 2488.3,
+          "duration": 4.3
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 2496.4,
+          "duration": 6.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 2505.9,
+          "duration": 4.4
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 2512.1,
+          "duration": 19.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 2561.2,
+          "duration": 924.9
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 5167.8,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 5167.8,
+          "duration": 88.4
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 5169.6,
+          "duration": 5.6
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 5169.6,
+          "duration": 103.5
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 5185.1,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 5192.4,
+          "duration": 5
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 5200.2,
+          "duration": 5.1
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 5216.3,
+          "duration": 19.7
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 5242.4,
+          "duration": 6.8
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 5255.1,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 5256.4,
+          "duration": 0.3
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 5256.8,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 5259.9,
+          "duration": 1
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 5261,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 5263.4,
+          "duration": 7.5
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 5302.9,
+          "duration": 1600.8
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 7996.8,
+          "duration": 616.8
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 9685.5,
+          "duration": 2.7
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 9685.5,
+          "duration": 202.9
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 9692.6,
+          "duration": 2.7
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 9864.2,
+          "duration": 3.9
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 9877.4,
+          "duration": 5.2
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 9907.1,
+          "duration": 426.1
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 11910,
+          "duration": 1621.6
+        }
+      ],
+      "heap": 26292880
+    },
+    "routeCycle1": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 236.7,
+          "duration": 1.7
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 236.7,
+          "duration": 19.8
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 244.1,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 246.6,
+          "duration": 3.8
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 254.1,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 513.3,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 513.3,
+          "duration": 40.8
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 515.1,
+          "duration": 1.9
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 519.1,
+          "duration": 1.3
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 523.2,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 525.4,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 526.3,
+          "duration": 1.1
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 529.4,
+          "duration": 3.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 533.5,
+          "duration": 0.9
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 535.1,
+          "duration": 13.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 577.4,
+          "duration": 360.3
+        }
+      ],
+      "heap": 45542000
+    },
+    "routeCycle2": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 242.7,
+          "duration": 44.1
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 242.8,
+          "duration": 2.6
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 252,
+          "duration": 1
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 258.4,
+          "duration": 2.4
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 267.3,
+          "duration": 1.6
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 554,
+          "duration": 1.1
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 554,
+          "duration": 36.2
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 556.9,
+          "duration": 3.5
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 563,
+          "duration": 1.4
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 568.9,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 570.1,
+          "duration": 0.6
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 570.8,
+          "duration": 0.9
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 573.5,
+          "duration": 1.3
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 575.5,
+          "duration": 0.6
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 576.6,
+          "duration": 10.8
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 605,
+          "duration": 337.9
+        }
+      ],
+      "heap": 54693218
+    },
+    "routeCycle3": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 268.6,
+          "duration": 37.2
+        },
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 268.7,
+          "duration": 1.6
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 275.6,
+          "duration": 1
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 280.6,
+          "duration": 2.3
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 287.6,
+          "duration": 1.7
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 541.9,
+          "duration": 25.8
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 542,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 545.2,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 550,
+          "duration": 1.4
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 554.2,
+          "duration": 0.6
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 555.1,
+          "duration": 0.4
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 555.6,
+          "duration": 0.5
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 557.6,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 558.9,
+          "duration": 0.1
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 559.4,
+          "duration": 6.4
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 579,
+          "duration": 258.8
+        }
+      ],
+      "heap": 87657368
+    },
+    "routeCycle4": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 206.4,
+          "duration": 1.1
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 206.4,
+          "duration": 36.5
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 213.4,
+          "duration": 2
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 218.8,
+          "duration": 1.8
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 224.6,
+          "duration": 1.5
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 480.9,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 480.9,
+          "duration": 26.8
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 482.5,
+          "duration": 1.6
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 486.9,
+          "duration": 0.7
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 490.2,
+          "duration": 0.6
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 491.1,
+          "duration": 0.3
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 491.5,
+          "duration": 0.5
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 493.1,
+          "duration": 1.4
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 495.2,
+          "duration": 0.5
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 496.2,
+          "duration": 8.9
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 528.6,
+          "duration": 265.6
+        }
+      ],
+      "heap": 62251929
+    },
+    "routeCycle5": {
+      "cache": {
+        "car": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        },
+        "studio": {
+          "entries": 1,
+          "referencedEntries": 1,
+          "totalReferences": 1,
+          "pendingDisposals": 0,
+          "inactiveOrderLength": 0,
+          "hits": 0,
+          "misses": 1
+        }
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 59,
+          "textures": 21
+        },
+        "render": {
+          "frame": 34,
+          "calls": 49,
+          "triangles": 237840,
+          "points": 0,
+          "lines": 0
+        },
+        "programs": 24
+      },
+      "measures": [
+        {
+          "name": "showroom:studio:texture:north",
+          "startTime": 268.8,
+          "duration": 2.2
+        },
+        {
+          "name": "showroom:studio:texture-generation",
+          "startTime": 268.8,
+          "duration": 54.1
+        },
+        {
+          "name": "showroom:studio:texture:south",
+          "startTime": 277.3,
+          "duration": 2.1
+        },
+        {
+          "name": "showroom:studio:texture:west",
+          "startTime": 284.8,
+          "duration": 2.5
+        },
+        {
+          "name": "showroom:studio:texture:east",
+          "startTime": 294.3,
+          "duration": 2.1
+        },
+        {
+          "name": "showroom:car:texture-generation",
+          "startTime": 822.4,
+          "duration": 45.7
+        },
+        {
+          "name": "showroom:car:texture:nose",
+          "startTime": 822.5,
+          "duration": 1.7
+        },
+        {
+          "name": "showroom:car:texture:bodywork",
+          "startTime": 826.3,
+          "duration": 4
+        },
+        {
+          "name": "showroom:car:texture:wings",
+          "startTime": 835.1,
+          "duration": 1.2
+        },
+        {
+          "name": "showroom:car:texture:floor",
+          "startTime": 841.2,
+          "duration": 0.9
+        },
+        {
+          "name": "showroom:car:texture:suspensionMirrors",
+          "startTime": 842.7,
+          "duration": 0.8
+        },
+        {
+          "name": "showroom:car:texture:diffuserRainLight",
+          "startTime": 843.7,
+          "duration": 1.6
+        },
+        {
+          "name": "showroom:car:texture:cockpit",
+          "startTime": 847.9,
+          "duration": 2
+        },
+        {
+          "name": "showroom:car:texture:halo",
+          "startTime": 850.7,
+          "duration": 1
+        },
+        {
+          "name": "showroom:car:texture:wheel",
+          "startTime": 852.3,
+          "duration": 11.3
+        },
+        {
+          "name": "showroom:compile",
+          "startTime": 896.2,
+          "duration": 392.2
+        }
+      ],
+      "heap": 75650924
+    }
+  }
+}

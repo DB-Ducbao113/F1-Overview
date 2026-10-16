@@ -715,6 +715,23 @@ canvas.r3f {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* M3B.2: add the continuously looping pulse/float/glow/marquee animations
+     used by Showroom HUD indicators and live widgets. One-shot entrance and
+     feedback animations (car-entrance, fade-in, metric-pop, page-enter, etc.)
+     stay, so controls and transitions remain visible and functional. */
+  .animate-pulse,
+  .animate-ping,
+  .animate-bounce,
+  .animate-spin,
+  .animate-float-gentle,
+  .animate-pulse-cyan,
+  .animate-glow-red,
+  .animate-car-entrance,
+  .animate-ticker-marquee,
+  .animate-streamline {
+    animation: none !important;
+  }
+
   .animate-digit-slide,
   .animate-colon-pulse,
   .animate-live-glow,

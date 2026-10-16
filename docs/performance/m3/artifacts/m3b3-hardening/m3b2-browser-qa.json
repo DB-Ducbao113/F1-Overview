@@ -1,0 +1,228 @@
+{
+  "capturedAt": "2026-10-15T07:42:43.443Z",
+  "browser": "Chrome/155.0.8059.40",
+  "scenarios": {
+    "reducedMotionDefault": {
+      "mediaMatches": true,
+      "autoRotateTitle": "Bật tự xoay 360°",
+      "rafCallbacks": 0,
+      "callbackMs": 0,
+      "draws": 0,
+      "longTaskCount": 0,
+      "longTaskTotalMs": 0,
+      "maxLongTaskMs": 0
+    },
+    "reducedMotionDrag": {
+      "activeAndImmediateTail": {
+        "rafCallbacks": 14,
+        "callbackMs": 62.4,
+        "draws": 1627,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      },
+      "settled": {
+        "rafCallbacks": 0,
+        "callbackMs": 0,
+        "draws": 0,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      }
+    },
+    "preferenceChangeDuringSession": {
+      "titleAfterReducedMotionDisabled": "Bật tự xoay 360°",
+      "titleAfterReducedMotionEnabled": "Bật tự xoay 360°",
+      "mediaMatches": true,
+      "rafCallbacks": 3,
+      "callbackMs": 21,
+      "draws": 410,
+      "longTaskCount": 1,
+      "longTaskTotalMs": 61,
+      "maxLongTaskMs": 61,
+      "settled": {
+        "rafCallbacks": 0,
+        "callbackMs": 0,
+        "draws": 0,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      }
+    },
+    "languageSwitch": {
+      "englishHeading": true,
+      "resources": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 24
+          },
+          "render": {
+            "frame": 459,
+            "calls": 49,
+            "triangles": 237840,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 18768824,
+          "totalJSHeapSize": 24568160
+        }
+      }
+    },
+    "offscreenPauseRestore": {
+      "offscreen": {
+        "rafCallbacks": 0,
+        "callbackMs": 0,
+        "draws": 0,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      },
+      "restored": {
+        "rafCallbacks": 3,
+        "callbackMs": 8.6,
+        "draws": 298,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      }
+    },
+    "hiddenTabPauseRestore": {
+      "visibilityState": "hidden",
+      "hidden": {
+        "rafCallbacks": 0,
+        "callbackMs": 0,
+        "draws": 0,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      },
+      "restored": {
+        "rafCallbacks": 2,
+        "callbackMs": 7.1,
+        "draws": 372,
+        "longTaskCount": 0,
+        "longTaskTotalMs": 0,
+        "maxLongTaskMs": 0
+      }
+    },
+    "webglContextRestore": {
+      "supported": true,
+      "before": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 24
+          },
+          "render": {
+            "frame": 502,
+            "calls": 49,
+            "triangles": 237840,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 19053341,
+          "totalJSHeapSize": 21157501
+        }
+      },
+      "after": {
+        "cache": {
+          "car": {
+            "entries": 1,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 0,
+            "hits": 0,
+            "misses": 1
+          },
+          "studio": {
+            "entries": 2,
+            "referencedEntries": 1,
+            "totalReferences": 1,
+            "pendingDisposals": 0,
+            "inactiveOrderLength": 1,
+            "hits": 0,
+            "misses": 2
+          }
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 61,
+            "textures": 20
+          },
+          "render": {
+            "frame": 12,
+            "calls": 49,
+            "triangles": 237840,
+            "points": 0,
+            "lines": 0
+          },
+          "programs": 23
+        },
+        "heap": {
+          "usedJSHeapSize": 22301199,
+          "totalJSHeapSize": 28238771
+        }
+      },
+      "metrics": {
+        "rafCallbacks": 1,
+        "callbackMs": 396.8,
+        "draws": 186,
+        "longTaskCount": 1,
+        "longTaskTotalMs": 398,
+        "maxLongTaskMs": 398
+      }
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

@@ -280,3 +280,97 @@ Evidence and deployment:
 - Implementation SHA `f6bde5474d9692ef3fa58e8cd466a76abc14f202` passed [CI run 38667313537](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667313537). Vercel deployed the branch preview at the protected [Preview alias](https://podiumeffetdesol-git-perf-speed-insights-v2-bao-bung-bu.vercel.app) returning the expected SSO redirect.
 - [Preview Smoke run 38667377888](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38667377888) passed target validation. k6 setup and the live smoke were explicitly skipped because `VERCEL_PROTECTION_BYPASS` is not configured; no live smoke or high-load request was sent to Preview or Production.
 - Docker publishing is not applicable to `perf/**` and did not run. Stop after M3B.1 for review before M3B.2; do not merge into main.
+
+## M3B.2 result — Showroom motion lifecycle and reduced motion
+
+M3B.2 builds on the M3B.1 demand renderer and adds an explicit motion-state model plus full `prefers-reduced-motion` support, without touching geometry, materials, textures, reflection, DPR, lighting, camera presets, or any F1 data source.
+
+- `src/components/showroom/showroomMotionState.ts` (new) defines nine motion states (`initial`, `autoRotate`, `orbit`, `damping`, `preset`, `static`, `hidden`, `offscreen`, `contextLost`). Only the five active states request frames; the settled scene resolves to `static` and keeps M3B.1's zero recurring draws. The Canvas frame-loop mapping (`demand`/`never`) is unchanged.
+- `src/hooks/useReducedMotion.ts` (new) tracks `prefers-reduced-motion: reduce` live, including mid-session changes while the Showroom is open, with a listener that is removed on unmount (no duplicate callbacks).
+- `ShowroomView.tsx` defaults auto-rotation to OFF for reduced-motion users, stops it immediately when the preference turns ON mid-session, and includes the flag in `sceneRevision` so the frame invalidator repaints without a reload.
+- `CameraController.tsx` receives `reducedMotion` and, under it, forces OrbitControls auto-rotation off, disables damping, and shortens the post-drag tail from 2,000 ms to 0 ms so drags settle instantly with no trailing frames. Manual orbit, wheel-zoom, presets, hotspots, and livery switching are untouched and remain fully functional.
+- `src/index.css` extends the existing reduced-motion media query to disable ten continuously looping utility animations (pulse, ping, bounce, spin, float, glow, marquee, stream, entrance) covering the Showroom HUD indicator dots. One-shot feedback animations remain so every control stays visible.
+
+Local verification on the implementation worktree: ESLint pass, Prettier format pass, 30 test files / 224 tests pass (+9 new motion/reduced-motion tests), coverage unchanged at 63.2% statements, production build passes with initial JavaScript at 109.7 KiB gzip (budget 180 KiB), Showroom chunk 90.95 KiB gzip (+0.29), and `vendor-three` unchanged at 249.28 KiB gzip and route-isolated.
+
+Browser-instrumented QA and Lighthouse evidence for M3B.2 are **pending execution** with the same harness as M3B.1 and are tracked with explicit `pending` markers in [`m3/m3b2-results.md`](m3/m3b2-results.md), [`m3/artifacts/m3b2-before-after.csv`](m3/artifacts/m3b2-before-after.csv), and [`m3/artifacts/m3b2-interaction-qa.json`](m3/artifacts/m3b2-interaction-qa.json); no unexecuted browser measurement is claimed. Full results, pending-measurement list, and rollback steps are in [`m3/m3b2-results.md`](m3/m3b2-results.md).
+
+## M3B.2 final verification and M3B.3 result � texture cache
+
+M3B.2's pending browser/Lighthouse evidence gate is closed in
+[`m3/m3b2-final-verification.md`](m3/m3b2-final-verification.md): static idle
+(0 rAF / 0 draws), mobile 4x CPU-throttled idle (0/0), motion lifecycle QA,
+and three-run Lighthouse per profile are recorded; secondary windows that rely
+on unchanged M3B.1 code paths are explicitly marked not re-executed.
+
+M3B.3 adds a bounded, reference-counted procedural texture cache
+(`src/components/showroom/showroomTextureCache.ts`) with two namespaces (car,
+studio), keys including team and language, and retention of the active set
+plus one inactive set. `F1Car3DModel` and `StudioW15Stage` acquire through the
+cache and release references instead of disposing; route unmount disposes
+everything. Ten unit tests cover hits/misses, refcounts, eviction, key
+separation, no-disposed-reuse, concurrent same-key acquisition, and
+stale-handle safety. Livery-switch long tasks: cold generation unchanged
+(476 ms first Ferrari), cache-hit return 122 ms, rapid-cycle p50 180 ms with
+all post-first-generation tasks under the 200 ms target. Zero recurring idle
+draws hold on desktop and 4x-throttled mobile. Lighthouse medians (Desktop 46,
+Mobile 31) overlap the M3B.1 baseline within run variance; a paired re-run is
+registered as follow-up. Full details, exact files, and rollback are in
+[`m3/m3b3-results.md`](m3/m3b3-results.md).
+
+## M3B.4 result — Showroom WebGL initialization
+
+M3B.4 keeps all visual resources and moves procedural initialization into bounded, cancellable tasks. Car and studio texture sets are prepared one slot at a time and committed atomically through the hardened cache. The 512 px wheel texture now reads its physical 512 × 512 backing store instead of allocating and scanning an unused logical 1024 × 1024 region. `ShowroomStartupCoordinator` waits for the named car/studio roots, uses `WebGLRenderer.compileAsync` with a compatibility fallback, requests a submitted frame, and then dismisses the loader.
+
+The required fixed-build, alternating five-run Lighthouse comparison produced these medians:
+
+| Profile | Baseline TBT | M3B.4 TBT | Change | Baseline main thread | M3B.4 main thread |                LCP |
+| ------- | -----------: | --------: | -----: | -------------------: | ----------------: | -----------------: |
+| Desktop |     5,299 ms |  4,790 ms |  -9.6% |            10,613 ms |         10,209 ms |   2,869 → 2,859 ms |
+| Mobile  |    20,808 ms | 18,702 ms | -10.1% |            40,429 ms |         33,819 ms | 16,480 → 16,478 ms |
+
+Idle with auto-rotation off remains at zero RAF callbacks and zero WebGL draws for ten seconds. Camera presets, orbit/damping, auto-rotation, livery, hotspots, language, resize, hidden/off-screen restoration and context restoration passed instrumented browser QA. Five widths from 390 to 1920 px have zero overflow and same-camera screenshots show no visible quality change.
+
+The stricter complete-frame readiness gate increases the measured first-usable proxy from about 4,301 to 7,223 ms desktop and 5,820 to 9,384 ms mobile. Both absolute TBT targets also remain unmet. M3B.4 is therefore **NO-GO for Production** despite the verified reduction in blocking work. Full evidence, experiments, risks and rollback are in [`m3/m3b4-results.md`](m3/m3b4-results.md), with raw reports in [`m3/artifacts/m3b4/`](m3/artifacts/m3b4/).
+
+Local validation passes: ESLint, Prettier, 33 test files / 246 tests, coverage (63.2% statements), and production build/bundle budget. The Showroom chunk is 93.62 KiB gzip and `vendor-three` remains 249.28 KiB gzip. Implementation SHA `fb1184918df6e5e5e673c00956aaddc2ef0a6466` passed [CI 38718226381](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718226381), Vercel reported the matching Preview Ready, and [Preview Smoke 38718313823](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38718313823) passed target validation with k6/live smoke explicitly skipped.
+
+## M3B.4.1 result — Showroom startup readiness hotfix
+
+M3B.4.1 removes the startup race in which React Three Fiber's automatic render ran after `compileAsync` began and forced the same full scene through a competing synchronous render path. The startup coordinator now owns the render pass, waits for explicit committed car/studio texture and material readiness, skips competing draws during compilation, submits one complete frame and only then clears the loader. Demand rendering and every visual resource remain unchanged.
+
+Five cold readiness runs reduced median loader removal from 8,031 to 4,940 ms desktop and 11,492 to 7,335 ms on 4x CPU-throttled mobile. Median first successful interaction improved from 8,063 to 4,976 ms desktop and 12,009 to 7,586 ms mobile.
+
+The fixed-build alternating five-run Lighthouse comparison also preserved and improved M3B.4's blocking-work result:
+
+| Profile | Metric      |     M3B.4 |   M3B.4.1 |         Change |
+| ------- | ----------- | --------: | --------: | -------------: |
+| Desktop | TBT         |  2,137 ms |  1,870 ms |         -12.5% |
+| Desktop | Main thread |  5,210 ms |  4,177 ms |         -19.8% |
+| Desktop | LCP         |  2,848 ms |  2,846 ms |          -2 ms |
+| Mobile  | TBT         | 12,160 ms |  9,229 ms |         -24.1% |
+| Mobile  | Main thread | 19,461 ms | 14,510 ms |         -25.4% |
+| Mobile  | LCP         | 16,477 ms | 16,560 ms | +83 ms / +0.5% |
+
+Executed browser QA passed the complete readiness order, settled zero-draw idle, camera/preset/auto-rotation, livery, language, live reduced motion, WebGL restore and five route enter/exit cycles. Same-state captures at 390, 768, 1280, 1440 and 1920 px were pixel-identical with zero overflow. Full measurements, raw reports, screenshots, exact files and rollback are in [`m3/m3b4-1-startup-hotfix.md`](m3/m3b4-1-startup-hotfix.md).
+
+Implementation SHA `fd586ef0990fea709a1a26e97e13f33579afdfdd` passed [CI 38729067774](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729067774), and the matching [Vercel Preview](https://podiumeffetdesol-bh6vxewia-bao-bung-bu.vercel.app) reported Ready. [Preview Smoke 38729151914](https://github.com/DB-Ducbao113/F1-Overview/actions/runs/38729151914) passed target validation; k6 setup and live smoke were explicitly skipped because the protection bypass secret is absent.
+
+## M3C result � Mobile Showroom UX and responsive composition
+
+M3C redesigns the mobile Showroom composition only: on viewports up to
+1023 px the Control Dock starts collapsed and opens as a full-width bottom
+sheet, the team badge collapses to a one-line pill, and the Quick HUD gains
+safe-area padding. The desktop composition above the breakpoint is unchanged.
+No renderer, DPR, reflection, texture, or scheduling source changed.
+
+Measured with the same CDP harness before/after: control overlap over the
+car focus zone falls from 6 controls / 17,900 px2 to 0 at 390 px and from
+9,800 px2 to 0 at 768 px; document overflow stays 0 px at all nine audited
+widths (320-1920). Interaction QA passes sheet open/close, camera preset from
+the sheet, zoom, auto-rotate, and orbit drag, with a 5 s post-interaction
+idle window recording 0 rAF / 0 draws (M3B.1 demand rendering intact).
+Paired Lighthouse 5x5 against the branch HEAD build shows no material
+regression (mobile score 31->32, LCP -65 ms, TBT +141 ms inside spread;
+desktop deltas inside spread). Full details, artifacts, and rollback are in
+[`m3/m3c-results.md`](m3/m3c-results.md).

@@ -93,7 +93,7 @@ export const Navbar: React.FC = React.memo(() => {
             <div className="flex items-center bg-white/5 p-0.5 rounded-full border border-white/10">
               <button
                 onClick={() => setLang('vi')}
-                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'vi'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-300 hover:text-white'
@@ -104,7 +104,7 @@ export const Navbar: React.FC = React.memo(() => {
               </button>
               <button
                 onClick={() => setLang('en')}
-                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[44px] min-h-[44px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center ${
                   lang === 'en'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-300 hover:text-white'
@@ -118,7 +118,7 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+              className="md:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"

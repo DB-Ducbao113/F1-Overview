@@ -1,0 +1,92 @@
+{
+  "capturedAt": "2026-10-15T11:32:39.926Z",
+  "screenshots": [
+    {
+      "variant": "baseline",
+      "width": 390,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\baseline-showroom-390.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "candidate",
+      "width": 390,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\candidate-showroom-390.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "baseline",
+      "width": 768,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\baseline-showroom-768.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "candidate",
+      "width": 768,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\candidate-showroom-768.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "baseline",
+      "width": 1280,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\baseline-showroom-1280.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "candidate",
+      "width": 1280,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\candidate-showroom-1280.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "baseline",
+      "width": 1440,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\baseline-showroom-1440.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "candidate",
+      "width": 1440,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\candidate-showroom-1440.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "baseline",
+      "width": 1920,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\baseline-showroom-1920.png",
+      "overflowPx": 0
+    },
+    {
+      "variant": "candidate",
+      "width": 1920,
+      "output": "docs\\performance\\m3\\artifacts\\m3b4-1\\screenshots\\candidate-showroom-1920.png",
+      "overflowPx": 0
+    }
+  ],
+  "comparisons": [
+    {
+      "width": 390,
+      "meanAbsoluteChannelDifference": 0,
+      "changedPixelRatio": 0
+    },
+    {
+      "width": 768,
+      "meanAbsoluteChannelDifference": 0,
+      "changedPixelRatio": 0
+    },
+    {
+      "width": 1280,
+      "meanAbsoluteChannelDifference": 0,
+      "changedPixelRatio": 0
+    },
+    {
+      "width": 1440,
+      "meanAbsoluteChannelDifference": 0,
+      "changedPixelRatio": 0
+    },
+    {
+      "width": 1920,
+      "meanAbsoluteChannelDifference": 0,
+      "changedPixelRatio": 0
+    }
+  ]
+}

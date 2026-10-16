@@ -1,0 +1,15 @@
+category,profile,metric,run1,run2,run3,median,unit
+lighthouse,desktop,performance_score,46,46,46,46,score
+lighthouse,desktop,fcp,585,600,585,585,ms
+lighthouse,desktop,lcp,2854,2867,2861,2861,ms
+lighthouse,desktop,tbt,3435,3268,3341,3341,ms
+lighthouse,desktop,cls,0.0012,0.0012,0.0012,0.0012,score
+lighthouse,desktop,requests,26,26,26,26,count
+lighthouse,desktop,transfer_kb,2925,KiB
+lighthouse,mobile,performance_score,31,31,31,31,score
+lighthouse,mobile,fcp,2918,2915,2916,2916,ms
+lighthouse,mobile,lcp,16493,16435,16478,16478,ms
+lighthouse,mobile,tbt,14314,13071,15034,14314,ms
+lighthouse,mobile,cls,0,0,0,0,score
+lighthouse,mobile,requests,27,27,27,27,count
+lighthouse,mobile,transfer_kb,2936,2936,2936,KiB
