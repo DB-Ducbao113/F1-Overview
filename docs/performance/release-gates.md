@@ -240,3 +240,20 @@ Decision: **no adaptive change shipped** per the acceptance rule ("if no experim
 Decision: **GO for branch review**. Merge remains NO-GO; Release 2 full
 verification is proposed after M3C review before merging Showroom
 optimizations to main.
+
+## M3C final fixes and Release 2 candidate status
+
+| Gate                                                 | Status            | Evidence                                                                                                                                                                                                                               |
+| ---------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reactive mobile breakpoint                           | Pass              | subscribeMobileLayout (rAF-coalesced, fires only on boolean flip, unsubscribed on unmount); browser-verified 390->1280->390 switching between sheet and floating dock. 5 unit tests.                                                   |
+| Mobile touch targets >=44px                          | Pass              | Browser measurement: 33/33 visible controls meet 44x44 on mobile (was 13/33): QuickHUD, dock header, livery tabs, hotspot bar, header CTAs, VI/EN, hamburger.                                                                          |
+| Sheet behavior                                       | Pass              | overflow-y auto + overscroll-contain + dvh cap verified; Escape causes no error (not a dialog); safe-area applied.                                                                                                                     |
+| main divergence resolved                             | Pass              | main had 5 commits absent from the branch; merged with conflicts resolved to keep the reviewed branch Showroom implementation; F1 data + cache headers + identity fix from main land unchanged. 38 files / 272 tests pass after merge. |
+| Paired Lighthouse 5x5 vs main (post-merge candidate) | Pass, improvement | Desktop TBT 5,109 -> 2,888 ms (-43%), score 45=45; Mobile TBT 19,055 -> 14,844 ms (-22%), score 31 -> 34 (+3); LCP/CLS deltas inside noise. Raw reports under m3/artifacts/release2/lighthouse.                                        |
+| Full regression                                      | Pass              | release-2-regression-matrix.md: 7 routes, liveries, hotspots, orbit/presets/zoom, cache lifecycle, 5 cycles, zero-idle after interactions.                                                                                             |
+| CI and Preview on RC SHA 21a4ad6                     | Recorded          | Push 71a929f..21a4ad6 succeeded; CI run and Preview alias verification are the reviewer's action items recorded in release-2-final-report.md. Smoke skip remains SKIP.                                                                 |
+
+Release 2 recommendation: **GO for merge into main on explicit user
+approval**. Full report, regression matrix, and rollback plan are in
+docs/performance/release-2-*.md. Production deploy remains a separate
+explicit step.
