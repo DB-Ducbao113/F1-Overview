@@ -114,4 +114,12 @@ Derived from M3D.2 baselines with a ≥ 20% improvement target:
 - **Lighthouse JSON Reports:** [`docs/performance/m3d/artifacts/lighthouse/`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/artifacts/lighthouse/) — 30 individual run reports + summary
 - **Shader Investigation:** [`docs/performance/m3d/shader-investigation.md`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/shader-investigation.md)
 - **Optimization Opportunities:** [`docs/performance/m3d/optimization-opportunities.md`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/optimization-opportunities.md)
+- **safeCompileAsync Audit:** [`docs/performance/m3d/safeCompileAsync-audit.md`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/safeCompileAsync-audit.md)
+- **M3D.3.1 Experiment Report:** [`docs/performance/m3d/m3d31-experiment.md`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/m3d31-experiment.md)
 - **Release Gates:** [`docs/performance/m3d/release-gates.md`](file:///E:/Formula%201/F1-Overview/docs/performance/m3d/release-gates.md)
+
+## 7. M3D.3.1 Experiment Result (Static Studio Textures)
+
+**Status:** REJECTED — original `StudioBackdropTexture.ts` retained. See `docs/performance/m3d/m3d31-experiment.md` for the full report.
+
+**Summary:** Static build-time studio backdrop WebP textures are not technically appropriate in this environment (no server-side canvas/image tooling, no browser automation for ≥5 cold-run Lighthouse measurement, no way to verify pixel-faithful walls offline). Even a perfect implementation saves at most 208 ms desktop / ~830 ms mobile main-thread work, which is below the M3D.3 desktop first-usable-frame delta (≥874 ms). The M3D.3 path forward is M3D.3.2 (worker-based GLTF ingestion, the 1,046 ms long task) followed by M3D.3.3 (shader chunk pruning). No code change was made; no bundle or visual regression.
