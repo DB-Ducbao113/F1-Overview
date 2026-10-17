@@ -1,0 +1,143 @@
+{
+  "summary": {
+    "baseline": {
+      "runs": 5,
+      "firstUsableFrame": {
+        "count": 5,
+        "min": 4605.39999999851,
+        "max": 7522.89999999851,
+        "median": 5172.5,
+        "mean": 5593.559999997914,
+        "p90": 6864.69999999851
+      },
+      "compileMs": {
+        "count": 5,
+        "min": 87.29999999701977,
+        "max": 758.9000000059605,
+        "median": 101.5,
+        "mean": 230.52000000178813,
+        "p90": 498.1000000059605
+      },
+      "tbtMs": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "lcpMs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "median": 0,
+        "mean": null,
+        "p90": 0
+      },
+      "fcpMs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "median": 0,
+        "mean": null,
+        "p90": 0
+      },
+      "longTaskCount": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "consoleErrorCount": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "workerCreated": 0,
+      "workerPatched": 0,
+      "jsHeapUsedSize": {
+        "count": 5,
+        "min": 19711938,
+        "max": 22117288,
+        "median": 20519457,
+        "mean": 20694568.2,
+        "p90": 21534391.2
+      }
+    },
+    "worker": {
+      "runs": 5,
+      "firstUsableFrame": {
+        "count": 5,
+        "min": 4494.89999999851,
+        "max": 5284.79999999702,
+        "median": 5028.30000000447,
+        "mean": 4913.940000000596,
+        "p90": 5239.79999999702
+      },
+      "compileMs": {
+        "count": 5,
+        "min": 91.39999999850988,
+        "max": 115.79999999701977,
+        "median": 103,
+        "mean": 103.22000000029803,
+        "p90": 113.7199999988079
+      },
+      "tbtMs": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "lcpMs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "median": 0,
+        "mean": null,
+        "p90": 0
+      },
+      "fcpMs": {
+        "count": 0,
+        "min": null,
+        "max": null,
+        "median": 0,
+        "mean": null,
+        "p90": 0
+      },
+      "longTaskCount": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "consoleErrorCount": {
+        "count": 5,
+        "min": 0,
+        "max": 0,
+        "median": 0,
+        "mean": 0,
+        "p90": 0
+      },
+      "workerCreated": 0,
+      "workerPatched": 0,
+      "jsHeapUsedSize": {
+        "count": 5,
+        "min": 20687412,
+        "max": 31961694,
+        "median": 24866070,
+        "mean": 25809849.8,
+        "p90": 30060654
+      }
+    }
+  },
+  "timestamp": "2026-10-17T06:41:45.394Z"
+}
