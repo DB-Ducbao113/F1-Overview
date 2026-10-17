@@ -460,7 +460,7 @@ export const ShowroomView: React.FC = () => {
               enableWheelZoom={enableWheelZoom}
               zoomTrigger={zoomTrigger}
               zoomDirection={zoomDirection}
-              onContextStateChange={setIsWebGLContextLost}
+              onContextStateChange={handleWebGLContextStateChange}
               isCarReady={isCarReady}
               isStudioReady={isStudioReady}
               setUsableSceneKey={setUsableSceneKey}

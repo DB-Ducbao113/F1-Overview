@@ -5,7 +5,8 @@ import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController } from './CameraController';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
-import { ShowroomLoadingPanel, Showroom3DLoader } from './Showroom3DLoader';
+import { ensureSafeCompileAsync } from './safeCompileAsync';
+
 import type { HotspotItem } from '../../data/showroom/hotspotsData';
 import type { TeamId } from '../../types';
 
@@ -45,19 +46,6 @@ const WebGLContextGuard: React.FC<{
   return null;
 };
 
-const ShowroomFrameInvalidator: React.FC<{
-  active: boolean;
-  sceneRevision: string;
-}> = ({ active, sceneRevision }) => {
-  const { invalidate, size } = useThree();
-
-  useEffect(() => {
-    if (active) invalidate();
-  }, [active, invalidate, sceneRevision, size.height, size.width]);
-
-  return null;
-};
-
 const ShowroomResourceDiagnostics: React.FC = () => {
   const { gl } = useThree();
 
@@ -73,6 +61,19 @@ const ShowroomResourceDiagnostics: React.FC = () => {
       delete diagnosticsWindow.__SHOWROOM_RENDERER_STATS__;
     };
   }, [gl]);
+
+  return null;
+};
+
+const ShowroomFrameInvalidator: React.FC<{
+  active: boolean;
+  sceneRevision: string;
+}> = ({ active, sceneRevision }) => {
+  const { invalidate, size } = useThree();
+
+  useEffect(() => {
+    if (active) invalidate();
+  }, [active, invalidate, sceneRevision, size.height, size.width]);
 
   return null;
 };
@@ -146,6 +147,9 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
       toneMappingExposure: 1.2,
     }}
     className="w-full h-full cursor-grab active:cursor-grabbing"
+    onCreated={({ gl }) => {
+      ensureSafeCompileAsync(gl);
+    }}
   >
     <WebGLContextGuard onContextStateChange={onContextStateChange} />
     <ShowroomStartupCoordinator
@@ -201,5 +205,6 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
       zoomTrigger={zoomTrigger}
       zoomDirection={zoomDirection}
     />
+    {diagnosticsEnabled() && <ShowroomResourceDiagnostics />}
   </Canvas>
 );
