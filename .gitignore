@@ -5,6 +5,16 @@ node_modules/
 
 # Build Outputs
 dist/
+bench-results/
+bench-results-mobile/
+
+dist-baseline/
+
+dist-test2/
+
+dist-worker/
+
+dist-worker-test/
 dist-ssr/
 build/
 coverage/
