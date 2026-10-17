@@ -3,7 +3,7 @@
 **Date:** 2026-10-16  
 **Mission:** Showroom Speed & Stability (M3D.1 + M3D.2)  
 **Branch:** `perf/showroom-speed-r21`  
-**Base Commit:** `2779cac5d685a06092d4d38f81e23daccccec1f4`  
+**Base Commit:** `2779cac5d685a06092d4d38f81e23daccccec1f4`
 
 ---
 
@@ -27,6 +27,7 @@ Critical Path to First Usable Showroom Frame (Total: 4,364 ms desktop baseline)
 ---
 
 ### Bottleneck #1: Main-Thread GLTF Model Parse & BufferGeometry Ingestion
+
 - **Empirical Measurement:** A continuous **1,046 ms long task** occurs starting at 1,127ms when the 2.16 MB `c42.v2.glb` model is parsed by Three.js GLTFLoader on the main JavaScript thread.
 - **Mobile Impact:** Under Lighthouse's simulated 4× CPU slowdown, this single long task expands to **~4,200 ms** of uninterrupted main-thread starvation, directly driving Mobile Total Blocking Time (TBT).
 - **Proposed Optimization:**
@@ -38,6 +39,7 @@ Critical Path to First Usable Showroom Frame (Total: 4,364 ms desktop baseline)
 ---
 
 ### Bottleneck #2: Synchronous Procedural Texture Generation
+
 - **Empirical Measurement:** Synchronous 2D canvas drawing blocks the main thread for **281 ms** total (208ms for studio cyclorama cove/lightboxes across north/south/west/east walls + 73ms for 8 car livery canvases).
 - **Mobile Impact:** Scaled by 4× CPU throttling, procedural texture generation causes **>1,100 ms** of blocking time directly before scene attachment.
 - **Proposed Optimization:**
@@ -49,6 +51,7 @@ Critical Path to First Usable Showroom Frame (Total: 4,364 ms desktop baseline)
 ---
 
 ### Bottleneck #3: GPU Shader Compilation & Pipeline Linking
+
 - **Empirical Measurement:** `showroom:compile` takes **666 ms** of GPU compilation time. Even with `KHR_parallel_shader_compile`, the subsequent `gl.render(scene, camera)` frame causes program validation and uniform binding spikes (83ms long task).
 - **Mobile Impact:** Mobile GPUs (Mali, Adreno) take significantly longer to compile PBR shaders with multiple lights and contact shadows, delaying the first usable frame.
 - **Proposed Optimization:**
@@ -64,21 +67,21 @@ Critical Path to First Usable Showroom Frame (Total: 4,364 ms desktop baseline)
 
 Based on Release 2 historical references and M3D engineering targets:
 
-| Metric | Release 2 Baseline | M3D Experimental Target | Required Delta |
-|---|---|---|---|
-| **Mobile TBT** | 14,844 ms | **≤ 11,875 ms** | ≥ 20% improvement |
-| **First Usable Showroom Frame** | 4,364 ms (desktop) | **≤ 3,490 ms** | ≥ 20% faster |
-| **Desktop TBT** | 2,888 ms | **≤ 2,310 ms** | ≥ 20% improvement |
-| **Initial JS Bundle Size** | 109.9 KiB gzip | **≤ 180 KiB gzip** | Maintain strict budget |
-| **Zero-Idle Rendering** | 0 RAF / 0 draws | **0 RAF / 0 draws** | Strict 0-idle preserved |
-| **Desktop Visual Quality** | Pristine studio stage | **No regression** | 11 liveries + 7 hotspots |
+| Metric                          | Release 2 Baseline    | M3D Experimental Target | Required Delta           |
+| ------------------------------- | --------------------- | ----------------------- | ------------------------ |
+| **Mobile TBT**                  | 14,844 ms             | **≤ 11,875 ms**         | ≥ 20% improvement        |
+| **First Usable Showroom Frame** | 4,364 ms (desktop)    | **≤ 3,490 ms**          | ≥ 20% faster             |
+| **Desktop TBT**                 | 2,888 ms              | **≤ 2,310 ms**          | ≥ 20% improvement        |
+| **Initial JS Bundle Size**      | 109.9 KiB gzip        | **≤ 180 KiB gzip**      | Maintain strict budget   |
+| **Zero-Idle Rendering**         | 0 RAF / 0 draws       | **0 RAF / 0 draws**     | Strict 0-idle preserved  |
+| **Desktop Visual Quality**      | Pristine studio stage | **No regression**       | 11 liveries + 7 hotspots |
 
 ---
 
 ## 3. Implementation Roadmap for M3D.3
 
-| Task ID | Description | Impact | Risk | Phase |
-|---|---|---|---|---|
-| **M3D.3.1** | Static Studio Stage WebP Texture Replacement | High (~250ms main-thread reduction) | Very Low | Immediate |
-| **M3D.3.2** | Worker-Based GLTF Ingestion & Geometry Streaming | Very High (~2,000ms mobile TBT reduction) | Low | Core |
-| **M3D.3.3** | PBR Material Shader Chunk Pruning & Shadow Tuning | Medium (~180ms compile reduction) | Medium | Polish |
+| Task ID     | Description                                       | Impact                                    | Risk     | Phase     |
+| ----------- | ------------------------------------------------- | ----------------------------------------- | -------- | --------- |
+| **M3D.3.1** | Static Studio Stage WebP Texture Replacement      | High (~250ms main-thread reduction)       | Very Low | Immediate |
+| **M3D.3.2** | Worker-Based GLTF Ingestion & Geometry Streaming  | Very High (~2,000ms mobile TBT reduction) | Low      | Core      |
+| **M3D.3.3** | PBR Material Shader Chunk Pruning & Shadow Tuning | Medium (~180ms compile reduction)         | Medium   | Polish    |

@@ -11,9 +11,11 @@
 ## 1. Problem Statement
 
 During rapid Showroom navigation and team switching in Release 2 production telemetry, an uncaught runtime exception was recorded:
+
 ```
 TypeError: Cannot read properties of undefined (reading 'isReady')
 ```
+
 This error occurred intermittently when users navigated away from `/showroom` before 3D model resources and shaders had completed compilation, or during rapid sequential livery changes.
 
 ---
@@ -21,17 +23,20 @@ This error occurred intermittently when users navigated away from `/showroom` be
 ## 2. Reproduction Methodology
 
 An automated reproduction script (`scratch/reproduce-isready.mjs`) was executed against the local production preview bundle using Chrome DevTools Protocol (CDP) with hardware acceleration enabled:
+
 - **Scenario 1:** Initial load of homepage with Start Lights dismissal.
 - **Scenario 2:** 30 rapid sequential route transitions (`/showroom` ↔ `/season/2026`) with random dwell intervals between 50ms and 500ms (coinciding with active shader compilation).
 - **Scenario 3:** Rapid sequential team switching (20 clicks across all 11 teams) with 40–190ms intervals.
 - **Scenario 4:** Navigation away during rapid team switches.
 
 ### Reproduction Results (Baseline before fix)
+
 - Total Exceptions Captured: **11**
 - Exception Pattern: **100% matched `Cannot read properties of undefined (reading 'isReady')`**
 - Occurred during rapid exit from `/showroom` while `compileAsync` was pending.
 
 ### Captured Stack Trace
+
 ```
 TypeError: Cannot read properties of undefined (reading 'isReady')
     at http://127.0.0.1:4173/assets/vendor-three-DnMMrDP1.js:3802:26935
@@ -42,6 +47,7 @@ TypeError: Cannot read properties of undefined (reading 'isReady')
 ```
 
 Mapping to unminified Three.js source (`three@0.165.0/src/renderers/WebGLRenderer.js:1008-1013`):
+
 ```javascript
 function checkMaterialsReady() {
     materials.forEach( function ( material ) {
@@ -65,9 +71,9 @@ function checkMaterialsReady() {
 2. **Material Deallocation on Route Exit:** When the user leaves `/showroom`, React unmounts `<ShowroomView>`, `<ShowroomScene>`, and R3F's `<Canvas>`. The canvas disposal routine or material cleanup dispatches `'dispose'` events on the scene's materials.
 3. **Property Clearing:** Three.js's internal `deallocateMaterial(material)` executes:
    ```javascript
-   function deallocateMaterial( material ) {
-       releaseMaterialProgramReferences( material );
-       properties.remove( material );
+   function deallocateMaterial(material) {
+     releaseMaterialProgramReferences(material);
+     properties.remove(material);
    }
    ```
    `properties.remove(material)` removes the material from `WebGLProperties`'s internal `WeakMap`.
@@ -79,11 +85,13 @@ function checkMaterialsReady() {
 ## 4. Safe Architectural Correction
 
 Per engineering rules:
+
 - **No global error suppression** (e.g. `window.onerror = () => true` was NOT used).
 - **No modification to `node_modules`** (strictly non-invasive).
 - **Minimal safe correction** targeting the renderer instance.
 
 ### Implementation: `ensureSafeCompileAsync(gl)`
+
 Located in [`src/components/showroom/safeCompileAsync.ts`](file:///E:/Formula%201/F1-Overview/src/components/showroom/safeCompileAsync.ts):
 
 ```typescript
@@ -132,6 +140,7 @@ export function ensureSafeCompileAsync(gl: WebGLRenderer): void {
 ```
 
 ### Integration Points:
+
 1. **[`ShowroomScene.tsx`](file:///E:/Formula%201/F1-Overview/src/components/showroom/ShowroomScene.tsx):**
    ```tsx
    <Canvas

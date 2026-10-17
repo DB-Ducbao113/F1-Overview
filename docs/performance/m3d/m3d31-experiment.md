@@ -21,11 +21,11 @@
 
 **Measured cost (M3D.2 baseline, `docs/performance/m3d/baseline.md` §2):**
 
-| Phase | Desktop | Mobile (4× simulated slowdown) |
-|-------|---------|--------------------------------|
-| Studio texture generation | 208 ms (LONG TASK) | ~830 ms (scales ~4×) |
-| Combined procedural textures (studio + car) | 281 ms | >1,100 ms |
-| Main-thread JS (showroom) | ~3,423 ms | ~12,844 ms |
+| Phase                                       | Desktop            | Mobile (4× simulated slowdown) |
+| ------------------------------------------- | ------------------ | ------------------------------ |
+| Studio texture generation                   | 208 ms (LONG TASK) | ~830 ms (scales ~4×)           |
+| Combined procedural textures (studio + car) | 281 ms             | >1,100 ms                      |
+| Main-thread JS (showroom)                   | ~3,423 ms          | ~12,844 ms                     |
 
 Per `optimization-opportunities.md` §1, studio wall textures are static and identical in structure across teams (only colors/text/logo vary), rated "Very Low" technical risk for static replacement, estimated ~200–250 ms main-thread saving on desktop.
 
@@ -53,14 +53,14 @@ And per the acceptance criteria: reject and restore if no meaningful repeatable 
 
 ## 4. Benchmark: original vs candidate
 
-| Metric | Baseline (original, committed artifacts) | Candidate (static WebP backdrops) | Delta | Verdict |
-|--------|------------------------------------------|-----------------------------------|-------|---------|
-| Studio texture main-thread cost (desktop) | 208 ms | ~0 ms (network decode instead) | −208 ms | Not achievable without build-time rasterization tooling |
-| Studio texture main-thread cost (mobile 4×) | ~830 ms | ~0 ms | −830 ms | Not achievable |
-| Desktop first usable frame | 4,364 ms | — | Needs ≥ −874 ms for M3D.3 target | M3D.3.1 alone insufficient |
-| Mobile TBT | 8,441 ms | — | Needs ≥ −1,688 ms | M3D.3.1 alone insufficient |
-| Initial JS bundle | 109.9 KiB gzip | — | ≤180 KiB budget | N/A — no change |
-| Static studio assets in `public/` | none | 88 files (11 teams × 2 langs × 4 walls) | +transfer | Would add initial downloads unless carefully lazy-loaded — conflicts with "avoid unnecessary initial downloads" |
+| Metric                                      | Baseline (original, committed artifacts) | Candidate (static WebP backdrops)       | Delta                            | Verdict                                                                                                         |
+| ------------------------------------------- | ---------------------------------------- | --------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Studio texture main-thread cost (desktop)   | 208 ms                                   | ~0 ms (network decode instead)          | −208 ms                          | Not achievable without build-time rasterization tooling                                                         |
+| Studio texture main-thread cost (mobile 4×) | ~830 ms                                  | ~0 ms                                   | −830 ms                          | Not achievable                                                                                                  |
+| Desktop first usable frame                  | 4,364 ms                                 | —                                       | Needs ≥ −874 ms for M3D.3 target | M3D.3.1 alone insufficient                                                                                      |
+| Mobile TBT                                  | 8,441 ms                                 | —                                       | Needs ≥ −1,688 ms                | M3D.3.1 alone insufficient                                                                                      |
+| Initial JS bundle                           | 109.9 KiB gzip                           | —                                       | ≤180 KiB budget                  | N/A — no change                                                                                                 |
+| Static studio assets in `public/`           | none                                     | 88 files (11 teams × 2 langs × 4 walls) | +transfer                        | Would add initial downloads unless carefully lazy-loaded — conflicts with "avoid unnecessary initial downloads" |
 
 **Original vs candidate could not be executed:** no static assets were generated (see determination), no browser automation exists for ≥5 cold Lighthouse runs, and no code change was made to `StudioBackdropTexture.ts`. The original implementation remains the A/B reference by default (it is the implementation).
 
@@ -77,11 +77,11 @@ And per the acceptance criteria: reject and restore if no meaningful repeatable 
 
 ## 6. Updated M3D.3 recommendation
 
-| Phase | Recommendation | Rationale |
-|-------|---------------|-----------|
-| **M3D.3.1** Static studio WebP textures | **Deferred** | Not technically appropriate without server-side canvas/image tooling; cannot guarantee pixel-faithful walls; cold-run criteria unverifiable offline. Revisit when a build-time image pipeline (e.g. `sharp`/node-canvas + committed static WebPs) is available. |
-| **M3D.3.2** Worker-based GLTF ingestion | **Priority** | Largest verified long task: GLTF parse 1,046 ms (desktop main thread; ~4,200 ms under mobile 4×). Offloading to a Web Worker attacks the dominant TBT driver. |
-| **M3D.3.3** PBR shader chunk pruning | **Secondary** | Shader compilation 666 ms; safe only after the M3D.1 `safeCompileAsync` lifecycle is stable (audited above) and with visual regression coverage for all 11 liveries × 7 hotspots. |
+| Phase                                   | Recommendation | Rationale                                                                                                                                                                                                                                                       |
+| --------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **M3D.3.1** Static studio WebP textures | **Deferred**   | Not technically appropriate without server-side canvas/image tooling; cannot guarantee pixel-faithful walls; cold-run criteria unverifiable offline. Revisit when a build-time image pipeline (e.g. `sharp`/node-canvas + committed static WebPs) is available. |
+| **M3D.3.2** Worker-based GLTF ingestion | **Priority**   | Largest verified long task: GLTF parse 1,046 ms (desktop main thread; ~4,200 ms under mobile 4×). Offloading to a Web Worker attacks the dominant TBT driver.                                                                                                   |
+| **M3D.3.3** PBR shader chunk pruning    | **Secondary**  | Shader compilation 666 ms; safe only after the M3D.1 `safeCompileAsync` lifecycle is stable (audited above) and with visual regression coverage for all 11 liveries × 7 hotspots.                                                                               |
 
 **Long-task attribution note (Phase B):** Lighthouse long-tasks attribute by script URL, so `vendor-three-DnMMrDP1.js` bundles GLTF parse, texture generation, material setup, and shader compilation together. A 1.5 s wall-clock interval must **not** be attributed entirely to shader CPU work without profiler/trace evidence — the committed traces attribute GLTF parse (1,046 ms), procedural textures (281 ms), material setup (1,189 ms), and compileAsync (666 ms) as separate telemetry phases, some of which overlap in wall-clock time (studio texture generation overlaps GLTF download/parse; compileAsync starts only after both car and studio are ready).
 

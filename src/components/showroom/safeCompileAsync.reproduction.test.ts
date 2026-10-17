@@ -32,7 +32,7 @@ const mockCamera = {} as Camera;
  */
 function buildMockGl({
   programFor,
-  extensions = { get: () => ({} as unknown) },
+  extensions = { get: () => ({}) as unknown },
 }: {
   programFor: (material: unknown) => { isReady: () => boolean } | undefined;
   extensions?: { get: (ext: string) => unknown };
@@ -40,9 +40,10 @@ function buildMockGl({
   const materialsSet = new Set<unknown>();
   const registeredMaterials: unknown[] = [];
   const properties = {
-    get: (obj: unknown) => ({
-      currentProgram: programFor(obj),
-    } as { currentProgram?: { isReady: () => boolean } }),
+    get: (obj: unknown) =>
+      ({
+        currentProgram: programFor(obj),
+      }) as { currentProgram?: { isReady: () => boolean } },
   };
 
   const gl = {
@@ -83,8 +84,7 @@ describe('M3D.1 — isReady crash reproduction & fix verification', () => {
     const disposed = { id: 2 };
     const materials = new Set([live, disposed]);
     const properties = {
-      get: (obj: unknown) =>
-        obj === disposed ? {} : { currentProgram: { isReady: () => true } },
+      get: (obj: unknown) => (obj === disposed ? {} : { currentProgram: { isReady: () => true } }),
     };
 
     expect(() => runUnpatchedCheck(materials, properties)).toThrow(
@@ -97,8 +97,7 @@ describe('M3D.1 — isReady crash reproduction & fix verification', () => {
     const live = { id: 1 };
     const disposed = { id: 2 };
     const { gl, register, materialsSet } = buildMockGl({
-      programFor: (obj) =>
-        obj === disposed ? undefined : { isReady: () => liveReady },
+      programFor: (obj) => (obj === disposed ? undefined : { isReady: () => liveReady }),
     });
     register(live, disposed);
 
