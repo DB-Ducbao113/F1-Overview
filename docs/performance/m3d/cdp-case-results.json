@@ -1,0 +1,75 @@
+{
+  "cases": [
+    {
+      "id": "A",
+      "name": "about:blank",
+      "url": "about:blank",
+      "browserProcessSurvived": null,
+      "rendererProcessSurvived": null,
+      "commands": [],
+      "firstFailingCommand": null,
+      "allCommandsPassed": false,
+      "thirtySecondSurvival": false,
+      "notes": [
+        "Browser CDP endpoint available",
+        "Browser-level CDP connected",
+        "Page target created: 90EE684283AB5001B1786EBE9F470392"
+      ],
+      "error": "Page target WebSocket URL not available"
+    },
+    {
+      "id": "B",
+      "name": "static-html-js",
+      "url": "file:///E:/Formula 1/F1-Overview/cdp-diagnostics/static.html",
+      "browserProcessSurvived": false,
+      "rendererProcessSurvived": null,
+      "commands": [],
+      "firstFailingCommand": null,
+      "allCommandsPassed": false,
+      "thirtySecondSurvival": false,
+      "notes": [
+        "chrome exited code=21 signal=null",
+        "Browser CDP endpoint available",
+        "Browser-level CDP connected",
+        "Page target created: 93CF1B1B9F6EEFEC7249AEBC9BB22583"
+      ],
+      "error": "Page target WebSocket URL not available"
+    },
+    {
+      "id": "C",
+      "name": "webgl-triangle",
+      "url": "file:///E:/Formula 1/F1-Overview/cdp-diagnostics/webgl-triangle.html",
+      "browserProcessSurvived": false,
+      "rendererProcessSurvived": null,
+      "commands": [],
+      "firstFailingCommand": null,
+      "allCommandsPassed": false,
+      "thirtySecondSurvival": false,
+      "notes": [
+        "chrome exited code=21 signal=null",
+        "Browser CDP endpoint available",
+        "Browser-level CDP connected"
+      ],
+      "error": "socket closed"
+    },
+    {
+      "id": "D",
+      "name": "showroom-worker-off",
+      "url": "http://127.0.0.1:5173/showroom",
+      "browserProcessSurvived": false,
+      "rendererProcessSurvived": null,
+      "commands": [],
+      "firstFailingCommand": null,
+      "allCommandsPassed": false,
+      "thirtySecondSurvival": false,
+      "notes": [
+        "chrome exited code=21 signal=null",
+        "Browser CDP endpoint available",
+        "Browser-level CDP connected",
+        "Page target created: 00F57C229E6E19F27E3DE162343E6339"
+      ],
+      "error": "Page target WebSocket URL not available"
+    }
+  ],
+  "timestamp": "2026-10-17T03:08:37.581Z"
+}
