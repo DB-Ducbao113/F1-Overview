@@ -1,6 +1,12 @@
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+import {
+  ObservationRequestError,
+  requestJsonWithPolicy,
+  type ObservationFetchJson,
+  type ObservationRequestPolicy,
+} from './network-policy.ts';
 
 /** Read-only evidence; it has no import from publication code. */
 export type ShadowEvidenceKind =
@@ -336,7 +342,9 @@ export async function observeOpenF1Session(input: {
   sessionId: string;
   sessionKey: number;
   observedAtUtc: string;
-  fetchJson?: (url: string) => Promise<unknown>;
+  fetchJson?: ObservationFetchJson;
+  requestPolicy?: Partial<ObservationRequestPolicy>;
+  sleep?: (milliseconds: number) => Promise<void>;
 }): Promise<OpenF1ShadowObservation> {
   if (!input.eventId || !input.sessionId || !Number.isInteger(input.sessionKey))
     throw new Error('OpenF1 eventId, sessionId, and integer sessionKey are required');
@@ -346,11 +354,17 @@ export async function observeOpenF1Session(input: {
   const raceControlReference = `https://api.openf1.org/v1/race_control?session_key=${key}`;
   const resultsReference = `https://api.openf1.org/v1/session_result?session_key=${key}`;
   const driversReference = `https://api.openf1.org/v1/drivers?session_key=${key}`;
-  const [raceControl, results, drivers] = await Promise.all([
-    fetchJson(raceControlReference),
-    fetchJson(resultsReference),
-    fetchJson(driversReference),
-  ]);
+  const request = (url: string) =>
+    requestJsonWithPolicy({
+      url,
+      fetchJson,
+      policy: input.requestPolicy,
+      sleep: input.sleep,
+    });
+  // Deliberately sequential: one manual run should not create an avoidable request burst.
+  const raceControl = await request(raceControlReference);
+  const results = await request(resultsReference);
+  const drivers = await request(driversReference);
   if (!Array.isArray(results)) throw new Error('OpenF1 session_result must be an array');
   const evidence: ShadowEvidenceInput[] = [];
   const completion = openF1ChequeredEvidence({
@@ -745,10 +759,25 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
 }
 
-async function fetchOpenF1Json(url: string): Promise<unknown> {
-  const response = await fetch(url, { headers: { accept: 'application/json' } });
-  if (!response.ok) throw new Error(`OpenF1 HTTP ${response.status} for ${url}`);
+async function fetchOpenF1Json(url: string, signal?: AbortSignal): Promise<unknown> {
+  const response = await fetch(url, { headers: { accept: 'application/json' }, signal });
+  if (!response.ok) {
+    const retryAfter = response.headers.get('retry-after');
+    const retryAfterMs = retryAfter ? parseRetryAfter(retryAfter) : null;
+    throw new ObservationRequestError(
+      `OpenF1 HTTP ${response.status} for ${url}`,
+      response.status,
+      retryAfterMs,
+    );
+  }
   return response.json();
+}
+
+function parseRetryAfter(value: string): number | null {
+  const seconds = Number(value);
+  if (Number.isFinite(seconds) && seconds >= 0) return seconds * 1_000;
+  const date = Date.parse(value);
+  return Number.isFinite(date) ? Math.max(0, date - Date.now()) : null;
 }
 
 function isShadowState(value: unknown): value is ShadowState {

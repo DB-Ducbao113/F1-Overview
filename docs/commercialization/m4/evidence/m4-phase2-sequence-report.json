@@ -1,0 +1,109 @@
+{
+  "mode": "REPLAY",
+  "sequenceId": "m4-multi-snapshot-replay-v1",
+  "eventId": "2026-synthetic-observation-gp",
+  "sessionId": "2026-synthetic-observation-gp-race",
+  "steps": [
+    {
+      "snapshotId": "poll-001-no-result",
+      "observedAtUtc": "2026-10-18T14:00:00Z",
+      "events": ["NO_RESULT_AVAILABLE"],
+      "observationsAdded": 0,
+      "duplicatesIgnored": 0,
+      "validation": "NOT_AVAILABLE",
+      "durableRevisionId": "evidence-e7d64a52ce5128959951ba27"
+    },
+    {
+      "snapshotId": "poll-002-completion",
+      "observedAtUtc": "2026-10-18T14:08:00Z",
+      "events": ["NO_RESULT_AVAILABLE", "SESSION_COMPLETION_OBSERVED"],
+      "observationsAdded": 1,
+      "duplicatesIgnored": 0,
+      "validation": "NOT_AVAILABLE",
+      "durableRevisionId": "evidence-c9793a31e0abb804e480391c"
+    },
+    {
+      "snapshotId": "poll-003-partial",
+      "observedAtUtc": "2026-10-18T14:15:00Z",
+      "events": ["SESSION_COMPLETION_OBSERVED", "PARTIAL_RESULT"],
+      "observationsAdded": 1,
+      "duplicatesIgnored": 1,
+      "validation": "PARTIAL",
+      "durableRevisionId": "evidence-84387c7e0074cea4aeac6493"
+    },
+    {
+      "snapshotId": "poll-004-complete",
+      "observedAtUtc": "2026-10-18T14:20:00Z",
+      "events": [
+        "SESSION_COMPLETION_OBSERVED",
+        "COMPLETE_RESULT_VALIDATED",
+        "CROSS_SOURCE_COMPARISON"
+      ],
+      "observationsAdded": 3,
+      "duplicatesIgnored": 1,
+      "validation": "VALID",
+      "durableRevisionId": "evidence-db56bacb9a60a4cb778c7c9e"
+    },
+    {
+      "snapshotId": "poll-005-provisional",
+      "observedAtUtc": "2026-10-18T14:27:00Z",
+      "events": ["COMPLETE_RESULT_VALIDATED", "FIA_PROVISIONAL_REVIEWED"],
+      "observationsAdded": 1,
+      "duplicatesIgnored": 2,
+      "validation": "VALID",
+      "durableRevisionId": "evidence-1f15375afb56257eb281ac28"
+    },
+    {
+      "snapshotId": "poll-006-final",
+      "observedAtUtc": "2026-10-18T15:12:00Z",
+      "events": ["COMPLETE_RESULT_VALIDATED", "FIA_FINAL_REVIEWED"],
+      "observationsAdded": 1,
+      "duplicatesIgnored": 2,
+      "validation": "VALID",
+      "durableRevisionId": "evidence-a0678d1c5bc24367d98db113"
+    },
+    {
+      "snapshotId": "poll-007-corrected",
+      "observedAtUtc": "2026-10-18T16:02:00Z",
+      "events": ["COMPLETE_RESULT_VALIDATED", "FIA_CORRECTED_REVIEWED"],
+      "observationsAdded": 1,
+      "duplicatesIgnored": 2,
+      "validation": "VALID",
+      "durableRevisionId": "evidence-34f69e5fbce365e8b13e9a3a"
+    }
+  ],
+  "metrics": {
+    "actualSessionEndUtc": null,
+    "observedSessionEndUtc": "2026-10-18T14:07:30Z",
+    "measurementBasis": "REPLAY",
+    "firstSourceResultAtUtc": "2026-10-18T14:15:00Z",
+    "firstValidatedResultAtUtc": "2026-10-18T14:20:00Z",
+    "officialProvisionalAtUtc": "2026-10-18T14:27:00Z",
+    "officialFinalAtUtc": "2026-10-18T15:12:00Z",
+    "sourceDisagreements": 1,
+    "timeToFirstAvailableMinutes": 7.5,
+    "timeToFirstValidatedMinutes": 12.5,
+    "timeToOfficialProvisionalMinutes": 19.5,
+    "timeToOfficialFinalMinutes": 64.5,
+    "provisionalTarget": "REPLAY_ONLY"
+  },
+  "latencyBounds": {
+    "availability": {
+      "lowerBoundMinutes": 0.5,
+      "upperBoundMinutes": 7.5,
+      "pollingUncertaintyMinutes": 7
+    },
+    "validation": {
+      "lowerBoundMinutes": 7.5,
+      "upperBoundMinutes": 12.5,
+      "pollingUncertaintyMinutes": 5
+    }
+  },
+  "durable": {
+    "enabled": true,
+    "recoveredAtStart": false,
+    "headRevisionId": "evidence-34f69e5fbce365e8b13e9a3a",
+    "revisionCount": 7
+  },
+  "targetClaim": "NOT_MEASURED"
+}

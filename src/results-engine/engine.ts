@@ -3,7 +3,13 @@ import { join } from 'node:path';
 import { FixtureProvider } from './provider.ts';
 import type { ResultsProvider } from './provider.ts';
 import { appendRevision, initSession, loadState, saveState, transitionSession } from './state.ts';
-import type { CalendarEvent, EngineState, SessionDefinition, SessionResult } from './types.ts';
+import type {
+  CalendarEvent,
+  EngineState,
+  ProviderSessionReference,
+  SessionDefinition,
+  SessionResult,
+} from './types.ts';
 import { verifySessionResult } from './verification.ts';
 
 export interface EngineOptions {
@@ -164,10 +170,52 @@ function validateSession(value: unknown): SessionDefinition {
     sessionId: session.sessionId,
     scheduledStartUtc: session.scheduledStartUtc,
     durationMinutes: session.durationMinutes,
-    ...(session.providers &&
-    typeof session.providers === 'object' &&
-    !Array.isArray(session.providers)
-      ? { providers: session.providers as SessionDefinition['providers'] }
-      : {}),
+    ...(session.providers ? { providers: validateProviders(session.providers) } : {}),
   };
+}
+
+function validateProviders(value: unknown): SessionDefinition['providers'] {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Calendar providers must be an object');
+  const providers = value as Record<string, unknown>;
+  const result: NonNullable<SessionDefinition['providers']> = {};
+  if (providers.openf1 !== undefined)
+    result.openf1 = validateProviderReference(providers.openf1, 'openf1');
+  if (providers.jolpica !== undefined)
+    result.jolpica = validateProviderReference(providers.jolpica, 'jolpica');
+  return result;
+}
+
+function validateProviderReference(value: unknown, provider: string): ProviderSessionReference {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error(`Calendar ${provider} mapping must be an object`);
+  const reference = value as Record<string, unknown>;
+  const mapping = reference.mappingVerification;
+  if (
+    (reference.sessionKey !== undefined &&
+      (!Number.isInteger(reference.sessionKey) || Number(reference.sessionKey) <= 0)) ||
+    (reference.year !== undefined &&
+      (!Number.isInteger(reference.year) || Number(reference.year) <= 0)) ||
+    (reference.round !== undefined &&
+      (!Number.isInteger(reference.round) || Number(reference.round) <= 0)) ||
+    (mapping !== undefined && !validMappingVerification(mapping))
+  ) {
+    throw new Error(`Calendar ${provider} mapping is invalid`);
+  }
+  return reference as unknown as ProviderSessionReference;
+}
+
+function validMappingVerification(value: unknown): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const mapping = value as Record<string, unknown>;
+  return (
+    (mapping.status === 'SYNTHETIC' || mapping.status === 'REVIEWED') &&
+    typeof mapping.verifiedBy === 'string' &&
+    mapping.verifiedBy.length > 0 &&
+    typeof mapping.verifiedAtUtc === 'string' &&
+    mapping.verifiedAtUtc.endsWith('Z') &&
+    Number.isFinite(Date.parse(mapping.verifiedAtUtc)) &&
+    typeof mapping.evidenceReference === 'string' &&
+    mapping.evidenceReference.length > 0
+  );
 }

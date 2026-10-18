@@ -16,8 +16,10 @@ import type {
   FiaDocumentMetadata,
   ShadowEvidenceInput,
   ShadowMetrics,
+  ShadowState,
 } from './shadow.ts';
 import { requireObservationPermission } from './source-registry.ts';
+import type { ObservationFetchJson, ObservationRequestPolicy } from './network-policy.ts';
 
 export interface DiscoveredObservationSession {
   event: CalendarEvent;
@@ -49,11 +51,13 @@ export interface ManualObservationOptions {
     sessionKey?: number;
     permissionPath?: string;
     manuallyAuthorized: boolean;
-    fetchJson?: (url: string) => Promise<unknown>;
+    fetchJson?: ObservationFetchJson;
+    requestPolicy?: Partial<ObservationRequestPolicy>;
+    sleep?: (milliseconds: number) => Promise<void>;
   };
 }
 
-interface ReplaySnapshot {
+export interface ReplaySnapshot {
   schemaVersion: 1;
   sourceRegistryId: 'synthetic-openf1-replay';
   captureId: string;
@@ -63,6 +67,17 @@ interface ReplaySnapshot {
   raceControl: unknown;
   results: unknown;
   drivers: unknown;
+}
+
+export interface ObservationPayload {
+  evidence: readonly ShadowEvidenceInput[];
+  validationReport: ClassificationValidationReport | null;
+  validatedObservedAtUtc: string;
+}
+
+export interface PersistedObservation {
+  report: ManualObservationReport;
+  state: ShadowState;
 }
 
 export function discoverObservationSession(
@@ -117,22 +132,43 @@ export async function runManualObservation(
   const fiaDocuments = options.fiaDocumentsPath
     ? readFiaDocumentReviews(options.fiaDocumentsPath)
     : [];
+  return (
+    await persistObservation({
+      identity,
+      mode,
+      observation,
+      fiaDocuments,
+      statePath: options.statePath,
+    })
+  ).report;
+}
+
+export async function persistObservation(input: {
+  identity: { eventId: string; sessionId: string; scheduledEndUtc: string };
+  mode: ManualObservationReport['mode'];
+  observation: ObservationPayload;
+  fiaDocuments: readonly FiaDocumentMetadata[];
+  statePath?: string;
+}): Promise<PersistedObservation> {
   let observationsAdded = 0;
   let duplicatesIgnored = 0;
   const state = await updateShadowState((current) => {
     let next = current;
-    for (const item of [...observation.evidence, ...fiaDocuments.map(fiaDocumentEvidence)]) {
-      const appended = appendShadowEvidence(next, identity, item);
+    for (const item of [
+      ...input.observation.evidence,
+      ...input.fiaDocuments.map(fiaDocumentEvidence),
+    ]) {
+      const appended = appendShadowEvidence(next, input.identity, item);
       next = appended.state;
       if (appended.duplicate) duplicatesIgnored += 1;
       else observationsAdded += 1;
     }
-    if (observation.validationReport) {
+    if (input.observation.validationReport) {
       const recorded = recordValidatedResult(
         next,
-        identity,
-        observation.validationReport,
-        observation.validatedObservedAtUtc,
+        input.identity,
+        input.observation.validationReport,
+        input.observation.validatedObservedAtUtc,
       );
       next = recorded.state;
       if (recorded.evidence) {
@@ -143,21 +179,24 @@ export async function runManualObservation(
       }
     }
     return next;
-  }, options.statePath);
-  const metrics = metricsFor(state, identity.sessionId);
+  }, input.statePath);
+  const metrics = metricsFor(state, input.identity.sessionId);
   return {
-    mode,
-    ...identity,
-    observationsAdded,
-    duplicatesIgnored,
-    validation: observation.validationReport,
-    metrics,
-    targetClaim: metrics?.measurementBasis === 'LIVE_AUTHORIZED' ? 'MEASURED' : 'NOT_MEASURED',
-    statePath: options.statePath,
+    state,
+    report: {
+      mode: input.mode,
+      ...input.identity,
+      observationsAdded,
+      duplicatesIgnored,
+      validation: input.observation.validationReport,
+      metrics,
+      targetClaim: metrics?.measurementBasis === 'LIVE_AUTHORIZED' ? 'MEASURED' : 'NOT_MEASURED',
+      statePath: input.statePath,
+    },
   };
 }
 
-function observeReplay(
+export function observeReplay(
   discovered: DiscoveredObservationSession,
   replay: ReplaySnapshot,
 ): {
@@ -226,8 +265,12 @@ async function observeLive(
     permissionPath: live.permissionPath,
     manuallyAuthorized: live.manuallyAuthorized,
   });
-  const sessionKey = live.sessionKey ?? discovered.session.providers?.openf1?.sessionKey;
+  const mapping = discovered.session.providers?.openf1;
+  const sessionKey = live.sessionKey ?? mapping?.sessionKey;
   if (!Number.isInteger(sessionKey)) throw new Error('A configured OpenF1 session key is required');
+  if (mapping?.sessionKey !== sessionKey || mapping?.mappingVerification?.status !== 'REVIEWED') {
+    throw new Error('Live observation requires a reviewed calendar session-key mapping');
+  }
   const observedAtUtc = new Date().toISOString();
   const observation = await observeOpenF1Session({
     eventId: discovered.event.eventId,
@@ -235,6 +278,8 @@ async function observeLive(
     sessionKey: sessionKey as number,
     observedAtUtc,
     ...(live.fetchJson ? { fetchJson: live.fetchJson } : {}),
+    ...(live.requestPolicy ? { requestPolicy: live.requestPolicy } : {}),
+    ...(live.sleep ? { sleep: live.sleep } : {}),
   });
   return { ...observation, validatedObservedAtUtc: observedAtUtc };
 }
@@ -261,6 +306,10 @@ function readReplaySnapshot(path: string): ReplaySnapshot {
 
 export function readFiaDocumentReviews(path: string): FiaDocumentMetadata[] {
   const raw: unknown = JSON.parse(readFileSync(path, 'utf8'));
+  return validateFiaDocumentReviews(raw);
+}
+
+export function validateFiaDocumentReviews(raw: unknown): FiaDocumentMetadata[] {
   if (!Array.isArray(raw)) throw new Error('FIA metadata review file must be an array');
   return raw.map((item) => {
     if (!isRecord(item) || !isRecord(item.review))

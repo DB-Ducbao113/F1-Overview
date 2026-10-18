@@ -53,6 +53,23 @@ requires `--live-openf1`, an explicit session key, the manual-authorization flag
 and a reviewed source-permission record. `--list-sources` prints the registry and
 network eligibility without making a request.
 
+M4 Phase 2 adds `--replay-sequence` for ordered observation snapshots and
+`--durable-store` for a branch-local content-addressed evidence prototype. The
+sequence records no-result, completion, partial, complete, cross-source and later
+document-review transitions. It reports latency bounds based on the last negative
+poll and first positive poll, so polling uncertainty is explicit.
+
+The durable prototype writes immutable linked revisions, an atomic `HEAD`, and a
+recoverable transaction journal. It verifies every revision after read-back and
+rejects stale expected-HEAD writers. Files remain under ignored `.results-engine/`
+storage; the module has no publication or remote-push behavior. It is suitable for
+local failure testing, not multi-host production durability.
+
+Live requests are sequential and use bounded timeout, retry and rate-limit backoff.
+They still require an explicit command flag, a reviewed calendar session-key
+mapping and a schema-v2 permission control referencing external provider
+authorization. The local control is not itself evidence of provider permission.
+
 ## Local execution
 
 Use Node 22+ and run a deterministic offline example:

@@ -62,6 +62,14 @@ export interface ProviderSessionReference {
   sessionKey?: number;
   year?: number;
   round?: number;
+  mappingVerification?: ProviderMappingVerification;
+}
+
+export interface ProviderMappingVerification {
+  status: 'SYNTHETIC' | 'REVIEWED';
+  verifiedBy: string;
+  verifiedAtUtc: string;
+  evidenceReference: string;
 }
 
 export interface CalendarEvent {
