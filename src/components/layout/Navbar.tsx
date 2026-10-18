@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, Home, Box } from 'lucide-react';
+import { Menu, X, Trophy, Home, Box, BookOpen } from 'lucide-react';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
 
 export const Navbar: React.FC = React.memo(() => {
@@ -28,8 +28,14 @@ export const Navbar: React.FC = React.memo(() => {
         label: strings.collection,
         icon: <Box className="w-4 h-4" />,
       },
+      {
+        id: 'engineering',
+        path: '/engineering',
+        label: lang === 'vi' ? 'Kỹ thuật' : 'Engineering',
+        icon: <BookOpen className="w-4 h-4" />,
+      },
     ],
-    [strings],
+    [lang, strings],
   );
 
   useEffect(() => {
@@ -69,8 +75,10 @@ export const Navbar: React.FC = React.memo(() => {
                     ? location.pathname.startsWith('/season') ||
                       location.pathname.startsWith('/teams') ||
                       location.pathname.startsWith('/drivers')
-                    : location.pathname.startsWith('/showroom') ||
-                      location.pathname.startsWith('/gallery');
+                    : item.id === 'engineering'
+                      ? location.pathname.startsWith('/engineering')
+                      : location.pathname.startsWith('/showroom') ||
+                        location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}
@@ -148,8 +156,10 @@ export const Navbar: React.FC = React.memo(() => {
                     ? location.pathname.startsWith('/season') ||
                       location.pathname.startsWith('/teams') ||
                       location.pathname.startsWith('/drivers')
-                    : location.pathname.startsWith('/showroom') ||
-                      location.pathname.startsWith('/gallery');
+                    : item.id === 'engineering'
+                      ? location.pathname.startsWith('/engineering')
+                      : location.pathname.startsWith('/showroom') ||
+                        location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}

@@ -12,6 +12,7 @@ export const Footer: React.FC = React.memo(() => {
     { to: '/', label: navStrings.home },
     { to: '/season/2026', label: navStrings.championship },
     { to: '/showroom', label: navStrings.collection },
+    { to: '/engineering', label: 'Engineering Insights' },
     { to: '/teams', label: lang === 'vi' ? 'Danh sách đội đua' : 'Teams' },
     { to: '/drivers', label: lang === 'vi' ? 'Danh sách tay đua' : 'Drivers' },
     { to: '/about', label: lang === 'vi' ? 'Về dự án' : 'About' },

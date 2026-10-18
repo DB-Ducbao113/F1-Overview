@@ -7,7 +7,10 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')!;
+if (rootElement.dataset.prerendered === 'true') rootElement.replaceChildren();
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter>

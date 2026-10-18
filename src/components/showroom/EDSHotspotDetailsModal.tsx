@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { HotspotItem } from '../../data/showroom/hotspotsData';
 
 interface Props {
@@ -20,6 +21,14 @@ export const EDSHotspotDetailsModal: React.FC<Props> = ({
 }) => {
   if (!hotspot) return null;
   const index = hotspots.findIndex((item) => item.id === hotspot.id);
+  const articleSlug = {
+    wings: 'active-aerodynamics-wing-mechanics',
+    drs: 'active-aerodynamics-wing-mechanics',
+    power_unit: 'hybrid-powertrains-energy-management',
+    sidepods: 'ground-effect-aerodynamics',
+    tires: 'vehicle-dynamics-suspension',
+    floor: 'ground-effect-aerodynamics',
+  }[hotspot.id];
   const selectOffset = (offset: number) =>
     onSelectHotspot(hotspots[(index + offset + hotspots.length) % hotspots.length]);
   const content = (
@@ -89,6 +98,16 @@ export const EDSHotspotDetailsModal: React.FC<Props> = ({
                 </li>
               ))}
             </ul>
+            {articleSlug && (
+              <Link
+                to={`/engineering/${articleSlug}`}
+                onClick={onClose}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 text-xs font-bold text-cyan-100 hover:bg-cyan-300/20"
+              >
+                <BookOpen className="h-4 w-4" />
+                {lang === 'vi' ? 'Đọc chuyên đề kỹ thuật' : 'Read engineering feature'}
+              </Link>
+            )}
           </div>
         </div>
         <footer className="flex items-center justify-between border-t border-studio-800 px-5 py-4">

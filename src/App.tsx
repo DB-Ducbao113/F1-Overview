@@ -20,6 +20,7 @@ import { getCompleteRaceClassification } from './data/championship/raceClassific
 
 import { F1SpeedStream } from './components/common/F1SpeedStream';
 import { F1PageTransition } from './components/common/F1PageTransition';
+import { RouteSeo } from './components/seo/RouteSeo';
 
 const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
@@ -52,6 +53,16 @@ const DriversDirectoryPage = lazy(() =>
 );
 const AboutPage = lazy(() =>
   import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+);
+const EngineeringIndexPage = lazy(() =>
+  import('./components/engineering/EngineeringIndexPage').then((m) => ({
+    default: m.EngineeringIndexPage,
+  })),
+);
+const EngineeringArticlePage = lazy(() =>
+  import('./components/engineering/EngineeringArticlePage').then((m) => ({
+    default: m.EngineeringArticlePage,
+  })),
 );
 
 let lastAutoRaceSyncAt = 0;
@@ -175,6 +186,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white relative">
+      <RouteSeo />
       {/* ── A1. F1 Start Lights Preloader ── */}
       <F1StartLightsPreloader />
 
@@ -227,6 +239,8 @@ export const App: React.FC = () => {
               <Route path="/teams" element={<TeamsDirectoryPage />} />
               <Route path="/drivers" element={<DriversDirectoryPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/engineering" element={<EngineeringIndexPage />} />
+              <Route path="/engineering/:slug" element={<EngineeringArticlePage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -282,6 +282,35 @@ export const HomeView: React.FC = () => {
             </Card3DTilt>
           </div>
         </section>
+
+        <section className="page-container pb-16 md:pb-24">
+          <div className="relative overflow-hidden rounded-3xl border border-studio-800 bg-[#090c13] p-7 text-white shadow-2xl sm:p-10 lg:p-14">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(82,229,255,0.15),transparent_35%)]" />
+            <div className="relative max-w-3xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200">
+                Engineering Insights · EDS-G01
+              </p>
+              <h2 className="mt-4 font-display text-3xl font-black uppercase leading-tight sm:text-5xl">
+                {lang === 'vi'
+                  ? 'Hiểu chiếc xe từ nguyên lý kỹ thuật'
+                  : 'Understand the car from engineering principles'}
+              </h2>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+                {lang === 'vi'
+                  ? 'Đọc bốn chuyên đề song ngữ về hiệu ứng mặt đất, khí động chủ động, hệ hybrid và động lực học xe — minh họa bằng tài sản EDS-G01 nguyên bản.'
+                  : 'Read four bilingual features on ground effect, active aerodynamics, hybrid systems and vehicle dynamics, illustrated with original EDS-G01 assets.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate('/engineering')}
+                className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-xl bg-cyan-300 px-5 text-xs font-black uppercase tracking-widest text-studio-950 hover:bg-white"
+              >
+                {lang === 'vi' ? 'Mở Engineering Insights' : 'Open Engineering Insights'}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

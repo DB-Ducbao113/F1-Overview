@@ -18,6 +18,7 @@ import { EDS_HOTSPOTS } from '../../data/showroom/edsHotspots';
 import { DEFAULT_EDS_LIVERY_ID, EDSLiveryId, getEDSLivery } from '../../data/showroom/edsLiveries';
 import type { HotspotItem } from '../../data/showroom/hotspotsData';
 import { useNavigationStore } from '../../store/useNavigationStore';
+import { useSearchParams } from 'react-router-dom';
 
 const WebGLContextGuard: React.FC<{
   onContextStateChange: (isLost: boolean) => void;
@@ -95,6 +96,7 @@ const ShowroomWebGLFallback: React.FC<{ accent: string; lang: 'vi' | 'en' }> = (
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
+  const [searchParams] = useSearchParams();
   const [selectedLiveryId, setSelectedLiveryId] = useState<EDSLiveryId>(DEFAULT_EDS_LIVERY_ID);
   const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
@@ -112,6 +114,17 @@ export const ShowroomView: React.FC = () => {
   );
   const stageRef = useRef<HTMLDivElement | null>(null);
   const livery = useMemo(() => getEDSLivery(selectedLiveryId), [selectedLiveryId]);
+
+  useEffect(() => {
+    const requestedId = searchParams.get('hotspot');
+    if (!requestedId) return;
+    const requestedHotspot = EDS_HOTSPOTS.find((hotspot) => hotspot.id === requestedId);
+    if (!requestedHotspot) return;
+    setActiveHotspot(requestedHotspot);
+    setCameraPreset(null);
+    setShowHotspots(true);
+    setAutoRotate(false);
+  }, [searchParams]);
 
   useEffect(() => {
     const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');

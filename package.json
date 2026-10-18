@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "build": "tsc && vite build && node scripts/prune-legacy-showroom-assets.mjs && node scripts/check-commercial-visual-isolation.mjs",
+    "build": "tsc && vite build && node scripts/generate-seo-artifacts.mjs && node scripts/prerender-engineering.mjs && node scripts/prune-legacy-showroom-assets.mjs && node scripts/check-commercial-visual-isolation.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -24,10 +24,15 @@
     "asset:eds-g01:images": "node scripts/generate-eds-showroom-assets.mjs",
     "asset:eds-visuals": "node scripts/generate-eds-visual-assets.mjs",
     "asset:eds-editorial": "node scripts/generate-eds-editorial-assets.mjs",
+    "asset:eds-engineering": "node scripts/generate-eds-engineering-assets.mjs",
+    "asset:eds-engineering:check": "node scripts/generate-eds-engineering-assets.mjs --check",
+    "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "asset:eds-g01:validate": "node scripts/validate-eds-g01.mjs",
     "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs",
     "qa:m3:visuals": "node scripts/qa-m3-visual-assets.mjs",
-    "qa:m3:comparison": "node scripts/capture-m3-phase2-comparison.mjs"
+    "qa:m3:comparison": "node scripts/capture-m3-phase2-comparison.mjs",
+    "qa:m5:seo": "node scripts/qa-m5-seo.mjs",
+    "qa:m5:browser": "node scripts/capture-m5-engineering-evidence.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",
