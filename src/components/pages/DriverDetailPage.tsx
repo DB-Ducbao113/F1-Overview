@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Flag, Trophy, Box, Award, Medal } from 'lucide-react';
 import { DRIVERS_DATA, getDriverCareerStats } from '../../data/drivers';
+import { getOriginalDriverVisualAsset } from '../../config/originalVisualAssets';
 import { TEAMS_DATA } from '../../data/teams';
 import { STANDINGS_DATA } from '../../data/championship';
 import { useNavigationStore } from '../../store/useNavigationStore';
@@ -63,7 +64,7 @@ export const DriverDetailPage: React.FC = () => {
   const flag = driver?.flagEmoji ?? entry?.countryFlag ?? '';
   const country = driver?.country ?? '';
   const resolvedImageUrl =
-    driver?.imageUrl || (driverId ? `/images/drivers/${driverId}.svg` : undefined);
+    driver?.imageUrl || (driverId ? getOriginalDriverVisualAsset(driverId) : undefined);
 
   return (
     <div className="min-h-[70vh] bg-studio-100 py-10 sm:py-16">
@@ -214,7 +215,7 @@ export const DriverDetailPage: React.FC = () => {
                   <>
                     <img
                       src={resolvedImageUrl}
-                      alt={name}
+                      alt={`${name} abstract editorial data profile`}
                       decoding="async"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';

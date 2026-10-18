@@ -21,8 +21,10 @@
     "sync:sessions": "node scripts/sync-openf1-sessions.js",
     "asset:eds-g01": "node scripts/generate-eds-g01.mjs",
     "asset:eds-g01:images": "node scripts/generate-eds-showroom-assets.mjs",
+    "asset:eds-visuals": "node scripts/generate-eds-visual-assets.mjs",
     "asset:eds-g01:validate": "node scripts/validate-eds-g01.mjs",
-    "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs"
+    "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs",
+    "qa:m3:visuals": "node scripts/qa-m3-visual-assets.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",

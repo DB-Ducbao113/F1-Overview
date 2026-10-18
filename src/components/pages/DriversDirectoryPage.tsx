@@ -134,7 +134,7 @@ export const DriversDirectoryPage: React.FC<DriversDirectoryPageProps> = React.m
                       {portraitUrl ? (
                         <img
                           src={portraitUrl}
-                          alt={driver.driverName}
+                          alt={`${driver.driverName} abstract editorial data profile`}
                           loading="lazy"
                           decoding="async"
                           onError={(e) => {

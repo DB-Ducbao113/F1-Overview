@@ -1,10 +1,10 @@
 # Image rights audit
 
-Status: **Cleaned**. All unverified Pinterest images previously located under `public/assets/` have been completely removed from the project repository upon instruction by the project owner to ensure copyright compliance and non-commercial integrity.
+Status: **Superseded for commercial-track decisions** by `docs/commercialization/m3/asset-inventory.md`. This historical note must not be treated as legal clearance evidence.
 
-The driver profiles now utilize native procedural SVG badges, official constructor insignias, and racing number typography instead of unverified photographic assets.
+M3 Phase 1 routes driver profiles to original abstract EDS SVGs and replaces recognizable constructor insignias with neutral EDS editorial identifiers.
 
-The optimized 3D model `public/models/c42.v2.glb` remains in use as the base procedural showcase model.
+The original `public/models/eds-g01.glb` is the default Showroom model. The C42 source remains only for DEV comparison and is pruned from commercial builds.
 
 | Directory / File Category      | Status       | Action Taken                                                             |
 | ------------------------------ | ------------ | ------------------------------------------------------------------------ |

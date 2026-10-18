@@ -85,7 +85,7 @@ export const CarDetailPage: React.FC = () => {
           {car.heroImage && (
             <img
               src={car.heroImage}
-              alt={car.name}
+              alt={`${car.name} editorial profile illustrated with the original Podium EDS-G01 concept`}
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover opacity-55"
               onError={(event) => {

@@ -139,7 +139,7 @@ export const TeamsDirectoryPage: React.FC<TeamsDirectoryPageProps> = React.memo(
                         <div className="relative aspect-[16/7] overflow-hidden bg-studio-950">
                           <img
                             src={team.imageUrl}
-                            alt={profile.fullName}
+                            alt={`Podium EDS-G01 independent engineering study for ${profile.fullName}`}
                             loading="lazy"
                             decoding="async"
                             className="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"

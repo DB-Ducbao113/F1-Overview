@@ -5,6 +5,7 @@ import { t } from '../../i18n/translations';
 import { TeamId } from '../../types';
 import { Sparkles, Trophy, ArrowRight } from 'lucide-react';
 import { ConstructorLogo } from '../common/ConstructorLogo';
+import { getOriginalTeamVisualAsset } from '../../config/originalVisualAssets';
 
 interface PosterCar {
   id: string;
@@ -27,7 +28,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'ferrari',
     watermark: 'FERRARI',
     color: '#dc0000',
-    imageUrl: '/images/teams/sf24.webp',
+    imageUrl: getOriginalTeamVisualAsset('ferrari'),
     drivers: 'Charles Leclerc #16 · Lewis Hamilton #44',
   },
   {
@@ -38,7 +39,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mclaren',
     watermark: 'MCLAREN',
     color: '#ff8000',
-    imageUrl: '/images/teams/mcl38.webp',
+    imageUrl: getOriginalTeamVisualAsset('mclaren'),
     drivers: 'Lando Norris #4 · Oscar Piastri #81',
   },
   {
@@ -49,7 +50,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'redbull',
     watermark: 'RED BULL',
     color: '#050f26',
-    imageUrl: '/images/teams/rb20.webp',
+    imageUrl: getOriginalTeamVisualAsset('redbull'),
     drivers: 'Max Verstappen #1 · Isack Hadjar #6',
   },
   {
@@ -60,7 +61,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'mercedes',
     watermark: 'MERCEDES',
     color: '#c8ccce',
-    imageUrl: '/images/teams/w15.webp',
+    imageUrl: getOriginalTeamVisualAsset('mercedes'),
     drivers: 'George Russell #63 · Kimi Antonelli #12',
   },
   {
@@ -71,7 +72,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'astonmartin',
     watermark: 'ASTON MARTIN',
     color: '#00594f',
-    imageUrl: '/images/teams/astonmartin.webp',
+    imageUrl: getOriginalTeamVisualAsset('astonmartin'),
     drivers: 'Fernando Alonso #14 · Lance Stroll #18',
   },
   {
@@ -82,7 +83,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'alpine',
     watermark: 'ALPINE',
     color: '#0090ff',
-    imageUrl: '/images/teams/alpine.webp',
+    imageUrl: getOriginalTeamVisualAsset('alpine'),
     drivers: 'Pierre Gasly #10 · Franco Colapinto #43',
   },
   {
@@ -93,7 +94,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'racingbulls',
     watermark: 'RACING BULLS',
     color: '#1634cb',
-    imageUrl: '/images/teams/racingbulls.webp',
+    imageUrl: getOriginalTeamVisualAsset('racingbulls'),
     drivers: 'Liam Lawson #30 · Arvid Lindblad #41',
   },
   {
@@ -104,7 +105,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'haas',
     watermark: 'HAAS',
     color: '#e5e7eb',
-    imageUrl: '/images/teams/haas.webp',
+    imageUrl: getOriginalTeamVisualAsset('haas'),
     drivers: 'Esteban Ocon #31 · Oliver Bearman #87',
   },
   {
@@ -115,7 +116,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'williams',
     watermark: 'WILLIAMS',
     color: '#002447',
-    imageUrl: '/images/teams/williams.webp',
+    imageUrl: getOriginalTeamVisualAsset('williams'),
     drivers: 'Carlos Sainz #55 · Alex Albon #23',
   },
   {
@@ -126,7 +127,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'audi',
     watermark: 'AUDI F1',
     color: '#c4c8cc',
-    imageUrl: '/images/teams/audi.webp',
+    imageUrl: getOriginalTeamVisualAsset('audi'),
     drivers: 'Nico Hülkenberg #27 · Gabriel Bortoleto #5',
   },
   {
@@ -137,7 +138,7 @@ const POSTER_CARS: PosterCar[] = [
     teamId: 'cadillac',
     watermark: 'CADILLAC',
     color: '#d4af37',
-    imageUrl: '/images/teams/cadillac.webp',
+    imageUrl: getOriginalTeamVisualAsset('cadillac'),
     drivers: 'Sergio Pérez #11 · Valtteri Bottas #77',
   },
 ];
@@ -412,7 +413,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                   {/* Background Sliced Image with Vignette */}
                   <img
                     src={car.imageUrl}
-                    alt={car.name}
+                    alt={`${car.name} editorial profile with an original Podium EDS-G01 study`}
                     className={`absolute inset-0 w-full h-full object-cover object-center filter contrast-125 group-hover:scale-110 transition-all duration-700 ${
                       !isAnyActive
                         ? 'brightness-[0.45] group-hover:brightness-[0.7]'
@@ -503,7 +504,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                       {isExpanded && (
                         <img
                           src={car.imageUrl}
-                          alt={car.name}
+                          alt={`${car.name} editorial profile with an original Podium EDS-G01 study`}
                           className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out animate-ken-burns"
                           loading="eager"
                           decoding="async"

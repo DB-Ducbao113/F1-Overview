@@ -11,6 +11,51 @@ const legacyTargets = [
   'dist/images/showroom/pirelli_tires.webp',
   'dist/images/showroom/halo_safety.webp',
   'dist/images/showroom/sidepods_cooling.webp',
+  'dist/images/teams',
+  'dist/images/drivers',
+];
+const originalTeamStudies = [
+  'ferrari',
+  'mclaren',
+  'redbull',
+  'mercedes',
+  'astonmartin',
+  'alpine',
+  'racingbulls',
+  'haas',
+  'williams',
+  'audi',
+  'cadillac',
+];
+const originalDriverProfiles = [
+  'leclerc',
+  'hamilton',
+  'norris',
+  'piastri',
+  'verstappen',
+  'hadjar',
+  'russell',
+  'antonelli',
+  'alonso',
+  'stroll',
+  'gasly',
+  'colapinto',
+  'lawson',
+  'lindblad',
+  'ocon',
+  'bearman',
+  'sainz',
+  'albon',
+  'hulkenberg',
+  'bortoleto',
+  'perez',
+  'bottas',
+  'tsunoda',
+  'ricciardo',
+  'magnussen',
+  'zhou',
+  'sargeant',
+  'doohan',
 ];
 const requiredOriginalAssets = [
   'dist/models/eds-g01.glb',
@@ -22,6 +67,8 @@ const requiredOriginalAssets = [
   'dist/images/showroom/eds-g01/sidepods.svg',
   'dist/images/showroom/eds-g01/tires.svg',
   'dist/images/showroom/eds-g01/floor.svg',
+  ...originalTeamStudies.map((id) => `dist/images/eds/vehicle-studies/${id}.svg`),
+  ...originalDriverProfiles.map((id) => `dist/images/eds/driver-profiles/${id}.svg`),
 ];
 
 for (const relativeTarget of legacyTargets) {
@@ -45,5 +92,5 @@ if (remaining.length > 0)
 
 for (const requiredAsset of requiredOriginalAssets) await fs.access(path.resolve(requiredAsset));
 console.log(
-  `Commercial artifact guard: removed ${legacyTargets.length} legacy Showroom targets and verified ${requiredOriginalAssets.length} original EDS assets.`,
+  `Commercial artifact guard: removed ${legacyTargets.length} legacy visual targets and verified ${requiredOriginalAssets.length} original EDS assets.`,
 );

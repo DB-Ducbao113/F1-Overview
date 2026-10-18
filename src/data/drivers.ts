@@ -1,4 +1,5 @@
 import { F1Driver, SeasonYear } from '../types';
+import { getOriginalDriverVisualAsset } from '../config/originalVisualAssets';
 import { STANDINGS_DATA } from './championship/standings';
 
 /**
@@ -464,7 +465,7 @@ export const DRIVERS_DATA: Record<string, F1Driver> = Object.fromEntries(
     id,
     {
       ...driver,
-      imageUrl: driver.imageUrl || `/images/drivers/${id}.webp`,
+      imageUrl: driver.imageUrl || getOriginalDriverVisualAsset(id),
     },
   ]),
 );

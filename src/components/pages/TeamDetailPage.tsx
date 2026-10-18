@@ -172,7 +172,7 @@ export const TeamDetailPage: React.FC = () => {
                       <div className="relative aspect-[16/10] overflow-hidden bg-black/60">
                         <img
                           src={team.imageUrl}
-                          alt={seasonProfile.fullName}
+                          alt={`Podium EDS-G01 independent engineering study for ${seasonProfile.fullName}`}
                           decoding="async"
                           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                         />
