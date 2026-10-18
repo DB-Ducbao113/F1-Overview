@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
 import {
   appendShadowEvidence,
-  loadShadowState,
   metricsFor,
   observeOpenF1Session,
-  saveShadowState,
+  recordValidatedResult,
+  updateShadowState,
 } from './shadow.ts';
 
 function readArgument(name: string): string | undefined {
@@ -19,24 +19,37 @@ const evidencePath = readArgument('--evidence');
 const sessionKey = readArgument('--openf1-session-key');
 if (!evidencePath && sessionKey === undefined)
   throw new Error('Provide --evidence or --openf1-session-key');
-let state = loadShadowState(readArgument('--state'));
 const evidence = readEvidenceFile(evidencePath);
+let validationReport: Awaited<ReturnType<typeof observeOpenF1Session>>['validationReport'] = null;
 if (sessionKey !== undefined) {
-  evidence.push(
-    ...(await observeOpenF1Session({
-      sessionKey: Number(sessionKey),
-      observedAtUtc: new Date().toISOString(),
-    })),
-  );
+  const observation = await observeOpenF1Session({
+    eventId,
+    sessionId,
+    sessionKey: Number(sessionKey),
+    observedAtUtc: new Date().toISOString(),
+  });
+  evidence.push(...observation.evidence);
+  validationReport = observation.validationReport;
 }
-for (const item of evidence)
-  state = appendShadowEvidence(state, { eventId, sessionId, scheduledEndUtc }, item).state;
-if (state.sessions[sessionId]) saveShadowState(state, readArgument('--state'));
+const statePath = readArgument('--state');
+const state = await updateShadowState((current) => {
+  let next = current;
+  for (const item of evidence)
+    next = appendShadowEvidence(next, { eventId, sessionId, scheduledEndUtc }, item).state;
+  if (validationReport)
+    next = recordValidatedResult(
+      next,
+      { eventId, sessionId, scheduledEndUtc },
+      validationReport,
+      new Date().toISOString(),
+    ).state;
+  return next;
+}, statePath);
 console.log(
   JSON.stringify(
     {
       observationsRecorded: evidence.length,
-      metrics: state.sessions[sessionId] ? metricsFor(state.sessions[sessionId]) : null,
+      metrics: metricsFor(state, sessionId),
     },
     null,
     2,
