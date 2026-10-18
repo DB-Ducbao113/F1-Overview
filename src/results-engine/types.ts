@@ -1,82 +1,102 @@
-// src/results-engine/types.ts
+/** Canonical, provider-neutral contracts for the offline-first Results Engine. */
+export const sessionTypes = [
+  'Practice',
+  'Qualifying',
+  'Sprint',
+  'SprintQualifying',
+  'Race',
+] as const;
 
-/**
- * Core enumerations and interfaces for the Podium EDS Results Engine.
- */
-export enum SessionType {
-  Practice = "Practice",
-  Qualifying = "Qualifying",
-  Sprint = "Sprint",
-  SprintQualifying = "SprintQualifying",
-  Race = "Race",
-}
+export type SessionType = (typeof sessionTypes)[number];
+export type ClassificationStatus = 'PENDING' | 'PROVISIONAL' | 'FINAL' | 'CORRECTED';
+export type SourceLicense = 'SYNTHETIC' | 'RESTRICTED' | 'APPROVED' | 'UNKNOWN';
+export type ProviderId = 'fixture' | 'openf1' | 'jolpica';
+export type EngineSessionState =
+  'SCHEDULED' | 'RUNNING' | 'RESULT_PENDING' | 'PROVISIONAL' | 'FINAL' | 'CORRECTED';
 
-export enum SessionState {
-  SCHEDULED = "SCHEDULED",
-  RUNNING = "RUNNING",
-  FINISHED = "FINISHED",
-  RESULT_PENDING = "RESULT_PENDING",
-  PROVISIONAL = "PROVISIONAL",
-  FINAL = "FINAL",
-  CORRECTED = "CORRECTED",
-}
-
-/**
- * Minimal driver identifier – in production this would map to a FIA driver ID.
- */
 export interface Driver {
-  driverId: string; // e.g., "max_verstappen"
+  driverId: string;
   fullName: string;
-  country: string;
+  country: string | null;
 }
 
-/**
- * Result of a single driver in a session.
- */
 export interface DriverResult {
   driver: Driver;
-  position: number | null; // null for DNFs etc.
-  laps?: number;
-  time?: string; // e.g., "1:31.456"
-  points?: number;
-  status?: string; // "Finished", "Disqualified", etc.
-  penalties?: string[];
+  position: number | null;
+  laps: number | null;
+  time: string | null;
+  points: number | null;
+  status: string;
+  penalties: readonly string[];
 }
 
-/**
- * Complete session result payload.
- */
+export interface ResultSource {
+  provider: ProviderId;
+  license: SourceLicense;
+  retrievedAtUtc: string;
+  sourceReference: string;
+}
+
+/** The only result format accepted by state and publication code. */
 export interface SessionResult {
-  eventId: string; // matches CalendarEvent.eventId
+  eventId: string;
   sessionId: string;
   type: SessionType;
-  startUtc: string; // ISO timestamp
-  endUtc: string; // ISO timestamp
-  driverResults: DriverResult[];
-  sourceLicense: "APPROVED" | "RESTRICTED" | "UNKNOWN";
+  startUtc: string;
+  endUtc: string;
+  classificationStatus: ClassificationStatus;
+  driverResults: readonly DriverResult[];
+  source: ResultSource;
 }
 
-/**
- * Calendar definitions – static JSON file `calendar.json` loads these.
- */
 export interface SessionDefinition {
   type: SessionType;
   sessionId: string;
-  scheduledStartUtc: string; // ISO
+  scheduledStartUtc: string;
   durationMinutes: number;
+  /** Explicit external IDs; no provider infers these from a display name. */
+  providers?: Partial<Record<Exclude<ProviderId, 'fixture'>, ProviderSessionReference>>;
+}
+
+export interface ProviderSessionReference {
+  sessionKey?: number;
+  year?: number;
+  round?: number;
 }
 
 export interface CalendarEvent {
   eventId: string;
   name: string;
-  sessions: SessionDefinition[];
+  sessions: readonly SessionDefinition[];
 }
 
-/**
- * Verification report – deterministic checks for factual fields.
- */
 export interface VerificationReport {
   valid: boolean;
   errors: string[];
-  warnings?: string[];
+  warnings: string[];
+}
+
+export interface ResultRevision {
+  revisionId: string;
+  sessionId: string;
+  parentRevisionId: string | null;
+  createdAtUtc: string;
+  classificationStatus: ClassificationStatus;
+  result: SessionResult;
+}
+
+export interface SessionContext {
+  eventId: string;
+  sessionId: string;
+  type: SessionType;
+  state: EngineSessionState;
+  lastUpdateUtc: string;
+  latestRevisionId: string | null;
+  revisionIds: readonly string[];
+}
+
+export interface EngineState {
+  schemaVersion: 1;
+  sessions: Record<string, SessionContext>;
+  revisions: Record<string, ResultRevision>;
 }

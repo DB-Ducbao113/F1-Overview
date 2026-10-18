@@ -1,68 +1,119 @@
-// src/results-engine/state.ts
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import type {
+  CalendarEvent,
+  EngineSessionState,
+  EngineState,
+  ResultRevision,
+  SessionContext,
+  SessionDefinition,
+  SessionResult,
+} from './types.ts';
 
-import { SessionState, SessionType, CalendarEvent, SessionDefinition } from "./types";
-import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+export const emptyEngineState = (): EngineState => ({
+  schemaVersion: 1,
+  sessions: {},
+  revisions: {},
+});
 
-/**
- * Represents the persisted state of a session.
- */
-export interface SessionContext {
-  eventId: string;
-  sessionId: string;
-  type: SessionType;
-  state: SessionState;
-  lastUpdateUtc: string; // ISO timestamp of last state transition
-  // optional fields for storing provisional/final result IDs
-  provisionalResultId?: string;
-  finalResultId?: string;
+export function getStatePath(override?: string): string {
+  return resolve(override ?? process.env.RESULTS_ENGINE_STATE_PATH ?? '.results-engine/state.json');
 }
 
-/**
- * Load persisted state map from JSON file. If file does not exist, returns empty map.
- */
-export function loadState(): Record<string, SessionContext> {
-  const statePath = join(process.cwd(), "src", "results-engine", "state.json");
+export function loadState(path?: string): EngineState {
   try {
-    const raw = readFileSync(statePath, { encoding: "utf-8" });
-    return JSON.parse(raw) as Record<string, SessionContext>;
-  } catch {
-    return {};
+    const parsed: unknown = JSON.parse(readFileSync(getStatePath(path), 'utf8'));
+    if (!isEngineState(parsed)) throw new Error('state schema is invalid');
+    return parsed;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return emptyEngineState();
+    throw error;
   }
 }
 
-/**
- * Persist the full state map back to disk.
- */
-export function saveState(state: Record<string, SessionContext>): void {
-  const statePath = join(process.cwd(), "src", "results-engine", "state.json");
-  writeFileSync(statePath, JSON.stringify(state, null, 2), { encoding: "utf-8" });
+/** Atomic replacement avoids a partially written state file on runner interruption. */
+export function saveState(state: EngineState, path?: string): void {
+  const target = getStatePath(path);
+  mkdirSync(dirname(target), { recursive: true });
+  const temporary = `${target}.${process.pid}.tmp`;
+  writeFileSync(temporary, `${JSON.stringify(state, null, 2)}\n`, 'utf8');
+  renameSync(temporary, target);
 }
 
-/**
- * Initialise a session entry based on the calendar definition.
- */
-export function initSession(event: CalendarEvent, def: SessionDefinition): SessionContext {
-  const ctx: SessionContext = {
+export function initSession(
+  event: CalendarEvent,
+  definition: SessionDefinition,
+  nowUtc: string,
+): SessionContext {
+  return {
     eventId: event.eventId,
-    sessionId: def.sessionId,
-    type: def.type as SessionType,
-    state: SessionState.SCHEDULED,
-    lastUpdateUtc: new Date().toISOString(),
+    sessionId: definition.sessionId,
+    type: definition.type,
+    state: 'SCHEDULED',
+    lastUpdateUtc: nowUtc,
+    latestRevisionId: null,
+    revisionIds: [],
   };
-  return ctx;
 }
 
-/**
- * Transition a session to a new state, updating timestamps.
- */
+const permittedTransitions: Record<EngineSessionState, readonly EngineSessionState[]> = {
+  SCHEDULED: ['RUNNING'],
+  RUNNING: ['RESULT_PENDING', 'PROVISIONAL', 'FINAL'],
+  RESULT_PENDING: ['PROVISIONAL', 'FINAL'],
+  PROVISIONAL: ['PROVISIONAL', 'FINAL'],
+  FINAL: ['CORRECTED'],
+  CORRECTED: ['CORRECTED'],
+};
+
 export function transitionSession(
-  state: Record<string, SessionContext>,
-  sessionId: string,
-  newState: SessionState
-): void {
-  const ctx = state[sessionId];
-  if (!ctx) throw new Error(`Session ${sessionId} not found in state`);
-  ctx.state = newState;
-  ctx.lastUpdateUtc = new Date().toISOString();
+  context: SessionContext,
+  target: EngineSessionState,
+  nowUtc: string,
+): SessionContext {
+  if (context.state !== target && !permittedTransitions[context.state].includes(target)) {
+    throw new Error(`Invalid state transition: ${context.state} -> ${target}`);
+  }
+  return { ...context, state: target, lastUpdateUtc: nowUtc };
+}
+
+export function revisionIdFor(result: SessionResult): string {
+  return createHash('sha256').update(JSON.stringify(result)).digest('hex').slice(0, 16);
+}
+
+/** Adds a revision only once. Existing revision objects are never mutated. */
+export function appendRevision(
+  state: EngineState,
+  context: SessionContext,
+  result: SessionResult,
+  nowUtc: string,
+): { state: EngineState; context: SessionContext; revision: ResultRevision; duplicate: boolean } {
+  const revisionId = revisionIdFor(result);
+  const existing = state.revisions[revisionId];
+  if (existing) return { state, context, revision: existing, duplicate: true };
+  const revision: ResultRevision = {
+    revisionId,
+    sessionId: result.sessionId,
+    parentRevisionId: context.latestRevisionId,
+    createdAtUtc: nowUtc,
+    classificationStatus: result.classificationStatus,
+    result,
+  };
+  const nextContext = {
+    ...context,
+    latestRevisionId: revisionId,
+    revisionIds: [...context.revisionIds, revisionId],
+  };
+  return {
+    state: { ...state, revisions: { ...state.revisions, [revisionId]: revision } },
+    context: nextContext,
+    revision,
+    duplicate: false,
+  };
+}
+
+function isEngineState(value: unknown): value is EngineState {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Partial<EngineState>;
+  return candidate.schemaVersion === 1 && !!candidate.sessions && !!candidate.revisions;
 }

@@ -1,4 +1,3 @@
-// src/results-engine/fixtures/2026-gp-bahrain-race.json
 {
   "eventId": "2026-gp-bahrain",
   "sessionId": "2026-gp-bahrain-race",
@@ -31,5 +30,11 @@
       "status": "Finished"
     }
   ],
-  "sourceLicense": "APPROVED"
+  "classificationStatus": "PROVISIONAL",
+  "source": {
+    "provider": "fixture",
+    "license": "SYNTHETIC",
+    "retrievedAtUtc": "2026-03-14T14:05:00Z",
+    "sourceReference": "synthetic:2026-gp-bahrain-race"
+  }
 }

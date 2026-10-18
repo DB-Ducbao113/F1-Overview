@@ -15,6 +15,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "results-engine": "node --experimental-strip-types src/results-engine/cli.ts",
     "sync:2026": "node scripts/update-2026-data.js",
     "sync:sessions": "node scripts/sync-openf1-sessions.js"
   },
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.165.0",

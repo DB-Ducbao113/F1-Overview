@@ -1,25 +1,43 @@
-name: Results Engine Scheduler
+name: Results Engine (manual prototype)
 
+# Intentionally no `schedule`: GitHub cron executes the default branch, while
+# this prototype is developed on Per-PEDS. Run it manually and select Per-PEDS.
 on:
-  schedule:
-    # Run every 5 minutes – the engine internally respects initial/follow‑up windows
-    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
-      force:
-        description: 'Force a full run regardless of schedule'
+      ref:
+        description: 'Branch or SHA to test (must be Per-PEDS for this prototype)'
+        required: true
+        default: 'Per-PEDS'
+        type: string
+      now_utc:
+        description: 'Optional deterministic ISO UTC time, e.g. 2026-03-14T14:30:00Z'
         required: false
-        default: 'false'
-        type: boolean
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: results-engine-prototype-${{ inputs.ref }}
+  cancel-in-progress: false
 
 jobs:
-  run-engine:
+  run-fixture-engine:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Ref safety check
+        shell: bash
+        env:
+          TARGET_REF: ${{ inputs.ref }}
+        run: |
+          test "$TARGET_REF" = "Per-PEDS" || { echo 'Only Per-PEDS is permitted during prototype development.'; exit 1; }
+
+      - name: Checkout requested prototype ref
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ inputs.ref }}
+          fetch-depth: 1
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -27,10 +45,32 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Restore durable prototype state
+        id: state-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .results-engine
+          key: results-engine-state-Per-PEDS-${{ github.run_id }}
+          restore-keys: results-engine-state-Per-PEDS-
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Execute Results Engine
-        run: node src/results-engine/engine.ts
+      - name: Run synthetic fixture engine
+        shell: bash
         env:
-          FORCE_RUN: ${{ inputs.force }}
+          NOW_UTC: ${{ inputs.now_utc }}
+        run: |
+          args=()
+          if [ -n "$NOW_UTC" ]; then args+=(--now "$NOW_UTC"); fi
+          npm run results-engine -- "${args[@]}"
+
+      - name: Save durable prototype state
+        if: always() && steps.state-cache.outputs.cache-primary-key != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .results-engine
+          key: ${{ steps.state-cache.outputs.cache-primary-key }}
+
+      - name: Explain publication status
+        run: echo 'Fixture output is synthetic and publication is disabled by design.'

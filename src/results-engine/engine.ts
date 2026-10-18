@@ -1,108 +1,173 @@
-// src/results-engine/engine.ts
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { FixtureProvider } from './provider.ts';
+import type { ResultsProvider } from './provider.ts';
+import { appendRevision, initSession, loadState, saveState, transitionSession } from './state.ts';
+import type { CalendarEvent, EngineState, SessionDefinition, SessionResult } from './types.ts';
+import { verifySessionResult } from './verification.ts';
 
-import { readFileSync } from "fs";
-import { join } from "path";
-import { CalendarEvent, SessionDefinition, SessionState } from "./types";
-import { loadState, saveState, initSession, transitionSession, SessionContext } from "./state";
-import { FixtureProvider } from "./provider";
-import { verifySessionResult } from "./verification";
-import { publishResult } from "./publish";
-
-/**
- * Load the static calendar JSON.
- */
-function loadCalendar(): CalendarEvent[] {
-  const path = join(process.cwd(), "src", "results-engine", "calendar.json");
-  const raw = readFileSync(path, { encoding: "utf-8" });
-  return JSON.parse(raw) as CalendarEvent[];
+export interface EngineOptions {
+  now?: Date;
+  calendar?: readonly CalendarEvent[];
+  provider?: ResultsProvider;
+  statePath?: string;
+  allowHistoricalCorrections?: boolean;
 }
 
-/**
- * Determine if a session is within the initial polling window.
- * Returns true if now is after the scheduled start and before scheduledStart + 30 min.
- */
-function isInInitialWindow(session: SessionDefinition, now: Date): boolean {
-  const start = new Date(session.scheduledStartUtc);
-  const end = new Date(start.getTime() + 30 * 60 * 1000); // 30 min after start
-  return now >= start && now <= end;
+export interface EngineRunReport {
+  processed: string[];
+  skipped: string[];
+  warnings: string[];
+  state: EngineState;
 }
 
-/**
- * Determine if a session is within the follow‑up window (up to 6 h after start).
- */
-function isInFollowupWindow(session: SessionDefinition, now: Date): boolean {
-  const start = new Date(session.scheduledStartUtc);
-  const end = new Date(start.getTime() + 6 * 60 * 60 * 1000); // 6h
-  return now > start && now <= end;
+export type PollingDecision = 'WAITING' | 'IN_PROGRESS' | 'DUE_FOR_CHECK' | 'HISTORICAL';
+
+export function loadCalendar(
+  path = join(process.cwd(), 'src', 'results-engine', 'calendar.json'),
+): CalendarEvent[] {
+  const raw: unknown = JSON.parse(readFileSync(path, 'utf8'));
+  if (!Array.isArray(raw)) throw new Error('Results Engine calendar must be an array');
+  return raw.map(validateCalendarEvent);
 }
 
-/**
- * Main engine entry point – runs once per scheduled GitHub Action.
- */
-export async function runEngine() {
-  const calendar = loadCalendar();
-  const now = new Date();
-  const stateMap = loadState();
-  const provider = new FixtureProvider();
+/** Calendar times are parsed only as UTC instants, never in runner-local time. */
+export function pollingDecision(session: SessionDefinition, now: Date): PollingDecision {
+  const start = Date.parse(session.scheduledStartUtc);
+  if (!Number.isFinite(start) || !session.scheduledStartUtc.endsWith('Z')) {
+    throw new Error(`Session ${session.sessionId} must use a UTC scheduledStartUtc`);
+  }
+  const end = start + session.durationMinutes * 60_000;
+  if (now.getTime() < start) return 'WAITING';
+  if (now.getTime() < end) return 'IN_PROGRESS';
+  if (now.getTime() <= end + 7 * 24 * 60 * 60_000) return 'DUE_FOR_CHECK';
+  return 'HISTORICAL';
+}
+
+/** Executes one offline-safe run. The default provider is synthetic fixtures. */
+export async function runEngine(options: EngineOptions = {}): Promise<EngineRunReport> {
+  const now = options.now ?? new Date();
+  const nowUtc = now.toISOString();
+  const calendar = options.calendar ?? loadCalendar();
+  const provider = options.provider ?? new FixtureProvider();
+  let state = loadState(options.statePath);
+  const report: EngineRunReport = { processed: [], skipped: [], warnings: [], state };
 
   for (const event of calendar) {
-    for (const sessDef of event.sessions) {
-      const sessionKey = sessDef.sessionId;
-      // Initialise state if missing
-      if (!stateMap[sessionKey]) {
-        stateMap[sessionKey] = initSession(event, sessDef);
+    for (const session of event.sessions) {
+      const decision = pollingDecision(session, now);
+      let context = state.sessions[session.sessionId] ?? initSession(event, session, nowUtc);
+      state = putContext(state, context);
+      if (decision === 'WAITING' || decision === 'IN_PROGRESS') {
+        report.skipped.push(`${session.sessionId}:${decision}`);
+        continue;
       }
-      const ctx = stateMap[sessionKey] as SessionContext;
-
-      // Skip already FINAL or CORRECTED
-      if (ctx.state === SessionState.FINAL || ctx.state === SessionState.CORRECTED) continue;
-
-      // Determine which polling window we are in
-      const inInitial = isInInitialWindow(sessDef, now);
-      const inFollowup = isInFollowupWindow(sessDef, now);
-
-      if (!inInitial && !inFollowup) continue; // not time to poll yet
-
-      // Transition to RUNNING if we just passed scheduled start
-      if (ctx.state === SessionState.SCHEDULED && now >= new Date(sessDef.scheduledStartUtc)) {
-        transitionSession(stateMap, sessionKey, SessionState.RUNNING);
+      if (decision === 'HISTORICAL' && !options.allowHistoricalCorrections) {
+        report.skipped.push(`${session.sessionId}:HISTORICAL`);
+        continue;
       }
-
-      // Attempt to fetch data
+      if (context.state === 'FINAL' && !options.allowHistoricalCorrections) {
+        report.skipped.push(`${session.sessionId}:FINAL`);
+        continue;
+      }
+      if (context.state === 'SCHEDULED') {
+        context = transitionSession(context, 'RUNNING', nowUtc);
+        state = putContext(state, context);
+      }
       try {
-        const result = await provider.fetchSessionData(sessionKey);
-        const report = verifySessionResult(result);
-        if (!report.valid) {
-          console.warn(`Verification failed for ${sessionKey}:`, report.errors);
-          // stay in RESULT_PENDING
-          if (ctx.state !== SessionState.RESULT_PENDING) {
-            transitionSession(stateMap, sessionKey, SessionState.RESULT_PENDING);
+        const fetched = await provider.fetchSessionData(event, session, nowUtc);
+        const verification = verifySessionResult(fetched);
+        if (!verification.valid) throw new Error(verification.errors.join('; '));
+        if (
+          now.getTime() < Date.parse(fetched.endUtc) ||
+          fetched.classificationStatus === 'PENDING'
+        ) {
+          if (context.state === 'RUNNING') {
+            context = transitionSession(context, 'RESULT_PENDING', nowUtc);
+            state = putContext(state, context);
           }
+          report.skipped.push(`${session.sessionId}:ACTUAL_COMPLETION_PENDING`);
           continue;
         }
-        // Publish provisional result
-        const revisionId = publishResult(result);
-        ctx.provisionalResultId = revisionId;
-        // Move state forward
-        const newState = inInitial ? SessionState.PROVISIONAL : SessionState.FINAL;
-        transitionSession(stateMap, sessionKey, newState);
-        if (newState === SessionState.FINAL) {
-          ctx.finalResultId = revisionId;
+        if (context.state === 'FINAL' && fetched.classificationStatus !== 'CORRECTED') {
+          report.skipped.push(`${session.sessionId}:FINAL`);
+          continue;
         }
-      } catch (e) {
-        console.error(`Provider error for ${sessionKey}:`, e);
-        // keep current state; next run will retry
+        if (context.state !== 'FINAL' && fetched.classificationStatus === 'CORRECTED') {
+          throw new Error('A corrected classification requires a recorded final classification');
+        }
+        const desiredStatus = fetched.classificationStatus;
+        const result: SessionResult = fetched;
+        const appended = appendRevision(state, context, result, nowUtc);
+        state = appended.state;
+        context = appended.context;
+        if (!appended.duplicate) {
+          const targetState = desiredStatus === 'CORRECTED' ? 'CORRECTED' : desiredStatus;
+          context = transitionSession(context, targetState, nowUtc);
+          state = putContext(state, context);
+          report.processed.push(`${session.sessionId}:${targetState}`);
+        } else {
+          report.skipped.push(`${session.sessionId}:DUPLICATE`);
+        }
+      } catch (error) {
+        if (context.state === 'RUNNING') {
+          context = transitionSession(context, 'RESULT_PENDING', nowUtc);
+          state = putContext(state, context);
+        }
+        report.warnings.push(
+          `${session.sessionId}: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     }
   }
-
-  saveState(stateMap);
+  saveState(state, options.statePath);
+  return { ...report, state };
 }
 
-// If this file is executed directly (node), run the engine.
-if (require.main === module) {
-  runEngine().catch((e) => {
-    console.error("Engine crashed:", e);
-    process.exit(1);
-  });
+function putContext(state: EngineState, context: EngineState['sessions'][string]): EngineState {
+  return { ...state, sessions: { ...state.sessions, [context.sessionId]: context } };
+}
+
+function validateCalendarEvent(value: unknown): CalendarEvent {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Calendar event must be an object');
+  const event = value as Record<string, unknown>;
+  if (
+    typeof event.eventId !== 'string' ||
+    typeof event.name !== 'string' ||
+    !Array.isArray(event.sessions)
+  ) {
+    throw new Error('Calendar event is missing required fields');
+  }
+  return {
+    eventId: event.eventId,
+    name: event.name,
+    sessions: event.sessions.map(validateSession),
+  };
+}
+
+function validateSession(value: unknown): SessionDefinition {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('Calendar session must be an object');
+  const session = value as Record<string, unknown>;
+  if (
+    typeof session.sessionId !== 'string' ||
+    typeof session.scheduledStartUtc !== 'string' ||
+    typeof session.durationMinutes !== 'number' ||
+    !['Practice', 'Qualifying', 'Sprint', 'SprintQualifying', 'Race'].includes(
+      session.type as string,
+    )
+  )
+    throw new Error('Calendar session is missing required fields');
+  return {
+    type: session.type as SessionDefinition['type'],
+    sessionId: session.sessionId,
+    scheduledStartUtc: session.scheduledStartUtc,
+    durationMinutes: session.durationMinutes,
+    ...(session.providers &&
+    typeof session.providers === 'object' &&
+    !Array.isArray(session.providers)
+      ? { providers: session.providers as SessionDefinition['providers'] }
+      : {}),
+  };
 }

@@ -1,36 +1,26 @@
-// src/results-engine/publish.ts
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import type { ResultRevision } from './types.ts';
 
-import { SessionResult } from "./types";
-import { writeFileSync, mkdirSync } from "fs";
-import { join } from "path";
-import { createHash } from "crypto";
-
-/**
- * Generate a deterministic revision ID based on the payload content.
- */
-function computeRevisionId(result: SessionResult): string {
-  const hash = createHash("sha256");
-  hash.update(JSON.stringify(result));
-  return hash.digest("hex").slice(0, 12);
+export interface PublicationOptions {
+  outputDirectory?: string;
 }
 
 /**
- * Persist a result record to the public output directory.
- * The file name includes the revision ID to guarantee immutability.
+ * Publication is deliberately opt-in. Only an approved source may produce an
+ * immutable revision file; synthetic, restricted, and unknown sources are blocked.
  */
-export function publishResult(result: SessionResult): string {
-  const revId = computeRevisionId(result);
-  const outDir = join(process.cwd(), "public", "results");
-  // Ensure directory exists (free‑tier Vercel static hosting)
-  mkdirSync(outDir, { recursive: true });
-  const outPath = join(outDir, `${result.sessionId}-${revId}.json`);
-  const record = {
-    revisionId: revId,
-    generatedAt: new Date().toISOString(),
-    sourceLicense: result.sourceLicense,
-    result,
-  };
-  writeFileSync(outPath, JSON.stringify(record, null, 2), { encoding: "utf-8" });
-  console.log(`Published result ${result.sessionId} rev ${revId}`);
-  return revId;
+export function publishRevision(
+  revision: ResultRevision,
+  options: PublicationOptions = {},
+): string {
+  const license = revision.result.source.license;
+  if (license !== 'APPROVED') {
+    throw new Error(`${license} source results cannot be published`);
+  }
+  const outputDirectory = resolve(options.outputDirectory ?? '.results-engine/publications');
+  mkdirSync(outputDirectory, { recursive: true });
+  const path = join(outputDirectory, `${revision.sessionId}-${revision.revisionId}.json`);
+  writeFileSync(path, `${JSON.stringify(revision, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' });
+  return path;
 }
