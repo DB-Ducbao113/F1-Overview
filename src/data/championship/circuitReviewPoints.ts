@@ -41,7 +41,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 300 },
       lat: -37.8497,
       lng: 144.968,
-      imageUrl: '/images/circuits/albert_park_pit_straight.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 8, speedKmh: 330, brakingDistanceM: 65, gForceLateral: 1.2 },
       descriptionVi:
         'Đoạn đường thẳng xuất phát dài, nơi 20 chiếc xe F1 dàn hàng trên vạch xuất phát và tăng tốc từ 0 lên hơn 320 km/h trước khi dồn vào khúc cua Turn 1.',
@@ -61,7 +61,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 95, y: 240 },
       lat: -37.8465,
       lng: 144.965,
-      imageUrl: '/images/circuits/albert_park_turn_1.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 3, speedKmh: 145, brakingDistanceM: 95, gForceLateral: 4.5 },
       descriptionVi:
         'Khu vực phanh gấp căng thẳng nhất vòng đua: xe giảm tốc đột ngột từ 320 km/h xuống 145 km/h trong chưa đầy 100m. Điểm nóng của các pha tranh chấp ngay sau pha xuất phát.',
@@ -81,7 +81,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 110, y: 190 },
       lat: -37.843,
       lng: 144.967,
-      imageUrl: '/images/circuits/albert_park_turn_1.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 2, speedKmh: 105, brakingDistanceM: 85, gForceLateral: 3.8 },
       descriptionVi:
         'Góc cua vuông 90 độ phanh nặng sau đoạn DRS thứ 2. Thường xuyên chứng kiến các pha lách trong (dive-bomb) táo bạo.',
@@ -101,7 +101,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 215, y: 55 },
       lat: -37.8445,
       lng: 144.976,
-      imageUrl: '/images/circuits/albert_park_lakeside.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 7, speedKmh: 280, brakingDistanceM: 0, gForceLateral: 3.9 },
       descriptionVi:
         'Đoạn chạy men theo bờ hồ tuyệt đẹp, chiếc xe F1 gầm rú ở số 7 với vận tốc gần 300 km/h trong không gian cây xanh của công viên Albert Park.',
@@ -121,7 +121,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 355, y: 75 },
       lat: -37.8485,
       lng: 144.978,
-      imageUrl: '/images/circuits/albert_park_turn_1.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 6, speedKmh: 240, brakingDistanceM: 50, gForceLateral: 4.4 },
       descriptionVi:
         'Khúc cua chuyển hướng trái - phải ở tốc độ rất cao (240 km/h). Chiếc xe F1 phải nhảy lên gờ kerb để rút ngắn quỹ đạo.',
@@ -141,7 +141,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 370, y: 315 },
       lat: -37.852,
       lng: 144.972,
-      imageUrl: '/images/circuits/albert_park_pit_straight.webp',
+      imageUrl: '/images/eds/circuits/albert-park.svg',
       telemetry: { gear: 3, speedKmh: 120, brakingDistanceM: 70, gForceLateral: 3.6 },
       descriptionVi:
         'Khúc cua cuối cùng khép lại 1 vòng đua Albert Park. Lối rẽ vào Pit Lane nằm ở bên phải ngay trước khúc cua này.',
@@ -164,7 +164,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 31.3389,
       lng: 121.22,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/shanghai.svg',
       telemetry: { gear: 8, speedKmh: 325, brakingDistanceM: 70, gForceLateral: 1.1 },
       descriptionVi:
         'Đoạn thẳng xuất phát hướng vào khán đài chính hình chữ Thượng (上) biểu tượng của thành phố Thượng Hải.',
@@ -183,7 +183,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 70 },
       lat: 31.3415,
       lng: 121.218,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/shanghai.svg',
       telemetry: { gear: 2, speedKmh: 85, brakingDistanceM: 110, gForceLateral: 3.5 },
       descriptionVi:
         'Khúc cua ốc sên độc nhất vô nhị khép góc dần từ tốc độ 300 km/h xuống 85 km/h, đòi hỏi kỹ năng ghìm phanh liên tục.',
@@ -202,7 +202,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 340, y: 150 },
       lat: 31.3435,
       lng: 121.226,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/shanghai.svg',
       telemetry: { gear: 2, speedKmh: 75, brakingDistanceM: 90, gForceLateral: 3.1 },
       descriptionVi:
         'Cua góc nhọn tốc độ thấp, điểm thử thách độ bám cơ học (mechanical grip) của lốp xe.',
@@ -221,7 +221,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 440, y: 220 },
       lat: 31.334,
       lng: 121.214,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/shanghai.svg',
       telemetry: { gear: 8, speedKmh: 340, brakingDistanceM: 120, gForceLateral: 5.2 },
       descriptionVi:
         'Đoạn thẳng dài nhất giải đấu (1.2 km). Xe đạt vận tốc 340 km/h trước khi phanh dồn về 68 km/h tại Turn 14.',
@@ -243,7 +243,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 150, y: 290 },
       lat: 34.8431,
       lng: 136.541,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/suzuka.svg',
       telemetry: { gear: 7, speedKmh: 315, brakingDistanceM: 60, gForceLateral: 3.8 },
       descriptionVi:
         'Vạch xuất phát có độ dốc xuống độc đáo. Turn 1 là khúc cua tốc độ cao mở đầu cho thánh địa Suzuka.',
@@ -262,7 +262,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 190 },
       lat: 34.846,
       lng: 136.538,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/suzuka.svg',
       telemetry: { gear: 5, speedKmh: 215, brakingDistanceM: 30, gForceLateral: 4.8 },
       descriptionVi:
         'Chuỗi cua chữ S đỉnh cao nhất thế giới xe đua thể thức 1: nhịp điệu nhấp nhả ga liên tục ở lực G lên tới gần 5G.',
@@ -281,7 +281,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 310, y: 110 },
       lat: 34.848,
       lng: 136.535,
-      imageUrl: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/suzuka.svg',
       telemetry: { gear: 4, speedKmh: 185, brakingDistanceM: 40, gForceLateral: 4.2 },
       descriptionVi:
         'Cua Degner 1 ôm sát rào chắn với gờ kerb sắc nhọn, ngay sau đó là cú phanh gấp vào Degner 2 đi dưới cầu vượt.',
@@ -300,7 +300,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 70 },
       lat: 34.841,
       lng: 136.525,
-      imageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/suzuka.svg',
       telemetry: { gear: 4, speedKmh: 190, brakingDistanceM: 65, gForceLateral: 4.1 },
       descriptionVi:
         'Cua đôi dốc xuống hình chiếc muỗng mở đường cho đoạn thẳng phía sau hướng vào khúc cua 130R.',
@@ -319,7 +319,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 220 },
       lat: 34.84,
       lng: 136.535,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/suzuka.svg',
       telemetry: { gear: 7, speedKmh: 305, brakingDistanceM: 0, gForceLateral: 4.6 },
       descriptionVi:
         'Góc cua trái nhanh nhất lịch sử Suzuka. Các tay đua đạp lút ga ở tốc độ trên 300 km/h với độ tin cậy tuyệt đối vào cánh gió.',
@@ -341,7 +341,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 140, y: 280 },
       lat: 25.9581,
       lng: -80.2389,
-      imageUrl: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/miami.svg',
       telemetry: { gear: 7, speedKmh: 320, brakingDistanceM: 70, gForceLateral: 1.2 },
       descriptionVi:
         'Đoạn thẳng xuất phát uốn quanh sân vận động Hard Rock tráng lệ ngập tràn không khí sôi động của Miami.',
@@ -360,7 +360,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 140 },
       lat: 25.9565,
       lng: -80.237,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/miami.svg',
       telemetry: { gear: 4, speedKmh: 175, brakingDistanceM: 45, gForceLateral: 3.8 },
       descriptionVi:
         'Cung đường chạy ngang qua khu vực du thuyền nhân tạo đặc sắc của chặng đua Miami GP.',
@@ -379,7 +379,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 90 },
       lat: 25.954,
       lng: -80.233,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/miami.svg',
       telemetry: { gear: 1, speedKmh: 65, brakingDistanceM: 75, gForceLateral: 2.8 },
       descriptionVi:
         'Đoạn zíc zắc dốc lên cực kỳ hẹp chạy dưới cầu vượt xa lộ Florida Turnpike, nơi rất dễ chạm tường.',
@@ -401,7 +401,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 45.5,
       lng: -73.5228,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/gilles-villeneuve.svg',
       telemetry: { gear: 2, speedKmh: 115, brakingDistanceM: 90, gForceLateral: 3.6 },
       descriptionVi:
         'Khúc cua Senna mở màn chặng đua trên đảo Notre-Dame, điểm giao thoa giữa phanh nặng và mở lái.',
@@ -420,7 +420,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 440, y: 150 },
       lat: 45.512,
       lng: -73.528,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/gilles-villeneuve.svg',
       telemetry: { gear: 1, speedKmh: 68, brakingDistanceM: 100, gForceLateral: 3.2 },
       descriptionVi:
         'Cua tay áo 180 độ bao quanh bởi khán đài cuồng nhiệt, điểm phanh gấp bậc nhất chặng đua Canada.',
@@ -439,7 +439,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 200, y: 310 },
       lat: 45.4985,
       lng: -73.5215,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/gilles-villeneuve.svg',
       telemetry: { gear: 3, speedKmh: 135, brakingDistanceM: 95, gForceLateral: 4.2 },
       descriptionVi:
         'Bức tường huyền thoại từng chôn vùi tham vọng của Schumacher, Hill, Villeneuve khi xe lao qua kerb với tốc độ trên 130 km/h.',
@@ -462,7 +462,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 260 },
       lat: 43.737,
       lng: 7.4245,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monaco.svg',
       telemetry: { gear: 2, speedKmh: 110, brakingDistanceM: 80, gForceLateral: 3.5 },
       descriptionVi:
         'Khúc cua đầu tiên chật hẹp cạnh nhà thờ Sainte Dévote, nơi xảy ra vô số pha va chạm ngay sau pha xuất phát.',
@@ -481,7 +481,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 90 },
       lat: 43.7395,
       lng: 7.4275,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monaco.svg',
       telemetry: { gear: 4, speedKmh: 165, brakingDistanceM: 35, gForceLateral: 3.9 },
       descriptionVi:
         'Khung cảnh xa hoa lộng lẫy trước sòng bạc Monte-Carlo, xe lướt qua gờ dốc với độ bám cực kỳ nhạy cảm.',
@@ -500,7 +500,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 110 },
       lat: 43.7405,
       lng: 7.43,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monaco.svg',
       telemetry: { gear: 1, speedKmh: 48, brakingDistanceM: 60, gForceLateral: 2.1 },
       descriptionVi:
         'Khúc cua chậm nhất trong toàn bộ mùa giải F1 (chỉ 48 km/h). Các đội đua phải sửa thước lái đặc biệt chỉ để qua khúc cua này.',
@@ -519,7 +519,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 440, y: 220 },
       lat: 43.738,
       lng: 7.431,
-      imageUrl: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monaco.svg',
       telemetry: { gear: 7, speedKmh: 290, brakingDistanceM: 0, gForceLateral: 3.4 },
       descriptionVi:
         'Đoạn hầm tối với âm thanh gầm rú xé tai của cỗ máy F1 ở tốc độ gần 290 km/h trước khi lao ra ánh sáng chói chang ven cảng biển.',
@@ -538,7 +538,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 280, y: 310 },
       lat: 43.736,
       lng: 7.4255,
-      imageUrl: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monaco.svg',
       telemetry: { gear: 5, speedKmh: 205, brakingDistanceM: 40, gForceLateral: 4.4 },
       descriptionVi:
         'Cua chữ S tốc độ cao ôm trọn hồ bơi công cộng Monaco và hàng trăm siêu du thuyền triệu đô cập cảng Port Hercule.',
@@ -560,7 +560,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 140, y: 280 },
       lat: 41.57,
       lng: 2.2611,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/catalunya.svg',
       telemetry: { gear: 3, speedKmh: 140, brakingDistanceM: 100, gForceLateral: 4.2 },
       descriptionVi:
         'Đoạn chạy đà 1km từ vạch xuất phát đến khúc cua Elf, nơi gió xuôi chiều ảnh hưởng lớn đến lực phanh.',
@@ -579,7 +579,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 150 },
       lat: 41.564,
       lng: 2.259,
-      imageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/catalunya.svg',
       telemetry: { gear: 5, speedKmh: 225, brakingDistanceM: 0, gForceLateral: 4.6 },
       descriptionVi:
         'Cua dài lên dốc sang phải thử thách sức chịu đựng của lốp trước bên trái và cơ cổ của tay đua.',
@@ -598,7 +598,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 390, y: 100 },
       lat: 41.573,
       lng: 2.264,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/catalunya.svg',
       telemetry: { gear: 6, speedKmh: 245, brakingDistanceM: 25, gForceLateral: 4.4 },
       descriptionVi:
         'Góc cua phải tốc độ cao lên dốc hoàn toàn khuất tầm nhìn, xe lao qua đỉnh đồi ra đoạn thẳng sau.',
@@ -620,7 +620,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 47.2197,
       lng: 14.7647,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/red-bull-ring.svg',
       telemetry: { gear: 3, speedKmh: 145, brakingDistanceM: 85, gForceLateral: 3.8 },
       descriptionVi:
         'Cua lên dốc mở màn chặng đua nước Áo mang tên huyền thoại 3 lần vô địch thế giới Niki Lauda.',
@@ -639,7 +639,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 280, y: 60 },
       lat: 47.2255,
       lng: 14.757,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/red-bull-ring.svg',
       telemetry: { gear: 2, speedKmh: 72, brakingDistanceM: 110, gForceLateral: 3.4 },
       descriptionVi:
         'Điểm cao nhất trường đua và cũng là điểm vượt xe hàng đầu thế giới: phanh ngược dốc dồn từ 320 về 70 km/h.',
@@ -658,7 +658,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 260 },
       lat: 47.2185,
       lng: 14.7655,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/red-bull-ring.svg',
       telemetry: { gear: 5, speedKmh: 215, brakingDistanceM: 35, gForceLateral: 4.4 },
       descriptionVi:
         'Cặp cua dốc xuống ngoạn mục trước vạch đích, nơi các tay đua thường xuyên bị phạt giới hạn đường đua (track limits).',
@@ -680,7 +680,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 52.0786,
       lng: -1.0169,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/silverstone.svg',
       telemetry: { gear: 7, speedKmh: 290, brakingDistanceM: 20, gForceLateral: 4.5 },
       descriptionVi:
         'Cung đường xuất phát trước tòa nhà hiện đại Silverstone Wing, cua Abbey được lấy ở vận tốc 290 km/h.',
@@ -699,7 +699,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 310, y: 90 },
       lat: 52.076,
       lng: -1.012,
-      imageUrl: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/silverstone.svg',
       telemetry: { gear: 7, speedKmh: 290, brakingDistanceM: 15, gForceLateral: 5.1 },
       descriptionVi:
         'Một trong những góc cua nhanh và nguy hiểm nhất làng đua F1 thế giới, lực G xô ngang vượt mốc 5.0G.',
@@ -718,7 +718,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 150 },
       lat: 52.0805,
       lng: -1.0145,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/silverstone.svg',
       telemetry: { gear: 6, speedKmh: 260, brakingDistanceM: 35, gForceLateral: 5.3 },
       descriptionVi:
         'Chuỗi cua chữ S danh tiếng bậc nhất lịch sử mô tô thể thao: xe đổi hướng liên tục từ 290 km/h xuống 200 km/h.',
@@ -737,7 +737,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 280 },
       lat: 52.0725,
       lng: -1.014,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/silverstone.svg',
       telemetry: { gear: 5, speedKmh: 190, brakingDistanceM: 80, gForceLateral: 4.1 },
       descriptionVi:
         'Cú phanh nặng sau đoạn thẳng Hangar 330 km/h, nơi các tay đua so kè từng mét đường để vượt xe.',
@@ -760,7 +760,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 140, y: 280 },
       lat: 50.4435,
       lng: 5.966,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/spa.svg',
       telemetry: { gear: 1, speedKmh: 75, brakingDistanceM: 85, gForceLateral: 3.2 },
       descriptionVi:
         'Khúc cua kẹp tóc huyền thoại ngay sau vạch xuất phát, điểm nóng va chạm và xuất phát của chặng đua Bỉ.',
@@ -779,7 +779,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 210 },
       lat: 50.441,
       lng: 5.972,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/spa.svg',
       telemetry: { gear: 7, speedKmh: 305, brakingDistanceM: 0, gForceLateral: 4.8 },
       descriptionVi:
         'Khúc cua dốc đứng nổi tiếng nhất lịch sử thể thao cơ giới: xe bổ nhào qua dòng suối nước đỏ rồi bốc lên đỉnh dốc mù mịt ở vận tốc trên 300 km/h.',
@@ -798,7 +798,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 150 },
       lat: 50.437,
       lng: 5.973,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/spa.svg',
       telemetry: { gear: 6, speedKmh: 290, brakingDistanceM: 25, gForceLateral: 5.1 },
       descriptionVi:
         'Cua đôi dốc xuống bên trái ở tốc độ siêu khủng 290 km/h giữa cánh rừng Ardennes hùng vĩ.',
@@ -817,7 +817,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 310 },
       lat: 50.435,
       lng: 5.968,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/spa.svg',
       telemetry: { gear: 2, speedKmh: 78, brakingDistanceM: 115, gForceLateral: 3.5 },
       descriptionVi:
         'Cú phanh dữ dội từ 320 km/h xuống 78 km/h sau đoạn cua Blanchimont trước khi cán vạch đích.',
@@ -839,7 +839,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 47.5789,
       lng: 19.2486,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/hungaroring.svg',
       telemetry: { gear: 2, speedKmh: 100, brakingDistanceM: 95, gForceLateral: 3.7 },
       descriptionVi:
         'Cơ hội vượt xe rõ rệt duy nhất tại trường đua Budapest: phanh dốc xuống từ hơn 310 về 100 km/h.',
@@ -858,7 +858,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 110 },
       lat: 47.582,
       lng: 19.245,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/hungaroring.svg',
       telemetry: { gear: 5, speedKmh: 210, brakingDistanceM: 30, gForceLateral: 4.2 },
       descriptionVi:
         'Cua trái tốc độ cao lên dốc khuất tầm nhìn, nơi đòi hỏi sự chính xác tuyệt đối từng centimet.',
@@ -880,7 +880,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 52.3888,
       lng: 4.5409,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/zandvoort.svg',
       telemetry: { gear: 2, speedKmh: 110, brakingDistanceM: 90, gForceLateral: 3.8 },
       descriptionVi:
         'Khúc cua Tarzan trứ danh ven biển Bắc, nơi các tay đua có thể chọn làn ngoài để duy trì đà vượt xe.',
@@ -899,7 +899,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 150 },
       lat: 52.3905,
       lng: 4.542,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/zandvoort.svg',
       telemetry: { gear: 3, speedKmh: 115, brakingDistanceM: 40, gForceLateral: 4.4 },
       descriptionVi:
         'Cua lòng chảo có độ dốc nghiêng 19 độ (dốc hơn cả trường đua Indianapolis), xe dính chặt vào mặt đường.',
@@ -918,7 +918,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 400, y: 260 },
       lat: 52.3875,
       lng: 4.5395,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/zandvoort.svg',
       telemetry: { gear: 7, speedKmh: 275, brakingDistanceM: 0, gForceLateral: 4.2 },
       descriptionVi:
         'Khúc cua cuối cùng nghiêng 18 độ, cho phép mở cánh gió DRS ngay từ trong cua để lao ra đường thẳng đích.',
@@ -940,7 +940,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 45.6156,
       lng: 9.2811,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monza.svg',
       telemetry: { gear: 8, speedKmh: 355, brakingDistanceM: 130, gForceLateral: 1.1 },
       descriptionVi:
         'Đoạn thẳng xé gió nhanh nhất hành tinh: xe F1 lướt ở vận tốc 355 km/h giữa tiếng reo hò cuồng nhiệt của Tifosi.',
@@ -959,7 +959,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 120 },
       lat: 45.621,
       lng: 9.2855,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monza.svg',
       telemetry: { gear: 1, speedKmh: 72, brakingDistanceM: 130, gForceLateral: 5.4 },
       descriptionVi:
         'Cú phanh nặng nề nhất làng F1: giảm tốc 285 km/h trong 130m, lực G phanh lên tới 5.4G.',
@@ -978,7 +978,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 180 },
       lat: 45.6215,
       lng: 9.278,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monza.svg',
       telemetry: { gear: 5, speedKmh: 220, brakingDistanceM: 55, gForceLateral: 4.6 },
       descriptionVi:
         'Bộ ba cua tốc độ cao mang tên Alberto Ascari, đòi hỏi sự cân bằng tuyệt đối giữa lực bám và tốc độ thoát.',
@@ -997,7 +997,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 280, y: 310 },
       lat: 45.614,
       lng: 9.279,
-      imageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/monza.svg',
       telemetry: { gear: 5, speedKmh: 215, brakingDistanceM: 60, gForceLateral: 4.3 },
       descriptionVi:
         'Khúc cua dài 180 độ mở góc dần ra vạch đích, nơi quyết định vận tốc tối đa của toàn bộ vòng chạy.',
@@ -1019,7 +1019,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 40.6172,
       lng: -3.5856,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/madring.svg',
       telemetry: { gear: 7, speedKmh: 320, brakingDistanceM: 75, gForceLateral: 1.2 },
       descriptionVi:
         'Cung đường xuất phát hiện đại kết nối trung tâm triển lãm IFEMA Madrid và khu phức hợp thể thao Valdebebas.',
@@ -1038,7 +1038,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 150 },
       lat: 40.615,
       lng: -3.578,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/madring.svg',
       telemetry: { gear: 5, speedKmh: 230, brakingDistanceM: 20, gForceLateral: 4.5 },
       descriptionVi:
         'Khúc cua nghiêng hoành tráng được xây dựng riêng cho F1 mang phong cách trường đua Zandvoort giữa lòng thủ đô Tây Ban Nha.',
@@ -1060,7 +1060,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 40.3725,
       lng: 49.8533,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/baku.svg',
       telemetry: { gear: 8, speedKmh: 355, brakingDistanceM: 130, gForceLateral: 1.1 },
       descriptionVi:
         'Đoạn chạy thẳng dài nhất hành tinh (2.2km): xe đạt tốc độ kinh hoàng 355 km/h trước khi phanh góc 90 độ vào Turn 1.',
@@ -1079,7 +1079,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 90 },
       lat: 40.3665,
       lng: 49.8335,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/baku.svg',
       telemetry: { gear: 2, speedKmh: 95, brakingDistanceM: 50, gForceLateral: 3.2 },
       descriptionVi:
         'Cung đường hẹp nhất lịch sử F1 (chỉ rộng 7.6 mét) chạy ven tường thành cổ Baku từ thế kỷ 12. Sai lầm vài milimét là vỡ bánh.',
@@ -1101,7 +1101,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 2.7608,
       lng: 101.738,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/sepang.svg',
       telemetry: { gear: 2, speedKmh: 80, brakingDistanceM: 105, gForceLateral: 3.6 },
       descriptionVi:
         'Tổ hợp cua kéo hình kéo cắt trứ danh của Hermann Tilke: phanh sâu vào Turn 1 phải rồi chuyển hướng gập sang Turn 2 trái.',
@@ -1120,7 +1120,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 260 },
       lat: 2.76,
       lng: 101.739,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/sepang.svg',
       telemetry: { gear: 1, speedKmh: 75, brakingDistanceM: 110, gForceLateral: 3.1 },
       descriptionVi:
         'Cú phanh nặng sau đoạn thẳng sau 1km, nơi các tay đua thường xuyên lách trong để quyết định chiến thắng ở vòng cuối.',
@@ -1142,7 +1142,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 1.2914,
       lng: 103.864,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/marina-bay.svg',
       telemetry: { gear: 2, speedKmh: 115, brakingDistanceM: 95, gForceLateral: 3.9 },
       descriptionVi:
         'Chặng đua đêm lung linh huyền ảo dưới ánh đèn rực rỡ, Turn 1-2-3 uốn lượn dưới chân cầu Benjamin Sheares.',
@@ -1161,7 +1161,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 310, y: 150 },
       lat: 1.2885,
       lng: 103.853,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/marina-bay.svg',
       telemetry: { gear: 3, speedKmh: 120, brakingDistanceM: 60, gForceLateral: 3.8 },
       descriptionVi:
         'Xe F1 lao qua cây cầu sắt lịch sử từ thế kỷ 19 hẹp vừa khít một thân xe ở tốc độ trên 120 km/h.',
@@ -1180,7 +1180,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 260 },
       lat: 1.289,
       lng: 103.858,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/marina-bay.svg',
       telemetry: { gear: 4, speedKmh: 185, brakingDistanceM: 35, gForceLateral: 4.1 },
       descriptionVi:
         'Cung đường mới mở thẳng hướng ra vịnh Marina Bay Sands, giúp thời gian chạy một vòng rút ngắn đáng kể.',
@@ -1203,7 +1203,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 30.1328,
       lng: -97.6411,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/cota.svg',
       telemetry: { gear: 2, speedKmh: 105, brakingDistanceM: 80, gForceLateral: 3.8 },
       descriptionVi:
         'Độ dốc lên đứng 40 mét dẫn vào khúc cua góc nhọn khuất tầm nhìn, một trong những cảnh tượng ngoạn mục nhất của F1.',
@@ -1222,7 +1222,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 150 },
       lat: 30.136,
       lng: -97.636,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/cota.svg',
       telemetry: { gear: 6, speedKmh: 245, brakingDistanceM: 20, gForceLateral: 4.9 },
       descriptionVi:
         'Lấy cảm hứng từ Maggotts/Becketts của Silverstone, chiếc xe F1 chuyển hướng liên tục ở tốc độ gần 250 km/h.',
@@ -1241,7 +1241,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 400, y: 220 },
       lat: 30.131,
       lng: -97.638,
-      imageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/cota.svg',
       telemetry: { gear: 5, speedKmh: 205, brakingDistanceM: 25, gForceLateral: 4.4 },
       descriptionVi:
         'Cua dài 3 đỉnh uốn quanh tháp quan sát COTA biểu tượng của thành phố Austin, Texas.',
@@ -1263,7 +1263,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 19.4042,
       lng: -99.0907,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/hermanos-rodriguez.svg',
       telemetry: { gear: 8, speedKmh: 360, brakingDistanceM: 135, gForceLateral: 1.1 },
       descriptionVi:
         'Ở độ cao hơn 2,200m so với mực nước biển, không khí loãng giúp xe F1 đạt tốc độ tối đa kỷ lục 360 km/h.',
@@ -1282,7 +1282,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 220 },
       lat: 19.4055,
       lng: -99.095,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/hermanos-rodriguez.svg',
       telemetry: { gear: 1, speedKmh: 72, brakingDistanceM: 65, gForceLateral: 2.8 },
       descriptionVi:
         'Xe F1 chạy xuyên thẳng qua giữa sân vận động bóng chày Foro Sol trước sự cổ vũ gầm vang của 65,000 người hâm mộ.',
@@ -1304,7 +1304,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: -23.7036,
       lng: -46.6997,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/interlagos.svg',
       telemetry: { gear: 2, speedKmh: 115, brakingDistanceM: 95, gForceLateral: 4.2 },
       descriptionVi:
         'Cú bổ nhào dốc xuống mang tên tượng đài Ayrton Senna, khúc cua chứng kiến những khoảnh khắc kịch tính bậc nhất F1.',
@@ -1323,7 +1323,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 120 },
       lat: -23.699,
       lng: -46.701,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/interlagos.svg',
       telemetry: { gear: 3, speedKmh: 145, brakingDistanceM: 80, gForceLateral: 3.9 },
       descriptionVi:
         'Cú phanh nặng sau đoạn thẳng Reta Oposta có DRS, nơi diễn ra vô số màn so kè tay đôi kinh điển.',
@@ -1342,7 +1342,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 390, y: 260 },
       lat: -23.707,
       lng: -46.703,
-      imageUrl: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/interlagos.svg',
       telemetry: { gear: 3, speedKmh: 125, brakingDistanceM: 65, gForceLateral: 3.7 },
       descriptionVi:
         'Khúc cua quyết định vận mệnh chức vô địch thế giới: lối thoát ga hoàn hảo ở đây mở ra đoạn thẳng dốc đứng Subida dos Boxes.',
@@ -1364,7 +1364,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 36.1147,
       lng: -115.168,
-      imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/las-vegas.svg',
       telemetry: { gear: 7, speedKmh: 310, brakingDistanceM: 70, gForceLateral: 1.2 },
       descriptionVi:
         'Khu phức hợp paddock trị giá 500 triệu USD của giải đua Las Vegas rực rỡ ánh đèn neon sa mạc.',
@@ -1383,7 +1383,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 260, y: 130 },
       lat: 36.121,
       lng: -115.162,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/las-vegas.svg',
       telemetry: { gear: 3, speedKmh: 155, brakingDistanceM: 45, gForceLateral: 3.8 },
       descriptionVi:
         'Cung đường uốn lượn dưới chân quả cầu LED khổng lồ The Sphere rực rỡ sắc màu công nghệ.',
@@ -1402,7 +1402,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 220 },
       lat: 36.118,
       lng: -115.172,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/las-vegas.svg',
       telemetry: { gear: 8, speedKmh: 350, brakingDistanceM: 120, gForceLateral: 1.1 },
       descriptionVi:
         'Chiếc xe F1 lao vun vút 350 km/h trên đại lộ Las Vegas Boulevard huyền thoại ngang qua Bellagio, Caesars Palace và Paris.',
@@ -1424,7 +1424,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 25.49,
       lng: 51.4542,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/lusail.svg',
       telemetry: { gear: 8, speedKmh: 335, brakingDistanceM: 95, gForceLateral: 4.1 },
       descriptionVi:
         'Đoạn thẳng 1.1km rực rỡ ánh đèn pha sa mạc Qatar trước khi phanh nặng vào khúc cua phải Turn 1.',
@@ -1443,7 +1443,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 380, y: 150 },
       lat: 25.485,
       lng: 51.46,
-      imageUrl: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/lusail.svg',
       telemetry: { gear: 6, speedKmh: 255, brakingDistanceM: 20, gForceLateral: 5.2 },
       descriptionVi:
         'Cung cua tốc độ khủng khiếp nhất Trung Đông: xe ôm cua liên tục ở lực nén trên 5G khiến lốp xe chịu tải trọng khổng lồ.',
@@ -1465,7 +1465,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 130, y: 280 },
       lat: 24.4672,
       lng: 54.6031,
-      imageUrl: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/yas-marina.svg',
       telemetry: { gear: 6, speedKmh: 260, brakingDistanceM: 65, gForceLateral: 3.8 },
       descriptionVi:
         'Chặng đua khép lại mùa giải xuất phát lúc hoàng hôn buông xuống và kết thúc dưới hàng vạn ngọn đèn lung linh.',
@@ -1484,7 +1484,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 280, y: 90 },
       lat: 24.472,
       lng: 54.607,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/yas-marina.svg',
       telemetry: { gear: 2, speedKmh: 80, brakingDistanceM: 90, gForceLateral: 3.4 },
       descriptionVi:
         'Khúc cua nghiêng được thiết kế lại để mở rộng lối ra, dẫn vào đoạn thẳng dài 1.2km điểm vượt xe then chốt.',
@@ -1503,7 +1503,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 420, y: 220 },
       lat: 24.469,
       lng: 54.605,
-      imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/yas-marina.svg',
       telemetry: { gear: 4, speedKmh: 165, brakingDistanceM: 40, gForceLateral: 3.9 },
       descriptionVi:
         'Xe F1 chạy luồn bên dưới mái vòm LED đổi màu kỳ ảo của khách sạn W Abu Dhabi bên bến du thuyền Yas Marina.',
@@ -1525,7 +1525,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 120, y: 280 },
       lat: 26.0325,
       lng: 50.5106,
-      imageUrl: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/bahrain.svg',
       telemetry: { gear: 8, speedKmh: 340, brakingDistanceM: 110, gForceLateral: 1.2 },
       descriptionVi:
         'Ốc đảo tốc độ rực rỡ giữa sa mạc Sakhir, xe F1 gầm rú ở vận tốc 340 km/h dưới dàn đèn công suất khổng lồ.',
@@ -1544,7 +1544,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 230, y: 110 },
       lat: 26.038,
       lng: 50.514,
-      imageUrl: 'https://images.unsplash.com/photo-1541348263662-e0c8de4259ba?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/bahrain.svg',
       telemetry: { gear: 1, speedKmh: 65, brakingDistanceM: 115, gForceLateral: 4.8 },
       descriptionVi:
         'Khúc cua mang tên huyền thoại Michael Schumacher, cú phanh dồn từ 340 về 65 km/h mở ra chuỗi tranh chấp khốc liệt.',
@@ -1563,7 +1563,7 @@ export const CIRCUIT_REVIEW_POINTS: Record<string, TrackReviewPoint[]> = {
       svgPoint: { x: 390, y: 190 },
       lat: 26.033,
       lng: 50.505,
-      imageUrl: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/images/eds/circuits/bahrain.svg',
       telemetry: { gear: 2, speedKmh: 75, brakingDistanceM: 85, gForceLateral: 3.4 },
       descriptionVi:
         'Cua đổ dốc ngược nghiêng tai tiếng nhất mùa giải, nơi bánh trước bên trái hầu như luôn bị khóa khói mù mịt nếu phanh quá đà.',

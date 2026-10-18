@@ -90,15 +90,17 @@ describe('CircuitStreetReview Component', () => {
 });
 
 describe('CircuitRealWorldMap Component', () => {
-  it('renders satellite map container with GPS coordinates and Google Maps link', async () => {
+  it('renders an offline vector atlas with coordinates and no tile-provider dependency', async () => {
     const { CircuitRealWorldMap } = await import('./CircuitRealWorldMap');
     const { CIRCUIT_COORDINATES } = await import('./circuitCoordinates');
     const circuit = getCircuitByRound(1)!;
 
     const html = renderToStaticMarkup(<CircuitRealWorldMap circuit={circuit} lang="en" />);
-    expect(html).toContain('Satellite');
-    expect(html).toContain('Street');
-    expect(html).toContain('Google Maps');
+    expect(html).toContain('data-offline-circuit-atlas="albert-park"');
+    expect(html).toContain('EDS offline atlas');
+    expect(html).toContain('no external tiles');
+    expect(html).not.toContain('arcgisonline');
+    expect(html).not.toContain('tile.openstreetmap');
     expect(CIRCUIT_COORDINATES['albert-park']).toBeDefined();
     expect(CIRCUIT_COORDINATES['albert-park'].lat).toBeCloseTo(-37.8497, 3);
   });

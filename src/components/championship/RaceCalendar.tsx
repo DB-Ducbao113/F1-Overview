@@ -24,6 +24,7 @@ import { GrandPrixQualifyingData } from '../../types/qualifying';
 import { GrandPrixPracticeData } from '../../types/practice';
 import { Card3DTilt } from '../common/Card3DTilt';
 import { getCalendarRaceState, getSessionTimeRange } from '../../utils/raceSchedule';
+import { CircuitTrackMap } from './CircuitTrackMap';
 
 const OPENF1_SESSION_RESULTS = openF1SessionResults as {
   practice: Record<number, GrandPrixPracticeData>;
@@ -335,6 +336,13 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
                         : `${gp.laps} Laps · ${gp.circuitLengthKm} km · Race: ${gp.raceDistanceKm} km`}
                     </span>
                   </div>
+
+                  <CircuitTrackMap
+                    round={gp.round}
+                    circuitName={gp.circuit}
+                    variant="card"
+                    className="mt-1"
+                  />
 
                   {/* Sessions grid */}
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">

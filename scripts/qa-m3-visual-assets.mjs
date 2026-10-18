@@ -13,6 +13,8 @@ const routes = [
   '/drivers',
   '/drivers/hamilton?season=2026',
   '/cars/sf24',
+  '/season/2026',
+  '/showroom',
 ];
 const viewports = [
   { name: 'mobile-375x812', width: 375, height: 812, isMobile: true, hasTouch: true },
@@ -41,6 +43,7 @@ try {
     const pageErrors = [];
     const localFailures = [];
     const knownPreviewFailures = [];
+    const prohibitedVisualRequests = [];
 
     const isKnownPreviewOnlyUrl = (url) =>
       url.includes('/_vercel/') || url.includes('/api/jolpica');
@@ -57,6 +60,11 @@ try {
         (isKnownPreviewOnlyUrl(request.url()) ? knownPreviewFailures : localFailures).push(failure);
       }
     });
+    page.on('request', (request) => {
+      if (/images\.unsplash\.com|arcgisonline\.com|tile\.openstreetmap\.org/i.test(request.url())) {
+        prohibitedVisualRequests.push(request.url());
+      }
+    });
     page.on('response', (response) => {
       if (response.url().startsWith(baseUrl) && response.status() >= 400) {
         const failure = `${response.url()}: HTTP ${response.status()}`;
@@ -71,6 +79,29 @@ try {
       await page.waitForTimeout(150);
       await page.keyboard.press('Escape');
       await page.waitForTimeout(600);
+      if (route === '/season/2026') {
+        await page.locator('[data-championship-tab="calendar"]').click();
+        await page.waitForSelector('[data-circuit-track-map]', { timeout: 20_000 });
+        await page.waitForSelector('img[src*="/images/eds/circuits/"]', { timeout: 20_000 });
+        await page.locator('[data-open-circuit-detail]').first().click();
+        await page.waitForSelector('[data-offline-circuit-atlas]', { timeout: 20_000 });
+        if (outputDirectory) {
+          await page.locator('[data-offline-circuit-atlas]').scrollIntoViewIfNeeded();
+          await page.screenshot({
+            path: path.join(outputDirectory, `${viewport.name}-offline-circuit-atlas.png`),
+          });
+        }
+        await page.keyboard.press('Escape');
+      }
+      if (route === '/showroom') {
+        await page.waitForSelector('canvas', { timeout: 20_000 });
+        await page.waitForFunction(
+          () =>
+            document.querySelectorAll('[data-eds-livery]').length === 6 &&
+            document.querySelectorAll('[data-eds-hotspot]').length === 7,
+          { timeout: 20_000 },
+        );
+      }
       await page.evaluate(async () => {
         const images = [...document.images];
         images.forEach((image) => {
@@ -115,10 +146,21 @@ try {
         brokenImages,
         legacyImages,
         horizontalOverflow: state.horizontalOverflow,
+        showroom:
+          route === '/showroom'
+            ? {
+                canvas: Boolean(await page.$('canvas')),
+                liveries: await page.locator('[data-eds-livery]').count(),
+                hotspots: await page.locator('[data-eds-hotspot]').count(),
+              }
+            : undefined,
       });
 
-      if (outputDirectory && ['/', '/teams', '/drivers'].includes(route)) {
-        const slug = route === '/' ? 'home' : route.slice(1);
+      if (
+        outputDirectory &&
+        ['/', '/teams', '/drivers', '/season/2026', '/showroom'].includes(route)
+      ) {
+        const slug = route === '/' ? 'home' : route.slice(1).replaceAll('/', '-');
         await page.screenshot({
           path: path.join(outputDirectory, `${viewport.name}-${slug}.png`),
           fullPage: true,
@@ -128,7 +170,13 @@ try {
 
     results.push({
       viewport: viewport.name,
-      browserErrors: { consoleErrors, pageErrors, localFailures, knownPreviewFailures },
+      browserErrors: {
+        consoleErrors,
+        pageErrors,
+        localFailures,
+        knownPreviewFailures,
+        prohibitedVisualRequests,
+      },
     });
     await context.close();
   }
@@ -149,12 +197,17 @@ const failures = results.flatMap((result) => {
       ...result.browserErrors.consoleErrors,
       ...result.browserErrors.pageErrors,
       ...result.browserErrors.localFailures,
+      ...result.browserErrors.prohibitedVisualRequests,
     ];
   }
   return [
     ...(result.brokenImages || []),
     ...(result.legacyImages || []),
     ...(result.horizontalOverflow ? [`horizontal overflow at ${result.route}`] : []),
+    ...(result.showroom &&
+    (!result.showroom.canvas || result.showroom.liveries !== 6 || result.showroom.hotspots !== 7)
+      ? [`showroom controls incomplete at ${result.viewport}`]
+      : []),
   ];
 });
 if (failures.length > 0) process.exitCode = 1;

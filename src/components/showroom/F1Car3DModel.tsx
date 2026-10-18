@@ -1,27 +1,11 @@
-import React, { useRef, useMemo, useEffect } from 'react';
-import { useGLTF, Html } from '@react-three/drei';
-import { useLoader } from '@react-three/fiber';
+import React, { useEffect, useMemo } from 'react';
+import { Html, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
-import { TeamId } from '../../types';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { getTeamSponsors } from '../../data/showroom/teamSponsors';
-import { ACTIVE_SHOWROOM_MODEL, USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
+import type { HotspotItem } from '../../data/showroom/hotspotsData';
+import { EDS_HOTSPOTS } from '../../data/showroom/edsHotspots';
 import { DEFAULT_EDS_LIVERY_ID, EDSLiveryId, getEDSLivery } from '../../data/showroom/edsLiveries';
-import {
-  generateNoseTexture,
-  generateBodyworkTexture,
-  generateWingsTexture,
-  generateFloorTexture,
-  generateWheelTexture,
-  generateSuspensionMirrorsTexture,
-  generateDiffuserRainLightTexture,
-  generateCockpitTexture,
-  generateHaloTexture,
-} from './F1CarTextures';
 
 interface F1Car3DModelProps {
-  teamId: TeamId;
   activeHotspot: HotspotItem | null;
   onSelectHotspot: (hotspot: HotspotItem) => void;
   lang: 'vi' | 'en';
@@ -29,283 +13,6 @@ interface F1Car3DModelProps {
   edsLiveryId?: EDSLiveryId;
   hotspots?: HotspotItem[];
 }
-
-// Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
-const MODEL_SCALE = 0.105;
-
-// ── Realistic C42 Formula 1 GLB Model with Photorealistic PBR Livery ──
-const LegacyF1CarMesh: React.FC<{
-  teamId: TeamId;
-}> = ({ teamId }) => {
-  const { scene } = useGLTF('/models/c42.v2.glb');
-  const livery = getTeam3DLivery(teamId);
-  const sponsors = useMemo(() => getTeamSponsors(teamId), [teamId]);
-
-  // Clone scene hierarchy (no procedural vertex deformation).
-  // NOTE: DRS flap tilt disabled — previous normalized-coords version stretched
-  // the whole rear wing into long bars (lỗi sinh thêm ở ảnh mới). Model stays pristine.
-  const { clonedScene, clonedGeometries } = useMemo(() => {
-    const cloned = scene.clone(true);
-    const disposableGeometries: THREE.BufferGeometry[] = [];
-
-    return { clonedScene: cloned, clonedGeometries: disposableGeometries };
-  }, [scene]);
-
-  // Only dispose geometry cloned by this component. Geometry retained in the
-  // useGLTF cache is shared and must stay alive for later showroom visits.
-  useEffect(
-    () => () => {
-      clonedGeometries.forEach((geometry) => geometry.dispose());
-    },
-    [clonedGeometries],
-  );
-
-  // Keep references to original pristine GLTF materials (so tire textures stay sharp)
-  const originalMaterialsRef = useRef<Map<string, any>>(new Map());
-  const activeMaterialsRef = useRef<THREE.Material[]>([]);
-
-  // Capture original materials on initial scene load
-  useEffect(() => {
-    if (!scene) return;
-    scene.traverse((child: any) => {
-      if (child.isMesh && child.material) {
-        const mat = child.material;
-        const matName = (mat.name || child.name || '').toLowerCase();
-        if (!originalMaterialsRef.current.has(matName)) {
-          originalMaterialsRef.current.set(matName, mat);
-        }
-      }
-    });
-  }, [scene]);
-
-  // Generate authentic UV textures mapped directly to the car's 3D primitives (ZERO floating planes)
-  const noseTex = useMemo(
-    () => generateNoseTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const bodyworkTex = useMemo(
-    () => generateBodyworkTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const wingsTex = useMemo(
-    () => generateWingsTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-  const floorTex = useMemo(() => generateFloorTexture(teamId, livery), [teamId, livery]);
-  const suspensionMirrorsTex = useMemo(
-    () => generateSuspensionMirrorsTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const diffuserRainLightTex = useMemo(
-    () => generateDiffuserRainLightTexture(teamId, livery),
-    [teamId, livery],
-  );
-  const cockpitTex = useMemo(() => generateCockpitTexture(teamId, livery), [teamId, livery]);
-  const haloTex = useMemo(
-    () => generateHaloTexture(teamId, livery, sponsors),
-    [teamId, livery, sponsors],
-  );
-
-  // Preload authentic base wheel texture (Pirelli sidewall & BBS magnesium rim)
-  const baseWheelTex = useLoader(THREE.TextureLoader, '/textures/wheel_base.webp');
-
-  // Generate synchronized team-specific wheel texture (aero covers, rim colors, Pirelli compound)
-  const wheelTex = useMemo(
-    () => generateWheelTexture(teamId, livery, sponsors, baseWheelTex?.image),
-    [teamId, livery, sponsors, baseWheelTex],
-  );
-
-  // Apply authentic team livery & sponsor graphics directly to the 3D car mesh
-  useEffect(() => {
-    if (!clonedScene) return;
-
-    // Dispose old dynamic materials to prevent WebGL memory leaks
-    activeMaterialsRef.current.forEach((m) => m.dispose());
-    activeMaterialsRef.current = [];
-
-    clonedScene.traverse((child: any) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-
-        const currentMat = child.material;
-        const matName = (currentMat?.name || child.name || '').toLowerCase();
-        let newMat: THREE.Material;
-
-        // 1. Pirelli Tires & BBS Wheel Rims (006 = Front, 011 = Rear L, 013 = Rear R)
-        // Dynamically synchronized with each constructor team's aero covers & rim accents
-        if (matName.includes('006') || matName.includes('011') || matName.includes('013')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: wheelTex,
-            roughness: 0.45,
-            metalness: 0.55,
-            envMapIntensity: 1.5,
-          });
-        }
-        // 2. Cockpit Interior & Steering Wheel (002)
-        // PCU-8D OLED telemetry display, RPM LEDs, colorful cockpit pushbuttons & 6-point racing harness
-        else if (matName.includes('002')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: cockpitTex,
-            roughness: 0.75,
-            metalness: 0.25,
-            envMapIntensity: 1.2,
-          });
-        }
-        // 3. Titanium Halo Safety Cell (008)
-        // Grade 5 titanium structure with aerodynamic upper fairing painted in team livery
-        else if (matName.includes('008')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: haloTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.haloRoughness ?? 0.2,
-            metalness: livery.haloMetalness ?? 0.45,
-            clearcoat: (livery.bodyClearcoat ?? 1.0) * 0.7,
-            clearcoatRoughness: 0.1,
-            envMapIntensity: 1.6,
-          });
-        }
-        // 4. Aerodynamic Underfloor & Chassis (001 - Prim 3)
-        // Venturi ground-effect floor with colored edge fences, Jabroc reference plank & golden titanium skids
-        else if (matName.includes('001')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: floorTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: floorTex,
-            emissiveIntensity: 0.18,
-            roughness: 0.55,
-            metalness: 0.25,
-            envMapIntensity: 1.6,
-          });
-        }
-        // 5. Suspension Wishbones, Pushrods & Wing Mirrors (003 - Prim 0)
-        // Authentic team livery mirror housings, aero accent pinstripes, reflection glass, titanium rod ends
-        else if (matName.includes('003')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: suspensionMirrorsTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: suspensionMirrorsTex,
-            emissiveIntensity: 0.35,
-            color: new THREE.Color('#ffffff'),
-            roughness: 0.38,
-            metalness: 0.35,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 2.2,
-          });
-        }
-        // 6. Rear Aero Deflectors & Diffuser (009 - Prim 4)
-        // High-intensity FIA 24-LED Ruby Rain Light, Inconel exhaust heat-bluing, team-colored diffuser strakes
-        else if (matName.includes('009')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: diffuserRainLightTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: diffuserRainLightTex,
-            emissiveIntensity: 0.38,
-            color: new THREE.Color('#ffffff'),
-            roughness: 0.45,
-            metalness: 0.3,
-            clearcoat: 0.4,
-            clearcoatRoughness: 0.1,
-            envMapIntensity: 2.0,
-          });
-        }
-        // 7. Wings Assembly: Front Wing Flaps & Rear Wing (005 - Prim 10)
-        else if (matName.includes('005')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: wingsTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: wingsTex,
-            emissiveIntensity: 0.32,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.wingRoughness ?? 0.22,
-            metalness: livery.wingMetalness ?? 0.25,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 1.9,
-          });
-        }
-        // 8. Main Bodywork: Sidepods, Engine Cover, Shark Fin & Airbox (004 - Prim 1)
-        else if (matName.includes('004')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: bodyworkTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.sidepodRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.sidepodMetalness ?? 0.2,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.06,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
-          });
-        }
-        // 9. Forward Monocoque & Nose Cone (007 - Prim 6)
-        else if (matName.includes('007')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: noseTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.noseRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.2,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.06,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
-          });
-        }
-        // Fallback for any other body parts
-        else {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: null,
-            color: new THREE.Color(livery.bodyColor),
-            roughness: livery.bodyRoughness,
-            metalness: livery.bodyMetalness,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 1.8,
-          });
-        }
-
-        newMat.name = matName;
-        newMat.needsUpdate = true;
-        child.material = newMat;
-        activeMaterialsRef.current.push(newMat);
-      }
-    });
-
-    return () => {
-      activeMaterialsRef.current.forEach((m) => m.dispose());
-      activeMaterialsRef.current = [];
-      noseTex.dispose();
-      bodyworkTex.dispose();
-      wingsTex.dispose();
-      floorTex.dispose();
-      wheelTex.dispose();
-      cockpitTex.dispose();
-      haloTex.dispose();
-      suspensionMirrorsTex.dispose();
-      diffuserRainLightTex.dispose();
-    };
-  }, [
-    clonedScene,
-    teamId,
-    livery,
-    noseTex,
-    bodyworkTex,
-    wingsTex,
-    floorTex,
-    wheelTex,
-    cockpitTex,
-    haloTex,
-    suspensionMirrorsTex,
-    diffuserRainLightTex,
-  ]);
-
-  return (
-    <primitive
-      object={clonedScene}
-      scale={[MODEL_SCALE, MODEL_SCALE, MODEL_SCALE]}
-      rotation={[0, Math.PI, 0]}
-      position={[0, 0, 0]}
-    />
-  );
-};
 
 const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
   const { scene } = useGLTF('/models/eds-g01.glb');
@@ -329,6 +36,7 @@ const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
         clearcoatRoughness: 0.12,
         envMapIntensity: 1.55,
       });
+
     const materials = {
       tire: createMaterial('tire', '#07090b', 0.78, 0.02, 0.08),
       rim: createMaterial('rim', livery.secondary, Math.max(livery.roughness, 0.26), 0.72, 0.35),
@@ -357,28 +65,21 @@ const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
 
     clonedScene.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
-
       const name = child.name.toLowerCase();
-      const isTire = name.includes('tire');
-      const isRim = name.includes('rim');
-      const isMechanical =
-        name.includes('floor') ||
-        name.includes('cockpit') ||
-        name.includes('suspension') ||
-        name.includes('brake') ||
-        name.includes('fence') ||
-        name.includes('diffuser');
-      const isAccent = name.includes('wing') || name.includes('halo') || name.includes('cooling');
-      const material = isTire
+      const material = name.includes('tire')
         ? materials.tire
-        : isRim
+        : name.includes('rim')
           ? materials.rim
-          : isMechanical
+          : name.includes('floor') ||
+              name.includes('cockpit') ||
+              name.includes('suspension') ||
+              name.includes('brake') ||
+              name.includes('fence') ||
+              name.includes('diffuser')
             ? materials.mechanical
-            : isAccent
+            : name.includes('wing') || name.includes('halo') || name.includes('cooling')
               ? materials.accent
               : materials.body;
-
       child.castShadow = true;
       child.receiveShadow = true;
       child.material = material;
@@ -390,71 +91,48 @@ const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
   return <primitive object={clonedScene} position={[0, 0, 0]} />;
 };
 
-// ── Master F1Car3DModel Component (Zero Floating Planes) ──
 export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
-  teamId,
   activeHotspot,
   onSelectHotspot,
   lang,
   showHotspots = false,
   edsLiveryId = DEFAULT_EDS_LIVERY_ID,
-  hotspots = F1_HOTSPOTS,
-}) => {
-  return (
-    <group position={[0, 0, 0]}>
-      {/* Photorealistic Formula 1 Car with direct UV-mapped liveries & PBR materials */}
-      {USE_ORIGINAL_CHASSIS ? (
-        <EDSG01Mesh liveryId={edsLiveryId} />
-      ) : (
-        <LegacyF1CarMesh teamId={teamId} />
-      )}
-
-      {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}
-      {(showHotspots || activeHotspot !== null) &&
-        hotspots.map((hotspot, idx) => {
-          const isSelected = activeHotspot?.id === hotspot.id;
-
-          return (
-            <group key={hotspot.id} position={hotspot.position}>
-              <Html center zIndexRange={[100, 0]}>
-                <div className="relative flex items-center justify-center">
+  hotspots = EDS_HOTSPOTS,
+}) => (
+  <group position={[0, 0, 0]}>
+    <EDSG01Mesh liveryId={edsLiveryId} />
+    {(showHotspots || activeHotspot !== null) &&
+      hotspots.map((hotspot, index) => {
+        const isSelected = activeHotspot?.id === hotspot.id;
+        return (
+          <group key={hotspot.id} position={hotspot.position}>
+            <Html center zIndexRange={[100, 0]}>
+              <div className="relative flex items-center justify-center">
+                <span
+                  className={`absolute w-7 h-7 rounded-full animate-ping pointer-events-none ${isSelected ? 'bg-f1red/60' : 'bg-sky-400/40'}`}
+                  style={{ animationDuration: '2.5s' }}
+                />
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelectHotspot(hotspot);
+                  }}
+                  className={`group relative flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none ${isSelected ? 'scale-115 z-30' : 'hover:scale-110'}`}
+                  aria-label={lang === 'vi' ? hotspot.nameVi : hotspot.nameEn}
+                >
                   <span
-                    className={`absolute w-7 h-7 rounded-full animate-ping pointer-events-none ${
-                      isSelected ? 'bg-f1red/60' : 'bg-sky-400/40'
-                    }`}
-                    style={{ animationDuration: '2.5s' }}
-                  />
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectHotspot(hotspot);
-                    }}
-                    className={`group relative flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none ${
-                      isSelected ? 'scale-115 z-30' : 'hover:scale-110'
-                    }`}
-                    aria-label={lang === 'vi' ? hotspot.nameVi : hotspot.nameEn}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center font-display text-[11px] font-black shadow-lg transition-all border ${isSelected ? 'bg-f1red text-white border-white ring-2 ring-f1red/50 shadow-f1red/40' : 'bg-studio-900/90 text-white border-studio-500 hover:border-white hover:bg-f1red shadow-black/80'}`}
                   >
-                    <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center font-display text-[11px] font-black shadow-lg transition-all border ${
-                        isSelected
-                          ? 'bg-f1red text-white border-white ring-2 ring-f1red/50 shadow-f1red/40'
-                          : 'bg-studio-900/90 text-white border-studio-500 hover:border-white hover:bg-f1red shadow-black/80'
-                      }`}
-                    >
-                      {idx + 1}
-                    </span>
-                  </button>
-                </div>
-              </Html>
-            </group>
-          );
-        })}
-    </group>
-  );
-};
+                    {index + 1}
+                  </span>
+                </button>
+              </div>
+            </Html>
+          </group>
+        );
+      })}
+  </group>
+);
 
-// Preload only the selected feature-flag asset. This avoids fetching the legacy
-// chassis in commercial/original mode.
-useGLTF.preload(ACTIVE_SHOWROOM_MODEL);
+useGLTF.preload('/models/eds-g01.glb');

@@ -13,6 +13,9 @@ const legacyTargets = [
   'dist/images/showroom/sidepods_cooling.webp',
   'dist/images/teams',
   'dist/images/drivers',
+  'dist/images/circuits',
+  'dist/images/podium-diffuser-hero-v2.webp',
+  'dist/dev-showroom.html',
 ];
 const originalTeamStudies = [
   'ferrari',
@@ -69,6 +72,33 @@ const requiredOriginalAssets = [
   'dist/images/showroom/eds-g01/floor.svg',
   ...originalTeamStudies.map((id) => `dist/images/eds/vehicle-studies/${id}.svg`),
   ...originalDriverProfiles.map((id) => `dist/images/eds/driver-profiles/${id}.svg`),
+  'dist/images/eds/editorial/eds-g01-hero.svg',
+  ...[
+    'albert-park',
+    'shanghai',
+    'suzuka',
+    'miami',
+    'gilles-villeneuve',
+    'monaco',
+    'catalunya',
+    'red-bull-ring',
+    'silverstone',
+    'spa',
+    'hungaroring',
+    'zandvoort',
+    'monza',
+    'madring',
+    'baku',
+    'sepang',
+    'marina-bay',
+    'cota',
+    'hermanos-rodriguez',
+    'interlagos',
+    'las-vegas',
+    'lusail',
+    'yas-marina',
+    'bahrain',
+  ].map((id) => `dist/images/eds/circuits/${id}.svg`),
 ];
 
 for (const relativeTarget of legacyTargets) {

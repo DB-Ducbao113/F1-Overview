@@ -1,48 +1,28 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo, useRef } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
-import { F1Car3DModel } from './F1Car3DModel';
+import { ChevronDown } from 'lucide-react';
 import { CameraController, CameraPreset } from './CameraController';
-import { Showroom3DLoader } from './Showroom3DLoader';
-import { HotspotDetailsModal } from './HotspotDetailsModal';
-import { LiverySelector } from './LiverySelector';
-import { EDSLiverySelector } from './EDSLiverySelector';
-import { ShowroomControlDock } from './ShowroomControlDock';
-import { HotspotSelectorBar } from './HotspotSelectorBar';
-import { StudioW15Stage } from './StudioW15Stage';
-import { ShowroomQuickHUD } from './ShowroomQuickHUD';
-import { SchematicComparisonModal } from './SchematicComparisonModal';
 import { EDSHotspotDetailsModal } from './EDSHotspotDetailsModal';
+import { EDSHotspotSelectorBar } from './EDSHotspotSelectorBar';
+import { EDSLiverySelector } from './EDSLiverySelector';
 import { EDSSchematicModal } from './EDSSchematicModal';
+import { EDSStudioStage } from './EDSStudioStage';
 import { EDSTechnicalDossier } from './EDSTechnicalDossier';
-
-import { HotspotItem } from '../../data/showroom/hotspotsData';
-import { EDS_HOTSPOTS } from '../../data/showroom/edsHotspots';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { useNavigationStore } from '../../store/useNavigationStore';
-import { ConstructorLogo } from '../common/ConstructorLogo';
-import { getTeamSponsors } from '../../data/showroom/teamSponsors';
-
-import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { F1Car3DModel } from './F1Car3DModel';
+import { Showroom3DLoader } from './Showroom3DLoader';
+import { ShowroomControlDock } from './ShowroomControlDock';
+import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { ErrorBoundary } from '../common/ErrorBoundary';
-import { USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
+import { EDS_HOTSPOTS } from '../../data/showroom/edsHotspots';
 import { DEFAULT_EDS_LIVERY_ID, EDSLiveryId, getEDSLivery } from '../../data/showroom/edsLiveries';
-
-interface WebGLFallbackProps {
-  teamName: string;
-  carModelName: string;
-  primaryColor: string;
-  lang: 'vi' | 'en';
-}
+import type { HotspotItem } from '../../data/showroom/hotspotsData';
+import { useNavigationStore } from '../../store/useNavigationStore';
 
 const WebGLContextGuard: React.FC<{
   onContextStateChange: (isLost: boolean) => void;
 }> = ({ onContextStateChange }) => {
   const { gl } = useThree();
-
   useEffect(() => {
     const canvas = gl.domElement;
     const handleLost = (event: Event) => {
@@ -50,7 +30,6 @@ const WebGLContextGuard: React.FC<{
       onContextStateChange(true);
     };
     const handleRestored = () => onContextStateChange(false);
-
     canvas.addEventListener('webglcontextlost', handleLost);
     canvas.addEventListener('webglcontextrestored', handleRestored);
     return () => {
@@ -58,16 +37,14 @@ const WebGLContextGuard: React.FC<{
       canvas.removeEventListener('webglcontextrestored', handleRestored);
     };
   }, [gl, onContextStateChange]);
-
   return null;
 };
 
 const RendererDiagnostics: React.FC = () => {
   const { gl } = useThree();
-
   useEffect(() => {
     if (!import.meta.env.DEV) return;
-    const update = () => {
+    const update = () =>
       window.dispatchEvent(
         new CustomEvent('eds-renderer-stats', {
           detail: {
@@ -78,106 +55,63 @@ const RendererDiagnostics: React.FC = () => {
           },
         }),
       );
-    };
     update();
     const interval = window.setInterval(update, 500);
     return () => window.clearInterval(interval);
   }, [gl]);
-
   return null;
 };
 
-const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
-  teamName,
-  carModelName,
-  primaryColor,
+const ShowroomWebGLFallback: React.FC<{ accent: string; lang: 'vi' | 'en' }> = ({
+  accent,
   lang,
 }) => (
   <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#09090e] text-white">
     <div
-      className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-black mb-4 shadow-xl"
-      style={{ backgroundColor: primaryColor }}
+      className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black mb-4 shadow-xl"
+      style={{ backgroundColor: accent }}
     >
-      F1
+      EDS
     </div>
-    <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2 text-white">
-      {teamName} — {carModelName}
+    <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2">
+      Podium EDS — EDS-G01
     </h3>
-    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-4">
-      <span>⚠️</span>
-      <span>
-        {lang === 'vi'
-          ? 'Chế độ 2D (Thiết bị chưa bật tăng tốc đồ họa WebGL)'
-          : '2D Mode (WebGL hardware acceleration unavailable)'}
-      </span>
-    </div>
     <p className="text-xs text-studio-400 max-w-md leading-relaxed mb-6">
       {lang === 'vi'
-        ? 'Bạn có thể kích hoạt tăng tốc phần cứng trong cài đặt trình duyệt để xem mô hình 3D xoay 360°, hoặc cuộn xuống dưới để khám phá trọn bộ hồ sơ kỹ thuật chi tiết của xe.'
-        : 'Enable hardware acceleration in your browser settings for full 360° 3D interaction, or scroll down to explore the complete technical dossier.'}
+        ? 'Thiết bị chưa cung cấp tăng tốc WebGL. Hồ sơ kỹ thuật nguyên bản vẫn có sẵn bên dưới.'
+        : 'WebGL hardware acceleration is unavailable. The original engineering dossier remains available below.'}
     </p>
     <button
-      onClick={() => {
-        document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
-      }}
-      className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer shadow-lg shadow-f1red/20"
+      type="button"
+      onClick={() =>
+        document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' })
+      }
+      className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer"
     >
-      {lang === 'vi' ? 'Xem Hồ Sơ Kỹ Thuật Chi Tiết ↓' : 'View Technical Dossier ↓'}
+      {lang === 'vi' ? 'Xem hồ sơ kỹ thuật' : 'View technical dossier'}
     </button>
   </div>
 );
 
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Selected Team for 3D Livery synced with query param ?team=...
-  const teamParam = searchParams.get('team') as TeamId | null;
-  const validTeamParam = teamParam && TEAMS_DATA[teamParam] ? teamParam : null;
-  const [prevTeamParam, setPrevTeamParam] = useState<TeamId | null>(validTeamParam);
-  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(validTeamParam || 'mercedes');
-  const [selectedEDSLiveryId, setSelectedEDSLiveryId] =
-    useState<EDSLiveryId>(DEFAULT_EDS_LIVERY_ID);
-
-  if (validTeamParam && validTeamParam !== prevTeamParam) {
-    setPrevTeamParam(validTeamParam);
-    setSelectedTeamId(validTeamParam);
-  }
-
-  const handleSelectTeam = useCallback(
-    (newTeamId: TeamId) => {
-      setSelectedTeamId(newTeamId);
-      setSearchParams({ team: newTeamId }, { replace: true });
-    },
-    [setSearchParams],
-  );
-
-  // Active Hotspot item
+  const [selectedLiveryId, setSelectedLiveryId] = useState<EDSLiveryId>(DEFAULT_EDS_LIVERY_ID);
   const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
-
-  // Active Camera Preset
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
-  const [presetTrigger, setPresetTrigger] = useState<number>(0);
-  // 3D Visualizer auto-rotation
-  const [autoRotate, setAutoRotate] = useState<boolean>(true);
-
-  // Engineering Hotspots Visibility (Clean default view matching studio photo)
-  const [showHotspots, setShowHotspots] = useState<boolean>(false);
-
-  // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
-  const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
-  const [zoomTrigger, setZoomTrigger] = useState<number>(0);
+  const [presetTrigger, setPresetTrigger] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [showHotspots, setShowHotspots] = useState(false);
+  const [enableWheelZoom, setEnableWheelZoom] = useState(false);
+  const [zoomTrigger, setZoomTrigger] = useState(0);
   const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
-  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
-
-  // 2D CAD Blueprint & Component Comparison Modal
-  const [isSchematicOpen, setIsSchematicOpen] = useState<boolean>(false);
-  const showroomStageRef = useRef<HTMLDivElement | null>(null);
+  const [isSchematicOpen, setIsSchematicOpen] = useState(false);
+  const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
   const [isStageVisible, setIsStageVisible] = useState(true);
   const [isDocumentVisible, setIsDocumentVisible] = useState(
     () => typeof document === 'undefined' || document.visibilityState === 'visible',
   );
-  const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+  const livery = useMemo(() => getEDSLivery(selectedLiveryId), [selectedLiveryId]);
 
   useEffect(() => {
     const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
@@ -186,9 +120,8 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const stage = showroomStageRef.current;
+    const stage = stageRef.current;
     if (!stage || typeof IntersectionObserver === 'undefined') return;
-
     const observer = new IntersectionObserver(
       ([entry]) => setIsStageVisible(entry.isIntersecting),
       { rootMargin: '160px 0px', threshold: 0.01 },
@@ -197,226 +130,103 @@ export const ShowroomView: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
-
-  const handleToggleHotspots = useCallback(() => {
-    setShowHotspots((prev) => !prev);
-  }, []);
-
-  const handleToggleAutoRotate = useCallback(() => {
-    setAutoRotate((prev) => !prev);
-  }, []);
-
-  const handleToggleWheelZoom = useCallback(() => {
-    setEnableWheelZoom((prev) => !prev);
-  }, []);
-
-  // Listen to window scroll to show Back to Top floating button
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 450);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToDossier = () => {
-    document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleZoom = useCallback((dir: 'in' | 'out') => {
-    setZoomDirection(dir);
-    setZoomTrigger((prev) => prev + 1);
-  }, []);
-
   const handleResetView = useCallback(() => {
     setActiveHotspot(null);
     setCameraPreset('overview');
-    setPresetTrigger((prev) => prev + 1);
+    setPresetTrigger((value) => value + 1);
     setAutoRotate(true);
   }, []);
-
   const handleSelectPreset = useCallback((preset: CameraPreset) => {
     setCameraPreset(preset);
-    setPresetTrigger((prev) => prev + 1);
+    setPresetTrigger((value) => value + 1);
     setActiveHotspot(null);
     setAutoRotate(false);
   }, []);
-
   const handleSelectHotspot = useCallback((hotspot: HotspotItem) => {
     setActiveHotspot(hotspot);
     setCameraPreset(null);
     setAutoRotate(false);
   }, []);
+  const handleZoom = useCallback((direction: 'in' | 'out') => {
+    setZoomDirection(direction);
+    setZoomTrigger((value) => value + 1);
+  }, []);
 
-  const team = useMemo(() => TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari, [selectedTeamId]);
-  const livery = useMemo(() => getTeam3DLivery(selectedTeamId), [selectedTeamId]);
-  const teamSponsors = useMemo(() => getTeamSponsors(selectedTeamId), [selectedTeamId]);
-  const edsLivery = useMemo(() => getEDSLivery(selectedEDSLiveryId), [selectedEDSLiveryId]);
-  const stageColor = USE_ORIGINAL_CHASSIS ? edsLivery.accent : team.primaryColor;
-  const showroomHotspots = USE_ORIGINAL_CHASSIS ? EDS_HOTSPOTS : undefined;
+  const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
 
   return (
     <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
-      {/* ── Unified Showroom Header & Constructor Livery Selector Bar ── */}
       <div className="bg-studio-950/95 backdrop-blur-xl border-b border-studio-800/80 sticky top-16 z-30 shadow-md">
         <div className="page-container py-2.5 space-y-2">
-          {/* Top Row: Title, Refined Description & Dossier Quick Action */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="w-7 h-7 rounded-lg bg-f1red flex items-center justify-center font-display text-[11px] font-black text-white shadow-md shadow-f1red/30 shrink-0">
+              <span className="w-7 h-7 rounded-lg bg-f1red flex items-center justify-center font-display text-[11px] font-black shadow-md shadow-f1red/30 shrink-0">
                 3D
               </span>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider text-white">
-                  {USE_ORIGINAL_CHASSIS
-                    ? lang === 'vi'
-                      ? 'Showroom Kỹ thuật EDS-G01'
-                      : 'EDS-G01 Technical Showroom'
-                    : lang === 'vi'
-                      ? 'Showroom Kỹ Thuật 3D Xe F1'
-                      : 'F1 3D Technical Showroom'}
+              <div>
+                <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider">
+                  {lang === 'vi' ? 'Showroom Kỹ thuật EDS-G01' : 'EDS-G01 Technical Showroom'}
                 </h1>
-                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
-                  {USE_ORIGINAL_CHASSIS
-                    ? lang === 'vi'
-                      ? 'NGUYÊN MẪU GỐC'
-                      : 'ORIGINAL PROTOTYPE'
-                    : lang === 'vi'
-                      ? 'MẪU THAM CHIẾU'
-                      : 'REFERENCE MODEL'}
+                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">
+                  {lang === 'vi' ? 'NGUYÊN MẪU GỐC' : 'ORIGINAL PROTOTYPE'}
                 </span>
               </div>
             </div>
-
-            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-              {!USE_ORIGINAL_CHASSIS && (
-                <button
-                  type="button"
-                  onClick={() => setIsSchematicOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
-                  title={
-                    lang === 'vi'
-                      ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
-                      : 'View original 2D CAD blueprint & color matrix'
-                  }
-                >
-                  <FileText className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={scrollToDossier}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
-              >
-                <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Technical Dossier'}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-f1red" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' })
+              }
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold border border-studio-700/70 cursor-pointer"
+            >
+              <span>{lang === 'vi' ? 'Hồ sơ kỹ thuật' : 'Technical dossier'}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-f1red" />
+            </button>
           </div>
-
-          {/* Streamlined Livery Selector Tabs */}
-          {USE_ORIGINAL_CHASSIS ? (
-            <EDSLiverySelector
-              selectedId={selectedEDSLiveryId}
-              onSelect={setSelectedEDSLiveryId}
-              lang={lang}
-            />
-          ) : (
-            <LiverySelector
-              selectedTeamId={selectedTeamId}
-              onSelectTeam={handleSelectTeam}
-              lang={lang}
-            />
-          )}
+          <EDSLiverySelector
+            selectedId={selectedLiveryId}
+            onSelect={setSelectedLiveryId}
+            lang={lang}
+          />
         </div>
       </div>
 
-      {/* ── 3D Interactive Showroom Canvas Stage ── */}
       <div
-        ref={showroomStageRef}
+        ref={stageRef}
         className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none"
       >
-        {/* Dynamic Studio Ambient Spotlight & Team Accent Halo */}
         <div
-          className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
+          className="absolute inset-0 pointer-events-none transition-colors duration-700"
           style={{
-            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${stageColor}16 0%, transparent 68%)`,
+            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${livery.accent}16 0%, transparent 68%)`,
           }}
         />
-
-        {/* Studio Technical Metadata Watermark (Mercedes / Maranello Engineering Stage style) */}
-        <div className="absolute bottom-4 left-4 z-10 pointer-events-none hidden lg:flex flex-col text-[10px] font-mono tracking-widest text-studio-500 uppercase select-none space-y-0.5">
-          <span className="text-studio-400 font-bold">
-            {USE_ORIGINAL_CHASSIS
-              ? 'EDS-G01 · PHOTOMETRIC STAGE'
-              : 'STUDIO W15 · PHOTOMETRIC STAGE'}
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px]">
+          <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
+            PODIUM EDS · {livery.name}
           </span>
-          <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
+          <h2 className="font-display text-sm sm:text-base font-black uppercase">
+            EDS-G01 Ground Effect Prototype
+          </h2>
+          <p className="text-[11px] text-studio-300 pt-1.5 border-t border-studio-800/60">
+            5.05 m · 3.60 m wheelbase · original procedural source
+          </p>
         </div>
-
-        {/* Top Left Floating Team Badge with Official Logo */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
-            <div className="flex items-center gap-2">
-              {!USE_ORIGINAL_CHASSIS && <ConstructorLogo teamId={selectedTeamId} size="sm" />}
-              <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                {USE_ORIGINAL_CHASSIS
-                  ? `PODIUM EDS · ${edsLivery.name}`
-                  : `${team.name} · ${livery.carModelName}`}
-              </span>
-            </div>
-            <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
-              {USE_ORIGINAL_CHASSIS ? 'EDS-G01 Ground Effect Prototype' : team.fullName}
-            </h2>
-            <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
-              {USE_ORIGINAL_CHASSIS ? (
-                <>
-                  <p className="truncate">5.05 m · 3.60 m wheelbase · 14 assemblies</p>
-                  <p className="text-studio-400">Original procedural source · M2 Phase 2</p>
-                </>
-              ) : (
-                <>
-                  <p className="truncate">⚡ {team.powerUnit}</p>
-                  <p className="text-studio-400">Trụ sở: {team.base}</p>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Top Right Compact Control Dock (Camera Presets & Interactive Tools) */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
           <ShowroomControlDock
             cameraPreset={cameraPreset}
             onSelectPreset={handleSelectPreset}
             autoRotate={autoRotate}
-            onToggleAutoRotate={handleToggleAutoRotate}
+            onToggleAutoRotate={() => setAutoRotate((value) => !value)}
             onResetView={handleResetView}
             lang={lang}
             showHotspots={showHotspots}
-            onToggleHotspots={handleToggleHotspots}
+            onToggleHotspots={() => setShowHotspots((value) => !value)}
             onOpenSchematic={() => setIsSchematicOpen(true)}
           />
         </div>
 
-        {/* ── Three.js WebGL 3D Canvas ── */}
-        <ErrorBoundary
-          fallback={
-            <ShowroomWebGLFallback
-              teamName={USE_ORIGINAL_CHASSIS ? 'Podium EDS' : team.name}
-              carModelName={USE_ORIGINAL_CHASSIS ? 'EDS-G01' : livery.carModelName}
-              primaryColor={stageColor}
-              lang={lang}
-            />
-          }
-        >
+        <ErrorBoundary fallback={<ShowroomWebGLFallback accent={livery.accent} lang={lang} />}>
           <Canvas
             shadows
             dpr={[1, 1.25]}
@@ -432,39 +242,27 @@ export const ShowroomView: React.FC = () => {
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
             <RendererDiagnostics />
-            {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage
-              teamId={selectedTeamId}
-              lang={lang}
-              edsLivery={USE_ORIGINAL_CHASSIS ? edsLivery : undefined}
-            />
-
-            {/* F1 3D Car Model with Suspense Loading HUD */}
+            <EDSStudioStage lang={lang} livery={livery} />
             <Suspense fallback={<Showroom3DLoader />}>
               <F1Car3DModel
-                teamId={selectedTeamId}
                 activeHotspot={activeHotspot}
                 onSelectHotspot={handleSelectHotspot}
                 lang={lang}
                 showHotspots={showHotspots}
-                edsLiveryId={selectedEDSLiveryId}
-                hotspots={showroomHotspots}
+                edsLiveryId={selectedLiveryId}
+                hotspots={EDS_HOTSPOTS}
               />
             </Suspense>
-
-            {/* Dynamic Ground Contact Shadows */}
             <ContactShadows
               position={[0, 0, 0]}
               opacity={0.9}
               scale={10}
-              blur={2.0}
+              blur={2}
               far={4.5}
               frames={1}
               resolution={256}
               color="#000000"
             />
-
-            {/* Smooth Camera Controller & OrbitControls */}
             <CameraController
               activeHotspot={activeHotspot}
               cameraPreset={cameraPreset}
@@ -479,256 +277,45 @@ export const ShowroomView: React.FC = () => {
 
         {isWebGLContextLost && (
           <div className="absolute inset-0 z-30">
-            <ShowroomWebGLFallback
-              teamName={USE_ORIGINAL_CHASSIS ? 'Podium EDS' : team.name}
-              carModelName={USE_ORIGINAL_CHASSIS ? 'EDS-G01' : livery.carModelName}
-              primaryColor={stageColor}
-              lang={lang}
-            />
+            <ShowroomWebGLFallback accent={livery.accent} lang={lang} />
           </div>
         )}
-
-        {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
         <ShowroomQuickHUD
           enableWheelZoom={enableWheelZoom}
-          onToggleWheelZoom={handleToggleWheelZoom}
+          onToggleWheelZoom={() => setEnableWheelZoom((value) => !value)}
           onZoom={handleZoom}
           onResetView={handleResetView}
           autoRotate={autoRotate}
-          onToggleAutoRotate={handleToggleAutoRotate}
+          onToggleAutoRotate={() => setAutoRotate((value) => !value)}
           cameraPreset={cameraPreset}
           onSelectPreset={handleSelectPreset}
           lang={lang}
           onOpenSchematic={() => setIsSchematicOpen(true)}
         />
-
-        {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
-        {USE_ORIGINAL_CHASSIS ? (
-          <EDSHotspotDetailsModal
-            hotspot={activeHotspot}
-            hotspots={EDS_HOTSPOTS}
-            onClose={() => {
-              setActiveHotspot(null);
-              setCameraPreset('overview');
-            }}
-            onSelectHotspot={handleSelectHotspot}
-            lang={lang}
-          />
-        ) : (
-          <HotspotDetailsModal
-            hotspot={activeHotspot}
-            teamId={selectedTeamId}
-            onClose={() => {
-              setActiveHotspot(null);
-              setCameraPreset('overview');
-            }}
-            onSelectHotspot={handleSelectHotspot}
-            lang={lang}
-          />
-        )}
-
-        {/* ── Interactive 2D CAD Blueprint & Component Livery Comparison Modal ── */}
-        {USE_ORIGINAL_CHASSIS ? (
-          <EDSSchematicModal
-            isOpen={isSchematicOpen}
-            onClose={() => setIsSchematicOpen(false)}
-            lang={lang}
-          />
-        ) : (
-          <SchematicComparisonModal
-            isOpen={isSchematicOpen}
-            onClose={() => setIsSchematicOpen(false)}
-            teamId={selectedTeamId}
-            lang={lang}
-            onFocusPart={handleSelectPreset}
-          />
-        )}
+        <EDSHotspotDetailsModal
+          hotspot={activeHotspot}
+          hotspots={EDS_HOTSPOTS}
+          onClose={() => {
+            setActiveHotspot(null);
+            setCameraPreset('overview');
+          }}
+          onSelectHotspot={handleSelectHotspot}
+          lang={lang}
+        />
+        <EDSSchematicModal
+          isOpen={isSchematicOpen}
+          onClose={() => setIsSchematicOpen(false)}
+          lang={lang}
+        />
       </div>
 
-      {/* ── Component 1-6 Interactive Navigation Strip ── */}
-      <HotspotSelectorBar
+      <EDSHotspotSelectorBar
         activeHotspot={activeHotspot}
         onSelectHotspot={handleSelectHotspot}
-        teamId={selectedTeamId}
         lang={lang}
-        hotspots={showroomHotspots}
-        originalMode={USE_ORIGINAL_CHASSIS}
+        hotspots={EDS_HOTSPOTS}
       />
-
-      {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
-      {USE_ORIGINAL_CHASSIS ? (
-        <EDSTechnicalDossier lang={lang} livery={edsLivery} />
-      ) : (
-        <div
-          id="technical-dossier"
-          className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14"
-        >
-          <div className="page-container space-y-10">
-            {/* Section Header: Dynamically reflects active team */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
-              <div>
-                <div className="flex items-center gap-2">
-                  <ConstructorLogo teamId={selectedTeamId} size="sm" />
-                  <span className="text-xs font-black uppercase tracking-widest text-f1red">
-                    {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đội Đua' : 'Technical Dossier & Machine'}
-                  </span>
-                </div>
-                <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1 flex items-center gap-3 flex-wrap">
-                  <span>{livery.fullName}</span>
-                  <span className="text-sm font-bold tracking-wider text-studio-400 font-mono bg-studio-900 border border-studio-800 px-3 py-1 rounded-full">
-                    {livery.carModelName}
-                  </span>
-                </h3>
-              </div>
-              <div className="flex items-center gap-3">
-                <Link
-                  to={`/teams/${selectedTeamId}?season=2026`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
-                >
-                  <span>{lang === 'vi' ? 'Xem Hồ Sơ Đội' : 'Team Profile'}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-f1red" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Team Drivers, Principal & Technical Details Bar */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono py-2.5 px-4 rounded-xl bg-studio-900/60 border border-studio-800/80">
-              <div>
-                <span className="text-studio-500 font-sans">
-                  {lang === 'vi' ? 'Tay đua: ' : 'Drivers: '}
-                </span>
-                <span className="text-white font-bold">
-                  {lang === 'vi' ? livery.driversVi : livery.driversEn}
-                </span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-              <div>
-                <span className="text-studio-500 font-sans">
-                  {lang === 'vi' ? 'Lãnh đội: ' : 'Principal: '}
-                </span>
-                <span className="text-studio-200">{livery.teamPrincipal}</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-              <div>
-                <span className="text-studio-500 font-sans">
-                  {lang === 'vi' ? 'Trụ sở: ' : 'Base: '}
-                </span>
-                <span className="text-studio-200">{livery.base}</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-              <div>
-                <span className="text-studio-500 font-sans">
-                  {lang === 'vi' ? 'Tài trợ chính: ' : 'Title Partner: '}
-                </span>
-                <span className="text-amber-300 font-bold">{teamSponsors.primarySponsor}</span>
-              </div>
-            </div>
-
-            {/* 4 Technical Pillars tailored to active team */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* 1. Aero */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
-                      01
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Aerodynamics
-                    </span>
-                  </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
-                  </p>
-                </div>
-              </div>
-
-              {/* 2. Powertrain */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
-                      02
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Power Unit
-                    </span>
-                  </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase truncate">
-                    {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
-                  </h4>
-                  <p className="text-xs text-studio-300 font-mono">{livery.powerUnit}</p>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
-                  </p>
-                </div>
-              </div>
-
-              {/* 3. Halo Safety */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                      03
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Safety Cell
-                    </span>
-                  </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
-                      : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
-                  </p>
-                </div>
-              </div>
-
-              {/* 4. Pirelli & Brakes */}
-              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
-                      04
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                      Pirelli & Brakes
-                    </span>
-                  </div>
-                  <h4 className="font-display text-base font-bold text-white uppercase">
-                    {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
-                  </h4>
-                  <p className="text-xs text-studio-400 leading-relaxed">
-                    {lang === 'vi'
-                      ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
-                      : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Floating Back to Top 3D Stage Button */}
-      {showBackToTop && (
-        <button
-          type="button"
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-40 p-3 rounded-2xl bg-f1red/95 hover:bg-f1red text-white shadow-2xl backdrop-blur-md border border-white/20 transition-all hover:scale-110 cursor-pointer animate-fade-in flex items-center gap-2 text-xs font-bold shadow-f1red/30 active:scale-95"
-          aria-label={lang === 'vi' ? 'Lên đầu trang xem xe 3D' : 'Back to 3D Stage'}
-        >
-          <ChevronUp className="w-4 h-4" />
-          <span className="hidden sm:inline">
-            {lang === 'vi' ? 'Lên Đầu Trang 3D' : 'Back to 3D'}
-          </span>
-        </button>
-      )}
+      <EDSTechnicalDossier lang={lang} livery={livery} />
     </div>
   );
 };

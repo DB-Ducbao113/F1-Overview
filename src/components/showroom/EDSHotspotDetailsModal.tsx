@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { HotspotItem } from '../../data/showroom/hotspotsData';
+import type { HotspotItem } from '../../data/showroom/hotspotsData';
 
 interface Props {
   hotspot: HotspotItem | null;

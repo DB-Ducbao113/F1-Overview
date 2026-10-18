@@ -219,8 +219,8 @@ export const AboutPage: React.FC = () => {
           </p>
           <p>
             {isVi
-              ? '4. NGUỒN MÔ HÌNH 3D: Hình học xe C42 được chuyển thể từ model mã nguồn mở của Mark Stein (markste-in/c42), phát hành theo giấy phép WTFPL v2. Phiên bản trên website đã được nén Meshopt, loại bỏ texture gốc và phủ bộ nhận diện tạo bằng thủ tục.'
-              : '4. 3D MODEL SOURCE: The C42 car geometry is adapted from the open-source model by Mark Stein (markste-in/c42), released under the WTFPL v2 license. The website version is Meshopt-compressed, has its original textures removed, and uses procedurally generated liveries.'}
+              ? '4. NGUỒN MÔ HÌNH 3D: EDS-G01 là nguyên mẫu do dự án Podium EDS tự xây dựng bằng generator tham số có thể tái tạo. Mô hình thương mại không tải hình học C42, logo đội đua hoặc đồ họa nhà tài trợ.'
+              : '4. 3D MODEL SOURCE: EDS-G01 is an original Podium EDS prototype built with a reproducible parametric generator. The commercial experience does not load C42 geometry, constructor logos, or sponsor artwork.'}
           </p>
         </div>
       </section>

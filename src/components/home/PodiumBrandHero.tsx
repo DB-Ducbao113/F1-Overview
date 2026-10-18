@@ -15,7 +15,7 @@ export const PodiumBrandHero: React.FC = () => {
       aria-labelledby="podium-hero-title"
     >
       <img
-        src="/images/podium-diffuser-hero-v2.webp"
+        src="/images/eds/editorial/eds-g01-hero.svg"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover object-[50%_60%] podium-hero-image"

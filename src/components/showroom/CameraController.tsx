@@ -3,8 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { HotspotItem } from '../../data/showroom/hotspotsData';
-import { USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
+import type { HotspotItem } from '../../data/showroom/hotspotsData';
 
 export type CameraPreset =
   | 'overview'
@@ -111,7 +110,6 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
 
     const frameForViewport = useCallback(
       (position: THREE.Vector3, target: THREE.Vector3) => {
-        if (!USE_ORIGINAL_CHASSIS) return position;
         const aspect = size.width / Math.max(size.height, 1);
         const distanceScale = aspect < 0.58 ? 2.6 : aspect < 0.9 ? 2.55 : 1.18;
         return target.clone().add(position.clone().sub(target).multiplyScalar(distanceScale));

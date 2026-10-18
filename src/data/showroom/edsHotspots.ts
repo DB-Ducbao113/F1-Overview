@@ -1,11 +1,6 @@
-import { F1_HOTSPOTS, HotspotItem } from './hotspotsData';
+import type { HotspotItem } from './hotspotsData';
 
-type EDSOverride = Pick<
-  HotspotItem,
-  | 'nameVi' | 'nameEn' | 'categoryVi' | 'categoryEn' | 'summaryVi' | 'summaryEn'
-  | 'descriptionVi' | 'descriptionEn' | 'imageUrl' | 'position' | 'cameraPos'
-  | 'cameraTarget' | 'specs' | 'highlightsVi' | 'highlightsEn'
->;
+type EDSOverride = HotspotItem;
 
 const sharedSpecs = [
   { labelVi: 'Nguồn thiết kế', labelEn: 'Design source', value: 'EDS-G01 procedural master' },
@@ -14,6 +9,7 @@ const sharedSpecs = [
 
 const profiles: Record<string, EDSOverride> = {
   wings: {
+    id: 'wings',
     nameVi: 'Cánh trước bốn tầng', nameEn: 'Four-plane Front Wing',
     categoryVi: 'Khí động học', categoryEn: 'Aerodynamics',
     summaryVi: 'Bốn tầng cánh dạng quét dẫn luồng khí sạch vào hai vai sàn Venturi.',
@@ -26,6 +22,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Chamfered endplates manage front-wheel wake.', 'Split keel establishes an EDS-specific signature.', 'Parametric construction is exactly reproducible.'],
   },
   drs: {
+    id: 'drs',
     nameVi: 'Cánh sau & cánh chủ động', nameEn: 'Rear Wing & Active Flap', categoryVi: 'Khí động học', categoryEn: 'Aerodynamics',
     summaryVi: 'Cánh sau hai tầng đặt trên cầu đỡ tam giác và bộ khuếch tán bậc.', summaryEn: 'A two-plane rear wing supported by an original triangular bridge above the stepped diffuser.',
     descriptionVi: 'Cụm cánh sau dùng hai mặt cánh thuôn, endplate độc lập và cầu đỡ chữ V. Đây là nguyên mẫu kỹ thuật, không mô phỏng cơ cấu của đội đua cụ thể.',
@@ -36,6 +33,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Triangular bridge creates a distinct identity.', 'Active flap remains a discrete assembly.', 'Geometry visually links to diffuser extraction.'],
   },
   power_unit: {
+    id: 'power_unit',
     nameVi: 'Mô-đun năng lượng hybrid', nameEn: 'Hybrid Energy Module', categoryVi: 'Hệ truyền động', categoryEn: 'Powertrain',
     summaryVi: 'Khoang năng lượng khép kín dưới sống lưng khí động học của EDS-G01.', summaryEn: 'A compact conceptual energy module packaged beneath the EDS-G01 aerodynamic spine.',
     descriptionVi: 'Showroom mô tả kiến trúc hybrid ở mức khái niệm; không tuyên bố sao chép hoặc đại diện cho bộ nguồn của nhà sản xuất hiện hữu.',
@@ -46,6 +44,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Brand-neutral conceptual module.', 'Rear body tapers toward the diffuser.', 'No unverified output figures are claimed.'],
   },
   halo: {
+    id: 'halo',
     nameVi: 'Khung bảo vệ buồng lái', nameEn: 'Cockpit Safety Structure', categoryVi: 'An toàn', categoryEn: 'Safety',
     summaryVi: 'Vòng bảo vệ quét ngược bao quanh cửa cockpit lục giác.', summaryEn: 'A swept protective loop surrounding the hexagonal cockpit opening.',
     descriptionVi: 'Khung an toàn EDS-G01 có vòng cong bất đối xứng theo trục dọc, trụ giữa và hai chân neo độc lập.',
@@ -56,6 +55,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Swept loop creates a distinct silhouette.', 'Three anchors remain visible in detail view.', 'No manufacturer branding is present.'],
   },
   sidepods: {
+    id: 'sidepods',
     nameVi: 'Sidepod giọt nước', nameEn: 'Teardrop Sidepods', categoryVi: 'Khí động & làm mát', categoryEn: 'Aero & Cooling',
     summaryVi: 'Hai sidepod thuôn giọt nước với môi hút khí cyan và bốn khe thoát nhiệt.', summaryEn: 'Twin teardrop sidepods with cyan intake lips and four cooling outlets.',
     descriptionVi: 'Sidepod dùng mặt cắt loft riêng, co nhanh về phía sau để lộ vai sàn delta và đường khí tới diffuser.',
@@ -66,6 +66,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Accent intake lips remain visually distinct.', 'Undercut exposes the floor shoulder.', 'Parametric loft does not trace the legacy mesh.'],
   },
   tires: {
+    id: 'tires',
     nameVi: 'Bánh trơn không thương hiệu', nameEn: 'Unbranded Slick Wheel', categoryVi: 'Khung gầm', categoryEn: 'Chassis',
     summaryVi: 'Bốn lốp trơn, mâm khí động học nguyên bản và đĩa phanh carbon mô phỏng.', summaryEn: 'Four unbranded slicks with original aero rims and conceptual carbon brake discs.',
     descriptionVi: 'Bánh xe EDS không dùng chữ, vòng màu hoặc kiểu nan nhận diện của nhà cung cấp bên thứ ba.',
@@ -76,6 +77,7 @@ const profiles: Record<string, EDSOverride> = {
     highlightsEn: ['Tires carry no lettering.', 'Minimal circular rims are EDS-authored.', 'Brake hardware is a conceptual visualization.'],
   },
   floor: {
+    id: 'floor',
     nameVi: 'Sàn Venturi & diffuser', nameEn: 'Venturi Floor & Diffuser', categoryVi: 'Hiệu ứng mặt đất', categoryEn: 'Ground Effect',
     summaryVi: 'Sàn delta, bốn fence và diffuser năm strake tạo silhouette đáy xe riêng.', summaryEn: 'A delta floor, four fences and five-strake diffuser establish a distinct underside silhouette.',
     descriptionVi: 'Sàn EDS-G01 mở rộng ở vai, thu tại mũi và kết thúc bằng bộ khuếch tán bậc năm strake.',
@@ -87,7 +89,4 @@ const profiles: Record<string, EDSOverride> = {
   },
 };
 
-export const EDS_HOTSPOTS: HotspotItem[] = F1_HOTSPOTS.map((hotspot) => ({
-  ...hotspot,
-  ...profiles[hotspot.id],
-}));
+export const EDS_HOTSPOTS: HotspotItem[] = Object.values(profiles);

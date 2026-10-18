@@ -67,3 +67,50 @@ All files below inherit the generator, authoring method, dependency, rights-evid
 - `public/images/eds/driver-profiles/tsunoda.svg`
 - `public/images/eds/driver-profiles/verstappen.svg`
 - `public/images/eds/driver-profiles/zhou.svg`
+
+## M3 Phase 2 additions
+
+Commercial readiness remains provisional. The records below document authorship and dependencies; they are not a legal-clearance opinion.
+
+| Exported asset path                                                       | Creator or generator                                  | Original source path                                                                                 | Authoring method and dependencies                                                                                                         | Rights evidence                                                            | Commercial-readiness status                                                           |
+| ------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `public/images/eds/editorial/eds-g01-hero.svg`                            | Podium EDS deterministic vector generator             | `scripts/generate-eds-editorial-assets.mjs`; EDS-G01 design language from the M2 source model        | Repository-authored SVG primitives and gradients; Node.js standard library only; no external image, logo or sponsor input                 | Generator source, repository history and byte-identical regeneration check | **PROVISIONAL - original technical illustration; independent rights review required** |
+| `public/images/eds/circuits/*.svg` (24 files)                             | Podium EDS deterministic vector generator             | `scripts/generate-eds-editorial-assets.mjs`; path records in `src/data/championship/circuitsData.ts` | Repository-authored SVG presentation generated from local circuit geometry; no photograph, map tile, external font, logo or sponsor input | Generator/source records and byte-identical regeneration check             | **PROVISIONAL - factual circuit geometry and source provenance require final review** |
+| `src/components/championship/CircuitRealWorldMap.tsx`                     | Podium EDS repository-authored React/SVG component    | Component source; local circuit geometry and coordinates                                             | Offline SVG atlas with local markers, layer modes and zoom; no ArcGIS, OpenStreetMap or remote tile dependency                            | Repository source diff and commercial artifact scan                        | **READY as editable source; factual map data review remains**                         |
+| `src/components/showroom/EDSStudioStage.tsx`, `EDSHotspotSelectorBar.tsx` | Podium EDS repository-authored React/Three components | Component source and existing EDS-G01 hotspot records                                                | Original studio geometry, labels and controls; production import graph contains no legacy sponsor/logo/livery routines                    | Repository source diff and bundle-isolation regression check               | **PROVISIONAL - technical source; independent rights review required**                |
+
+### Phase 2 reproduction
+
+```bash
+npm run asset:eds-editorial
+```
+
+The command writes exactly one hero and 24 circuit SVGs without network access or paid dependencies. The sorted path-and-content asset-set SHA-256 is `1800024F04CF1C7666020F6D04609CB3E12F69207D95542917D6E6D5FB627379`.
+
+### Phase 2 exported asset index
+
+- `public/images/eds/editorial/eds-g01-hero.svg`
+- `public/images/eds/circuits/albert-park.svg`
+- `public/images/eds/circuits/bahrain.svg`
+- `public/images/eds/circuits/baku.svg`
+- `public/images/eds/circuits/catalunya.svg`
+- `public/images/eds/circuits/cota.svg`
+- `public/images/eds/circuits/gilles-villeneuve.svg`
+- `public/images/eds/circuits/hermanos-rodriguez.svg`
+- `public/images/eds/circuits/hungaroring.svg`
+- `public/images/eds/circuits/interlagos.svg`
+- `public/images/eds/circuits/las-vegas.svg`
+- `public/images/eds/circuits/lusail.svg`
+- `public/images/eds/circuits/madring.svg`
+- `public/images/eds/circuits/marina-bay.svg`
+- `public/images/eds/circuits/miami.svg`
+- `public/images/eds/circuits/monaco.svg`
+- `public/images/eds/circuits/monza.svg`
+- `public/images/eds/circuits/red-bull-ring.svg`
+- `public/images/eds/circuits/sepang.svg`
+- `public/images/eds/circuits/shanghai.svg`
+- `public/images/eds/circuits/silverstone.svg`
+- `public/images/eds/circuits/spa.svg`
+- `public/images/eds/circuits/suzuka.svg`
+- `public/images/eds/circuits/yas-marina.svg`
+- `public/images/eds/circuits/zandvoort.svg`

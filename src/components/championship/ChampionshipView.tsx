@@ -73,6 +73,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
               <span>{strings.tabStandings}</span>
             </button>
             <button
+              data-championship-tab="calendar"
               onClick={() => setActiveSubTab('calendar')}
               className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer ${
                 activeSubTab === 'calendar'

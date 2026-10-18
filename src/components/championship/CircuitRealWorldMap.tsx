@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { CircuitData } from '../../types/circuit';
+import React, { useMemo, useState } from 'react';
 import {
   ExternalLink,
+  Gauge,
+  Info,
   Layers,
+  MapPin,
   Navigation,
   ZoomIn,
   ZoomOut,
-  MapPin,
-  Satellite,
-  Info,
 } from 'lucide-react';
-import { generateCircuitGpsLayout } from '../../utils/circuitGpsHelper';
-import 'leaflet/dist/leaflet.css';
-
+import { CircuitData } from '../../types/circuit';
+import { sampleSvgPathPoints } from '../../utils/circuitGpsHelper';
 import { CIRCUIT_COORDINATES, CircuitGeoCoords } from './circuitCoordinates';
+
 export type { CircuitGeoCoords };
 
 interface CircuitRealWorldMapProps {
@@ -23,6 +22,9 @@ interface CircuitRealWorldMapProps {
   className?: string;
 }
 
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+/** Self-contained circuit atlas with no satellite or street-tile requests. */
 export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
   circuit,
   lang,
@@ -30,15 +32,11 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
   className = '',
 }) => {
   const isVi = lang === 'vi';
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const tileLayerRef = useRef<any>(null);
+  const [layer, setLayer] = useState<'aero' | 'technical'>('aero');
+  const [zoom, setZoom] = useState(1);
+  const [showLegend, setShowLegend] = useState(true);
+  const [activeTurn, setActiveTurn] = useState<number | null>(null);
 
-  const [mapType, setMapType] = useState<'satellite' | 'street'>('satellite');
-  const [isMapReady, setIsMapReady] = useState<boolean>(false);
-  const [showLegend, setShowLegend] = useState<boolean>(true);
-
-  // Look up coordinates with graceful fallback to Albert Park
   const coords: CircuitGeoCoords = useMemo(
     () =>
       CIRCUIT_COORDINATES[circuit.id] || {
@@ -49,408 +47,231 @@ export const CircuitRealWorldMap: React.FC<CircuitRealWorldMapProps> = ({
     [circuit.id],
   );
 
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
-  const osmUrl = `https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}#map=${coords.zoom}/${coords.lat}/${coords.lng}`;
-
-  useEffect(() => {
-    let isCancelled = false;
-    if (typeof window === 'undefined') return;
-
-    // Dynamically load Leaflet for 100% SSR & test suite safety
-    import('leaflet').then((L) => {
-      if (isCancelled || !containerRef.current) return;
-
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-
-      // Initialize map instance
-      const map = L.map(containerRef.current, {
-        center: [coords.lat, coords.lng],
-        zoom: coords.zoom,
-        zoomControl: false,
-        attributionControl: false,
-        maxZoom: 19,
-        minZoom: 3,
-      });
-
-      mapInstanceRef.current = map;
-
-      // Free Esri World Imagery (No API key required) & OSM fallback
-      const esriSatelliteUrl =
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      const osmStreetUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-      const initialUrl = mapType === 'satellite' ? esriSatelliteUrl : osmStreetUrl;
-      const initialLayer = L.tileLayer(initialUrl, {
-        maxZoom: 19,
-        attribution: 'Esri / OpenStreetMap',
-      }).addTo(map);
-
-      tileLayerRef.current = initialLayer;
-
-      // Generate authentic real-world GPS track geometry, turns and DRS zones
-      const layout = generateCircuitGpsLayout(circuit, coords);
-
-      // ── 1. RED RACING TRACK POLYLINE ──
-      // Base white kerb boundary
-      L.polyline(layout.trackCoordinates, {
-        color: '#ffffff',
-        weight: 7,
-        opacity: 0.9,
-        lineCap: 'round',
-        lineJoin: 'round',
-      }).addTo(map);
-
-      // Dark asphalt track bed
-      L.polyline(layout.trackCoordinates, {
-        color: '#0f172a',
-        weight: 5.5,
-        opacity: 0.95,
-        lineCap: 'round',
-        lineJoin: 'round',
-      }).addTo(map);
-
-      // Vivid F1 Red Racing Line
-      const mainTrack = L.polyline(layout.trackCoordinates, {
-        color: '#e10600',
-        weight: 3.2,
-        opacity: 1,
-        lineCap: 'round',
-        lineJoin: 'round',
-      }).addTo(map);
-
-      mainTrack.bindPopup(`
-        <div style="font-family: system-ui, sans-serif; min-width: 170px; padding: 3px;">
-          <div style="font-size: 12px; font-weight: 800; color: #e10600; margin-bottom: 2px;">
-            🏁 ${circuit.circuitName}
-          </div>
-          <div style="font-size: 10px; color: #475569;">
-            ${isVi ? 'Chiều dài:' : 'Length:'} <strong>${circuit.telemetry?.circuitLengthKm} km</strong> · <strong>${circuit.telemetry?.turns?.total} ${isVi ? 'khúc cua' : 'turns'}</strong>
-          </div>
-        </div>
-      `);
-
-      // ── 2. VIVID GREEN DRS ZONES HIGHLIGHT ──
-      layout.drsSegments.forEach((drs) => {
-        const drsLine = L.polyline(drs.coordinates, {
-          color: '#00e676',
-          weight: 6,
-          opacity: 0.95,
-          lineCap: 'round',
-          lineJoin: 'round',
-        }).addTo(map);
-
-        const drsPopup = `
-          <div style="font-family: system-ui, sans-serif; min-width: 180px; padding: 3px;">
-            <div style="font-size: 11px; font-weight: 900; color: #059669; text-transform: uppercase;">
-              🟢 ${isVi ? drs.info.nameVi : drs.info.nameEn}
-            </div>
-            <div style="font-size: 10px; color: #475569; margin-top: 3px; line-height: 1.4;">
-              <strong>${isVi ? 'Điểm đo:' : 'Detection:'}</strong> ${drs.info.detectionPoint}<br/>
-              <strong>${isVi ? 'Kích hoạt:' : 'Activation:'}</strong> ${drs.info.activationPoint}
-            </div>
-          </div>
-        `;
-        drsLine.bindPopup(drsPopup);
-      });
-
-      // ── 3. CLICKABLE NUMBERED TURN MARKERS ──
-      layout.turns.forEach((turn) => {
-        const turnIcon = L.divIcon({
-          className: 'f1-turn-marker',
-          html: `
-            <div style="
-              width: 20px;
-              height: 20px;
-              background: #ffffff;
-              border: 2px solid #e10600;
-              border-radius: 9999px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-family: system-ui, -apple-system, sans-serif;
-              font-size: 9px;
-              font-weight: 900;
-              color: #111827;
-              box-shadow: 0 2px 5px rgba(0,0,0,0.45);
-              cursor: pointer;
-            ">
-              ${turn.number}
-            </div>
-          `,
-          iconSize: [20, 20],
-          iconAnchor: [10, 10],
-        });
-
-        const turnMarker = L.marker([turn.lat, turn.lng], { icon: turnIcon }).addTo(map);
-
-        const speedLabel = isVi
-          ? turn.speedCategory === 'slow'
-            ? 'Chậm'
-            : turn.speedCategory === 'high'
-              ? 'Tốc độ cao'
-              : 'Trung bình'
-          : turn.speedCategory;
-
-        const turnPopup = `
-          <div style="font-family: system-ui, sans-serif; min-width: 160px; padding: 3px;">
-            <div style="font-size: 11px; font-weight: 900; color: #e10600;">
-              Turn ${turn.number} · ${isVi ? turn.nameVi : turn.nameEn}
-            </div>
-            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
-              ${isVi ? 'Tốc độ:' : 'Speed:'} <strong>${speedLabel}</strong>
-            </div>
-          </div>
-        `;
-        turnMarker.bindPopup(turnPopup);
-      });
-
-      // ── 4. START / FINISH LINE MARKER ──
-      const sfIcon = L.divIcon({
-        className: 'f1-sf-marker',
-        html: `
-          <div style="
-            background: #09090b;
-            color: #ffffff;
-            border: 1.5px solid #ffffff;
-            border-radius: 6px;
-            padding: 2px 5px;
-            font-family: system-ui, sans-serif;
-            font-size: 8px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            white-space: nowrap;
-          ">
-            <span>🏁</span>
-            <span>${isVi ? 'XUẤT PHÁT' : 'START / FINISH'}</span>
-          </div>
-        `,
-        iconSize: [84, 20],
-        iconAnchor: [42, 10],
-      });
-
-      const sfMarker = L.marker(layout.startFinishCoord, { icon: sfIcon }).addTo(map);
-      sfMarker.bindPopup(`
-        <div style="font-family: system-ui, sans-serif; font-size: 11px; padding: 2px;">
-          <strong>🏁 ${isVi ? 'Vạch Xuất Phát & Về Đích' : 'Start / Finish Line'}</strong><br/>
-          <span style="font-size: 10px; color: #64748b;">${circuit.circuitName}</span>
-        </div>
-      `);
-
-      // Invalidate map size after DOM mount
-      setTimeout(() => {
-        if (!isCancelled && mapInstanceRef.current) {
-          mapInstanceRef.current.invalidateSize();
-          setIsMapReady(true);
-        }
-      }, 150);
+  const points = useMemo(() => sampleSvgPathPoints(circuit.svgPath, 5), [circuit.svgPath]);
+  const turnMarkers = useMemo(() => {
+    const total = circuit.telemetry.turns.total;
+    return Array.from({ length: total }, (_, index) => {
+      const pointIndex = Math.floor((((index + 1) * 0.95) / total) * points.length) % points.length;
+      return { number: index + 1, point: points[pointIndex] ?? [250, 180] };
     });
-
-    return () => {
-      isCancelled = true;
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [circuit, coords.lat, coords.lng, coords.zoom, isVi]);
-
-  // Handle Map Type Switch (Satellite vs Street)
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-    import('leaflet').then((L) => {
-      if (tileLayerRef.current) {
-        mapInstanceRef.current.removeLayer(tileLayerRef.current);
-      }
-      const esriSatelliteUrl =
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      const osmStreetUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-      const nextUrl = mapType === 'satellite' ? esriSatelliteUrl : osmStreetUrl;
-      const nextLayer = L.tileLayer(nextUrl, {
-        maxZoom: 19,
-        attribution: 'Esri / OpenStreetMap',
-      }).addTo(mapInstanceRef.current);
-
-      tileLayerRef.current = nextLayer;
-    });
-  }, [mapType]);
-
-  const handleZoomIn = () => {
-    if (mapInstanceRef.current) mapInstanceRef.current.zoomIn();
-  };
-
-  const handleZoomOut = () => {
-    if (mapInstanceRef.current) mapInstanceRef.current.zoomOut();
-  };
-
-  const handleResetCenter = () => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView([coords.lat, coords.lng], coords.zoom);
-    }
-  };
+  }, [circuit.telemetry.turns.total, points]);
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
 
   return (
     <div
       className={`relative rounded-2xl bg-studio-950 border border-studio-800/80 overflow-hidden flex flex-col shadow-2xl ${className}`}
+      data-offline-circuit-atlas={circuit.id}
     >
-      {/* Interactive Map Canvas Container */}
-      <div ref={containerRef} className={`w-full ${heightClass} z-0 bg-studio-950 relative`} />
+      <div
+        className={`relative w-full ${heightClass} overflow-hidden bg-[#070a10]`}
+        aria-label={
+          isVi
+            ? `Bản đồ vector ngoại tuyến ${circuit.circuitName}`
+            : `${circuit.circuitName} offline vector atlas`
+        }
+      >
+        <div
+          className="absolute inset-0 transition-transform duration-300 ease-out"
+          style={{ transform: `scale(${zoom})` }}
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                layer === 'aero'
+                  ? 'radial-gradient(circle at 50% 45%, rgba(0,240,255,0.16), transparent 48%), linear-gradient(rgba(106,130,153,0.11) 1px, transparent 1px), linear-gradient(90deg, rgba(106,130,153,0.11) 1px, transparent 1px)'
+                  : 'radial-gradient(circle at 48% 46%, rgba(255,48,40,0.13), transparent 46%), linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+              backgroundSize: 'auto, 24px 24px, 24px 24px',
+            }}
+          />
 
-      {/* Loading overlay while tiles initialize */}
-      {!isMapReady && (
-        <div className="absolute inset-0 bg-studio-950/80 backdrop-blur-xs flex items-center justify-center pointer-events-none z-10">
-          <div className="flex items-center gap-2 text-xs font-mono text-studio-400">
-            <span className="w-2 h-2 rounded-full bg-f1red animate-ping" />
-            <span>{isVi ? 'Đang tải bản đồ vệ tinh...' : 'Loading satellite map...'}</span>
+          <svg
+            viewBox={circuit.viewBox}
+            className="absolute inset-[12%] h-[76%] w-[76%] mx-auto overflow-visible"
+            role="img"
+            aria-labelledby={`atlas-${circuit.id}-title`}
+          >
+            <title id={`atlas-${circuit.id}-title`}>{circuit.circuitName}</title>
+            <path
+              d={circuit.svgPath}
+              fill="none"
+              stroke={layer === 'aero' ? '#00f0ff' : '#ff3028'}
+              strokeWidth="34"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.14"
+            />
+            <path
+              d={circuit.svgPath}
+              fill="none"
+              stroke="#f5f7fa"
+              strokeWidth="22"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={circuit.svgPath}
+              fill="none"
+              stroke="#111827"
+              strokeWidth="15"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={circuit.svgPath}
+              fill="none"
+              stroke={layer === 'aero' ? '#00f0ff' : '#ff3028'}
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {turnMarkers.map(({ number, point }) => (
+              <g
+                key={number}
+                transform={`translate(${point[0]} ${point[1]})`}
+                role="button"
+                tabIndex={0}
+                aria-label={`Turn ${number}`}
+                onClick={() => setActiveTurn((current) => (current === number ? null : number))}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setActiveTurn((current) => (current === number ? null : number));
+                  }
+                }}
+                className="cursor-pointer outline-none"
+              >
+                <circle
+                  r={activeTurn === number ? 13 : 10}
+                  fill={activeTurn === number ? '#ff3028' : '#f8fafc'}
+                  stroke="#070a10"
+                  strokeWidth="3"
+                />
+                <text
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={activeTurn === number ? '#ffffff' : '#111827'}
+                  fontSize="9"
+                  fontWeight="900"
+                >
+                  {number}
+                </text>
+              </g>
+            ))}
+            <g transform={`translate(${circuit.startFinish.x} ${circuit.startFinish.y})`}>
+              <rect
+                x="-7"
+                y="-7"
+                width="14"
+                height="14"
+                rx="2"
+                fill="#ffffff"
+                stroke="#ff3028"
+                strokeWidth="3"
+              />
+            </g>
+          </svg>
+        </div>
+
+        <div className="absolute top-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between gap-2">
+          <div className="flex items-center bg-studio-950/90 backdrop-blur-md p-1 rounded-xl border border-studio-800 shadow-lg">
+            <button
+              type="button"
+              onClick={() => setLayer('aero')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${layer === 'aero' ? 'bg-cyan-500 text-black' : 'text-studio-400 hover:text-white hover:bg-studio-800/60'}`}
+            >
+              <Gauge className="w-3 h-3" />
+              <span>{isVi ? 'Luồng Khí' : 'Aero'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setLayer('technical')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${layer === 'technical' ? 'bg-f1red text-white' : 'text-studio-400 hover:text-white hover:bg-studio-800/60'}`}
+            >
+              <Layers className="w-3 h-3" />
+              <span>{isVi ? 'Kỹ Thuật' : 'Technical'}</span>
+            </button>
           </div>
-        </div>
-      )}
-
-      {/* Top Floating Controls Bar */}
-      <div className="absolute top-2.5 left-2.5 right-2.5 z-10 flex items-center justify-between gap-2 pointer-events-auto">
-        {/* Layer Mode Switcher: Satellite vs Street */}
-        <div className="flex items-center bg-studio-950/90 backdrop-blur-md p-1 rounded-xl border border-studio-800 shadow-lg">
           <button
             type="button"
-            onClick={() => setMapType('satellite')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-              mapType === 'satellite'
-                ? 'bg-f1red text-white shadow-md'
-                : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-            }`}
-            title={
-              isVi ? 'Ảnh vệ tinh thực tế độ nét cao (Esri)' : 'High-res Satellite View (Esri)'
-            }
+            onClick={() => setShowLegend((current) => !current)}
+            className="p-1.5 rounded-xl bg-studio-950/90 hover:bg-studio-800 text-studio-300 border border-studio-800 shadow-lg backdrop-blur-md text-[10px] flex items-center gap-1 cursor-pointer"
           >
-            <Satellite className="w-3 h-3" />
-            <span>{isVi ? 'Vệ Tinh' : 'Satellite'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setMapType('street')}
-            className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-              mapType === 'street'
-                ? 'bg-f1red text-white shadow-md'
-                : 'text-studio-400 hover:text-white hover:bg-studio-800/60'
-            }`}
-            title={isVi ? 'Bản đồ giao thông địa hình' : 'Street & Road Map'}
-          >
-            <Layers className="w-3 h-3" />
-            <span>{isVi ? 'Địa Hình' : 'Street'}</span>
-          </button>
-        </div>
-
-        {/* GPS Coordinates & Legend Toggle */}
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setShowLegend((prev) => !prev)}
-            className="p-1.5 rounded-xl bg-studio-950/90 hover:bg-studio-800 text-studio-400 hover:text-white border border-studio-800 shadow-lg backdrop-blur-md text-[10px] flex items-center gap-1 cursor-pointer"
-            title={isVi ? 'Bật/tắt chú thích bản đồ' : 'Toggle map legend'}
-          >
-            <Info className="w-3 h-3 text-studio-400" />
+            <Info className="w-3 h-3" />
             <span className="hidden sm:inline font-mono">{isVi ? 'Chú Thích' : 'Legend'}</span>
           </button>
-
-          <div className="hidden md:flex items-center gap-1.5 bg-studio-950/90 backdrop-blur-md px-2.5 py-1 rounded-xl border border-studio-800 text-[10px] font-mono text-studio-300 shadow-lg">
-            <MapPin className="w-3 h-3 text-f1red" />
-            <span>
-              {coords.lat.toFixed(4)}°, {coords.lng.toFixed(4)}°
-            </span>
-          </div>
         </div>
-      </div>
 
-      {/* Floating Map Legend (Bottom Left) */}
-      {showLegend && (
-        <div className="absolute bottom-11 sm:bottom-3 left-2.5 z-10 pointer-events-auto bg-studio-950/90 backdrop-blur-md p-2 rounded-xl border border-studio-800/90 shadow-xl max-w-[280px]">
-          <div className="text-[9px] font-bold uppercase tracking-wider text-studio-400 mb-1 border-b border-studio-800/80 pb-0.5">
-            {isVi ? 'Chú Thích Đường Đua' : 'Track Elements'}
-          </div>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] font-medium text-studio-300">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-1 bg-[#e10600] rounded-full inline-block" />
-              <span>{isVi ? 'Track F1' : 'F1 Track'}</span>
+        {showLegend && (
+          <div className="absolute bottom-3 left-2.5 z-10 bg-studio-950/92 backdrop-blur-md p-2.5 rounded-xl border border-studio-800 shadow-xl max-w-[280px]">
+            <div className="text-[9px] font-bold uppercase tracking-wider text-studio-400 mb-1.5">
+              {isVi ? 'Atlas ngoại tuyến EDS' : 'EDS offline atlas'}
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-1.5 bg-[#00e676] rounded-full inline-block" />
-              <span>{isVi ? 'Vùng DRS' : 'DRS Zone'}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-white border border-[#e10600] text-[7px] text-black font-black flex items-center justify-center inline-flex">
-                1
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px] text-studio-300">
+              <span>{circuit.telemetry.circuitLengthKm} km</span>
+              <span>
+                {circuit.telemetry.turns.total} {isVi ? 'khúc cua' : 'turns'}
               </span>
-              <span>{isVi ? 'Góc Cua' : 'Turns'}</span>
+              <span>{circuit.telemetry.drsZonesCount} DRS</span>
+              <span>{circuit.telemetry.direction}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[9px]">🏁</span>
-              <span>{isVi ? 'Xuất Phát' : 'Start'}</span>
-            </div>
+            {activeTurn !== null && (
+              <div className="mt-2 pt-2 border-t border-studio-800 text-[10px] font-bold text-white">
+                Turn {activeTurn} ·{' '}
+                {circuit.corners?.find((corner) => corner.number === activeTurn)?.[
+                  isVi ? 'nameVi' : 'nameEn'
+                ] ?? (isVi ? 'Điểm kỹ thuật' : 'Technical point')}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Right Floating Navigation Controls */}
-      <div className="absolute bottom-3 right-3 z-10 flex flex-col items-center gap-1.5 pointer-events-auto">
-        <button
-          type="button"
-          onClick={handleResetCenter}
-          className="p-2 rounded-xl bg-studio-950/90 hover:bg-studio-800 text-studio-300 hover:text-white border border-studio-800 shadow-lg backdrop-blur-md transition-all cursor-pointer"
-          title={isVi ? 'Căn giữa lại trường đua' : 'Recenter Circuit'}
-        >
-          <Navigation className="w-3.5 h-3.5 text-amber-400" />
-        </button>
-
-        <div className="flex flex-col rounded-xl bg-studio-950/90 border border-studio-800 shadow-lg backdrop-blur-md overflow-hidden">
+        <div className="absolute bottom-3 right-3 z-10 flex flex-col gap-1.5">
           <button
             type="button"
-            onClick={handleZoomIn}
-            className="p-2 hover:bg-studio-800 text-studio-300 hover:text-white border-b border-studio-800/80 transition-colors cursor-pointer"
-            title={isVi ? 'Phóng to' : 'Zoom In'}
+            onClick={() => setZoom(1)}
+            className="p-2 rounded-xl bg-studio-950/90 hover:bg-studio-800 text-amber-400 border border-studio-800 shadow-lg cursor-pointer"
+            title={isVi ? 'Đặt lại khung nhìn' : 'Reset view'}
           >
-            <ZoomIn className="w-3.5 h-3.5" />
+            <Navigation className="w-3.5 h-3.5" />
           </button>
-          <button
-            type="button"
-            onClick={handleZoomOut}
-            className="p-2 hover:bg-studio-800 text-studio-300 hover:text-white transition-colors cursor-pointer"
-            title={isVi ? 'Thu nhỏ' : 'Zoom Out'}
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col rounded-xl bg-studio-950/90 border border-studio-800 shadow-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setZoom((value) => clamp(value + 0.15, 0.85, 1.75))}
+              className="p-2 hover:bg-studio-800 text-studio-300 border-b border-studio-800 cursor-pointer"
+              title={isVi ? 'Phóng to' : 'Zoom in'}
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoom((value) => clamp(value - 0.15, 0.85, 1.75))}
+              className="p-2 hover:bg-studio-800 text-studio-300 cursor-pointer"
+              title={isVi ? 'Thu nhỏ' : 'Zoom out'}
+            >
+              <ZoomOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Floating Links Bar (Below Legend on small screens) */}
-      <div className="absolute bottom-2.5 left-2.5 z-10 hidden sm:flex items-center gap-1.5 pointer-events-auto">
+      <div className="px-3 py-2 bg-studio-900/80 border-t border-studio-800 flex items-center justify-between gap-3 text-[10px] font-mono">
+        <span className="flex items-center gap-1.5 text-studio-400 min-w-0">
+          <MapPin className="w-3 h-3 text-f1red shrink-0" />
+          <span className="truncate">
+            {coords.lat.toFixed(4)}°, {coords.lng.toFixed(4)}° ·{' '}
+            {isVi ? 'không tải tile ngoài' : 'no external tiles'}
+          </span>
+        </span>
         <a
-          href={googleMapsUrl}
+          href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-2 py-0.5 rounded-lg bg-studio-950/90 hover:bg-studio-800 text-studio-400 hover:text-white border border-studio-800 text-[9px] font-mono flex items-center gap-1 shadow-md backdrop-blur-md transition-all"
+          className="shrink-0 flex items-center gap-1 text-studio-300 hover:text-white"
         >
-          <span>Google Maps</span>
-          <ExternalLink className="w-2.5 h-2.5 text-studio-400" />
-        </a>
-
-        <a
-          href={osmUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-2 py-0.5 rounded-lg bg-studio-950/90 hover:bg-studio-800 text-studio-400 hover:text-white border border-studio-800 text-[9px] font-mono flex items-center gap-1 shadow-md backdrop-blur-md transition-all"
-        >
-          <span>OSM</span>
-          <ExternalLink className="w-2.5 h-2.5 text-studio-400" />
+          <span>{isVi ? 'Mở tọa độ' : 'Open coordinates'}</span>
+          <ExternalLink className="w-3 h-3" />
         </a>
       </div>
     </div>

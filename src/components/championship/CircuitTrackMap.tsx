@@ -170,6 +170,7 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
     // 2. Card Variant (Full interactive track map inside expanded calendar round)
     return (
       <div
+        data-circuit-track-map={circuit.id}
         className={`rounded-xl sm:rounded-2xl bg-studio-950 text-white border border-studio-800 shadow-md overflow-hidden ${className}`}
       >
         <div className="p-3.5 sm:p-5 flex flex-col md:flex-row items-stretch gap-4 sm:gap-6">
@@ -276,6 +277,7 @@ export const CircuitTrackMap: React.FC<CircuitTrackMapProps> = React.memo(
 
             {/* Action Button to Open Full Modal */}
             <button
+              data-open-circuit-detail={circuit.id}
               onClick={() => setIsModalOpen(true)}
               className="w-full py-1.5 px-3 rounded-lg bg-studio-800 hover:bg-f1red text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs border border-studio-700 hover:border-f1red"
             >

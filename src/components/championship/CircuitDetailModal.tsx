@@ -4,6 +4,7 @@ import { CircuitData } from '../../types/circuit';
 import { X, Trophy, MapPin, Activity, Zap, Camera } from 'lucide-react';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { CircuitStreetReview } from './CircuitStreetReview';
+import { CircuitRealWorldMap } from './CircuitRealWorldMap';
 
 interface CircuitDetailModalProps {
   circuit: CircuitData;
@@ -101,6 +102,8 @@ export const CircuitDetailModal: React.FC<CircuitDetailModalProps> = ({ circuit,
 
             {/* Streamlined Corner Review */}
             <CircuitStreetReview circuit={circuit} lang={lang} />
+
+            <CircuitRealWorldMap circuit={circuit} lang={lang} />
 
             {/* Quick Telemetry Grid (4 cards) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">

@@ -1,5 +1,5 @@
 import { CircuitData, DrsZoneInfo, CircuitCornerHighlight } from '../types/circuit';
-import { CircuitGeoCoords } from '../components/championship/CircuitRealWorldMap';
+import type { CircuitGeoCoords } from '../components/championship/circuitCoordinates';
 
 export interface TurnMarkerData {
   number: number;

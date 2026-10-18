@@ -130,12 +130,6 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
             alt={isVi ? activePoint.nameVi : activePoint.nameEn}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
             loading="lazy"
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
-                target.src = '/images/circuits/albert_park_pit_straight.webp';
-              }
-            }}
           />
 
           {/* Dark gradient scrim */}
@@ -297,12 +291,6 @@ export const CircuitStreetReview: React.FC<CircuitStreetReviewProps> = ({
                 src={activePoint.imageUrl}
                 alt={isVi ? activePoint.nameVi : activePoint.nameEn}
                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl border border-studio-800 shadow-2xl"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (target.src !== '/images/circuits/albert_park_pit_straight.webp') {
-                    target.src = '/images/circuits/albert_park_pit_straight.webp';
-                  }
-                }}
               />
               <button
                 type="button"
