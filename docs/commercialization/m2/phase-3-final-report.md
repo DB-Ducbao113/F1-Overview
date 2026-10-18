@@ -1,5 +1,7 @@
 # EDS QA RELEASE REPORT — M2 Phase 3 Finalization
 
+**M2 FUNCTIONAL ACCEPTANCE: COMPLETE.**
+
 **Base commit:** `73fc1460af5e24e756bdc8a501cfa54590481d0c`
 **Target branch:** `Per-PEDS`
 **Target environment:** local development browser and production build artifact
@@ -10,7 +12,7 @@
 
 M2 changes are limited to the Showroom renderer, QA/generation scripts, dev-only browser automation dependency, M2 evidence and M2 documentation. Existing local edits to `docs/cloudflare-migration-readiness.md` and `.github/workflows/per-peds-ci.yml` are explicitly excluded from this M2 scope. No Results Engine, data workflow, deployment, advertising or `main` change was made.
 
-Exact uncommitted M2 scope at final review: nine modified tracked files and 37 new files, with no deletions. The new files are this report plus four browser-report JSON files and 32 PNG screenshots across baseline, retained final and two measured candidates. Separately, one modified Cloudflare document and one untracked Per-PEDS workflow remain pre-existing local changes outside the M2 scope.
+The verified Phase 3 implementation was committed as `441a03864e7c85ad1f5eb867b7016fb69a8e04d0`. Final milestone cleanup retains the four browser-report JSON files and the baseline/final screenshots needed for comparison, while removing the 16 redundant screenshots from the two rejected tuning candidates. Separately, one modified Cloudflare document and one untracked Per-PEDS workflow remain pre-existing local changes outside the M2 scope.
 
 The only retained render-path change is `MeshReflectorMaterial` resolution 512 → 256. A 1024 → 512 shadow-map candidate was measured and reverted because its desktop gain was within noise and tablet/mobile results declined. DPR remains `[1, 1.25]`, the 1024 shadow map remains, ContactShadows remains 256, and lighting/material/interaction behavior is unchanged.
 
@@ -73,8 +75,17 @@ The uncached GLB transfer remained 660,492 bytes on the wire / 660,192 decoded a
 - Formal legal clearance or freedom-to-operate opinion.
 - CI status, preview deployment and production smoke testing; deployment is outside this milestone.
 
+## Pre-commercial launch carry-forward
+
+These launch-gate checks do not reopen M2 functional implementation:
+
+- Physical-device touch and pinch testing.
+- Long-duration thermal and memory testing.
+- Further desktop GPU optimization if launch-device evidence requires it.
+- Final review of asset provenance and third-party rights.
+
 ## FINAL DECISION: GO
 
 **REASON:** M2 branch-local functional acceptance criteria are satisfied with complete original Showroom coverage, deterministic generation, commercial-build containment and a measured same-GPU performance improvement without material visual or interaction regression. Outstanding physical-device soak and rights review are explicitly transferred to the commercial pre-launch gate and do not reopen M2 implementation.
 
-**NEXT REQUIRED ACTION:** review this uncommitted Phase 3 diff; after approval, close M2 and begin M3 Original Visual Assets and Content. Do not deploy commercially until the listed pre-launch checks are complete.
+**NEXT REQUIRED ACTION:** proceed to M3 Original Visual Assets and Content. Do not launch commercially until the carried-forward pre-launch checks are complete.
