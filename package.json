@@ -11,14 +11,17 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/prune-legacy-showroom-assets.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "results-engine": "node --experimental-strip-types src/results-engine/cli.ts",
     "results-engine:shadow": "node --experimental-strip-types src/results-engine/shadow-cli.ts",
     "sync:2026": "node scripts/update-2026-data.js",
-    "sync:sessions": "node scripts/sync-openf1-sessions.js"
+    "sync:sessions": "node scripts/sync-openf1-sessions.js",
+    "asset:eds-g01": "node scripts/generate-eds-g01.mjs",
+    "asset:eds-g01:validate": "node scripts/validate-eds-g01.mjs",
+    "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",

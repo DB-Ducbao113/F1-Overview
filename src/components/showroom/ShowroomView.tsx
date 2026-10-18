@@ -7,6 +7,7 @@ import { CameraController, CameraPreset } from './CameraController';
 import { Showroom3DLoader } from './Showroom3DLoader';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
+import { EDSLiverySelector } from './EDSLiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
@@ -23,6 +24,8 @@ import { getTeamSponsors } from '../../data/showroom/teamSponsors';
 
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
+import { USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
+import { DEFAULT_EDS_LIVERY_ID, EDSLiveryId, getEDSLivery } from '../../data/showroom/edsLiveries';
 
 interface WebGLFallbackProps {
   teamName: string;
@@ -104,6 +107,8 @@ export const ShowroomView: React.FC = () => {
   const validTeamParam = teamParam && TEAMS_DATA[teamParam] ? teamParam : null;
   const [prevTeamParam, setPrevTeamParam] = useState<TeamId | null>(validTeamParam);
   const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(validTeamParam || 'mercedes');
+  const [selectedEDSLiveryId, setSelectedEDSLiveryId] =
+    useState<EDSLiveryId>(DEFAULT_EDS_LIVERY_ID);
 
   if (validTeamParam && validTeamParam !== prevTeamParam) {
     setPrevTeamParam(validTeamParam);
@@ -222,6 +227,8 @@ export const ShowroomView: React.FC = () => {
   const team = useMemo(() => TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari, [selectedTeamId]);
   const livery = useMemo(() => getTeam3DLivery(selectedTeamId), [selectedTeamId]);
   const teamSponsors = useMemo(() => getTeamSponsors(selectedTeamId), [selectedTeamId]);
+  const edsLivery = useMemo(() => getEDSLivery(selectedEDSLiveryId), [selectedEDSLiveryId]);
+  const stageColor = USE_ORIGINAL_CHASSIS ? edsLivery.accent : team.primaryColor;
 
   return (
     <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
@@ -236,28 +243,42 @@ export const ShowroomView: React.FC = () => {
               </span>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider text-white">
-                  {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
+                  {USE_ORIGINAL_CHASSIS
+                    ? lang === 'vi'
+                      ? 'Showroom Kỹ thuật EDS-G01'
+                      : 'EDS-G01 Technical Showroom'
+                    : lang === 'vi'
+                      ? 'Showroom Kỹ Thuật 3D Xe F1'
+                      : 'F1 3D Technical Showroom'}
                 </h1>
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
-                  {lang === 'vi' ? 'MẪU THAM CHIẾU' : 'REFERENCE MODEL'}
+                  {USE_ORIGINAL_CHASSIS
+                    ? lang === 'vi'
+                      ? 'NGUYÊN MẪU GỐC'
+                      : 'ORIGINAL PROTOTYPE'
+                    : lang === 'vi'
+                      ? 'MẪU THAM CHIẾU'
+                      : 'REFERENCE MODEL'}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-              <button
-                type="button"
-                onClick={() => setIsSchematicOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
-                title={
-                  lang === 'vi'
-                    ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
-                    : 'View original 2D CAD blueprint & color matrix'
-                }
-              >
-                <FileText className="w-3.5 h-3.5 text-amber-400" />
-                <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
-              </button>
+              {!USE_ORIGINAL_CHASSIS && (
+                <button
+                  type="button"
+                  onClick={() => setIsSchematicOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                  title={
+                    lang === 'vi'
+                      ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
+                      : 'View original 2D CAD blueprint & color matrix'
+                  }
+                >
+                  <FileText className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
+                </button>
+              )}
 
               <button
                 type="button"
@@ -271,11 +292,19 @@ export const ShowroomView: React.FC = () => {
           </div>
 
           {/* Streamlined Livery Selector Tabs */}
-          <LiverySelector
-            selectedTeamId={selectedTeamId}
-            onSelectTeam={handleSelectTeam}
-            lang={lang}
-          />
+          {USE_ORIGINAL_CHASSIS ? (
+            <EDSLiverySelector
+              selectedId={selectedEDSLiveryId}
+              onSelect={setSelectedEDSLiveryId}
+              lang={lang}
+            />
+          ) : (
+            <LiverySelector
+              selectedTeamId={selectedTeamId}
+              onSelectTeam={handleSelectTeam}
+              lang={lang}
+            />
+          )}
         </div>
       </div>
 
@@ -288,13 +317,17 @@ export const ShowroomView: React.FC = () => {
         <div
           className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
           style={{
-            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${team.primaryColor}16 0%, transparent 68%)`,
+            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${stageColor}16 0%, transparent 68%)`,
           }}
         />
 
         {/* Studio Technical Metadata Watermark (Mercedes / Maranello Engineering Stage style) */}
         <div className="absolute bottom-4 left-4 z-10 pointer-events-none hidden lg:flex flex-col text-[10px] font-mono tracking-widest text-studio-500 uppercase select-none space-y-0.5">
-          <span className="text-studio-400 font-bold">STUDIO W15 · PHOTOMETRIC STAGE</span>
+          <span className="text-studio-400 font-bold">
+            {USE_ORIGINAL_CHASSIS
+              ? 'EDS-G01 · PHOTOMETRIC STAGE'
+              : 'STUDIO W15 · PHOTOMETRIC STAGE'}
+          </span>
           <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
         </div>
 
@@ -302,17 +335,28 @@ export const ShowroomView: React.FC = () => {
         <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
           <div className="p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs">
             <div className="flex items-center gap-2">
-              <ConstructorLogo teamId={selectedTeamId} size="sm" />
+              {!USE_ORIGINAL_CHASSIS && <ConstructorLogo teamId={selectedTeamId} size="sm" />}
               <span className="text-[10px] font-black uppercase tracking-widest text-studio-400">
-                {team.name} · {livery.carModelName}
+                {USE_ORIGINAL_CHASSIS
+                  ? `PODIUM EDS · ${edsLivery.name}`
+                  : `${team.name} · ${livery.carModelName}`}
               </span>
             </div>
             <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
-              {team.fullName}
+              {USE_ORIGINAL_CHASSIS ? 'EDS-G01 Ground Effect Prototype' : team.fullName}
             </h2>
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
-              <p className="truncate">⚡ {team.powerUnit}</p>
-              <p className="text-studio-400">Trụ sở: {team.base}</p>
+              {USE_ORIGINAL_CHASSIS ? (
+                <>
+                  <p className="truncate">5.05 m · 3.60 m wheelbase · 9 assemblies</p>
+                  <p className="text-studio-400">Original procedural source · M2 Phase 1</p>
+                </>
+              ) : (
+                <>
+                  <p className="truncate">⚡ {team.powerUnit}</p>
+                  <p className="text-studio-400">Trụ sở: {team.base}</p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -328,7 +372,7 @@ export const ShowroomView: React.FC = () => {
             lang={lang}
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
-            onOpenSchematic={() => setIsSchematicOpen(true)}
+            onOpenSchematic={USE_ORIGINAL_CHASSIS ? undefined : () => setIsSchematicOpen(true)}
           />
         </div>
 
@@ -336,9 +380,9 @@ export const ShowroomView: React.FC = () => {
         <ErrorBoundary
           fallback={
             <ShowroomWebGLFallback
-              teamName={team.name}
-              carModelName={livery.carModelName}
-              primaryColor={team.primaryColor}
+              teamName={USE_ORIGINAL_CHASSIS ? 'Podium EDS' : team.name}
+              carModelName={USE_ORIGINAL_CHASSIS ? 'EDS-G01' : livery.carModelName}
+              primaryColor={stageColor}
               lang={lang}
             />
           }
@@ -358,7 +402,11 @@ export const ShowroomView: React.FC = () => {
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-            <StudioW15Stage teamId={selectedTeamId} lang={lang} />
+            <StudioW15Stage
+              teamId={selectedTeamId}
+              lang={lang}
+              edsLivery={USE_ORIGINAL_CHASSIS ? edsLivery : undefined}
+            />
 
             {/* F1 3D Car Model with Suspense Loading HUD */}
             <Suspense fallback={<Showroom3DLoader />}>
@@ -368,6 +416,7 @@ export const ShowroomView: React.FC = () => {
                 onSelectHotspot={handleSelectHotspot}
                 lang={lang}
                 showHotspots={showHotspots}
+                edsLiveryId={selectedEDSLiveryId}
               />
             </Suspense>
 
@@ -399,9 +448,9 @@ export const ShowroomView: React.FC = () => {
         {isWebGLContextLost && (
           <div className="absolute inset-0 z-30">
             <ShowroomWebGLFallback
-              teamName={team.name}
-              carModelName={livery.carModelName}
-              primaryColor={team.primaryColor}
+              teamName={USE_ORIGINAL_CHASSIS ? 'Podium EDS' : team.name}
+              carModelName={USE_ORIGINAL_CHASSIS ? 'EDS-G01' : livery.carModelName}
+              primaryColor={stageColor}
               lang={lang}
             />
           </div>
@@ -418,7 +467,7 @@ export const ShowroomView: React.FC = () => {
           cameraPreset={cameraPreset}
           onSelectPreset={handleSelectPreset}
           lang={lang}
-          onOpenSchematic={() => setIsSchematicOpen(true)}
+          onOpenSchematic={USE_ORIGINAL_CHASSIS ? undefined : () => setIsSchematicOpen(true)}
         />
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}

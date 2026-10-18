@@ -6,6 +6,8 @@ import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
+import { ACTIVE_SHOWROOM_MODEL, USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
+import { DEFAULT_EDS_LIVERY_ID, EDSLiveryId, getEDSLivery } from '../../data/showroom/edsLiveries';
 import {
   generateNoseTexture,
   generateBodyworkTexture,
@@ -24,13 +26,14 @@ interface F1Car3DModelProps {
   onSelectHotspot: (hotspot: HotspotItem) => void;
   lang: 'vi' | 'en';
   showHotspots?: boolean;
+  edsLiveryId?: EDSLiveryId;
 }
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
 const MODEL_SCALE = 0.105;
 
 // ── Realistic C42 Formula 1 GLB Model with Photorealistic PBR Livery ──
-const RealF1CarMesh: React.FC<{
+const LegacyF1CarMesh: React.FC<{
   teamId: TeamId;
 }> = ({ teamId }) => {
   const { scene } = useGLTF('/models/c42.v2.glb');
@@ -303,6 +306,48 @@ const RealF1CarMesh: React.FC<{
   );
 };
 
+const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
+  const { scene } = useGLTF('/models/eds-g01.glb');
+  const livery = getEDSLivery(liveryId);
+  const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+  useEffect(() => {
+    const activeMaterials: THREE.Material[] = [];
+
+    clonedScene.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+
+      const name = child.name.toLowerCase();
+      const isMechanical =
+        name.includes('floor') ||
+        name.includes('cockpit') ||
+        name.includes('suspension') ||
+        name.includes('wheels') ||
+        name.includes('diffuser');
+      const isAccent = name.includes('wings') || name.includes('halo');
+      const color = isMechanical ? livery.secondary : isAccent ? livery.accent : livery.primary;
+      const material = new THREE.MeshPhysicalMaterial({
+        name: `EDS_RUNTIME_${livery.id}_${child.name}`,
+        color,
+        roughness: isMechanical ? Math.max(livery.roughness, 0.38) : livery.roughness,
+        metalness: name.includes('wheels') ? 0.42 : livery.metalness,
+        clearcoat: isMechanical ? livery.clearcoat * 0.45 : livery.clearcoat,
+        clearcoatRoughness: 0.12,
+        envMapIntensity: 1.55,
+      });
+
+      child.castShadow = true;
+      child.receiveShadow = true;
+      child.material = material;
+      activeMaterials.push(material);
+    });
+
+    return () => activeMaterials.forEach((material) => material.dispose());
+  }, [clonedScene, livery]);
+
+  return <primitive object={clonedScene} position={[0, 0, 0]} />;
+};
+
 // ── Master F1Car3DModel Component (Zero Floating Planes) ──
 export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   teamId,
@@ -310,11 +355,16 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   onSelectHotspot,
   lang,
   showHotspots = false,
+  edsLiveryId = DEFAULT_EDS_LIVERY_ID,
 }) => {
   return (
     <group position={[0, 0, 0]}>
       {/* Photorealistic Formula 1 Car with direct UV-mapped liveries & PBR materials */}
-      <RealF1CarMesh teamId={teamId} />
+      {USE_ORIGINAL_CHASSIS ? (
+        <EDSG01Mesh liveryId={edsLiveryId} />
+      ) : (
+        <LegacyF1CarMesh teamId={teamId} />
+      )}
 
       {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}
       {(showHotspots || activeHotspot !== null) &&
@@ -362,5 +412,6 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   );
 };
 
-// Preload the model asset
-useGLTF.preload('/models/c42.v2.glb');
+// Preload only the selected feature-flag asset. This avoids fetching the legacy
+// chassis in commercial/original mode.
+useGLTF.preload(ACTIVE_SHOWROOM_MODEL);

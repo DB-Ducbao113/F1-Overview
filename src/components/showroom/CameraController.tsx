@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { HotspotItem } from '../../data/showroom/hotspotsData';
+import { USE_ORIGINAL_CHASSIS } from '../../config/showroomAssets';
 
 export type CameraPreset =
   | 'overview'
@@ -99,26 +100,40 @@ export const CameraController: React.FC<CameraControllerProps> = React.memo(
     zoomTrigger = 0,
     zoomDirection = null,
   }) => {
-    const { camera } = useThree();
+    const { camera, size } = useThree();
     const controlsRef = useRef<OrbitControlsImpl>(null);
 
     const desiredPos = useRef(DEFAULT_POS.clone());
     const desiredTarget = useRef(DEFAULT_TARGET.clone());
     const isTransitioning = useRef<boolean>(true);
 
+    const frameForViewport = useCallback(
+      (position: THREE.Vector3, target: THREE.Vector3) => {
+        if (!USE_ORIGINAL_CHASSIS) return position;
+        const aspect = size.width / Math.max(size.height, 1);
+        const distanceScale = aspect < 0.58 ? 2.6 : aspect < 0.9 ? 2.55 : 1.18;
+        return target.clone().add(position.clone().sub(target).multiplyScalar(distanceScale));
+      },
+      [size.width, size.height],
+    );
+
     // Handle Hotspot and Preset transitions
     useEffect(() => {
       if (activeHotspot) {
-        desiredPos.current.set(...activeHotspot.cameraPos);
-        desiredTarget.current.set(...activeHotspot.cameraTarget);
+        const nextTarget = new THREE.Vector3(...activeHotspot.cameraTarget);
+        desiredPos.current.copy(
+          frameForViewport(new THREE.Vector3(...activeHotspot.cameraPos), nextTarget),
+        );
+        desiredTarget.current.copy(nextTarget);
         isTransitioning.current = true;
       } else if (cameraPreset && PRESET_VIEWS[cameraPreset]) {
         const p = PRESET_VIEWS[cameraPreset];
-        desiredPos.current.set(...p.pos);
-        desiredTarget.current.set(...p.target);
+        const nextTarget = new THREE.Vector3(...p.target);
+        desiredPos.current.copy(frameForViewport(new THREE.Vector3(...p.pos), nextTarget));
+        desiredTarget.current.copy(nextTarget);
         isTransitioning.current = true;
       }
-    }, [activeHotspot, cameraPreset, presetTrigger]);
+    }, [activeHotspot, cameraPreset, presetTrigger, frameForViewport]);
 
     // Handle programmatic Zoom In / Zoom Out triggered from UI HUD buttons
     useEffect(() => {

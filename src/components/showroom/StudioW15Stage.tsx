@@ -8,10 +8,13 @@ import {
   createDriversWallTexture,
   createAchievementsWallTexture,
 } from './StudioBackdropTexture';
+import { createEDSBackdropTexture } from './EDSStudioBackdropTexture';
+import { EDSLiveryPreset } from '../../data/showroom/edsLiveries';
 
 interface StudioW15StageProps {
   teamId: TeamId;
   lang?: 'vi' | 'en';
+  edsLivery?: EDSLiveryPreset;
 }
 
 /**
@@ -25,20 +28,49 @@ interface StudioW15StageProps {
  * 5. 4 Sealed Corners (NW, NE, SW, SE): Chamfered architectural columns with floor-to-ceiling LED light pillars
  * 6. High-Fidelity Mirror Floor: Reflects the car, podium outline, and all 4 thematic exhibition walls in 360°
  */
-export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = 'vi' }) => {
+export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
+  teamId,
+  lang = 'vi',
+  edsLivery,
+}) => {
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
+  const stageAccent = edsLivery?.accent || team.primaryColor;
 
   // 1. North Wall: Official Constructor Premiere Branding (CADILLAC FORMULA 1)
-  const northTexture = useMemo(() => createTeamBackdropTexture(teamId, lang), [teamId, lang]);
+  const northTexture = useMemo(
+    () =>
+      edsLivery
+        ? createEDSBackdropTexture('identity', edsLivery, lang)
+        : createTeamBackdropTexture(teamId, lang),
+    [edsLivery, teamId, lang],
+  );
 
   // 2. South Wall: Machine Technical Dossier (CADILLAC MAC-26 / W15 / SF-24)
-  const southTexture = useMemo(() => createTechnicalBackdropTexture(teamId, lang), [teamId, lang]);
+  const southTexture = useMemo(
+    () =>
+      edsLivery
+        ? createEDSBackdropTexture('technical', edsLivery, lang)
+        : createTechnicalBackdropTexture(teamId, lang),
+    [edsLivery, teamId, lang],
+  );
 
   // 3. West Wall (Left): Drivers Hall of Fame (Danh sách tay đua đã từng thi đấu)
-  const westTexture = useMemo(() => createDriversWallTexture(teamId, lang), [teamId, lang]);
+  const westTexture = useMemo(
+    () =>
+      edsLivery
+        ? createEDSBackdropTexture('aero', edsLivery, lang)
+        : createDriversWallTexture(teamId, lang),
+    [edsLivery, teamId, lang],
+  );
 
   // 4. East Wall (Right): All-Time Constructor Achievements (Thành tích toàn thời gian)
-  const eastTexture = useMemo(() => createAchievementsWallTexture(teamId, lang), [teamId, lang]);
+  const eastTexture = useMemo(
+    () =>
+      edsLivery
+        ? createEDSBackdropTexture('provenance', edsLivery, lang)
+        : createAchievementsWallTexture(teamId, lang),
+    [edsLivery, teamId, lang],
+  );
 
   useEffect(() => {
     return () => {
@@ -80,10 +112,10 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
       {/* ── Rear rim / edge lights: carve black diffuser, beam-wing & suspension
           out of the dark background. Team-tinted + pure white for definition. ── */}
       <directionalLight position={[-4.5, 3.2, 5.5]} intensity={2.6} color="#ffffff" />
-      <directionalLight position={[4.5, 2.4, 5.8]} intensity={1.8} color={team.primaryColor} />
+      <directionalLight position={[4.5, 2.4, 5.8]} intensity={1.8} color={stageAccent} />
       <pointLight position={[0, 1.6, 4.6]} intensity={8} distance={9} color="#ffffff" />
       {/* Under-glow lifts the floor/diffuser off the mirror so black strakes read */}
-      <pointLight position={[0, 0.25, 0]} intensity={3.2} distance={5} color={team.primaryColor} />
+      <pointLight position={[0, 0.25, 0]} intensity={3.2} distance={5} color={stageAccent} />
 
       {/* ══════════════════════════════════════════════════════════════
           1. NORTH WALL (Back: z = +5.8) — Main Premiere Branding Wall
@@ -135,12 +167,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, 0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          <pointLight position={[0, 0, 0.35]} intensity={2.2} distance={6.0} color={stageAccent} />
         </group>
 
         {/* Overhead Spotlight */}
@@ -200,12 +227,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={stageAccent} />
         </group>
 
         {/* Overhead Spotlight */}
@@ -258,12 +280,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={stageAccent} />
         </group>
 
         {/* Overhead Spotlight shining down onto Drivers Board */}
@@ -316,12 +333,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          <pointLight position={[0, 0, -0.35]} intensity={2.2} distance={6.0} color={stageAccent} />
         </group>
 
         {/* Overhead Spotlight shining down onto Achievements Board */}
@@ -495,7 +507,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({ teamId, lang = '
 
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
           <ringGeometry args={[4.4, 4.43, 64]} />
-          <meshBasicMaterial color={team.primaryColor} transparent opacity={0.22} />
+          <meshBasicMaterial color={stageAccent} transparent opacity={0.22} />
         </mesh>
       </group>
     </group>

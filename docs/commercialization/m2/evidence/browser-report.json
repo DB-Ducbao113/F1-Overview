@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-10-18T06:43:46.464Z",
+  "url": "http://127.0.0.1:5173/showroom",
+  "results": [
+    {
+      "viewport": {
+        "name": "mobile-375x812",
+        "width": 375,
+        "height": 812,
+        "mobile": true
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\mobile-375x812.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": true,
+      "frameSample": {
+        "frames": 69,
+        "durationMs": 1502.9000000000015,
+        "fps": 45.91123827267279
+      }
+    },
+    {
+      "viewport": {
+        "name": "tablet-768x1024",
+        "width": 768,
+        "height": 1024,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\tablet-768x1024.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 758,
+      "viewportWidth": 758,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": true,
+      "frameSample": {
+        "frames": 53,
+        "durationMs": 1506,
+        "fps": 35.1925630810093
+      }
+    },
+    {
+      "viewport": {
+        "name": "desktop-1440x900",
+        "width": 1440,
+        "height": 900,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\desktop-1440x900.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 1430,
+      "viewportWidth": 1430,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": true,
+      "frameSample": {
+        "frames": 34,
+        "durationMs": 1534.5000000238415,
+        "fps": 22.157054414774677
+      }
+    }
+  ],
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "failedRequests": [],
+  "performanceMetrics": {
+    "Nodes": 1449,
+    "LayoutCount": 10,
+    "JSHeapUsedSize": 43597272,
+    "JSHeapTotalSize": 65622016
+  }
+}
