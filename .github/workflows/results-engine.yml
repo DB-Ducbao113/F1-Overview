@@ -1,0 +1,36 @@
+name: Results Engine Scheduler
+
+on:
+  schedule:
+    # Run every 5 minutes – the engine internally respects initial/follow‑up windows
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force a full run regardless of schedule'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  run-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Execute Results Engine
+        run: node src/results-engine/engine.ts
+        env:
+          FORCE_RUN: ${{ inputs.force }}
