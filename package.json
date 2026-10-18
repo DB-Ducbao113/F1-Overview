@@ -16,6 +16,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "results-engine": "node --experimental-strip-types src/results-engine/cli.ts",
     "sync:2026": "node scripts/update-2026-data.js",
     "sync:sessions": "node scripts/sync-openf1-sessions.js",
     "load:validate": "node scripts/load-test/validate.mjs"
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-test-renderer": "18.3.1",
