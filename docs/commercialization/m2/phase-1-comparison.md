@@ -21,3 +21,16 @@
 ## Next implementation step
 
 M2 Phase 2 should refine EDS-G01 topology/UVs and LOD1, run the official Khronos validator, replace original-mode hotspot imagery and dossier copy, then add Playwright screenshot baselines for mobile, tablet and desktop before any commercial cutover.
+
+## Phase 2 visual refinement
+
+| Area              | Phase 1 prototype                                         | Phase 2 result                                                                |
+| ----------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Body silhouette   | rounded ellipsoid sidepods and box-heavy assemblies       | custom lofted teardrop sidepods, faceted spear nose and defined central spine |
+| Wheels            | tire torus plus flush opaque disc in one assembly         | separately shaded unbranded slicks, rims and conceptual brake discs           |
+| Wings             | rectangular four-plane and rear-wing boxes                | swept/tapered front planforms and two-plane bridge rear wing                  |
+| Floor/diffuser    | rectangular slab and coarse ramp                          | original delta planform, four Venturi fences and five diffuser strakes        |
+| Technical imagery | legacy team schematics and close-ups disabled in EDS mode | original EDS schematic and seven component illustrations are operational      |
+| Dossier           | team/constructor data remained below the EDS canvas       | original EDS engineering dossier with no team logo or sponsor association     |
+
+Evidence: `before-phase2-desktop.png` compared with `desktop-1440x900.png`; inspection captures are `silhouette-front.png`, `silhouette-side.png`, `silhouette-cockpit.png`, `silhouette-rear.png` and `silhouette-top.png`.

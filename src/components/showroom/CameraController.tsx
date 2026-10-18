@@ -17,6 +17,7 @@ export type CameraPreset =
   | 'drivers'
   | 'achievements'
   | 'front'
+  | 'side'
   | 'cockpit'
   | 'rear'
   | 'top';
@@ -81,9 +82,10 @@ const PRESET_VIEWS: Record<
 
   // ── 3. Góc Chi Tiết Xe Đua (Car Focus Presets) ──
   overview: { pos: [2.8, 1.4, -2.8], target: [0, 0.42, 0] },
-  front: { pos: [0, 0.85, -2.8], target: [0, 0.35, -0.6] },
+  front: { pos: [0, 0.95, -4.2], target: [0, 0.35, -0.45] },
+  side: { pos: [4.3, 1.05, 0], target: [0, 0.38, 0] },
   cockpit: { pos: [0.75, 1.05, -0.5], target: [0, 0.52, -0.1] },
-  rear: { pos: [0, 1.15, 2.9], target: [0, 0.55, 0.6] },
+  rear: { pos: [0, 1.2, 4.0], target: [0, 0.52, 0.65] },
   top: { pos: [0.01, 5.4, 0], target: [0, 0.2, 0] },
 };
 

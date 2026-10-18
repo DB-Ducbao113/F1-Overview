@@ -20,6 +20,7 @@
     "sync:2026": "node scripts/update-2026-data.js",
     "sync:sessions": "node scripts/sync-openf1-sessions.js",
     "asset:eds-g01": "node scripts/generate-eds-g01.mjs",
+    "asset:eds-g01:images": "node scripts/generate-eds-showroom-assets.mjs",
     "asset:eds-g01:validate": "node scripts/validate-eds-g01.mjs",
     "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs"
   },

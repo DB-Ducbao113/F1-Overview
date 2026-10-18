@@ -1,0 +1,142 @@
+{
+  "generatedAt": "2026-10-18T07:39:38.036Z",
+  "mode": "legacy",
+  "url": "http://127.0.0.1:5174/showroom",
+  "results": [
+    {
+      "viewport": {
+        "name": "mobile-375x812",
+        "width": 375,
+        "height": 812,
+        "mobile": true
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\legacy-baseline\\mobile-375x812.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ Thuật 3D Xe F1",
+      "liveryButtons": 0,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 318.9,
+        "loadEventMs": 320.3
+      },
+      "modelLoad": {
+        "asset": "c42.v2.glb",
+        "durationMs": 21.6,
+        "transferSize": 2165196,
+        "decodedBodySize": 2164896
+      },
+      "liverySwitchLatencyMs": [],
+      "liverySwitchMedianMs": null,
+      "fiftySwitchHeapDeltaBytes": 357003,
+      "hotspotChecks": [],
+      "frameSample": {
+        "frames": 89,
+        "durationMs": 1558.699999988079,
+        "fps": 57.098864438750674
+      }
+    },
+    {
+      "viewport": {
+        "name": "tablet-768x1024",
+        "width": 768,
+        "height": 1024,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\legacy-baseline\\tablet-768x1024.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ Thuật 3D Xe F1",
+      "liveryButtons": 0,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 758,
+      "viewportWidth": 758,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 232.1,
+        "loadEventMs": 233.2
+      },
+      "modelLoad": {
+        "asset": "c42.v2.glb",
+        "durationMs": 71.8,
+        "transferSize": 300,
+        "decodedBodySize": 2164896
+      },
+      "liverySwitchLatencyMs": [],
+      "liverySwitchMedianMs": null,
+      "fiftySwitchHeapDeltaBytes": 2900268,
+      "hotspotChecks": [],
+      "frameSample": {
+        "frames": 54,
+        "durationMs": 1526.9999999880793,
+        "fps": 35.363457760590414
+      }
+    },
+    {
+      "viewport": {
+        "name": "desktop-1440x900",
+        "width": 1440,
+        "height": 900,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\legacy-baseline\\desktop-1440x900.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ Thuật 3D Xe F1",
+      "liveryButtons": 0,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 1430,
+      "viewportWidth": 1430,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 425.3,
+        "loadEventMs": 427.9
+      },
+      "modelLoad": {
+        "asset": "c42.v2.glb",
+        "durationMs": 19.9,
+        "transferSize": 300,
+        "decodedBodySize": 2164896
+      },
+      "liverySwitchLatencyMs": [],
+      "liverySwitchMedianMs": null,
+      "fiftySwitchHeapDeltaBytes": 2160172,
+      "hotspotChecks": [],
+      "frameSample": {
+        "frames": 36,
+        "durationMs": 1531.2999999940394,
+        "fps": 23.509436426657174
+      }
+    }
+  ],
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "failedRequests": [],
+  "performanceMetrics": {
+    "Nodes": 2141,
+    "LayoutCount": 10,
+    "JSHeapUsedSize": 31437568,
+    "JSHeapTotalSize": 63524864
+  }
+}

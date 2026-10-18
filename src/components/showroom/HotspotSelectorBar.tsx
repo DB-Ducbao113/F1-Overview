@@ -1,77 +1,74 @@
 import React from 'react';
+import { Camera, Sparkles } from 'lucide-react';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
-import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { Sparkles, Camera } from 'lucide-react';
+import { TeamId } from '../../types';
 
-interface HotspotSelectorBarProps {
+interface Props {
   activeHotspot: HotspotItem | null;
   onSelectHotspot: (hotspot: HotspotItem) => void;
   teamId: TeamId;
   lang: 'vi' | 'en';
+  hotspots?: HotspotItem[];
+  originalMode?: boolean;
 }
 
-export const HotspotSelectorBar: React.FC<HotspotSelectorBarProps> = React.memo(
-  ({ activeHotspot, onSelectHotspot, teamId, lang }) => {
+export const HotspotSelectorBar: React.FC<Props> = React.memo(
+  ({
+    activeHotspot,
+    onSelectHotspot,
+    teamId,
+    lang,
+    hotspots = F1_HOTSPOTS,
+    originalMode = false,
+  }) => {
     const livery = getTeam3DLivery(teamId);
-
+    const modelName = originalMode ? 'EDS-G01' : livery.shortCarName;
     return (
-      <div className="w-full bg-studio-950/95 backdrop-blur-xl border-t border-b border-studio-800/80 py-3 px-3 sm:px-6 shadow-xl z-20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Section Title & Hint */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-f1red/10 border border-f1red/30 flex items-center justify-center text-f1red">
-              <Camera className="w-4 h-4" />
+      <div className="z-20 w-full border-y border-studio-800/80 bg-studio-950/95 px-3 py-3 shadow-xl backdrop-blur-xl sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 md:flex-row md:items-center">
+          <div className="flex shrink-0 items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-f1red/30 bg-f1red/10 text-f1red">
+              <Camera className="h-4 w-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300 font-bold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-400" />
-                  {lang === 'vi'
-                    ? `${F1_HOTSPOTS.length} LINH KIỆN KỸ THUẬT`
-                    : `${F1_HOTSPOTS.length} TECHNICAL COMPONENTS`}
+                <span className="flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                  <Sparkles className="h-3 w-3 text-amber-400" />
+                  {hotspots.length} {lang === 'vi' ? 'LINH KIỆN KỸ THUẬT' : 'TECHNICAL COMPONENTS'}
                 </span>
                 <span
-                  className="w-2 h-2 rounded-full shadow-xs"
-                  style={{ backgroundColor: livery.bodyColor }}
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: originalMode ? '#00f0ff' : livery.bodyColor }}
                 />
               </div>
-              <h3 className="font-display text-xs sm:text-sm font-black uppercase text-white tracking-wide">
-                {lang === 'vi'
-                  ? `Soi Chi Tiết Mẫu Xe ${livery.shortCarName}`
-                  : `Inspect ${livery.shortCarName} Parts`}
+              <h3 className="font-display text-xs font-black uppercase tracking-wide text-white sm:text-sm">
+                {lang === 'vi' ? `Soi chi tiết ${modelName}` : `Inspect ${modelName} Parts`}
               </h3>
             </div>
           </div>
-
-          {/* Component Tabs Grid / Strip */}
           <div className="flex items-center gap-2 overflow-x-auto py-1 custom-scrollbar">
-            {F1_HOTSPOTS.map((h, i) => {
-              const isSelected = activeHotspot?.id === h.id;
-
+            {hotspots.map((hotspot, index) => {
+              const selected = activeHotspot?.id === hotspot.id;
               return (
                 <button
-                  key={h.id}
+                  key={hotspot.id}
                   type="button"
-                  onClick={() => onSelectHotspot(h)}
-                  className={`flex items-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 border cursor-pointer ${
-                    isSelected
-                      ? 'bg-gradient-to-r from-f1red to-red-700 text-white border-white/60 shadow-lg shadow-f1red/30 scale-105'
-                      : 'bg-studio-900/90 text-studio-300 border-studio-800 hover:bg-studio-850 hover:text-white hover:border-studio-700'
-                  }`}
-                  aria-label={lang === 'vi' ? `Xem cận cảnh ${h.nameVi}` : `Inspect ${h.nameEn}`}
+                  data-eds-hotspot={hotspot.id}
+                  onClick={() => onSelectHotspot(hotspot)}
+                  className={`flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition-all ${selected ? 'border-white/60 bg-gradient-to-r from-f1red to-red-700 text-white shadow-lg shadow-f1red/30' : 'border-studio-800 bg-studio-900/90 text-studio-300 hover:border-studio-700 hover:text-white'}`}
+                  aria-label={
+                    lang === 'vi' ? `Xem cận cảnh ${hotspot.nameVi}` : `Inspect ${hotspot.nameEn}`
+                  }
                 >
-                  {/* Number Badge */}
                   <span
-                    className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0 ${
-                      isSelected ? 'bg-white text-f1red shadow-sm' : 'bg-studio-800 text-studio-300'
-                    }`}
+                    className={`flex h-5 w-5 items-center justify-center rounded-lg text-[10px] font-black ${selected ? 'bg-white text-f1red' : 'bg-studio-800 text-studio-300'}`}
                   >
-                    {i + 1}
+                    {index + 1}
                   </span>
-
-                  {/* Name */}
-                  <span className="whitespace-nowrap">{lang === 'vi' ? h.nameVi : h.nameEn}</span>
+                  <span className="whitespace-nowrap">
+                    {lang === 'vi' ? hotspot.nameVi : hotspot.nameEn}
+                  </span>
                 </button>
               );
             })}

@@ -13,8 +13,12 @@ import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
+import { EDSHotspotDetailsModal } from './EDSHotspotDetailsModal';
+import { EDSSchematicModal } from './EDSSchematicModal';
+import { EDSTechnicalDossier } from './EDSTechnicalDossier';
 
 import { HotspotItem } from '../../data/showroom/hotspotsData';
+import { EDS_HOTSPOTS } from '../../data/showroom/edsHotspots';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
@@ -229,6 +233,7 @@ export const ShowroomView: React.FC = () => {
   const teamSponsors = useMemo(() => getTeamSponsors(selectedTeamId), [selectedTeamId]);
   const edsLivery = useMemo(() => getEDSLivery(selectedEDSLiveryId), [selectedEDSLiveryId]);
   const stageColor = USE_ORIGINAL_CHASSIS ? edsLivery.accent : team.primaryColor;
+  const showroomHotspots = USE_ORIGINAL_CHASSIS ? EDS_HOTSPOTS : undefined;
 
   return (
     <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
@@ -348,8 +353,8 @@ export const ShowroomView: React.FC = () => {
             <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
               {USE_ORIGINAL_CHASSIS ? (
                 <>
-                  <p className="truncate">5.05 m · 3.60 m wheelbase · 9 assemblies</p>
-                  <p className="text-studio-400">Original procedural source · M2 Phase 1</p>
+                  <p className="truncate">5.05 m · 3.60 m wheelbase · 14 assemblies</p>
+                  <p className="text-studio-400">Original procedural source · M2 Phase 2</p>
                 </>
               ) : (
                 <>
@@ -372,7 +377,7 @@ export const ShowroomView: React.FC = () => {
             lang={lang}
             showHotspots={showHotspots}
             onToggleHotspots={handleToggleHotspots}
-            onOpenSchematic={USE_ORIGINAL_CHASSIS ? undefined : () => setIsSchematicOpen(true)}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
           />
         </div>
 
@@ -417,6 +422,7 @@ export const ShowroomView: React.FC = () => {
                 lang={lang}
                 showHotspots={showHotspots}
                 edsLiveryId={selectedEDSLiveryId}
+                hotspots={showroomHotspots}
               />
             </Suspense>
 
@@ -467,29 +473,50 @@ export const ShowroomView: React.FC = () => {
           cameraPreset={cameraPreset}
           onSelectPreset={handleSelectPreset}
           lang={lang}
-          onOpenSchematic={USE_ORIGINAL_CHASSIS ? undefined : () => setIsSchematicOpen(true)}
+          onOpenSchematic={() => setIsSchematicOpen(true)}
         />
 
         {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
-        <HotspotDetailsModal
-          hotspot={activeHotspot}
-          teamId={selectedTeamId}
-          onClose={() => {
-            setActiveHotspot(null);
-            setCameraPreset('overview');
-          }}
-          onSelectHotspot={handleSelectHotspot}
-          lang={lang}
-        />
+        {USE_ORIGINAL_CHASSIS ? (
+          <EDSHotspotDetailsModal
+            hotspot={activeHotspot}
+            hotspots={EDS_HOTSPOTS}
+            onClose={() => {
+              setActiveHotspot(null);
+              setCameraPreset('overview');
+            }}
+            onSelectHotspot={handleSelectHotspot}
+            lang={lang}
+          />
+        ) : (
+          <HotspotDetailsModal
+            hotspot={activeHotspot}
+            teamId={selectedTeamId}
+            onClose={() => {
+              setActiveHotspot(null);
+              setCameraPreset('overview');
+            }}
+            onSelectHotspot={handleSelectHotspot}
+            lang={lang}
+          />
+        )}
 
         {/* ── Interactive 2D CAD Blueprint & Component Livery Comparison Modal ── */}
-        <SchematicComparisonModal
-          isOpen={isSchematicOpen}
-          onClose={() => setIsSchematicOpen(false)}
-          teamId={selectedTeamId}
-          lang={lang}
-          onFocusPart={handleSelectPreset}
-        />
+        {USE_ORIGINAL_CHASSIS ? (
+          <EDSSchematicModal
+            isOpen={isSchematicOpen}
+            onClose={() => setIsSchematicOpen(false)}
+            lang={lang}
+          />
+        ) : (
+          <SchematicComparisonModal
+            isOpen={isSchematicOpen}
+            onClose={() => setIsSchematicOpen(false)}
+            teamId={selectedTeamId}
+            lang={lang}
+            onFocusPart={handleSelectPreset}
+          />
+        )}
       </div>
 
       {/* ── Component 1-6 Interactive Navigation Strip ── */}
@@ -498,163 +525,169 @@ export const ShowroomView: React.FC = () => {
         onSelectHotspot={handleSelectHotspot}
         teamId={selectedTeamId}
         lang={lang}
+        hotspots={showroomHotspots}
+        originalMode={USE_ORIGINAL_CHASSIS}
       />
 
       {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
-      <div
-        id="technical-dossier"
-        className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14"
-      >
-        <div className="page-container space-y-10">
-          {/* Section Header: Dynamically reflects active team */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
-            <div>
-              <div className="flex items-center gap-2">
-                <ConstructorLogo teamId={selectedTeamId} size="sm" />
-                <span className="text-xs font-black uppercase tracking-widest text-f1red">
-                  {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đội Đua' : 'Technical Dossier & Machine'}
+      {USE_ORIGINAL_CHASSIS ? (
+        <EDSTechnicalDossier lang={lang} livery={edsLivery} />
+      ) : (
+        <div
+          id="technical-dossier"
+          className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14"
+        >
+          <div className="page-container space-y-10">
+            {/* Section Header: Dynamically reflects active team */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
+              <div>
+                <div className="flex items-center gap-2">
+                  <ConstructorLogo teamId={selectedTeamId} size="sm" />
+                  <span className="text-xs font-black uppercase tracking-widest text-f1red">
+                    {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đội Đua' : 'Technical Dossier & Machine'}
+                  </span>
+                </div>
+                <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1 flex items-center gap-3 flex-wrap">
+                  <span>{livery.fullName}</span>
+                  <span className="text-sm font-bold tracking-wider text-studio-400 font-mono bg-studio-900 border border-studio-800 px-3 py-1 rounded-full">
+                    {livery.carModelName}
+                  </span>
+                </h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link
+                  to={`/teams/${selectedTeamId}?season=2026`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
+                >
+                  <span>{lang === 'vi' ? 'Xem Hồ Sơ Đội' : 'Team Profile'}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-f1red" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Team Drivers, Principal & Technical Details Bar */}
+            <div className="flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono py-2.5 px-4 rounded-xl bg-studio-900/60 border border-studio-800/80">
+              <div>
+                <span className="text-studio-500 font-sans">
+                  {lang === 'vi' ? 'Tay đua: ' : 'Drivers: '}
+                </span>
+                <span className="text-white font-bold">
+                  {lang === 'vi' ? livery.driversVi : livery.driversEn}
                 </span>
               </div>
-              <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1 flex items-center gap-3 flex-wrap">
-                <span>{livery.fullName}</span>
-                <span className="text-sm font-bold tracking-wider text-studio-400 font-mono bg-studio-900 border border-studio-800 px-3 py-1 rounded-full">
-                  {livery.carModelName}
+              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+              <div>
+                <span className="text-studio-500 font-sans">
+                  {lang === 'vi' ? 'Lãnh đội: ' : 'Principal: '}
                 </span>
-              </h3>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link
-                to={`/teams/${selectedTeamId}?season=2026`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
-              >
-                <span>{lang === 'vi' ? 'Xem Hồ Sơ Đội' : 'Team Profile'}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-f1red" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Team Drivers, Principal & Technical Details Bar */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono py-2.5 px-4 rounded-xl bg-studio-900/60 border border-studio-800/80">
-            <div>
-              <span className="text-studio-500 font-sans">
-                {lang === 'vi' ? 'Tay đua: ' : 'Drivers: '}
-              </span>
-              <span className="text-white font-bold">
-                {lang === 'vi' ? livery.driversVi : livery.driversEn}
-              </span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-            <div>
-              <span className="text-studio-500 font-sans">
-                {lang === 'vi' ? 'Lãnh đội: ' : 'Principal: '}
-              </span>
-              <span className="text-studio-200">{livery.teamPrincipal}</span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-            <div>
-              <span className="text-studio-500 font-sans">
-                {lang === 'vi' ? 'Trụ sở: ' : 'Base: '}
-              </span>
-              <span className="text-studio-200">{livery.base}</span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
-            <div>
-              <span className="text-studio-500 font-sans">
-                {lang === 'vi' ? 'Tài trợ chính: ' : 'Title Partner: '}
-              </span>
-              <span className="text-amber-300 font-bold">{teamSponsors.primarySponsor}</span>
-            </div>
-          </div>
-
-          {/* 4 Technical Pillars tailored to active team */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* 1. Aero */}
-            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
-                    01
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                    Aerodynamics
-                  </span>
-                </div>
-                <h4 className="font-display text-base font-bold text-white uppercase">
-                  {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
-                </h4>
-                <p className="text-xs text-studio-400 leading-relaxed">
-                  {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
-                </p>
+                <span className="text-studio-200">{livery.teamPrincipal}</span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+              <div>
+                <span className="text-studio-500 font-sans">
+                  {lang === 'vi' ? 'Trụ sở: ' : 'Base: '}
+                </span>
+                <span className="text-studio-200">{livery.base}</span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+              <div>
+                <span className="text-studio-500 font-sans">
+                  {lang === 'vi' ? 'Tài trợ chính: ' : 'Title Partner: '}
+                </span>
+                <span className="text-amber-300 font-bold">{teamSponsors.primarySponsor}</span>
               </div>
             </div>
 
-            {/* 2. Powertrain */}
-            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
-                    02
+            {/* 4 Technical Pillars tailored to active team */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* 1. Aero */}
+              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
+                      01
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                      Aerodynamics
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                    Power Unit
-                  </span>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
+                  </p>
                 </div>
-                <h4 className="font-display text-base font-bold text-white uppercase truncate">
-                  {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
-                </h4>
-                <p className="text-xs text-studio-300 font-mono">{livery.powerUnit}</p>
-                <p className="text-xs text-studio-400 leading-relaxed">
-                  {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
-                </p>
               </div>
-            </div>
 
-            {/* 3. Halo Safety */}
-            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
-                    03
+              {/* 2. Powertrain */}
+              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
+                      02
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                      Power Unit
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                    Safety Cell
-                  </span>
+                  <h4 className="font-display text-base font-bold text-white uppercase truncate">
+                    {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
+                  </h4>
+                  <p className="text-xs text-studio-300 font-mono">{livery.powerUnit}</p>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
+                  </p>
                 </div>
-                <h4 className="font-display text-base font-bold text-white uppercase">
-                  {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
-                </h4>
-                <p className="text-xs text-studio-400 leading-relaxed">
-                  {lang === 'vi'
-                    ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
-                    : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
-                </p>
               </div>
-            </div>
 
-            {/* 4. Pirelli & Brakes */}
-            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
-                    04
+              {/* 3. Halo Safety */}
+              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                      03
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                      Safety Cell
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
-                    Pirelli & Brakes
-                  </span>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
+                      : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
+                  </p>
                 </div>
-                <h4 className="font-display text-base font-bold text-white uppercase">
-                  {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
-                </h4>
-                <p className="text-xs text-studio-400 leading-relaxed">
-                  {lang === 'vi'
-                    ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
-                    : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
-                </p>
+              </div>
+
+              {/* 4. Pirelli & Brakes */}
+              <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
+                      04
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                      Pirelli & Brakes
+                    </span>
+                  </div>
+                  <h4 className="font-display text-base font-bold text-white uppercase">
+                    {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
+                  </h4>
+                  <p className="text-xs text-studio-400 leading-relaxed">
+                    {lang === 'vi'
+                      ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
+                      : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Floating Back to Top 3D Stage Button */}
       {showBackToTop && (

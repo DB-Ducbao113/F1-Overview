@@ -230,6 +230,7 @@ export const ShowroomQuickHUD: React.FC<ShowroomQuickHUDProps> = React.memo(
             {onOpenSchematic && (
               <button
                 type="button"
+                data-eds-schematic-open
                 onClick={onOpenSchematic}
                 className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl bg-gradient-to-r from-red-600/30 to-amber-500/20 text-amber-300 hover:text-white hover:from-red-600/50 hover:to-amber-500/40 border border-amber-500/50 flex items-center gap-1.5 text-[11px] font-bold transition-all cursor-pointer shadow-sm"
                 title={

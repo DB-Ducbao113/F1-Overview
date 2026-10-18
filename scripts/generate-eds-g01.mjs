@@ -3,20 +3,19 @@ import path from 'node:path';
 import * as THREE from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { EDS_G01_DESIGN } from './eds-g01-design.mjs';
 
 const OUTPUT = path.resolve('public/models/eds-g01.glb');
 
 class NodeFileReader {
   result = null;
   onloadend = null;
-
   readAsArrayBuffer(blob) {
     blob.arrayBuffer().then((value) => {
       this.result = value;
       this.onloadend?.({ target: this });
     });
   }
-
   readAsDataURL(blob) {
     blob.arrayBuffer().then((value) => {
       this.result = `data:${blob.type};base64,${Buffer.from(value).toString('base64')}`;
@@ -24,36 +23,35 @@ class NodeFileReader {
     });
   }
 }
-
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
 scene.name = 'EDS-G01_Master';
 scene.userData = {
-  asset: 'EDS-G01',
+  asset: EDS_G01_DESIGN.id,
+  revision: EDS_G01_DESIGN.revision,
   author: 'Podium Effet De Sol',
-  generationMethod: 'Original procedural geometry generated from scripts/generate-eds-g01.mjs',
+  generationMethod: 'Deterministic original procedural geometry',
+  source: 'scripts/generate-eds-g01.mjs',
   units: 'metres',
-  designNote:
-    'Faceted split-keel nose, delta floor shoulders, compact teardrop sidepods and bridge rear wing were authored for EDS-G01 and do not trace the legacy C42 mesh.',
+  dimensions: `${EDS_G01_DESIGN.length}m x ${EDS_G01_DESIGN.width}m; ${EDS_G01_DESIGN.wheelbase}m wheelbase`,
+  designNote: EDS_G01_DESIGN.designLanguage.join(', '),
 };
 
-const material = (name, color, metalness, roughness) => {
+const makeMaterial = (name, color, metalness, roughness) => {
   const value = new THREE.MeshStandardMaterial({ color, metalness, roughness });
   value.name = name;
   return value;
 };
-
 const materials = {
-  floor: material('EDS_MAT_FLOOR', '#111820', 0.35, 0.52),
-  cockpit: material('EDS_MAT_COCKPIT', '#171b20', 0.2, 0.68),
-  suspension: material('EDS_MAT_SUSPENSION', '#242b33', 0.62, 0.34),
-  bodywork: material('EDS_MAT_BODYWORK', '#0a1128', 0.45, 0.22),
-  wings: material('EDS_MAT_WINGS', '#0b1117', 0.48, 0.3),
-  wheels: material('EDS_MAT_WHEELS', '#101216', 0.28, 0.72),
-  nose: material('EDS_MAT_NOSE', '#0a1128', 0.45, 0.22),
-  halo: material('EDS_MAT_HALO', '#94a3b8', 0.75, 0.25),
-  diffuser: material('EDS_MAT_DIFFUSER', '#161c22', 0.58, 0.4),
+  carbon: makeMaterial('EDS_MAT_CARBON', '#111820', 0.38, 0.48),
+  cockpit: makeMaterial('EDS_MAT_COCKPIT', '#080b0f', 0.18, 0.7),
+  mechanical: makeMaterial('EDS_MAT_MECHANICAL', '#303946', 0.72, 0.28),
+  body: makeMaterial('EDS_MAT_BODY', '#0a1128', 0.48, 0.2),
+  accent: makeMaterial('EDS_MAT_ACCENT', '#00f0ff', 0.44, 0.24),
+  tire: makeMaterial('EDS_MAT_TIRE', '#08090b', 0.05, 0.82),
+  rim: makeMaterial('EDS_MAT_RIM', '#758294', 0.84, 0.2),
+  diffuser: makeMaterial('EDS_MAT_DIFFUSER', '#161c22', 0.58, 0.38),
 };
 
 function transformed(geometry, position = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1]) {
@@ -68,26 +66,14 @@ function transformed(geometry, position = [0, 0, 0], rotation = [0, 0, 0], scale
   return result;
 }
 
-function box(size, position, rotation = [0, 0, 0]) {
-  return transformed(new THREE.BoxGeometry(...size), position, rotation);
-}
-
-function cylinder(radiusTop, radiusBottom, height, segments, position, rotation = [0, 0, 0]) {
-  return transformed(
-    new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments, 1, false),
+const box = (size, position, rotation = [0, 0, 0]) =>
+  transformed(new THREE.BoxGeometry(...size), position, rotation);
+const cylinder = (radiusTop, radiusBottom, height, segments, position, rotation = [0, 0, 0]) =>
+  transformed(
+    new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments),
     position,
     rotation,
   );
-}
-
-function ellipsoid(radius, position, scale, segments = 24) {
-  return transformed(
-    new THREE.SphereGeometry(radius, segments, Math.max(10, segments / 2)),
-    position,
-    [0, 0, 0],
-    scale,
-  );
-}
 
 function rod(start, end, radius = 0.018, segments = 10) {
   const a = new THREE.Vector3(...start);
@@ -95,17 +81,78 @@ function rod(start, end, radius = 0.018, segments = 10) {
   const midpoint = a.clone().add(b).multiplyScalar(0.5);
   const direction = b.clone().sub(a);
   const geometry = new THREE.CylinderGeometry(radius, radius, direction.length(), segments);
-  const quaternion = new THREE.Quaternion().setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    direction.clone().normalize(),
+  geometry.applyMatrix4(
+    new THREE.Matrix4().compose(
+      midpoint,
+      new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()),
+      new THREE.Vector3(1, 1, 1),
+    ),
   );
-  const matrix = new THREE.Matrix4().compose(midpoint, quaternion, new THREE.Vector3(1, 1, 1));
-  geometry.applyMatrix4(matrix);
   return geometry;
 }
 
-function mesh(name, geometries, mat, metadata) {
-  const geometry = mergeGeometries(geometries, false);
+function loft(sections, radialSegments = 20) {
+  const vertices = [];
+  const indices = [];
+  for (const section of sections) {
+    for (let index = 0; index < radialSegments; index += 1) {
+      const angle = (index / radialSegments) * Math.PI * 2;
+      vertices.push(
+        (section.x ?? 0) + Math.cos(angle) * section.width,
+        section.y + Math.sin(angle) * section.height,
+        section.z,
+      );
+    }
+  }
+  for (let ring = 0; ring < sections.length - 1; ring += 1) {
+    for (let index = 0; index < radialSegments; index += 1) {
+      const next = (index + 1) % radialSegments;
+      const a = ring * radialSegments + index;
+      const b = ring * radialSegments + next;
+      const c = (ring + 1) * radialSegments + next;
+      const d = (ring + 1) * radialSegments + index;
+      indices.push(a, b, d, b, c, d);
+    }
+  }
+  for (const [ring, reverse] of [
+    [0, true],
+    [sections.length - 1, false],
+  ]) {
+    const section = sections[ring];
+    const center = vertices.length / 3;
+    vertices.push(section.x ?? 0, section.y, section.z);
+    for (let index = 0; index < radialSegments; index += 1) {
+      const next = (index + 1) % radialSegments;
+      const a = ring * radialSegments + index;
+      const b = ring * radialSegments + next;
+      indices.push(...(reverse ? [center, b, a] : [center, a, b]));
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function planform(points, y, thickness) {
+  const shape = new THREE.Shape();
+  shape.moveTo(points[0][0], points[0][1]);
+  points.slice(1).forEach(([x, z]) => shape.lineTo(x, z));
+  shape.closePath();
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+  geometry.rotateX(Math.PI / 2);
+  geometry.translate(0, y + thickness / 2, 0);
+  return geometry;
+}
+
+function addMesh(name, geometries, mat, assembly) {
+  const compatible = geometries.map((geometry) => {
+    const normalized = geometry.index ? geometry.toNonIndexed() : geometry;
+    normalized.deleteAttribute('uv');
+    return normalized;
+  });
+  const geometry = compatible.length === 1 ? compatible[0] : mergeGeometries(compatible, false);
   if (!geometry) throw new Error(`Unable to merge geometry for ${name}`);
   geometry.computeVertexNormals();
   geometry.computeBoundingBox();
@@ -114,174 +161,294 @@ function mesh(name, geometries, mat, metadata) {
   value.name = name;
   value.castShadow = true;
   value.receiveShadow = true;
-  value.userData = metadata;
+  value.userData = { assembly };
   scene.add(value);
 }
 
-// 001 — delta floor with twin Venturi shoulders and four edge fences.
-mesh(
-  'EDS_001_Floor_Underfloor',
+addMesh(
+  'EDS_001_Delta_Floor',
   [
-    box([1.18, 0.08, 3.35], [0, 0.13, 0.05]),
-    box([0.16, 0.14, 2.65], [-0.66, 0.18, 0.12], [0, 0, -0.035]),
-    box([0.16, 0.14, 2.65], [0.66, 0.18, 0.12], [0, 0, 0.035]),
-    box([0.07, 0.18, 2.5], [-0.47, 0.16, 0.18]),
-    box([0.07, 0.18, 2.5], [0.47, 0.16, 0.18]),
-    box([0.1, 0.04, 3.5], [0, 0.075, 0.08]),
+    planform(
+      [
+        [-0.34, -2.05],
+        [-0.76, -1.45],
+        [-0.82, 0.8],
+        [-0.62, 1.82],
+        [0, 2.18],
+        [0.62, 1.82],
+        [0.82, 0.8],
+        [0.76, -1.45],
+        [0.34, -2.05],
+      ],
+      0.11,
+      0.065,
+    ),
   ],
-  materials.floor,
-  { primitiveId: '001', assembly: 'Twin Venturi floor and delta edge fences' },
+  materials.carbon,
+  'Twin Venturi delta floor',
 );
 
-// 002 — compact cockpit tub and original hexagonal steering display.
-mesh(
-  'EDS_002_Cockpit_Interior',
+const floorFences = [];
+for (const side of [-1, 1]) {
+  floorFences.push(box([0.035, 0.16, 2.55], [side * 0.7, 0.2, 0.15], [0, side * 0.03, 0]));
+  floorFences.push(box([0.028, 0.1, 2.25], [side * 0.5, 0.16, 0.28], [0, side * 0.02, 0]));
+}
+addMesh('EDS_002_Venturi_Fences', floorFences, materials.diffuser, 'Venturi tunnel fences');
+
+addMesh(
+  'EDS_003_Cockpit_Tub',
   [
-    ellipsoid(0.36, [0, 0.49, -0.34], [0.86, 0.64, 1.32], 20),
-    box([0.34, 0.08, 0.18], [0, 0.65, -0.72], [-0.18, 0, 0]),
-    box([0.12, 0.28, 0.06], [0, 0.54, -0.43], [-0.34, 0, 0]),
+    loft([
+      { z: -0.85, y: 0.47, width: 0.24, height: 0.15 },
+      { z: -0.48, y: 0.54, width: 0.34, height: 0.24 },
+      { z: 0.02, y: 0.57, width: 0.38, height: 0.27 },
+      { z: 0.38, y: 0.54, width: 0.3, height: 0.22 },
+    ]),
   ],
   materials.cockpit,
-  { primitiveId: '002', assembly: 'Cockpit tub and telemetry controls' },
+  'Hexagonal cockpit tub',
 );
 
-// 003 — triangulated wishbones and diamond mirrors.
 const suspension = [];
 for (const side of [-1, 1]) {
-  for (const z of [-1.55, 1.45]) {
-    suspension.push(rod([side * 0.38, 0.34, z - 0.18], [side * 0.88, 0.31, z], 0.018));
-    suspension.push(rod([side * 0.38, 0.34, z + 0.18], [side * 0.88, 0.31, z], 0.018));
-    suspension.push(rod([side * 0.42, 0.55, z], [side * 0.88, 0.31, z], 0.016));
+  for (const z of [EDS_G01_DESIGN.frontAxleZ, EDS_G01_DESIGN.rearAxleZ]) {
+    const outerX = (side * (z < 0 ? EDS_G01_DESIGN.frontTrack : EDS_G01_DESIGN.rearTrack)) / 2;
+    suspension.push(rod([side * 0.38, 0.31, z - 0.2], [outerX, 0.36, z], 0.018));
+    suspension.push(rod([side * 0.4, 0.34, z + 0.2], [outerX, 0.36, z], 0.018));
+    suspension.push(rod([side * 0.36, 0.54, z], [outerX, 0.36, z], 0.015));
   }
-  suspension.push(rod([side * 0.38, 0.62, -0.35], [side * 0.72, 0.63, -0.48], 0.014));
-  suspension.push(box([0.18, 0.09, 0.12], [side * 0.78, 0.64, -0.5], [0, side * 0.22, 0]));
-}
-mesh('EDS_003_Suspension_Mirrors', suspension, materials.suspension, {
-  primitiveId: '003',
-  assembly: 'Triangulated suspension and diamond mirrors',
-});
-
-// 004 — teardrop sidepods, faceted engine spine and oval airbox.
-mesh(
-  'EDS_004_Bodywork_Sidepods',
-  [
-    ellipsoid(0.55, [-0.48, 0.43, 0.15], [0.72, 0.5, 1.5], 24),
-    ellipsoid(0.55, [0.48, 0.43, 0.15], [0.72, 0.5, 1.5], 24),
-    ellipsoid(0.46, [0, 0.52, 0.48], [0.72, 0.82, 1.75], 24),
-    cylinder(0.2, 0.25, 0.22, 12, [0, 0.88, -0.05], [Math.PI / 2, 0, 0]),
-    box([0.06, 0.38, 1.12], [0, 0.69, 0.83], [-0.08, 0, 0]),
-  ],
-  materials.bodywork,
-  { primitiveId: '004', assembly: 'Compact teardrop sidepods and dorsal spine' },
-);
-
-// 005 — four front elements and a bridge-mounted rear wing.
-const wings = [];
-for (let index = 0; index < 4; index += 1) {
-  wings.push(
-    box(
-      [1.86 - index * 0.1, 0.035, 0.16],
-      [0, 0.16 + index * 0.055, -2.25 + index * 0.12],
-      [-0.08 - index * 0.025, 0, 0],
+  suspension.push(rod([side * 0.36, 0.66, -0.42], [side * 0.72, 0.66, -0.58], 0.014));
+  suspension.push(
+    transformed(
+      new THREE.OctahedronGeometry(0.1, 0),
+      [side * 0.78, 0.66, -0.61],
+      [0, 0, Math.PI / 4],
+      [1.25, 0.55, 0.75],
     ),
   );
 }
-wings.push(box([0.05, 0.36, 0.58], [-0.94, 0.28, -2.08], [0, 0.08, 0]));
-wings.push(box([0.05, 0.36, 0.58], [0.94, 0.28, -2.08], [0, -0.08, 0]));
-wings.push(box([1.42, 0.1, 0.28], [0, 0.83, 2.02], [0.1, 0, 0]));
-wings.push(box([1.34, 0.07, 0.2], [0, 1.01, 2.06], [-0.12, 0, 0]));
-wings.push(box([0.06, 0.58, 0.48], [-0.74, 0.78, 2.0]));
-wings.push(box([0.06, 0.58, 0.48], [0.74, 0.78, 2.0]));
-wings.push(rod([-0.55, 0.7, 1.88], [-0.32, 0.38, 1.65], 0.025));
-wings.push(rod([0.55, 0.7, 1.88], [0.32, 0.38, 1.65], 0.025));
-mesh('EDS_005_Wings_Assembly', wings, materials.wings, {
-  primitiveId: '005',
-  assembly: 'Four-plane front wing and bridge rear wing',
-});
+addMesh(
+  'EDS_004_Suspension_Mirrors',
+  suspension,
+  materials.mechanical,
+  'Triangulated suspension and diamond mirrors',
+);
 
-// 006 — unbranded slicks with flush aero-disc centres.
-const wheels = [];
-for (const x of [-0.88, 0.88]) {
-  for (const z of [-1.55, 1.45]) {
+const bodywork = [
+  loft(
+    [
+      { z: -0.45, y: 0.42, width: 0.23, height: 0.2 },
+      { z: 0.08, y: 0.52, width: 0.42, height: 0.31 },
+      { z: 0.82, y: 0.56, width: 0.36, height: 0.34 },
+      { z: 1.48, y: 0.44, width: 0.2, height: 0.22 },
+      { z: 1.82, y: 0.36, width: 0.1, height: 0.11 },
+    ],
+    24,
+  ),
+];
+for (const side of [-1, 1]) {
+  bodywork.push(
+    loft(
+      [
+        { z: -0.58, x: side * 0.43, y: 0.42, width: 0.2, height: 0.16 },
+        { z: -0.05, x: side * 0.5, y: 0.45, width: 0.3, height: 0.25 },
+        { z: 0.48, x: side * 0.46, y: 0.43, width: 0.28, height: 0.22 },
+        { z: 1.2, x: side * 0.34, y: 0.37, width: 0.18, height: 0.13 },
+      ],
+      20,
+    ),
+  );
+}
+addMesh(
+  'EDS_005_Teardrop_Bodywork',
+  bodywork,
+  materials.body,
+  'Compact teardrop sidepods and engine spine',
+);
+
+const cooling = [];
+for (const side of [-1, 1]) {
+  cooling.push(
+    transformed(
+      new THREE.TorusGeometry(0.2, 0.035, 8, 20, Math.PI),
+      [side * 0.55, 0.53, -0.25],
+      [0, (side * Math.PI) / 2, 0],
+      [1, 1.35, 1],
+    ),
+  );
+  for (let index = 0; index < 4; index += 1)
+    cooling.push(
+      box([0.22, 0.018, 0.028], [side * 0.49, 0.72, 0.33 + index * 0.09], [0, side * 0.18, -0.08]),
+    );
+}
+addMesh(
+  'EDS_006_Cooling_Channels',
+  cooling,
+  materials.accent,
+  'Sidepod intake lips and cooling louvres',
+);
+
+const frontWing = [];
+for (let index = 0; index < 4; index += 1) {
+  const width = 1.92 - index * 0.12;
+  frontWing.push(
+    planform(
+      [
+        [-width / 2, -2.52 + index * 0.1],
+        [width / 2, -2.52 + index * 0.1],
+        [width * 0.44, -2.34 + index * 0.11],
+        [-width * 0.44, -2.34 + index * 0.11],
+      ],
+      0.13 + index * 0.045,
+      0.025,
+    ),
+  );
+}
+frontWing.push(box([0.045, 0.37, 0.58], [-0.98, 0.28, -2.35], [0.04, 0.08, 0]));
+frontWing.push(box([0.045, 0.37, 0.58], [0.98, 0.28, -2.35], [0.04, -0.08, 0]));
+addMesh('EDS_007_Front_Wing', frontWing, materials.accent, 'Four-plane swept front wing');
+
+const rearWing = [
+  planform(
+    [
+      [-0.72, 2.03],
+      [0.72, 2.03],
+      [0.67, 2.31],
+      [-0.67, 2.31],
+    ],
+    0.78,
+    0.055,
+  ),
+  planform(
+    [
+      [-0.67, 2.06],
+      [0.67, 2.06],
+      [0.61, 2.25],
+      [-0.61, 2.25],
+    ],
+    0.99,
+    0.045,
+  ),
+  box([0.045, 0.61, 0.5], [-0.75, 0.78, 2.15], [0, 0.03, 0]),
+  box([0.045, 0.61, 0.5], [0.75, 0.78, 2.15], [0, -0.03, 0]),
+  rod([-0.55, 0.73, 2.02], [-0.28, 0.39, 1.72], 0.025),
+  rod([0.55, 0.73, 2.02], [0.28, 0.39, 1.72], 0.025),
+];
+addMesh(
+  'EDS_008_Bridge_Rear_Wing_DRS',
+  rearWing,
+  materials.accent,
+  'Bridge rear wing and DRS flap',
+);
+
+const tires = [];
+const rims = [];
+const brakes = [];
+for (const side of [-1, 1]) {
+  for (const z of [EDS_G01_DESIGN.frontAxleZ, EDS_G01_DESIGN.rearAxleZ]) {
     const rear = z > 0;
-    const radius = rear ? 0.37 : 0.34;
-    const width = rear ? 0.29 : 0.25;
-    wheels.push(
+    const radius = rear ? EDS_G01_DESIGN.rearWheelRadius : EDS_G01_DESIGN.frontWheelRadius;
+    const x = (side * (rear ? EDS_G01_DESIGN.rearTrack : EDS_G01_DESIGN.frontTrack)) / 2;
+    tires.push(
       transformed(
-        new THREE.TorusGeometry(radius - 0.075, 0.075, 12, 28),
+        new THREE.TorusGeometry(radius - 0.08, 0.08, 16, 36),
         [x, radius, z],
         [0, Math.PI / 2, 0],
       ),
     );
-    wheels.push(
-      cylinder(radius * 0.63, radius * 0.63, width, 24, [x, radius, z], [0, 0, Math.PI / 2]),
+    rims.push(
+      cylinder(
+        radius * 0.55,
+        radius * 0.55,
+        rear ? 0.3 : 0.27,
+        32,
+        [x, radius, z],
+        [0, 0, Math.PI / 2],
+      ),
+    );
+    brakes.push(
+      cylinder(radius * 0.32, radius * 0.32, 0.31, 24, [x, radius, z], [0, 0, Math.PI / 2]),
     );
   }
 }
-mesh('EDS_006_Wheels_Tires', wheels, materials.wheels, {
-  primitiveId: '006',
-  assembly: 'Unbranded slick tires and flush aero discs',
-});
+addMesh('EDS_009_Unbranded_Slick_Tires', tires, materials.tire, 'Unbranded slick tires');
+addMesh('EDS_010_Forged_Rims', rims, materials.rim, 'Original aero rims');
+addMesh('EDS_011_Carbon_Brakes', brakes, materials.mechanical, 'Carbon brake discs');
 
-// 007 — faceted spear nose with a split-keel terminal unique to EDS-G01.
-mesh(
-  'EDS_007_Monocoque_Nose',
+addMesh(
+  'EDS_012_Split_Keel_Nose',
   [
-    cylinder(0.12, 0.32, 1.7, 6, [0, 0.42, -1.22], [Math.PI / 2, 0, 0]),
-    ellipsoid(0.38, [0, 0.45, -0.42], [0.84, 0.74, 1.2], 20),
-    cylinder(0.035, 0.09, 0.58, 5, [-0.09, 0.29, -2.08], [Math.PI / 2, 0, 0.04]),
-    cylinder(0.035, 0.09, 0.58, 5, [0.09, 0.29, -2.08], [Math.PI / 2, 0, -0.04]),
+    loft(
+      [
+        { z: -2.42, y: 0.3, width: 0.07, height: 0.055 },
+        { z: -2.0, y: 0.34, width: 0.12, height: 0.09 },
+        { z: -1.42, y: 0.4, width: 0.2, height: 0.14 },
+        { z: -0.82, y: 0.46, width: 0.31, height: 0.21 },
+        { z: -0.45, y: 0.48, width: 0.34, height: 0.22 },
+      ],
+      12,
+    ),
+    rod([-0.08, 0.29, -2.43], [-0.13, 0.2, -2.12], 0.028, 8),
+    rod([0.08, 0.29, -2.43], [0.13, 0.2, -2.12], 0.028, 8),
   ],
-  materials.nose,
-  { primitiveId: '007', assembly: 'Faceted spear monocoque and split-keel nose' },
+  materials.body,
+  'Faceted spear monocoque and split keel',
 );
 
-// 008 — swept halo loop built from a custom closed path plus three mounts.
 const haloCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-0.32, 0.66, -0.48),
-  new THREE.Vector3(-0.38, 0.82, -0.27),
-  new THREE.Vector3(-0.26, 0.93, -0.06),
-  new THREE.Vector3(0, 0.97, 0.02),
-  new THREE.Vector3(0.26, 0.93, -0.06),
-  new THREE.Vector3(0.38, 0.82, -0.27),
-  new THREE.Vector3(0.32, 0.66, -0.48),
+  new THREE.Vector3(-0.32, 0.64, -0.5),
+  new THREE.Vector3(-0.4, 0.83, -0.27),
+  new THREE.Vector3(-0.26, 0.96, -0.02),
+  new THREE.Vector3(0, 1.0, 0.08),
+  new THREE.Vector3(0.26, 0.96, -0.02),
+  new THREE.Vector3(0.4, 0.83, -0.27),
+  new THREE.Vector3(0.32, 0.64, -0.5),
 ]);
-mesh(
-  'EDS_008_Halo_Structure',
+addMesh(
+  'EDS_013_Swept_Halo',
   [
-    new THREE.TubeGeometry(haloCurve, 32, 0.027, 10, false),
-    rod([0, 0.69, -0.48], [0, 0.96, 0.01], 0.028),
-    rod([-0.32, 0.66, -0.48], [-0.28, 0.55, -0.42], 0.032),
-    rod([0.32, 0.66, -0.48], [0.28, 0.55, -0.42], 0.032),
+    new THREE.TubeGeometry(haloCurve, 40, 0.028, 10, false),
+    rod([0, 0.7, -0.5], [0, 0.99, 0.07], 0.029),
+    rod([-0.32, 0.64, -0.5], [-0.28, 0.54, -0.42], 0.032),
+    rod([0.32, 0.64, -0.5], [0.28, 0.54, -0.42], 0.032),
   ],
-  materials.halo,
-  { primitiveId: '008', assembly: 'Swept halo loop and central blade' },
+  materials.accent,
+  'Swept halo loop and central blade',
 );
 
-// 009 — stepped diffuser, five strakes and a compact rain-light housing.
-const diffuser = [box([1.1, 0.08, 0.75], [0, 0.2, 1.7], [0.22, 0, 0])];
-for (const x of [-0.5, -0.25, 0, 0.25, 0.5]) {
-  diffuser.push(box([0.035, 0.28, 0.68], [x, 0.29, 1.78], [0.2, 0, 0]));
-}
-diffuser.push(box([0.16, 0.11, 0.12], [0, 0.38, 2.12]));
-diffuser.push(cylinder(0.06, 0.07, 0.18, 12, [0, 0.48, 1.76], [Math.PI / 2, 0, 0]));
-mesh('EDS_009_Diffuser_RainLight', diffuser, materials.diffuser, {
-  primitiveId: '009',
-  assembly: 'Stepped diffuser, extraction strakes and rain light housing',
-});
+const diffuser = [
+  planform(
+    [
+      [-0.62, 1.35],
+      [0.62, 1.35],
+      [0.72, 2.18],
+      [-0.72, 2.18],
+    ],
+    0.16,
+    0.07,
+  ),
+];
+for (const x of [-0.56, -0.28, 0, 0.28, 0.56])
+  diffuser.push(box([0.03, 0.3, 0.72], [x, 0.3, 1.82], [0.18, 0, 0]));
+diffuser.push(box([0.15, 0.09, 0.11], [0, 0.42, 2.2]));
+addMesh(
+  'EDS_014_Stepped_Diffuser',
+  diffuser,
+  materials.diffuser,
+  'Stepped diffuser, extraction strakes and rain light',
+);
 
 const exporter = new GLTFExporter();
-const binary = await new Promise((resolve, reject) => {
+const binary = await new Promise((resolve, reject) =>
   exporter.parse(scene, resolve, reject, {
     binary: true,
     onlyVisible: true,
     truncateDrawRange: true,
     includeCustomExtensions: false,
-  });
-});
-
+  }),
+);
 await fs.mkdir(path.dirname(OUTPUT), { recursive: true });
 await fs.writeFile(OUTPUT, Buffer.from(binary));
 console.log(
-  `Generated ${path.relative(process.cwd(), OUTPUT)} (${Buffer.byteLength(binary)} bytes)`,
+  `Generated ${path.relative(process.cwd(), OUTPUT)} (${Buffer.byteLength(binary)} bytes, ${scene.children.length} assemblies, revision ${EDS_G01_DESIGN.revision})`,
 );

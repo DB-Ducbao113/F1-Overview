@@ -1,5 +1,16 @@
 # EDS-G01 M2 Phase 1 Authoring Record
 
+## Phase 2 revision — M2-P2-R1
+
+- Replaced the Phase 1 ellipsoid/box-heavy body with custom deterministic loft and planform geometry.
+- Increased assemblies from 9 to 14 while staying below the approved 18-draw-call ceiling.
+- Added separate unbranded tire, rim and conceptual brake meshes; swept four-plane front wing; two-plane bridge rear wing; cooling lips/louvres; delta floor and five-strake diffuser.
+- Shared dimensional metadata now lives in `scripts/eds-g01-design.mjs` and drives both GLB and vector technical imagery.
+- Generated GLB: 660,192 bytes, 9,004 triangles, 27,012 vertices, 14 draw calls, 8 materials.
+- Khronos validator 2.0.0-dev.3.10: 0 errors, 0 warnings, 0 infos and 0 hints.
+- Reproducibility evidence: two consecutive runs produced SHA-256 `A9A1226D87EC10B3188B82CAD01039200E81BE4999A88EBB27E75D0DA9AC8325`.
+- The work records project authorship and method. It is not a legal opinion and is not evidence of automatic freedom from third-party rights.
+
 **Asset:** `public/models/eds-g01.glb`  
 **Milestone:** M2 Phase 1  
 **Author/owner:** Podium Effet De Sol repository owner, implemented through the project AI coding workflow  

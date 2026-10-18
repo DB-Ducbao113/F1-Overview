@@ -16,7 +16,10 @@ const jsonLength = data.readUInt32LE(12);
 const jsonType = data.toString('ascii', 16, 20);
 if (jsonType !== 'JSON') errors.push(`First GLB chunk must be JSON, found ${jsonType}.`);
 const gltf = JSON.parse(data.toString('utf8', 20, 20 + jsonLength).trim());
-const expectedNames = Array.from({ length: 9 }, (_, index) => `EDS_00${index + 1}_`);
+const expectedNames = Array.from(
+  { length: 14 },
+  (_, index) => `EDS_${String(index + 1).padStart(3, '0')}_`,
+);
 const meshNodes = (gltf.nodes || []).filter((node) => Number.isInteger(node.mesh));
 const meshNames = meshNodes.map((node) => node.name || '');
 
@@ -30,14 +33,14 @@ let triangleCount = 0;
 for (const mesh of gltf.meshes || []) {
   for (const primitive of mesh.primitives || []) {
     primitiveCount += 1;
-    const accessor = gltf.accessors?.[primitive.indices];
-    if (!accessor)
-      warnings.push(`Primitive in ${mesh.name || 'unnamed mesh'} has no indexed accessor.`);
-    else triangleCount += Math.floor(accessor.count / 3);
+    const indexAccessor = gltf.accessors?.[primitive.indices];
+    const positionAccessor = gltf.accessors?.[primitive.attributes?.POSITION];
+    const elementCount = indexAccessor?.count ?? positionAccessor?.count ?? 0;
+    triangleCount += Math.floor(elementCount / 3);
   }
 }
 
-if (meshNodes.length !== 9) errors.push(`Expected 9 mesh nodes, found ${meshNodes.length}.`);
+if (meshNodes.length !== 14) errors.push(`Expected 14 mesh nodes, found ${meshNodes.length}.`);
 if (primitiveCount > 18)
   errors.push(`Draw-call budget exceeded: ${primitiveCount} primitives > 18.`);
 if (triangleCount > 120_000) errors.push(`Triangle ceiling exceeded: ${triangleCount} > 120000.`);

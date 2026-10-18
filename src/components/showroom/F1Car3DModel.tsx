@@ -27,6 +27,7 @@ interface F1Car3DModelProps {
   lang: 'vi' | 'en';
   showHotspots?: boolean;
   edsLiveryId?: EDSLiveryId;
+  hotspots?: HotspotItem[];
 }
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
@@ -312,37 +313,78 @@ const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
 
   useEffect(() => {
-    const activeMaterials: THREE.Material[] = [];
+    const createMaterial = (
+      category: string,
+      color: THREE.ColorRepresentation,
+      roughness: number,
+      metalness: number,
+      clearcoat: number,
+    ) =>
+      new THREE.MeshPhysicalMaterial({
+        name: `EDS_RUNTIME_${livery.id}_${category}`,
+        color,
+        roughness,
+        metalness,
+        clearcoat,
+        clearcoatRoughness: 0.12,
+        envMapIntensity: 1.55,
+      });
+    const materials = {
+      tire: createMaterial('tire', '#07090b', 0.78, 0.02, 0.08),
+      rim: createMaterial('rim', livery.secondary, Math.max(livery.roughness, 0.26), 0.72, 0.35),
+      mechanical: createMaterial(
+        'mechanical',
+        livery.secondary,
+        Math.max(livery.roughness, 0.38),
+        livery.metalness,
+        livery.clearcoat * 0.45,
+      ),
+      accent: createMaterial(
+        'accent',
+        livery.accent,
+        livery.roughness,
+        livery.metalness,
+        livery.clearcoat,
+      ),
+      body: createMaterial(
+        'body',
+        livery.primary,
+        livery.roughness,
+        livery.metalness,
+        livery.clearcoat,
+      ),
+    };
 
     clonedScene.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
 
       const name = child.name.toLowerCase();
+      const isTire = name.includes('tire');
+      const isRim = name.includes('rim');
       const isMechanical =
         name.includes('floor') ||
         name.includes('cockpit') ||
         name.includes('suspension') ||
-        name.includes('wheels') ||
+        name.includes('brake') ||
+        name.includes('fence') ||
         name.includes('diffuser');
-      const isAccent = name.includes('wings') || name.includes('halo');
-      const color = isMechanical ? livery.secondary : isAccent ? livery.accent : livery.primary;
-      const material = new THREE.MeshPhysicalMaterial({
-        name: `EDS_RUNTIME_${livery.id}_${child.name}`,
-        color,
-        roughness: isMechanical ? Math.max(livery.roughness, 0.38) : livery.roughness,
-        metalness: name.includes('wheels') ? 0.42 : livery.metalness,
-        clearcoat: isMechanical ? livery.clearcoat * 0.45 : livery.clearcoat,
-        clearcoatRoughness: 0.12,
-        envMapIntensity: 1.55,
-      });
+      const isAccent = name.includes('wing') || name.includes('halo') || name.includes('cooling');
+      const material = isTire
+        ? materials.tire
+        : isRim
+          ? materials.rim
+          : isMechanical
+            ? materials.mechanical
+            : isAccent
+              ? materials.accent
+              : materials.body;
 
       child.castShadow = true;
       child.receiveShadow = true;
       child.material = material;
-      activeMaterials.push(material);
     });
 
-    return () => activeMaterials.forEach((material) => material.dispose());
+    return () => Object.values(materials).forEach((material) => material.dispose());
   }, [clonedScene, livery]);
 
   return <primitive object={clonedScene} position={[0, 0, 0]} />;
@@ -356,6 +398,7 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   lang,
   showHotspots = false,
   edsLiveryId = DEFAULT_EDS_LIVERY_ID,
+  hotspots = F1_HOTSPOTS,
 }) => {
   return (
     <group position={[0, 0, 0]}>
@@ -368,7 +411,7 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
 
       {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}
       {(showHotspots || activeHotspot !== null) &&
-        F1_HOTSPOTS.map((hotspot, idx) => {
+        hotspots.map((hotspot, idx) => {
           const isSelected = activeHotspot?.id === hotspot.id;
 
           return (

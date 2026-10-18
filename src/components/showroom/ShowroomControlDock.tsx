@@ -224,6 +224,13 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
         icon: <Crosshair className="w-3.5 h-3.5 text-red-400" />,
       },
       {
+        id: 'side',
+        labelVi: 'Biên Dạng Bên',
+        labelEn: 'Side Silhouette',
+        tag: 'SIDE',
+        icon: <Box className="w-3.5 h-3.5 text-cyan-400" />,
+      },
+      {
         id: 'cockpit',
         labelVi: 'Buồng Lái & Halo',
         labelEn: 'Cockpit & Halo',
@@ -343,6 +350,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                   {/* Tab 3: Car Aero */}
                   <button
                     type="button"
+                    data-camera-category="car"
                     onClick={() => {
                       setPresetCategory('car');
                       if (cameraPreset && !CAR_PRESETS.some((p) => p.id === cameraPreset)) {
@@ -432,6 +440,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                       <button
                         key={p.id}
                         type="button"
+                        data-camera-preset={p.id}
                         onClick={() => {
                           if (isTouring) setIsTouring(false);
                           onSelectPreset(p.id);
@@ -553,6 +562,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                   {onOpenSchematic && (
                     <button
                       type="button"
+                      data-eds-schematic-open
                       onClick={onOpenSchematic}
                       className="col-span-2 p-1.5 rounded-xl border bg-gradient-to-r from-red-950/70 via-studio-900 to-amber-950/50 hover:from-red-900/80 hover:to-amber-900/60 border-amber-500/50 text-amber-300 hover:text-white flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer shadow-sm"
                       title={
