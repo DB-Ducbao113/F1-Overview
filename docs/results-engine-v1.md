@@ -18,19 +18,40 @@ Calendar data is configurable with `npm run results-engine -- --calendar <absolu
 
 `src/results-engine/shadow.ts` is a separate local evidence ledger for an approved shadow run. It has no import from publication code, and `.results-engine/` is ignored, so observations cannot reach public result pages or be committed as race results. Each record has a stable identity derived from event/session, provider, evidence type, and a provider event/document/snapshot identifier. Repeated polls preserve the original first-observed time instead of creating a new record.
 
-Actual completion requires an OpenF1 `race_control` `CHEQUERED` event with a provider-derived identity. A scheduled end, provider `date_end`, or missing flag is not completion. A non-empty `session_result` creates only `SOURCE_RESULT_AVAILABLE`; it is not a validated classification. Validation checks driver identities, duplicate drivers/positions, status flags, and coverage of the observed driver list. Only a successful persisted validation report creates `VALIDATED_RESULT` and contributes to the 15–30 minute KPI. The KPI is `PASS` only when verified evidence is observed within 30 minutes of valid actual-completion evidence; it is `PENDING` without both and `FAIL` after 30 minutes.
+Actual completion requires an OpenF1 `race_control` `CHEQUERED` event with a provider-derived identity. A scheduled end, provider `date_end`, or missing flag is not completion. A non-empty `session_result` creates only `SOURCE_RESULT_AVAILABLE`; it is not a validated classification. Validation checks driver identities, duplicate drivers/positions, status flags, and coverage of the observed driver list. Only a successful persisted validation report creates `VALIDATED_RESULT` and contributes to the 15-30 minute KPI. Replay observations calculate the same metrics for deterministic verification but are labelled `REPLAY_ONLY`; only an authorized live observation with provider-derived actual-completion evidence can produce a measured target result.
 
 FIA reconciliation uses `FiaDocumentMonitor`, an interface for permitted document metadata only: document ID, explicit classification, UTC publication/observation times, URL, title, and authority flag. A title never infers finality. `FINAL` and `CORRECTED` evidence require authoritative FIA metadata. Documents are append-only evidence; the engine never scrapes, mirrors, or publishes FIA documents.
 
-For an approved shadow run:
+For an approved live shadow run:
 
 ```bash
-npm run results-engine:shadow -- --event <event-id> --session <session-id> --scheduled-end <utc-z> --openf1-session-key <key>
+npm run results-engine:shadow -- --event <event-id> --session <session-id> --scheduled-end <utc-z> --openf1-session-key <key> --source-permission <reviewed-json> --authorize-network-observation
 ```
 
-The command makes read-only OpenF1 requests to `race_control`, `session_result`, and `drivers`. It records availability separately, stores failed and successful validation reports, and emits validated evidence only for a complete successful report. Alternatively, `--evidence <json-array>` records reviewed non-validation evidence; every item requires a stable `sourceEventId`. The command reports metrics only and cannot publish a canonical classification.
+The command makes read-only OpenF1 requests to `race_control`, `session_result`, and `drivers`. Network access fails closed unless the operator supplies the explicit manual-authorization flag and a reviewed permission record for the exact source registry entry. The repository contains no pre-approved live provider. The command records availability separately, stores failed and successful validation reports, and emits validated evidence only for a complete successful report. Alternatively, `--evidence <json-array>` records reviewed non-validation evidence; every item requires a stable `sourceEventId`. The command reports metrics only and cannot publish a canonical classification.
 
 The CLI reloads state through a short-lived exclusive local lock before writing, preventing concurrent local CLI processes from overwriting one another. The lock plus atomic replacement protects one filesystem only: it is not remote durability, distributed locking, backup, or recovery. An interrupted process can leave a lock file, which must be investigated before manual removal.
+
+## M4 manual observation workflow
+
+The M4 command discovers a race from a validated configurable calendar, records
+completion and source availability independently, validates classification
+coverage, persists immutable evidence, and accepts reviewed FIA document metadata:
+
+```bash
+npm run results-engine:observe -- \
+  --calendar src/results-engine/fixtures/m4-observation-calendar.json \
+  --replay src/results-engine/fixtures/m4-complete-replay.json \
+  --fia-documents src/results-engine/fixtures/m4-fia-document-reviews.json \
+  --state .results-engine/m4-phase1-shadow-state.json
+```
+
+The default evidence path is synthetic replay. Repeat execution is idempotent and
+preserves the first-observed timestamps. A scheduled end only makes a session
+eligible for discovery; it never creates completion evidence. Live OpenF1 mode
+requires `--live-openf1`, an explicit session key, the manual-authorization flag,
+and a reviewed source-permission record. `--list-sources` prints the registry and
+network eligibility without making a request.
 
 ## Local execution
 

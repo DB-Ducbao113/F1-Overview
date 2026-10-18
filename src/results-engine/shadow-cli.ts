@@ -6,6 +6,7 @@ import {
   recordValidatedResult,
   updateShadowState,
 } from './shadow.ts';
+import { requireObservationPermission } from './source-registry.ts';
 
 function readArgument(name: string): string | undefined {
   const index = process.argv.indexOf(name);
@@ -22,6 +23,11 @@ if (!evidencePath && sessionKey === undefined)
 const evidence = readEvidenceFile(evidencePath);
 let validationReport: Awaited<ReturnType<typeof observeOpenF1Session>>['validationReport'] = null;
 if (sessionKey !== undefined) {
+  requireObservationPermission({
+    sourceId: 'openf1-community-api',
+    permissionPath: readArgument('--source-permission'),
+    manuallyAuthorized: process.argv.includes('--authorize-network-observation'),
+  });
   const observation = await observeOpenF1Session({
     eventId,
     sessionId,

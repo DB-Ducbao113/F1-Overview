@@ -11,8 +11,17 @@ export type ShadowEvidenceKind =
   | 'FIA_FINAL'
   | 'FIA_CORRECTED'
   | 'SOURCE_DISAGREEMENT';
-export type ShadowSource = 'openf1' | 'fia' | 'operator';
+export type ShadowSource = 'openf1' | 'replay' | 'fia' | 'operator';
 export type FiaClassification = 'PROVISIONAL' | 'FINAL' | 'CORRECTED';
+export type ObservationMode = 'LIVE_AUTHORIZED' | 'REPLAY' | 'MANUAL_REVIEW';
+export type ClassificationProvider = 'openf1' | 'openf1-replay';
+
+export interface EvidenceReview {
+  reviewedBy: string;
+  reviewedAtUtc: string;
+  rightsStatus: 'REVIEW_REQUIRED' | 'OBSERVATION_APPROVED';
+  notes?: string;
+}
 
 const shadowEvidenceKinds: readonly ShadowEvidenceKind[] = [
   'ACTUAL_SESSION_END',
@@ -23,7 +32,8 @@ const shadowEvidenceKinds: readonly ShadowEvidenceKind[] = [
   'FIA_CORRECTED',
   'SOURCE_DISAGREEMENT',
 ];
-const shadowSources: readonly ShadowSource[] = ['openf1', 'fia', 'operator'];
+const shadowSources: readonly ShadowSource[] = ['openf1', 'replay', 'fia', 'operator'];
+const observationModes: readonly ObservationMode[] = ['LIVE_AUTHORIZED', 'REPLAY', 'MANUAL_REVIEW'];
 
 class ShadowStateLockedError extends Error {
   readonly cause: unknown;
@@ -44,6 +54,9 @@ export interface ShadowEvidenceInput {
   /** First time this observer saw the source event. */
   observedAtUtc: string;
   sourceReference: string;
+  sourceRegistryId?: string;
+  observationMode?: ObservationMode;
+  review?: EvidenceReview;
   detail?: string;
 }
 
@@ -65,7 +78,7 @@ export interface ClassificationValidationReport {
   validationReportId: string;
   eventId: string;
   sessionId: string;
-  provider: 'openf1';
+  provider: ClassificationProvider;
   sourceEventId: string;
   sourceReference: string;
   validatedAtUtc: string;
@@ -93,7 +106,9 @@ export interface ShadowMetrics {
   timeToFirstValidatedMinutes: number | null;
   timeToOfficialProvisionalMinutes: number | null;
   timeToOfficialFinalMinutes: number | null;
-  provisionalTarget: 'PENDING' | 'PASS' | 'FAIL';
+  provisionalTarget: 'PENDING' | 'PASS' | 'FAIL' | 'REPLAY_ONLY';
+  measurementBasis: 'NONE' | 'REPLAY' | 'LIVE_AUTHORIZED';
+  observedSessionEndUtc: string | null;
 }
 
 export interface FiaDocumentMetadata {
@@ -105,6 +120,8 @@ export interface FiaDocumentMetadata {
   url: string;
   /** Set by a permitted monitor after confirming authoritative FIA metadata. */
   authoritative: boolean;
+  sourceRegistryId?: string;
+  review?: EvidenceReview;
 }
 
 /** A monitor supplies permitted metadata only; it does not scrape, mirror, or publish documents. */
@@ -211,15 +228,20 @@ export function recordValidatedResult(
     return { state: withReport, duplicate: Boolean(existing), evidence: null };
   const evidence: ShadowEvidence = {
     kind: 'VALIDATED_RESULT',
-    source: storedReport.provider,
+    source: storedReport.provider === 'openf1-replay' ? 'replay' : 'openf1',
     sourceEventId: storedReport.sourceEventId,
     occurredAtUtc: storedReport.validatedAtUtc,
     observedAtUtc,
     sourceReference: storedReport.sourceReference,
     validationReportId: storedReport.validationReportId,
+    sourceRegistryId:
+      storedReport.provider === 'openf1-replay'
+        ? 'synthetic-openf1-replay'
+        : 'openf1-community-api',
+    observationMode: storedReport.provider === 'openf1-replay' ? 'REPLAY' : 'LIVE_AUTHORIZED',
     evidenceId: evidenceIdFor(
       session,
-      storedReport.provider,
+      storedReport.provider === 'openf1-replay' ? 'replay' : 'openf1',
       'VALIDATED_RESULT',
       storedReport.sourceEventId,
     ),
@@ -232,6 +254,11 @@ export function metricsFor(state: ShadowState, sessionId: string): ShadowMetrics
   const session = state.sessions[sessionId];
   if (!session) return null;
   const actualEnd = firstOccurrence(session.evidence, isActualCompletion);
+  const replayEnd = firstOccurrence(
+    session.evidence,
+    (item) => item.kind === 'ACTUAL_SESSION_END' && item.source === 'replay',
+  );
+  const observedEnd = actualEnd ?? replayEnd;
   const firstAvailable = firstOccurrence(
     session.evidence,
     (item) => item.kind === 'SOURCE_RESULT_AVAILABLE',
@@ -242,9 +269,15 @@ export function metricsFor(state: ShadowState, sessionId: string): ShadowMetrics
   });
   const provisional = firstOccurrence(session.evidence, (item) => item.kind === 'FIA_PROVISIONAL');
   const final = firstOccurrence(session.evidence, (item) => item.kind === 'FIA_FINAL');
-  const validatedLatency = latencyMinutes(actualEnd?.occurredAtUtc, firstValidated?.observedAtUtc);
+  const validatedLatency = latencyMinutes(
+    observedEnd?.occurredAtUtc,
+    firstValidated?.observedAtUtc,
+  );
+  const measurementBasis = actualEnd ? 'LIVE_AUTHORIZED' : replayEnd ? 'REPLAY' : 'NONE';
   return {
     actualSessionEndUtc: actualEnd?.occurredAtUtc ?? null,
+    observedSessionEndUtc: observedEnd?.occurredAtUtc ?? null,
+    measurementBasis,
     firstSourceResultAtUtc: firstAvailable?.observedAtUtc ?? null,
     firstValidatedResultAtUtc: firstValidated?.observedAtUtc ?? null,
     officialProvisionalAtUtc: provisional?.observedAtUtc ?? null,
@@ -252,17 +285,23 @@ export function metricsFor(state: ShadowState, sessionId: string): ShadowMetrics
     sourceDisagreements: session.evidence.filter((item) => item.kind === 'SOURCE_DISAGREEMENT')
       .length,
     timeToFirstAvailableMinutes: latencyMinutes(
-      actualEnd?.occurredAtUtc,
+      observedEnd?.occurredAtUtc,
       firstAvailable?.observedAtUtc,
     ),
     timeToFirstValidatedMinutes: validatedLatency,
     timeToOfficialProvisionalMinutes: latencyMinutes(
-      actualEnd?.occurredAtUtc,
+      observedEnd?.occurredAtUtc,
       provisional?.observedAtUtc,
     ),
-    timeToOfficialFinalMinutes: latencyMinutes(actualEnd?.occurredAtUtc, final?.observedAtUtc),
+    timeToOfficialFinalMinutes: latencyMinutes(observedEnd?.occurredAtUtc, final?.observedAtUtc),
     provisionalTarget:
-      validatedLatency === null ? 'PENDING' : validatedLatency <= 30 ? 'PASS' : 'FAIL',
+      measurementBasis === 'REPLAY'
+        ? 'REPLAY_ONLY'
+        : validatedLatency === null
+          ? 'PENDING'
+          : validatedLatency <= 30
+            ? 'PASS'
+            : 'FAIL',
   };
 }
 
@@ -319,7 +358,12 @@ export async function observeOpenF1Session(input: {
     observedAtUtc: input.observedAtUtc,
     sourceReference: raceControlReference,
   });
-  if (completion) evidence.push(completion);
+  if (completion)
+    evidence.push({
+      ...completion,
+      sourceRegistryId: 'openf1-community-api',
+      observationMode: 'LIVE_AUTHORIZED',
+    });
   const sourceEventId = `session-result:${hashValue(normaliseOpenF1Snapshot(results))}`;
   if (results.length > 0) {
     evidence.push({
@@ -329,6 +373,8 @@ export async function observeOpenF1Session(input: {
       occurredAtUtc: input.observedAtUtc,
       observedAtUtc: input.observedAtUtc,
       sourceReference: resultsReference,
+      sourceRegistryId: 'openf1-community-api',
+      observationMode: 'LIVE_AUTHORIZED',
       detail: `${results.length} OpenF1 session_result records observed`,
     });
   }
@@ -358,6 +404,7 @@ export function validateOpenF1Classification(input: {
   sourceEventId: string;
   sourceReference: string;
   validatedAtUtc: string;
+  provider?: ClassificationProvider;
 }): ClassificationValidationReport {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -417,7 +464,7 @@ export function validateOpenF1Classification(input: {
   const stable = {
     eventId: input.eventId,
     sessionId: input.sessionId,
-    provider: 'openf1',
+    provider: input.provider ?? 'openf1',
     sourceEventId: input.sourceEventId,
     errors,
     warnings,
@@ -428,7 +475,7 @@ export function validateOpenF1Classification(input: {
     validationReportId: `openf1-validation:${hashValue(stable)}`,
     eventId: input.eventId,
     sessionId: input.sessionId,
-    provider: 'openf1',
+    provider: input.provider ?? 'openf1',
     sourceEventId: input.sourceEventId,
     sourceReference: input.sourceReference,
     validatedAtUtc: input.validatedAtUtc,
@@ -462,6 +509,9 @@ export function fiaDocumentEvidence(input: FiaDocumentMetadata): ShadowEvidenceI
     occurredAtUtc: input.publishedAtUtc,
     observedAtUtc: input.observedAtUtc,
     sourceReference: input.url,
+    sourceRegistryId: input.sourceRegistryId ?? 'fia-document-metadata',
+    observationMode: 'MANUAL_REVIEW',
+    ...(input.review ? { review: input.review } : {}),
     detail: input.title,
   };
 }
@@ -557,6 +607,13 @@ function validateEvidenceInput(evidence: unknown): asserts evidence is ShadowEvi
   }
   if (!validUtc(evidence.occurredAtUtc) || !validUtc(evidence.observedAtUtc))
     throw new Error('shadow evidence timestamps must be valid UTC instants');
+  if (
+    (evidence.sourceRegistryId !== undefined && typeof evidence.sourceRegistryId !== 'string') ||
+    (evidence.observationMode !== undefined &&
+      !observationModes.includes(evidence.observationMode as ObservationMode)) ||
+    (evidence.review !== undefined && !isEvidenceReview(evidence.review))
+  )
+    throw new Error('shadow evidence provenance is invalid');
 }
 
 function validateValidationReport(report: ClassificationValidationReport) {
@@ -564,7 +621,7 @@ function validateValidationReport(report: ClassificationValidationReport) {
     !report.validationReportId ||
     !report.eventId ||
     !report.sessionId ||
-    report.provider !== 'openf1' ||
+    !['openf1', 'openf1-replay'].includes(report.provider) ||
     !report.sourceEventId ||
     !report.sourceReference ||
     !validUtc(report.validatedAtUtc) ||
@@ -670,6 +727,18 @@ function hashValue(value: unknown): string {
 
 function validUtc(value: string): boolean {
   return value.endsWith('Z') && Number.isFinite(Date.parse(value));
+}
+
+function isEvidenceReview(value: unknown): value is EvidenceReview {
+  return (
+    isRecord(value) &&
+    typeof value.reviewedBy === 'string' &&
+    value.reviewedBy.trim().length > 0 &&
+    typeof value.reviewedAtUtc === 'string' &&
+    validUtc(value.reviewedAtUtc) &&
+    (value.rightsStatus === 'REVIEW_REQUIRED' || value.rightsStatus === 'OBSERVATION_APPROVED') &&
+    (value.notes === undefined || typeof value.notes === 'string')
+  );
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -794,6 +863,10 @@ function isShadowEvidence(value: unknown): value is ShadowEvidence {
     validUtc(value.observedAtUtc) &&
     typeof value.sourceReference === 'string' &&
     (value.validationReportId === undefined || typeof value.validationReportId === 'string') &&
+    (value.sourceRegistryId === undefined || typeof value.sourceRegistryId === 'string') &&
+    (value.observationMode === undefined ||
+      observationModes.includes(value.observationMode as ObservationMode)) &&
+    (value.review === undefined || isEvidenceReview(value.review)) &&
     (value.detail === undefined || typeof value.detail === 'string')
   );
 }

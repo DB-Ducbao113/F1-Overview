@@ -1,0 +1,14 @@
+[
+  {
+    "eventId": "2026-synthetic-observation-gp",
+    "name": "Synthetic Observation Grand Prix",
+    "sessions": [
+      {
+        "type": "Race",
+        "sessionId": "2026-synthetic-observation-gp-race",
+        "scheduledStartUtc": "2026-10-18T12:00:00Z",
+        "durationMinutes": 120
+      }
+    ]
+  }
+]

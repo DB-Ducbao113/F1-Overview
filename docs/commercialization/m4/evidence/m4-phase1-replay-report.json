@@ -1,0 +1,39 @@
+{
+  "mode": "REPLAY",
+  "eventId": "2026-synthetic-observation-gp",
+  "sessionId": "2026-synthetic-observation-gp-race",
+  "scheduledEndUtc": "2026-10-18T14:00:00.000Z",
+  "observationsAdded": 6,
+  "duplicatesIgnored": 0,
+  "validation": {
+    "validationReportId": "openf1-validation:dd1c5025556d5d4d6218",
+    "eventId": "2026-synthetic-observation-gp",
+    "sessionId": "2026-synthetic-observation-gp-race",
+    "provider": "openf1-replay",
+    "sourceEventId": "replay-session-result:65cdb05f029a4e0fa5f9",
+    "sourceReference": "replay:m4-phase1-complete-v1:session_result",
+    "validatedAtUtc": "2026-10-18T14:20:00Z",
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "expectedDriverCount": 3,
+    "receivedDriverCount": 3
+  },
+  "metrics": {
+    "actualSessionEndUtc": null,
+    "observedSessionEndUtc": "2026-10-18T14:07:30Z",
+    "measurementBasis": "REPLAY",
+    "firstSourceResultAtUtc": "2026-10-18T14:18:00Z",
+    "firstValidatedResultAtUtc": "2026-10-18T14:20:00Z",
+    "officialProvisionalAtUtc": "2026-10-18T14:27:00Z",
+    "officialFinalAtUtc": "2026-10-18T15:12:00Z",
+    "sourceDisagreements": 0,
+    "timeToFirstAvailableMinutes": 10.5,
+    "timeToFirstValidatedMinutes": 12.5,
+    "timeToOfficialProvisionalMinutes": 19.5,
+    "timeToOfficialFinalMinutes": 64.5,
+    "provisionalTarget": "REPLAY_ONLY"
+  },
+  "targetClaim": "NOT_MEASURED",
+  "statePath": ".results-engine/m4-phase1-shadow-state.json"
+}
