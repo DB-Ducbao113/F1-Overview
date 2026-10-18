@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "results-engine": "node --experimental-strip-types src/results-engine/cli.ts",
+    "results-engine:shadow": "node --experimental-strip-types src/results-engine/shadow-cli.ts",
     "sync:2026": "node scripts/update-2026-data.js",
     "sync:sessions": "node scripts/sync-openf1-sessions.js"
   },

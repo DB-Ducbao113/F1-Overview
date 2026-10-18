@@ -1,6 +1,6 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { afterEach, describe, expect, it } from 'vitest';
 import { runEngine } from './engine.ts';
@@ -69,6 +69,28 @@ describe('Results Engine', () => {
     const afterSecond = JSON.parse(readFileSync(path, 'utf8'));
     expect(afterSecond.sessions[session.sessionId].latestRevisionId).toBe(firstRevision);
     expect(afterSecond.sessions[session.sessionId].revisionIds).toHaveLength(1);
+  });
+
+  it('accepts an explicit UTC calendar file through the CLI', () => {
+    const path = statePath();
+    const calendarPath = join(dirname(path), 'calendar.json');
+    writeFileSync(calendarPath, JSON.stringify(calendar));
+    const result = spawnSync(
+      process.execPath,
+      [
+        '--experimental-strip-types',
+        'src/results-engine/cli.ts',
+        '--now',
+        '2026-03-14T14:30:00Z',
+        '--state',
+        path,
+        '--calendar',
+        calendarPath,
+      ],
+      { cwd: process.cwd(), encoding: 'utf8' },
+    );
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('2026-gp-bahrain-race:PROVISIONAL');
   });
 
   it('moves provisional results to final and records a historical correction as a new immutable revision', async () => {

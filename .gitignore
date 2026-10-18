@@ -44,5 +44,8 @@ scratch/
 .prettiercache
 .vite/
 
+# Results Engine local state and read-only shadow-observation evidence
+.results-engine/
+
 # Local source assets (not shipped or committed)
 source-assets/

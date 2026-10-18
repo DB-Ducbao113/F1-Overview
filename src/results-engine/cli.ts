@@ -1,4 +1,4 @@
-import { runEngine } from './engine.ts';
+import { loadCalendar, runEngine } from './engine.ts';
 
 function readArgument(name: string): string | undefined {
   const index = process.argv.indexOf(name);
@@ -11,6 +11,7 @@ if (Number.isNaN(now.getTime())) throw new Error('--now must be a valid ISO time
 
 const report = await runEngine({
   now,
+  calendar: readArgument('--calendar') ? loadCalendar(readArgument('--calendar')) : undefined,
   statePath: readArgument('--state'),
   allowHistoricalCorrections: process.argv.includes('--allow-historical-corrections'),
 });

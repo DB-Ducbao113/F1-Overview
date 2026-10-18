@@ -45,7 +45,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Restore durable prototype state
+      - name: Restore best-effort prototype cache
         id: state-cache
         uses: actions/cache/restore@v4
         with:
@@ -65,7 +65,7 @@ jobs:
           if [ -n "$NOW_UTC" ]; then args+=(--now "$NOW_UTC"); fi
           npm run results-engine -- "${args[@]}"
 
-      - name: Save durable prototype state
+      - name: Save best-effort prototype cache
         if: always() && steps.state-cache.outputs.cache-primary-key != ''
         uses: actions/cache/save@v4
         with:
