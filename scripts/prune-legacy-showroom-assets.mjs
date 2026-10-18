@@ -12,6 +12,17 @@ const legacyTargets = [
   'dist/images/showroom/halo_safety.webp',
   'dist/images/showroom/sidepods_cooling.webp',
 ];
+const requiredOriginalAssets = [
+  'dist/models/eds-g01.glb',
+  'dist/images/showroom/eds-g01/schematic.svg',
+  'dist/images/showroom/eds-g01/wings.svg',
+  'dist/images/showroom/eds-g01/drs.svg',
+  'dist/images/showroom/eds-g01/power_unit.svg',
+  'dist/images/showroom/eds-g01/halo.svg',
+  'dist/images/showroom/eds-g01/sidepods.svg',
+  'dist/images/showroom/eds-g01/tires.svg',
+  'dist/images/showroom/eds-g01/floor.svg',
+];
 
 for (const relativeTarget of legacyTargets) {
   const target = path.resolve(relativeTarget);
@@ -32,8 +43,7 @@ for (const relativeTarget of legacyTargets) {
 if (remaining.length > 0)
   throw new Error(`Legacy commercial-release assets remain in dist: ${remaining.join(', ')}`);
 
-await fs.access(path.resolve('dist/models/eds-g01.glb'));
-await fs.access(path.resolve('dist/images/showroom/eds-g01/schematic.svg'));
+for (const requiredAsset of requiredOriginalAssets) await fs.access(path.resolve(requiredAsset));
 console.log(
-  `Commercial artifact guard: removed ${legacyTargets.length} legacy Showroom targets and verified original EDS assets.`,
+  `Commercial artifact guard: removed ${legacyTargets.length} legacy Showroom targets and verified ${requiredOriginalAssets.length} original EDS assets.`,
 );

@@ -448,7 +448,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
         <planeGeometry args={[24, 24]} />
         <MeshReflectorMaterial
           blur={[300, 100]}
-          resolution={512}
+          resolution={256}
           mirror={0.55}
           mixBlur={0.6}
           mixStrength={2.0}

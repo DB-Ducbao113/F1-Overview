@@ -23,3 +23,11 @@ Real team and driver names remain in editorial data and non-Showroom routes. Con
 ## Known residual source assets
 
 Legacy files remain in the repository for local visual comparison and rollback evidence. Presence in source does not imply commercial readiness. The commercial-build guard, not source deletion, is the current containment mechanism.
+
+## Phase 3 coverage closure
+
+- Original-mode route coverage: `/showroom` uses EDS-G01, six procedural livery presets, seven EDS hotspot illustrations, one EDS schematic and the text/CSS technical dossier.
+- Cards and dossier sections do not require car raster imagery; creating 82 one-for-one fictional replacements would add unused assets and misleading constructor variants.
+- Browser QA opened all seven hotspot dialogs and the schematic modal at mobile, tablet and desktop sizes; every local image completed with a positive natural width.
+- The production build guard verifies the GLB and all eight SVG outputs, and fails if any prohibited legacy model, wheel texture, close-up, schematic or generic hotspot target remains.
+- Historical/editorial car thumbnails outside the Showroom remain factual references and retain `LEGAL REVIEW / NOT CLEARED` status. They are not M2 Showroom dependencies.

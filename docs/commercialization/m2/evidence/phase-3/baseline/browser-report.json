@@ -1,0 +1,277 @@
+{
+  "generatedAt": "2026-10-18T08:25:18.590Z",
+  "mode": "eds",
+  "url": "http://127.0.0.1:5176/showroom",
+  "results": [
+    {
+      "viewport": {
+        "name": "mobile-375x812",
+        "width": 375,
+        "height": 812,
+        "mobile": true
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\mobile-375x812.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 12269.1,
+        "loadEventMs": 12270.5
+      },
+      "modelLoad": {
+        "asset": "eds-g01.glb",
+        "durationMs": 3.3,
+        "transferSize": 660492,
+        "decodedBodySize": 660192
+      },
+      "liverySwitchLatencyMs": [1242.4, 417.9, 1267.1, 1233, 1283.7, 366.3],
+      "liverySwitchMedianMs": 1242.4,
+      "fiftySwitchHeapDeltaBytes": 3685843,
+      "hotspotChecks": [
+        {
+          "id": "wings",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "drs",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "power_unit",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "halo",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "sidepods",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "tires",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "floor",
+          "dialogVisible": true,
+          "imageLoaded": true
+        }
+      ],
+      "schematicCheck": {
+        "dialogVisible": true,
+        "imageLoaded": true
+      },
+      "frameSample": {
+        "frames": 89,
+        "durationMs": 1506.199999994038,
+        "fps": 59.08909839354155
+      }
+    },
+    {
+      "viewport": {
+        "name": "tablet-768x1024",
+        "width": 768,
+        "height": 1024,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\tablet-768x1024.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 186.6,
+        "loadEventMs": 187.7
+      },
+      "modelLoad": {
+        "asset": "eds-g01.glb",
+        "durationMs": 2.3,
+        "transferSize": 300,
+        "decodedBodySize": 660192
+      },
+      "liverySwitchLatencyMs": [348.2, 364.9, 397.3, 734.8, 715.1, 416.7],
+      "liverySwitchMedianMs": 416.7,
+      "fiftySwitchHeapDeltaBytes": 2789819,
+      "hotspotChecks": [
+        {
+          "id": "wings",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "drs",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "power_unit",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "halo",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "sidepods",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "tires",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "floor",
+          "dialogVisible": true,
+          "imageLoaded": true
+        }
+      ],
+      "schematicCheck": {
+        "dialogVisible": true,
+        "imageLoaded": true
+      },
+      "frameSample": {
+        "frames": 56,
+        "durationMs": 1501.000000005959,
+        "fps": 37.30846102583456
+      }
+    },
+    {
+      "viewport": {
+        "name": "desktop-1440x900",
+        "width": 1440,
+        "height": 900,
+        "mobile": false
+      },
+      "screenshot": "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\desktop-1440x900.png",
+      "title": "PODIUM — Effet de Sol · Formula 1 Experience",
+      "heading": "Showroom Kỹ thuật EDS-G01",
+      "liveryButtons": 6,
+      "canvasPresent": true,
+      "webglContext": true,
+      "bodyScrollWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflow": false,
+      "selectedLiveryVisible": false,
+      "rendererInfo": {
+        "renderer": "WebKit WebGL",
+        "vendor": "WebKit",
+        "unmaskedRenderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+      },
+      "navigationTiming": {
+        "domContentLoadedMs": 12281.1,
+        "loadEventMs": 12282.2
+      },
+      "modelLoad": {
+        "asset": "eds-g01.glb",
+        "durationMs": 1.6,
+        "transferSize": 300,
+        "decodedBodySize": 660192
+      },
+      "liverySwitchLatencyMs": [519.4, 390.6, 416.4, 433.4, 417.8, 428],
+      "liverySwitchMedianMs": 428,
+      "fiftySwitchHeapDeltaBytes": 1926920,
+      "hotspotChecks": [
+        {
+          "id": "wings",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "drs",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "power_unit",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "halo",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "sidepods",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "tires",
+          "dialogVisible": true,
+          "imageLoaded": true
+        },
+        {
+          "id": "floor",
+          "dialogVisible": true,
+          "imageLoaded": true
+        }
+      ],
+      "schematicCheck": {
+        "dialogVisible": true,
+        "imageLoaded": true
+      },
+      "frameSample": {
+        "frames": 35,
+        "durationMs": 1529.2999999761596,
+        "fps": 22.886287844468463
+      },
+      "silhouetteScreenshots": [
+        "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\silhouette-front.png",
+        "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\silhouette-side.png",
+        "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\silhouette-cockpit.png",
+        "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\silhouette-rear.png",
+        "docs\\commercialization\\m2\\evidence\\phase-3\\baseline\\silhouette-top.png"
+      ],
+      "contextRecovery": {
+        "supported": true,
+        "lostObserved": true,
+        "recovered": true
+      }
+    }
+  ],
+  "consoleErrors": [],
+  "pageExceptions": [],
+  "failedRequests": [
+    "net::ERR_NETWORK_ACCESS_DENIED (Stylesheet)",
+    "net::ERR_NETWORK_ACCESS_DENIED (Script)"
+  ],
+  "performanceMetrics": {
+    "Nodes": 1263,
+    "LayoutCount": 87,
+    "JSHeapUsedSize": 48991348,
+    "JSHeapTotalSize": 80826368
+  }
+}

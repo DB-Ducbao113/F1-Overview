@@ -1,16 +1,14 @@
-import { spawn } from 'node:child_process';
-import { once } from 'node:events';
 import fs from 'node:fs/promises';
-import os from 'node:os';
 import path from 'node:path';
+import { chromium } from 'playwright-core';
 
-const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const chromePath =
+  process.env.SHOWROOM_QA_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const qaMode = process.env.SHOWROOM_QA_MODE === 'legacy' ? 'legacy' : 'eds';
 const showroomUrl = process.env.SHOWROOM_QA_URL || 'http://127.0.0.1:5173/showroom';
 const outputDirectory = path.resolve(
   process.env.SHOWROOM_QA_OUTPUT || 'docs/commercialization/m2/evidence',
 );
-const profileDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'eds-showroom-chrome-'));
 const viewports = [
   { name: 'mobile-375x812', width: 375, height: 812, mobile: true },
   { name: 'tablet-768x1024', width: 768, height: 1024, mobile: false },
@@ -19,103 +17,28 @@ const viewports = [
 
 await fs.mkdir(outputDirectory, { recursive: true });
 
-const chrome = spawn(
-  chromePath,
-  [
-    '--headless=new',
-    '--remote-debugging-port=0',
-    '--remote-allow-origins=*',
-    `--user-data-dir=${profileDirectory}`,
-    '--no-first-run',
-    '--no-default-browser-check',
+const browser = await chromium.launch({
+  executablePath: chromePath,
+  headless: true,
+  args: [
     '--disable-background-networking',
     '--disable-component-update',
     '--disable-sync',
     '--enable-unsafe-swiftshader',
     '--js-flags=--expose-gc',
-    'about:blank',
   ],
-  { stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true },
-);
-
-const websocketUrl = await new Promise((resolve, reject) => {
-  let stderr = '';
-  const timer = setTimeout(() => reject(new Error(`Chrome DevTools timeout. ${stderr}`)), 15_000);
-  chrome.stderr.setEncoding('utf8');
-  chrome.stderr.on('data', (chunk) => {
-    stderr += chunk;
-    const match = stderr.match(/DevTools listening on (ws:\/\/[^\s]+)/);
-    if (match) {
-      clearTimeout(timer);
-      resolve(match[1]);
-    }
-  });
-  chrome.once('error', reject);
-  chrome.once('exit', (code) =>
-    reject(new Error(`Chrome exited before DevTools was ready (${code}).`)),
-  );
 });
+const context = await browser.newContext();
+const page = await context.newPage();
+const client = await context.newCDPSession(page);
+console.log(`Chrome target: ${await page.title()} ${page.url()}`);
 
-const debugBase = websocketUrl.replace(/^ws:/, 'http:').replace(/\/devtools\/browser\/.*$/, '');
-const targets = await fetch(`${debugBase}/json/list`).then((response) => response.json());
-const pageTarget = targets.find((target) => target.type === 'page');
-if (!pageTarget?.webSocketDebuggerUrl) throw new Error('Chrome page target was not available.');
-console.log(`Chrome target: ${pageTarget.title} ${pageTarget.url}`);
-const socket = new WebSocket(pageTarget.webSocketDebuggerUrl);
-await new Promise((resolve, reject) => {
-  socket.addEventListener('open', resolve, { once: true });
-  socket.addEventListener('error', reject, { once: true });
-});
-
-let commandId = 0;
-const pending = new Map();
-const listeners = new Map();
-
-socket.addEventListener('message', async ({ data }) => {
-  const payload =
-    typeof data === 'string'
-      ? data
-      : data instanceof Blob
-        ? await data.text()
-        : Buffer.from(data).toString('utf8');
-  const message = JSON.parse(payload);
-  if (message.id && pending.has(message.id)) {
-    const { resolve, reject } = pending.get(message.id);
-    pending.delete(message.id);
-    if (message.error) reject(new Error(message.error.message));
-    else resolve(message.result);
-    return;
-  }
-  const key = `${message.sessionId || 'browser'}:${message.method}`;
-  for (const listener of listeners.get(key) || []) listener(message.params || {});
-});
-
-function send(method, params = {}, sessionId) {
-  const id = ++commandId;
-  socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      pending.delete(id);
-      reject(new Error(`Chrome DevTools command timed out: ${method}`));
-    }, 60_000);
-    pending.set(id, {
-      resolve: (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      reject: (error) => {
-        clearTimeout(timer);
-        reject(error);
-      },
-    });
-  });
+function send(method, params = {}) {
+  return client.send(method, params);
 }
 
-function on(sessionId, method, listener) {
-  const key = `${sessionId || 'browser'}:${method}`;
-  const values = listeners.get(key) || [];
-  values.push(listener);
-  listeners.set(key, values);
+function on(_sessionId, method, listener) {
+  client.on(method, listener);
 }
 
 const sessionId = undefined;
@@ -125,10 +48,16 @@ await Promise.all([
   send('Network.enable', {}, sessionId),
   send('Performance.enable', {}, sessionId),
 ]);
+await send('Page.addScriptToEvaluateOnNewDocument', {
+  source: `globalThis.addEventListener('eds-renderer-stats', (event) => {
+    globalThis.__edsRendererStats = event.detail;
+  });`,
+});
 
 const consoleErrors = [];
 const pageExceptions = [];
 const failedRequests = [];
+const requestUrls = new Map();
 on(sessionId, 'Runtime.consoleAPICalled', (event) => {
   if (event.type === 'error') {
     consoleErrors.push(event.args.map((arg) => arg.value || arg.description || '').join(' '));
@@ -137,8 +66,14 @@ on(sessionId, 'Runtime.consoleAPICalled', (event) => {
 on(sessionId, 'Runtime.exceptionThrown', (event) => {
   pageExceptions.push(event.exceptionDetails?.text || 'Unknown page exception');
 });
+on(sessionId, 'Network.requestWillBeSent', (event) => {
+  requestUrls.set(event.requestId, event.request?.url || 'unknown URL');
+});
 on(sessionId, 'Network.loadingFailed', (event) => {
-  if (!event.canceled) failedRequests.push(`${event.errorText} (${event.type})`);
+  if (!event.canceled)
+    failedRequests.push(
+      `${requestUrls.get(event.requestId) || 'unknown URL'}: ${event.errorText} (${event.type})`,
+    );
 });
 
 const results = [];
@@ -209,6 +144,14 @@ try {
             unmaskedRenderer: gl.getExtension('WEBGL_debug_renderer_info')
               ? gl.getParameter(gl.getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL)
               : null,
+          } : null;
+          const rendererStats = canvas ? {
+            devicePixelRatio: window.devicePixelRatio,
+            cssWidth: canvas.clientWidth,
+            cssHeight: canvas.clientHeight,
+            bufferWidth: canvas.width,
+            bufferHeight: canvas.height,
+            ...(globalThis.__edsRendererStats || {}),
           } : null;
           const navigation = performance.getEntriesByType('navigation')[0];
           const modelResource = performance.getEntriesByType('resource').find(
@@ -285,6 +228,7 @@ try {
             selectedLiveryVisible:
               document.body.textContent?.toLowerCase().includes('cyber kinetic') || false,
             rendererInfo,
+            rendererStats,
             navigationTiming: navigation ? {
               domContentLoadedMs: Number(navigation.domContentLoadedEventEnd.toFixed(2)),
               loadEventMs: Number(navigation.loadEventEnd.toFixed(2)),
@@ -405,12 +349,5 @@ try {
   );
   console.log(JSON.stringify(report, null, 2));
 } finally {
-  socket.close();
-  chrome.kill();
-  await Promise.race([once(chrome, 'exit'), new Promise((resolve) => setTimeout(resolve, 3_000))]);
-  try {
-    await fs.rm(profileDirectory, { recursive: true, force: true, maxRetries: 4, retryDelay: 250 });
-  } catch (error) {
-    console.warn(`Temporary Chrome profile cleanup deferred: ${error.message}`);
-  }
+  await browser.close();
 }

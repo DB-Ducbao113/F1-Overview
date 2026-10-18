@@ -30,3 +30,9 @@
 ### Phase 2 containment update
 
 The production guard now removes the C42 GLB, branded wheel texture, 11 legacy schematic images, 66 team close-ups and five generic legacy hotspot images. `VITE_USE_ORIGINAL_CHASSIS=false` is honored only by the Vite development server. These controls reduce accidental commercial inclusion; they do not convert retained legacy sources into cleared assets.
+
+## M2 Phase 3 final verification
+
+No new visual asset was required or created. Phase 3 verified that the eight EDS SVGs cover every live original-mode image slot: one showroom schematic plus seven technical hotspots. The 82 excluded legacy images are constructor-specific variants for the DEV-only comparison experience, not 82 distinct EDS runtime slots.
+
+The production guard now requires all nine original outputs (one GLB and eight SVGs) after pruning prohibited legacy assets. Two independent temporary generations and the checked-in GLB produced the same SHA-256 `A9A1226D87EC10B3188B82CAD01039200E81BE4999A88EBB27E75D0DA9AC8325`. Khronos glTF Validator 2.0.0-dev.3.10 reported 0 errors, warnings, infos and hints. These technical results do not replace independent rights review.

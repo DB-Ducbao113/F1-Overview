@@ -62,6 +62,31 @@ const WebGLContextGuard: React.FC<{
   return null;
 };
 
+const RendererDiagnostics: React.FC = () => {
+  const { gl } = useThree();
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    const update = () => {
+      window.dispatchEvent(
+        new CustomEvent('eds-renderer-stats', {
+          detail: {
+            drawCalls: gl.info.render.calls,
+            triangles: gl.info.render.triangles,
+            geometries: gl.info.memory.geometries,
+            textures: gl.info.memory.textures,
+          },
+        }),
+      );
+    };
+    update();
+    const interval = window.setInterval(update, 500);
+    return () => window.clearInterval(interval);
+  }, [gl]);
+
+  return null;
+};
+
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
   carModelName,
@@ -406,6 +431,7 @@ export const ShowroomView: React.FC = () => {
             className="w-full h-full cursor-grab active:cursor-grabbing"
           >
             <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
+            <RendererDiagnostics />
             {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
             <StudioW15Stage
               teamId={selectedTeamId}

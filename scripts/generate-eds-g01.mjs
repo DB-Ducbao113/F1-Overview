@@ -5,7 +5,7 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { EDS_G01_DESIGN } from './eds-g01-design.mjs';
 
-const OUTPUT = path.resolve('public/models/eds-g01.glb');
+const OUTPUT = path.resolve(process.argv[2] || 'public/models/eds-g01.glb');
 
 class NodeFileReader {
   result = null;
