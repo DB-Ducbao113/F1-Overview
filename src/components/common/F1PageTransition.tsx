@@ -9,6 +9,7 @@ export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, ch
   const [displayChildren, setDisplayChildren] = useState(children);
   const [isWiping, setIsWiping] = useState(false);
   const prevPathRef = useRef(pathname);
+  const immediateContent = pathname.startsWith('/engineering');
 
   useEffect(() => {
     if (prevPathRef.current !== pathname) {
@@ -43,7 +44,10 @@ export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, ch
       )}
 
       {/* ── 3D Perspective Page Entrance Container ── */}
-      <div key={pathname} className="animate-f1-depth-enter will-change-transform">
+      <div
+        key={pathname}
+        className={immediateContent ? undefined : 'animate-f1-depth-enter will-change-transform'}
+      >
         {displayChildren}
       </div>
     </div>

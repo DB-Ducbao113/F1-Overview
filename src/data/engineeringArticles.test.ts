@@ -23,10 +23,19 @@ describe('Engineering Insights content', () => {
     const slugs = new Set(ENGINEERING_ARTICLES.map((article) => article.slug));
     for (const article of ENGINEERING_ARTICLES) {
       expect(existsSync(`public${article.heroImage}`)).toBe(true);
+      expect(existsSync(`public${article.socialImage}`)).toBe(true);
+      expect(article.socialImage).toMatch(/\.png$/);
       expect(article.imageAlt.vi.length).toBeGreaterThan(40);
       expect(article.imageAlt.en.length).toBeGreaterThan(40);
       expect(article.sources.length).toBeGreaterThanOrEqual(3);
-      article.sources.forEach((source) => expect(source.url).toMatch(/^https:\/\//));
+      article.sources.forEach((source) => {
+        expect(source.url).toMatch(/^https:\/\//);
+        expect(source.version.length).toBeGreaterThan(5);
+        expect(source.accessed).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(source.verification.vi.length).toBeGreaterThan(20);
+        expect(source.verification.en.length).toBeGreaterThan(20);
+      });
+      expect(article.editorialReview.status).toBe('SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED');
       article.related.forEach((slug) => expect(slugs.has(slug)).toBe(true));
       article.hotspots.forEach((hotspot) => expect(HOTSPOT_LABELS[hotspot]).toBeDefined());
     }

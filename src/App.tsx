@@ -184,14 +184,16 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname]);
 
+  const isEngineeringRoute = location.pathname.startsWith('/engineering');
+
   return (
     <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white relative">
       <RouteSeo />
       {/* ── A1. F1 Start Lights Preloader ── */}
-      <F1StartLightsPreloader />
+      {!isEngineeringRoute && <F1StartLightsPreloader />}
 
       {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
-      {!location.pathname.startsWith('/showroom') && <F1SpeedStream />}
+      {!location.pathname.startsWith('/showroom') && !isEngineeringRoute && <F1SpeedStream />}
 
       {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div
@@ -217,7 +219,7 @@ export const App: React.FC = () => {
 
       <main className="flex-1 pt-16">
         <F1PageTransition pathname={location.pathname}>
-          <Suspense fallback={<div className="min-h-[50vh]" />}>
+          <Suspense fallback={<div className="min-h-screen" />}>
             <Routes>
               <Route path="/" element={<HomeView />} />
               {['/live', '/archive', '/timing'].map((path) => (

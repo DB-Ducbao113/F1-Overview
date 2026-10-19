@@ -12,6 +12,7 @@
     },
     "readingMinutes": 10,
     "heroImage": "/images/eds/engineering/ground-effect-flow.svg",
+    "socialImage": "/images/eds/engineering/social/ground-effect-aerodynamics.png",
     "imageAlt": {
       "vi": "Sơ đồ nguyên bản EDS-G01 nhìn ngang, minh họa luồng khí qua họng sàn và bộ khuếch tán bằng các đường màu cyan.",
       "en": "Original EDS-G01 side-view diagram showing airflow through the floor throat and diffuser with cyan streamlines."
@@ -47,11 +48,11 @@
         "paragraphs": {
           "vi": [
             "Không khí áp suất cao bên ngoài luôn có xu hướng tràn vào vùng áp suất thấp dưới sàn. Vì xe hiện đại không dùng váy trượt kín mặt đường, mép sàn phải tạo cấu trúc dòng giúp hạn chế rò rỉ mà vẫn ổn định khi xe nghiêng, chồm hoặc đi qua gờ. Cấu trúc đó có thể suy yếu khi luồng khí gặp bánh trước, gió ngang hay dao động độ cao gầm; do đó hiệu suất đỉnh không phải tiêu chí duy nhất.",
-            "Hạ gầm thường làm tương tác sàn–mặt đường mạnh hơn, nhưng khe quá nhỏ có thể làm dòng chảy mất ổn định hoặc nghẹt cục bộ. Khi tải khí động tăng làm xe hạ thêm, hệ khí động và hệ treo tạo thành một vòng phản hồi. Một thiết kế hữu dụng cần vùng vận hành đủ rộng, để thay đổi nhỏ về tư thế xe không gây biến đổi tải đột ngột mà người lái khó dự đoán."
+            "Trong một cấu hình sàn nhất định, hạ gầm có thể làm tương tác sàn–mặt đường mạnh hơn, nhưng xu hướng không phải lúc nào cũng đơn điệu: khe quá nhỏ có thể làm thay đổi lưu lượng và thúc đẩy tách dòng. Khi tải khí động tăng làm xe hạ thêm, hệ khí động và hệ treo tạo thành một vòng phản hồi. Đây là nguyên lý thiết kế, không phải kết quả đo trên EDS-G01; một thiết kế hữu dụng cần vùng vận hành đủ rộng để thay đổi nhỏ về tư thế xe không gây biến đổi tải đột ngột mà người lái khó dự đoán."
           ],
           "en": [
             "Higher-pressure air outside the floor continually tries to leak into the low-pressure region underneath. Because a modern car does not use skirts sealing against the road, the floor edge must organize flow that limits leakage while remaining stable in roll, pitch and over bumps. That structure can weaken in front-wheel wake, crosswind or ride-height oscillation, so peak performance is not the only design criterion.",
-            "Lower ride height often strengthens floor–ground interaction, but an excessively small gap can destabilize or locally choke the flow. As aerodynamic load compresses the car further, aerodynamics and suspension form a feedback loop. A useful design needs a broad operating window so a small attitude change does not produce an abrupt load change that the driver cannot anticipate."
+            "Within a given floor configuration, reducing ride height can strengthen floor–ground interaction, but the trend is not necessarily monotonic: an excessively small gap can alter mass flow and promote separation. As aerodynamic load compresses the car further, aerodynamics and suspension form a feedback loop. This is a design principle, not an EDS-G01 measurement; a useful design needs a broad operating window so a small attitude change does not produce an abrupt load change that the driver cannot anticipate."
           ]
         }
       },
@@ -92,17 +93,43 @@
     "sources": [
       {
         "title": "NASA Glenn — Aerodynamic Forces",
-        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/"
+        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/",
+        "version": "NASA Glenn educational page; current page observed",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ mô tả lực tổng từ phân bố áp suất và ma sát; Bernoulli chỉ là mô hình giản lược.",
+          "en": "Supports net force from integrated pressure and skin friction, with Bernoulli treated as a limited simplification."
+        }
       },
       {
         "title": "NASA Glenn — Boundary Layer",
-        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/boundary-layer/"
+        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/boundary-layer/",
+        "version": "NASA Glenn educational page; current page observed",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ điều kiện không trượt, lớp biên và cơ chế tách dòng do gradient áp suất bất lợi.",
+          "en": "Supports no-slip boundary layers and separation under an adverse pressure gradient."
+        }
       },
       {
-        "title": "FIA — Formula 1 Technical Regulations index",
-        "url": "https://www.fia.com/regulations/category/110"
+        "title": "NASA Glenn — Buice two-dimensional diffuser validation study",
+        "url": "https://www.grc.nasa.gov/www/wind/valid/buice/buice01/buice01.html",
+        "version": "NASA Glenn validation archive; Buice diffuser case",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ bối cảnh dòng tách trong bộ khuếch tán và gradient áp suất bất lợi; không xác nhận hình học EDS-G01.",
+          "en": "Supports separated diffuser flow and adverse-pressure-gradient context; it does not validate EDS-G01 geometry."
+        }
       }
-    ]
+    ],
+    "editorialReview": {
+      "status": "SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED",
+      "reviewedOn": "2026-10-18",
+      "note": {
+        "vi": "Đã đối chiếu nguồn kỹ thuật; chưa phải thẩm định kỹ thuật hoặc pháp lý độc lập.",
+        "en": "Technical sources checked; independent engineering and legal review remains required."
+      }
+    }
   },
   {
     "slug": "active-aerodynamics-wing-mechanics",
@@ -117,6 +144,7 @@
     },
     "readingMinutes": 11,
     "heroImage": "/images/eds/engineering/active-aero-mechanism.svg",
+    "socialImage": "/images/eds/engineering/social/active-aerodynamics-wing-mechanics.png",
     "imageAlt": {
       "vi": "Sơ đồ nguyên bản EDS-G01 mô tả hai trạng thái cánh, trục quay, cơ cấu chấp hành và đường truyền tải.",
       "en": "Original EDS-G01 diagram showing two wing states, pivot, actuator and structural load path."
@@ -179,11 +207,11 @@
         },
         "paragraphs": {
           "vi": [
-            "Quy định khí động chủ động thay đổi theo mùa giải và phiên bản tài liệu. FIA đã mô tả kiến trúc cánh trước và sau có thể chuyển giữa các trạng thái khí động trong khuôn khổ 2026, nhưng người thiết kế phải kiểm tra văn bản kỹ thuật hiện hành thay vì dựa vào tên gọi báo chí. Bài viết này giải thích nguyên lý hệ thống, không phải diễn giải pháp lý của một điều khoản thi đấu.",
+            "Bản ghi FIA ngày 8/6/2024 từng mô tả X-mode cản thấp và Z-mode tiêu chuẩn trong quá trình phát triển quy định 2026. Đó là bối cảnh lịch sử, không phải văn bản hiệu lực; người thiết kế phải kiểm tra Section C hiện hành thay vì dựa vào tên gọi báo chí. Bài viết này giải thích nguyên lý hệ thống, không diễn giải pháp lý một điều khoản thi đấu và không nói cơ cấu EDS-G01 đã được FIA phê duyệt.",
             "Trong Showroom, hotspot Cánh khí động và DRS giúp so sánh hình học chịu tải với phần tử chuyển động. Hãy quan sát bản lề, nhịp cánh, điểm tựa và khoảng hở; sau đó đặt câu hỏi cơ học: tải đi về khung bằng đường nào, cảm biến đo vị trí ở đâu, và hệ thống sẽ làm gì khi bộ chấp hành dừng giữa hành trình?"
           ],
           "en": [
-            "Active-aero rules change by season and document issue. The FIA has described switchable front and rear aerodynamic states within the 2026 framework, but a designer must consult the current technical text rather than rely on media labels. This article explains system principles; it is not a legal interpretation of a competition clause.",
+            "The FIA transcript dated 8 June 2024 described low-drag X-mode and standard Z-mode while the 2026 rules were being developed. That is historical context, not the operative rule text; a designer must consult the current Section C rather than rely on media labels. This article explains system principles, does not interpret a competition clause and does not claim FIA approval for the EDS-G01 mechanism.",
             "In the Showroom, the Aerodynamic Wings and DRS hotspots contrast a load-carrying wing with a moving element. Inspect the hinge, span, supports and gaps, then ask the mechanical questions: where does load enter the chassis, where is position sensed, and what happens if the actuator stops halfway?"
           ]
         }
@@ -194,17 +222,43 @@
     "sources": [
       {
         "title": "FIA — 2026 technical regulations press conference",
-        "url": "https://www.fia.com/news/f1-fia-formula-1-2026-technical-regulations-press-conference-transcript"
+        "url": "https://www.fia.com/news/f1-fia-formula-1-2026-technical-regulations-press-conference-transcript",
+        "version": "FIA transcript dated 2024-06-08; archived development context",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ bối cảnh X-mode/Z-mode và yêu cầu fail-safe; không được dùng như quy định hiện hành.",
+          "en": "Supports historical X/Z-mode and fail-safe context; it is not treated as current operative regulation text."
+        }
       },
       {
         "title": "FIA — Formula 1 Technical Regulations index",
-        "url": "https://www.fia.com/regulations/category/110"
+        "url": "https://www.fia.com/regulations/category/110",
+        "version": "2026 Section C Technical Regulations, Issue 20, 2026-08-05",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Nguồn hiện hành để kiểm tra điều khoản; bài viết không đưa ra kết luận tuân thủ cho EDS-G01.",
+          "en": "Current source for rule checks; the article makes no EDS-G01 compliance determination."
+        }
       },
       {
         "title": "NASA Glenn — Aerodynamic Forces",
-        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/"
+        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/",
+        "version": "NASA Glenn educational page; current page observed",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ nền tảng lực khí động và phân bố áp suất, không xác nhận cơ cấu chủ động cụ thể.",
+          "en": "Supports aerodynamic-force fundamentals, not any particular active mechanism."
+        }
       }
-    ]
+    ],
+    "editorialReview": {
+      "status": "SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED",
+      "reviewedOn": "2026-10-18",
+      "note": {
+        "vi": "Đã tách bối cảnh quy định khỏi khái niệm EDS; cần chuyên gia rà soát trước phát hành thương mại.",
+        "en": "Regulatory context is separated from the EDS concept; specialist review remains required before commercial release."
+      }
+    }
   },
   {
     "slug": "hybrid-powertrains-energy-management",
@@ -219,6 +273,7 @@
     },
     "readingMinutes": 12,
     "heroImage": "/images/eds/engineering/hybrid-energy-loop.svg",
+    "socialImage": "/images/eds/engineering/social/hybrid-powertrains-energy-management.png",
     "imageAlt": {
       "vi": "Sơ đồ năng lượng nguyên bản EDS-G01 với động cơ đốt trong, mô-tơ máy phát, pin, inverter và bánh sau.",
       "en": "Original EDS-G01 energy diagram linking the combustion engine, motor-generator, battery, inverter and rear wheels."
@@ -281,11 +336,11 @@
         },
         "paragraphs": {
           "vi": [
-            "FIA công bố rằng khung 2026 tăng vai trò của công suất điện và tiếp tục tinh chỉnh cách triển khai theo vùng vận hành. Con số và điều kiện có thể thay đổi giữa các phiên bản quy định, nên tài liệu kỹ thuật hiện hành là nguồn quyết định. Bài viết không gán thông số thi đấu đó cho EDS-G01 và không mô phỏng chiến lược năng lượng của một đội đua.",
+            "Thông báo FIA ngày 20/4/2026 ghi nhận công suất MGU-K tối đa 350 kW tại các vùng tăng tốc chính và 250 kW ở nơi khác trong cấu hình được mô tả khi đó. Các con số và điều kiện có thể đổi giữa các phiên bản, nên Section C hiện hành vẫn là nguồn quyết định. Đây là bối cảnh quy định, không phải thông số của EDS-G01 hay mô phỏng chiến lược năng lượng của một đội đua.",
             "Hotspot Power Unit của Showroom trình bày vị trí khái niệm của các khối chức năng. Sơ đồ năng lượng bổ sung góc nhìn hệ thống: mũi tên chỉ hướng truyền năng lượng có thể có, không biểu thị công suất đo được. Một báo cáo định lượng đáng tin cậy phải nêu chu kỳ lái, hiệu suất thành phần, nhiệt độ, trạng thái pin và sai số đo."
           ],
           "en": [
-            "The FIA has stated that the 2026 framework increases the role of electrical power and has continued refining deployment across operating zones. Numbers and conditions can change between regulation issues, so the current technical document remains authoritative. This article does not assign competition specifications to EDS-G01 or simulate any team's energy strategy.",
+            "The FIA notice dated 20 April 2026 records peak MGU-K power of 350 kW in key acceleration zones and 250 kW elsewhere in the configuration described at that time. Values and conditions can change between issues, so the current Section C remains authoritative. This is regulatory context, not an EDS-G01 specification or a simulation of any team's energy strategy.",
             "The Showroom Power Unit hotspot presents conceptual locations for functional blocks. The energy diagram adds the system view: arrows indicate possible transfer directions, not measured power. A credible quantitative report would specify drive cycle, component efficiency, temperature, battery state and measurement uncertainty."
           ]
         }
@@ -296,17 +351,43 @@
     "sources": [
       {
         "title": "US Department of Energy — How hybrid electric vehicles work",
-        "url": "https://afdc.energy.gov/vehicles/how-do-hybrid-electric-cars-work"
+        "url": "https://afdc.energy.gov/vehicles/how-do-hybrid-electric-cars-work",
+        "version": "Alternative Fuels Data Center educational page; current page observed",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ các đường năng lượng hybrid và phanh tái sinh ở mức nguyên lý xe đường bộ; không mô tả hệ F1.",
+          "en": "Supports road-hybrid energy paths and regenerative braking principles; it is not an F1-system specification."
+        }
       },
       {
         "title": "FIA — Refinements to the 2026 Formula 1 regulations",
-        "url": "https://www.fia.com/news/refinements-2026-fia-formula-1-regulations-agreed-all-stakeholders"
+        "url": "https://www.fia.com/news/refinements-2026-fia-formula-1-regulations-agreed-all-stakeholders",
+        "version": "FIA notice dated 2026-04-20",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ các giá trị 350/250 kW được nêu có điều kiện và bối cảnh tinh chỉnh năm 2026.",
+          "en": "Supports the qualified 350/250 kW values and the 2026 refinement context."
+        }
       },
       {
         "title": "FIA — Formula 1 Technical Regulations index",
-        "url": "https://www.fia.com/regulations/category/110"
+        "url": "https://www.fia.com/regulations/category/110",
+        "version": "2026 Section C Technical Regulations, Issue 20, 2026-08-05",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Nguồn quyết định cho điều khoản hiện hành; không được thay thế bằng thông cáo báo chí cũ hơn.",
+          "en": "Authoritative location for current clauses; older press material does not replace it."
+        }
       }
-    ]
+    ],
+    "editorialReview": {
+      "status": "SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED",
+      "reviewedOn": "2026-10-18",
+      "note": {
+        "vi": "Đã phân biệt nguyên lý hybrid xe đường bộ, bối cảnh FIA và khái niệm EDS; cần chuyên gia xác nhận cuối.",
+        "en": "Road-hybrid principles, FIA context and the EDS concept are separated; final specialist review remains required."
+      }
+    }
   },
   {
     "slug": "vehicle-dynamics-suspension",
@@ -318,6 +399,7 @@
     },
     "readingMinutes": 11,
     "heroImage": "/images/eds/engineering/suspension-load-path.svg",
+    "socialImage": "/images/eds/engineering/social/vehicle-dynamics-suspension.png",
     "imageAlt": {
       "vi": "Sơ đồ EDS-G01 nhìn trước với tay đòn hệ treo, tâm lăn, tải lốp và chuyển tải khi vào cua.",
       "en": "Front-view EDS-G01 diagram showing suspension links, roll centre, tyre loads and lateral load transfer."
@@ -367,11 +449,11 @@
         "paragraphs": {
           "vi": [
             "Lò xo quyết định quan hệ gần tĩnh giữa tải và chuyển vị; giảm chấn tạo lực phụ thuộc vận tốc chuyển động để kiểm soát quá độ. Lò xo quá cứng có thể giữ độ cao gầm nhưng làm bánh khó bám theo mặt đường gồ ghề. Giảm chấn quá lớn có thể kiểm soát một chuyển động nhưng ngăn hệ thống hồi phục đủ nhanh cho sự kiện tiếp theo.",
-            "Xe hiệu ứng mặt đất làm yêu cầu này phức tạp hơn vì tải sàn nhạy với độ cao và góc chồm. Heave, pitch và roll cần được quản lý cùng chuyển động từng bánh. Sự tách biệt hoàn hảo là không thể; kiến trúc liên kết hoặc phần tử thứ ba chỉ cho kỹ sư thêm công cụ điều chỉnh cách các mode tương tác."
+            "Xe hiệu ứng mặt đất làm yêu cầu này phức tạp hơn vì tải sàn có thể nhạy với độ cao và góc chồm. Heave, pitch và roll cần được quản lý cùng chuyển động từng bánh. Trong thực tế, các mode vẫn liên kết qua lốp, kết cấu, động học và khí động học; kiến trúc liên kết hoặc phần tử thứ ba cho kỹ sư thêm quyền điều chỉnh chứ không chứng minh các mode hoàn toàn độc lập."
           ],
           "en": [
             "Springs set the near-static relationship between load and displacement; dampers produce velocity-dependent force to control transients. Excessive spring stiffness may hold ride height but prevent a wheel from following a rough surface. Excessive damping may control one event yet stop the system recovering quickly enough for the next.",
-            "A ground-effect car complicates the requirement because floor load is sensitive to height and pitch. Heave, pitch and roll must be managed alongside individual-wheel movement. Perfect decoupling is impossible; interconnected layouts or third elements merely give engineers more tools to tune how the modes interact."
+            "A ground-effect car complicates the requirement because floor load can be sensitive to height and pitch. Heave, pitch and roll must be managed alongside individual-wheel movement. In practice these modes remain coupled through tyres, structure, kinematics and aerodynamics; interconnected layouts or third elements give engineers more tuning authority rather than proving complete independence."
           ]
         }
       },
@@ -397,17 +479,43 @@
     "related": ["ground-effect-aerodynamics", "hybrid-powertrains-energy-management"],
     "sources": [
       {
-        "title": "MIT — Vehicle dynamics and suspension thesis",
-        "url": "https://dspace.mit.edu/server/api/core/bitstreams/3a1b0f88-7319-4772-8b39-cc79edd95ec1/content"
+        "title": "MIT — Vehicle Dynamics on an Electric Formula SAE Racecar",
+        "url": "https://dspace.mit.edu/entities/publication/cb994dec-2439-445e-bd4c-a235120c068b",
+        "version": "Audrey Gaither thesis, June 2021; handle 1721.1/139209",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ bối cảnh thiết kế động lực học xe và đánh đổi liên kết; không xác nhận hình học EDS-G01.",
+          "en": "Supports vehicle-dynamics design and coupled trade-off context; it does not validate EDS-G01 geometry."
+        }
       },
       {
         "title": "Yale Mechanical Engineering — Decoupled roll/heave suspension",
-        "url": "https://me-special-projects.yale.edu/decoupled-roll-heave-front-suspension-design-for-a-formula-sae-race-car"
+        "url": "https://me-special-projects.yale.edu/decoupled-roll-heave-front-suspension-design-for-a-formula-sae-race-car",
+        "version": "Yale senior project page; validation described as future work",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ mục tiêu tách điều khiển roll/heave; không được dùng làm bằng chứng lợi ích hiệu năng đã đo.",
+          "en": "Supports the roll/heave-decoupling design objective; it is not evidence of measured performance benefit."
+        }
       },
       {
         "title": "NASA Glenn — Aerodynamic Forces",
-        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/"
+        "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/aerodynamic-forces/",
+        "version": "NASA Glenn educational page; current page observed",
+        "accessed": "2026-10-18",
+        "verification": {
+          "vi": "Hỗ trợ quan hệ định tính giữa tư thế xe và tải khí động, không cung cấp dữ liệu hệ treo EDS.",
+          "en": "Supports qualitative aerodynamic-load context, not EDS suspension data."
+        }
       }
-    ]
+    ],
+    "editorialReview": {
+      "status": "SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED",
+      "reviewedOn": "2026-10-18",
+      "note": {
+        "vi": "Đã giới hạn kết luận của nguồn MIT/Yale và không trình bày mục tiêu dự án như kết quả đo.",
+        "en": "MIT/Yale source limits are recorded and project objectives are not presented as measured outcomes."
+      }
+    }
   }
 ]

@@ -14,6 +14,10 @@ const parseSiteUrl = (value) => {
 };
 const siteUrl = parseSiteUrl(process.env.VITE_SITE_URL);
 const allowIndexing = process.env.VITE_ALLOW_INDEXING === 'true';
+const deploymentContext =
+  process.env.VITE_DEPLOYMENT_CONTEXT ?? process.env.VERCEL_ENV ?? process.env.CONTEXT;
+const previewBuild = ['preview', 'deploy-preview', 'branch-deploy'].includes(deploymentContext);
+const indexing = Boolean(siteUrl && allowIndexing && !previewBuild);
 const articles = JSON.parse(await readFile('src/data/engineeringArticles.json', 'utf8'));
 const extractRecordKeys = (source, startMarker, endMarker) => {
   const block = source.slice(source.indexOf(startMarker), source.indexOf(endMarker));
@@ -57,13 +61,12 @@ const xmlEscape = (value) =>
 const sitemap = siteUrl
   ? `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map((route) => `  <url><loc>${xmlEscape(`${siteUrl}${route}`)}</loc></url>`).join('\n')}\n</urlset>\n`
   : '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>\n';
-const robots =
-  siteUrl && allowIndexing
-    ? `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
-    : 'User-agent: *\nDisallow: /\n';
+const robots = indexing
+  ? `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
+  : 'User-agent: *\nDisallow: /\n';
 await mkdir(outputDir, { recursive: true });
 await writeFile(path.join(outputDir, 'sitemap.xml'), sitemap, 'utf8');
 await writeFile(path.join(outputDir, 'robots.txt'), robots, 'utf8');
 console.log(
-  `SEO artifacts: ${routes.length} routes; indexing=${Boolean(siteUrl && allowIndexing)}; site=${siteUrl ?? 'UNCONFIGURED'}`,
+  `SEO artifacts: ${routes.length} routes; indexing=${indexing}; context=${deploymentContext ?? 'UNSET'}; site=${siteUrl ?? 'UNCONFIGURED'}`,
 );

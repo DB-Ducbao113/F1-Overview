@@ -47,14 +47,14 @@ export const EngineeringIndexPage: React.FC = () => {
                   </span>
                 </div>
                 <div className="p-6 sm:p-8">
-                  <div className="mb-4 flex items-center gap-2 text-xs text-white/45">
+                  <div className="mb-4 flex items-center gap-2 text-xs text-white/70">
                     <Clock3 className="h-4 w-4" />
                     {article.readingMinutes} {lang === 'vi' ? 'phút đọc' : 'min read'}
                   </div>
                   <h2 className="font-display text-2xl font-black uppercase leading-tight text-white sm:text-3xl">
                     {article.title[lang]}
                   </h2>
-                  <p className="mt-4 text-sm leading-6 text-white/60">
+                  <p className="mt-4 text-sm leading-6 text-white/70">
                     {article.description[lang]}
                   </p>
                   <span className="mt-7 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-cyan-200">

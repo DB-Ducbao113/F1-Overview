@@ -27,7 +27,7 @@ export const Footer: React.FC = React.memo(() => {
       </div>
 
       <div className="page-container relative py-14 md:py-20">
-        <div className="mb-12 flex items-center justify-between border-b border-white/10 pb-5 text-[9px] font-semibold uppercase tracking-[0.34em] text-white/35">
+        <div className="mb-12 flex items-center justify-between border-b border-white/10 pb-5 text-[9px] font-semibold uppercase tracking-[0.34em] text-white/65">
           <span>PDM / Archive 026</span>
           <span className="hidden sm:inline">Aerodynamics · Telemetry · Heritage</span>
           <span>43° N / 12° E</span>
@@ -41,13 +41,13 @@ export const Footer: React.FC = React.memo(() => {
                 <>
                   Chính xác
                   <br />
-                  <span className="text-white/30">trong chuyển động.</span>
+                  <span className="text-white/65">trong chuyển động.</span>
                 </>
               ) : (
                 <>
                   Precision
                   <br />
-                  <span className="text-white/30">in motion.</span>
+                  <span className="text-white/65">in motion.</span>
                 </>
               )}
             </p>
@@ -63,7 +63,7 @@ export const Footer: React.FC = React.memo(() => {
             <div className="mb-5 flex items-center gap-3">
               <span className="font-display text-3xl italic text-f1red">01</span>
               <div>
-                <p className="text-[9px] uppercase tracking-[0.34em] text-white/35">Index</p>
+                <p className="text-[9px] uppercase tracking-[0.34em] text-white/65">Index</p>
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
                   {strings.colExplore}
                 </h3>
@@ -77,7 +77,7 @@ export const Footer: React.FC = React.memo(() => {
                     className="group flex items-center justify-between py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/55 transition-colors hover:text-white"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="font-display text-[10px] italic text-white/20 transition-colors group-hover:text-f1red">
+                      <span className="font-display text-[10px] italic text-white/65 transition-colors group-hover:text-f1red">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       {item.label}
@@ -95,14 +95,14 @@ export const Footer: React.FC = React.memo(() => {
             <div className="mb-5 flex items-center gap-3">
               <span className="font-display text-3xl italic text-f1red">02</span>
               <div>
-                <p className="text-[9px] uppercase tracking-[0.34em] text-white/35">Provenance</p>
+                <p className="text-[9px] uppercase tracking-[0.34em] text-white/65">Provenance</p>
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">
                   {strings.colLegal}
                 </h3>
               </div>
             </div>
 
-            <div className="border-l border-f1red/50 pl-5 text-[11px] font-light leading-5 text-white/45">
+            <div className="border-l border-f1red/50 pl-5 text-[11px] font-light leading-5 text-white/65">
               <p className="mb-4 uppercase tracking-[0.08em] text-white/65">
                 Photography / LAT Images / DPPI / Motorsport Images / Red Bull Media House /
                 Official team press kits
@@ -110,7 +110,7 @@ export const Footer: React.FC = React.memo(() => {
               <p>{strings.disclaimer}</p>
             </div>
 
-            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-white/45">
+            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 px-4 py-2 text-[9px] font-semibold uppercase tracking-[0.24em] text-white/65">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
               Independent digital archive
             </div>

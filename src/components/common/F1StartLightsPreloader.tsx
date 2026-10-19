@@ -89,7 +89,11 @@ export const F1StartLightsPreloader: React.FC = () => {
                 <div key={litColumns} className="podium-intro__pressure" aria-hidden="true" />
               )}
               <p className="podium-intro__eyebrow">THE GRID IS SET.</p>
-              <div className="podium-intro__rack" aria-label={`${litColumns} of 5 red lights on`}>
+              <div
+                className="podium-intro__rack"
+                role="img"
+                aria-label={`${litColumns} of 5 red lights on`}
+              >
                 {[1, 2, 3, 4, 5].map((column) => (
                   <div className="podium-intro__column" key={column}>
                     {[0, 1].map((lamp) => (

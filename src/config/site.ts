@@ -10,6 +10,7 @@ const normalizeSiteUrl = (value?: string) => {
 
 export const CONFIGURED_SITE_URL = normalizeSiteUrl(import.meta.env.VITE_SITE_URL);
 export const INDEXING_REQUESTED = import.meta.env.VITE_ALLOW_INDEXING === 'true';
+export const DEPLOYMENT_CONTEXT = import.meta.env.VITE_DEPLOYMENT_CONTEXT;
 
 export const isPreviewHostname = (hostname: string) =>
   hostname === 'localhost' ||
@@ -21,6 +22,7 @@ export const canIndexCurrentHost = () =>
   Boolean(
     CONFIGURED_SITE_URL &&
     INDEXING_REQUESTED &&
+    DEPLOYMENT_CONTEXT !== 'preview' &&
     typeof window !== 'undefined' &&
     !isPreviewHostname(window.location.hostname),
   );

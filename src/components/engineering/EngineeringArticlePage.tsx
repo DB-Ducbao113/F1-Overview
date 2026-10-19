@@ -35,7 +35,7 @@ export const EngineeringArticlePage: React.FC = () => {
         <div className="page-container py-10 md:py-16">
           <Link
             to="/engineering"
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/55 hover:text-cyan-200"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/70 hover:text-cyan-200"
           >
             <ArrowLeft className="h-4 w-4" /> Engineering Insights
           </Link>
@@ -50,7 +50,7 @@ export const EngineeringArticlePage: React.FC = () => {
               <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70">
                 {article.standfirst[lang]}
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-white/45">
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-white/70">
                 <span className="inline-flex items-center gap-2">
                   <Clock3 className="h-4 w-4" /> {article.readingMinutes}{' '}
                   {lang === 'vi' ? 'phút đọc' : 'min read'}
@@ -60,7 +60,7 @@ export const EngineeringArticlePage: React.FC = () => {
             </div>
             <figure className="overflow-hidden rounded-3xl border border-white/10 bg-black">
               <img src={article.heroImage} alt={article.imageAlt[lang]} className="w-full" />
-              <figcaption className="border-t border-white/10 px-5 py-3 text-xs leading-5 text-white/45">
+              <figcaption className="border-t border-white/10 px-5 py-3 text-xs leading-5 text-white/70">
                 {article.imageAlt[lang]}
               </figcaption>
             </figure>
@@ -73,7 +73,7 @@ export const EngineeringArticlePage: React.FC = () => {
           {article.sections.map((section, index) => (
             <section key={section.id} id={section.id} className="mb-16 scroll-mt-24">
               <div className="mb-5 flex items-baseline gap-4">
-                <span className="font-mono text-xs text-f1red">
+                <span className="font-mono text-xs text-red-300">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <h2 className="font-display text-2xl font-black uppercase leading-tight sm:text-3xl">
@@ -114,10 +114,13 @@ export const EngineeringArticlePage: React.FC = () => {
             <h2 className="font-display text-xl font-black uppercase">
               {lang === 'vi' ? 'Nguồn kỹ thuật' : 'Technical sources'}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-white/50">
+            <p className="mt-3 text-sm leading-6 text-white/70">
               {lang === 'vi'
                 ? 'Nguồn được dùng để kiểm chứng nguyên lý và bối cảnh quy định. Nội dung và sơ đồ của bài viết được biên soạn mới, không sao chép hình minh họa nguồn.'
                 : 'Sources support underlying principles and regulatory context. Article text and diagrams were newly authored and do not reproduce source illustrations.'}
+            </p>
+            <p className="mt-3 rounded-xl border border-amber-300/20 bg-amber-300/[0.04] px-4 py-3 text-xs leading-5 text-amber-100/75">
+              {article.editorialReview.note[lang]} · {article.editorialReview.reviewedOn}
             </p>
             <ul className="mt-5 space-y-3">
               {article.sources.map((source) => (
@@ -130,6 +133,10 @@ export const EngineeringArticlePage: React.FC = () => {
                   >
                     <ExternalLink className="mt-0.5 h-4 w-4 shrink-0" /> {source.title}
                   </a>
+                  <p className="ml-6 mt-1 text-xs leading-5 text-white/65">
+                    {source.version} · {lang === 'vi' ? 'Truy cập' : 'Accessed'} {source.accessed}.{' '}
+                    {source.verification[lang]}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -141,7 +148,7 @@ export const EngineeringArticlePage: React.FC = () => {
             className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"
             aria-label={lang === 'vi' ? 'Mục lục bài viết' : 'Article contents'}
           >
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/40">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/65">
               {lang === 'vi' ? 'Trong bài' : 'In this article'}
             </p>
             <ol className="mt-4 space-y-3">
@@ -149,9 +156,9 @@ export const EngineeringArticlePage: React.FC = () => {
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className="flex gap-3 text-xs leading-5 text-white/65 hover:text-cyan-200"
+                    className="flex gap-3 text-xs leading-5 text-white/75 hover:text-cyan-200"
                   >
-                    <span className="font-mono text-f1red">0{index + 1}</span>
+                    <span className="font-mono text-red-300">0{index + 1}</span>
                     {section.heading[lang]}
                   </a>
                 </li>
@@ -159,7 +166,7 @@ export const EngineeringArticlePage: React.FC = () => {
             </ol>
           </nav>
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/40">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/65">
               {lang === 'vi' ? 'Bài liên quan' : 'Related engineering'}
             </p>
             <div className="mt-4 space-y-3">

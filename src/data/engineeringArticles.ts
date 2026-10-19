@@ -12,6 +12,15 @@ export interface EngineeringSection {
 export interface EngineeringSource {
   title: string;
   url: string;
+  version: string;
+  accessed: string;
+  verification: LocalizedText;
+}
+
+export interface EditorialReview {
+  status: 'SOURCE_CHECKED_HUMAN_REVIEW_REQUIRED';
+  reviewedOn: string;
+  note: LocalizedText;
 }
 
 export interface EngineeringArticle {
@@ -21,12 +30,14 @@ export interface EngineeringArticle {
   description: LocalizedText;
   readingMinutes: number;
   heroImage: string;
+  socialImage: string;
   imageAlt: LocalizedText;
   standfirst: LocalizedText;
   sections: EngineeringSection[];
   hotspots: string[];
   related: string[];
   sources: EngineeringSource[];
+  editorialReview: EditorialReview;
 }
 
 export const ENGINEERING_ARTICLES = articlesJson as EngineeringArticle[];

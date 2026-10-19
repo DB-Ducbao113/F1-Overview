@@ -1,6 +1,6 @@
 {
-  "baseUrl": "http://127.0.0.1:4177",
-  "capturedAt": "2026-10-18T16:01:04.293Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "capturedAt": "2026-10-18T16:48:25.591Z",
   "results": [
     {
       "name": "engineering-index-desktop-1440x900",
@@ -16,29 +16,29 @@
       "consoleErrors": [
         "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
-        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
         "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
       ],
       "pageErrors": [],
       "failedResources": [
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "failedRequests": [
         "net::ERR_NETWORK_ACCESS_DENIED https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,opsz,wght@0,14..32,100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "net::ERR_ABORTED http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "expectedOfflineFailures": [
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ]
     },
     {
@@ -56,24 +56,28 @@
         "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
         "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
-        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
       ],
       "pageErrors": [],
       "failedResources": [
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js"
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "failedRequests": [
         "net::ERR_NETWORK_ACCESS_DENIED https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,opsz,wght@0,14..32,100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "expectedOfflineFailures": [
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js"
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ]
     },
     {
@@ -91,25 +95,29 @@
       "consoleErrors": [
         "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
         "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
       ],
       "pageErrors": [],
       "failedResources": [
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "failedRequests": [
         "net::ERR_NETWORK_ACCESS_DENIED https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,opsz,wght@0,14..32,100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "expectedOfflineFailures": [
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ]
     },
     {
@@ -127,24 +135,28 @@
         "Failed to load resource: net::ERR_NETWORK_ACCESS_DENIED",
         "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
         "Failed to load resource: the server responded with a status of 404 (Not Found)",
-        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
       ],
       "pageErrors": [],
       "failedResources": [
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js"
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "failedRequests": [
         "net::ERR_NETWORK_ACCESS_DENIED https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,opsz,wght@0,14..32,100..900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/_vercel/speed-insights/script.js",
-        "net::ERR_ABORTED http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "net::ERR_ABORTED http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ],
       "expectedOfflineFailures": [
-        "500 http://127.0.0.1:4177/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
-        "404 http://127.0.0.1:4177/_vercel/insights/script.js",
-        "404 http://127.0.0.1:4177/_vercel/speed-insights/script.js"
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0",
+        "404 http://127.0.0.1:4173/_vercel/insights/script.js",
+        "404 http://127.0.0.1:4173/_vercel/speed-insights/script.js",
+        "500 http://127.0.0.1:4173/api/jolpica?path=ergast%2Ff1%2F2026%2Fresults.json&limit=100&offset=0"
       ]
     },
     {

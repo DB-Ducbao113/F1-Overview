@@ -1,0 +1,303 @@
+{
+  "baseUrl": "http://127.0.0.1:4177",
+  "routeCount": 72,
+  "viewports": [
+    {
+      "name": "mobile",
+      "width": 375,
+      "height": 812,
+      "semantics": {
+        "h1Count": 1,
+        "headingLevels": [
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "imagesWithoutAlt": [],
+        "unnamedLinks": [],
+        "overflow": 0
+      },
+      "focusChecks": [
+        {
+          "tag": "A",
+          "text": "PODIUM — Effet de Sol",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "VI",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "EN",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Open navigation menu",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Engineering Insights",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sàn & bộ khuếch tán",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sidepod & làm mát",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Cánh khí động",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "NASA Glenn — Aerodynamic Forces",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "NASA Glenn — Boundary Layer",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "NASA Glenn — Buice two-dimensional diffuser validation study",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "01Từ dòng chảy đến trường áp suất",
+          "visible": true,
+          "indicator": true
+        }
+      ]
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024,
+      "semantics": {
+        "h1Count": 1,
+        "headingLevels": [
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "imagesWithoutAlt": [],
+        "unnamedLinks": [],
+        "overflow": 0
+      },
+      "focusChecks": [
+        {
+          "tag": "A",
+          "text": "PODIUM — Effet de Sol",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Trang chủ",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Giải đấu",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Showroom 3D",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Kỹ thuật",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "VI",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "EN",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Engineering Insights",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sàn & bộ khuếch tán",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sidepod & làm mát",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Cánh khí động",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "NASA Glenn — Aerodynamic Forces",
+          "visible": true,
+          "indicator": true
+        }
+      ]
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900,
+      "semantics": {
+        "h1Count": 1,
+        "headingLevels": [
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "imagesWithoutAlt": [],
+        "unnamedLinks": [],
+        "overflow": 0
+      },
+      "focusChecks": [
+        {
+          "tag": "A",
+          "text": "PODIUM — Effet de Sol",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Trang chủ",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Giải đấu",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Showroom 3D",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Kỹ thuật",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "VI",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "EN",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Engineering Insights",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sàn & bộ khuếch tán",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Sidepod & làm mát",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "Cánh khí động",
+          "visible": true,
+          "indicator": true
+        },
+        {
+          "tag": "A",
+          "text": "NASA Glenn — Aerodynamic Forces",
+          "visible": true,
+          "indicator": true
+        }
+      ]
+    }
+  ],
+  "routeFailures": [],
+  "bilingualMetadata": {
+    "lang": "en",
+    "title": "Ground Effect: Creating Downforce Under the Car | Podium EDS",
+    "description": "How floor geometry, floor edges and the diffuser manage pressure beneath a ground-effect racing prototype.",
+    "locale": "en_US",
+    "socialImage": "/images/eds/engineering/social/ground-effect-aerodynamics.png"
+  },
+  "noJavaScript": {
+    "statusText": "Hiệu ứng mặt đất: tạo lực ép từ sàn xe",
+    "paragraphCount": 24,
+    "imageAlt": "Sơ đồ nguyên bản EDS-G01 nhìn ngang, minh họa luồng khí qua họng sàn và bộ khuếch tán bằng các đường màu cyan.",
+    "robots": "noindex, nofollow"
+  },
+  "capturedAt": "2026-10-18T16:48:24.870Z"
+}

@@ -37,7 +37,7 @@ const routeCopy = (pathname: string, lang: 'vi' | 'en') => {
       title: `${article.title[lang]} | Podium EDS`,
       description: article.description[lang],
       type: 'article',
-      image: article.heroImage,
+      image: article.socialImage,
       article,
     };
   const pages: Record<string, [string, string, string, string]> = {
@@ -132,9 +132,26 @@ export const RouteSeo = () => {
     upsertMeta('meta[property="og:title"]', 'property', 'og:title', copy.title);
     upsertMeta('meta[property="og:description"]', 'property', 'og:description', copy.description);
     upsertMeta('meta[property="og:image"]', 'property', 'og:image', imageUrl);
+    upsertMeta('meta[property="og:image:type"]', 'property', 'og:image:type', 'image/png');
+    upsertMeta('meta[property="og:image:width"]', 'property', 'og:image:width', '1200');
+    upsertMeta('meta[property="og:image:height"]', 'property', 'og:image:height', '630');
+    upsertMeta('meta[property="og:image:alt"]', 'property', 'og:image:alt', copy.title);
+    upsertMeta(
+      'meta[property="og:locale"]',
+      'property',
+      'og:locale',
+      lang === 'vi' ? 'vi_VN' : 'en_US',
+    );
+    upsertMeta(
+      'meta[property="og:locale:alternate"]',
+      'property',
+      'og:locale:alternate',
+      lang === 'vi' ? 'en_US' : 'vi_VN',
+    );
     upsertMeta('meta[name="twitter:title"]', 'name', 'twitter:title', copy.title);
     upsertMeta('meta[name="twitter:description"]', 'name', 'twitter:description', copy.description);
     upsertMeta('meta[name="twitter:image"]', 'name', 'twitter:image', imageUrl);
+    upsertMeta('meta[name="twitter:image:alt"]', 'name', 'twitter:image:alt', copy.title);
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonicalUrl) {
       if (!canonical) {
@@ -154,6 +171,7 @@ export const RouteSeo = () => {
           '@context': 'https://schema.org',
           '@type': 'TechArticle',
           headline: copy.article.title[lang],
+          alternativeHeadline: copy.article.title[lang === 'vi' ? 'en' : 'vi'],
           description: copy.article.description[lang],
           image: imageUrl,
           inLanguage: ['vi', 'en'],

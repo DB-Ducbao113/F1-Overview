@@ -26,13 +26,16 @@
     "asset:eds-editorial": "node scripts/generate-eds-editorial-assets.mjs",
     "asset:eds-engineering": "node scripts/generate-eds-engineering-assets.mjs",
     "asset:eds-engineering:check": "node scripts/generate-eds-engineering-assets.mjs --check",
+    "asset:eds-engineering:social": "node scripts/generate-eds-engineering-social-cards.mjs",
+    "asset:eds-engineering:social:check": "node scripts/generate-eds-engineering-social-cards.mjs --check",
     "seo:generate": "node scripts/generate-seo-artifacts.mjs",
     "asset:eds-g01:validate": "node scripts/validate-eds-g01.mjs",
     "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs",
     "qa:m3:visuals": "node scripts/qa-m3-visual-assets.mjs",
     "qa:m3:comparison": "node scripts/capture-m3-phase2-comparison.mjs",
     "qa:m5:seo": "node scripts/qa-m5-seo.mjs",
-    "qa:m5:browser": "node scripts/capture-m5-engineering-evidence.mjs"
+    "qa:m5:browser": "node scripts/capture-m5-engineering-evidence.mjs",
+    "qa:m5:accessibility": "node scripts/qa-m5-accessibility.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",
