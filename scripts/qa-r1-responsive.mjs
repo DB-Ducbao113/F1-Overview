@@ -5,7 +5,7 @@ import { chromium } from 'playwright-core';
 const base = process.env.R1_QA_URL || 'http://127.0.0.1:4173';
 const executablePath =
   process.env.R1_QA_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const output = path.resolve('docs/commercialization/r1/evidence');
+const output = path.resolve(process.env.R1_QA_OUTPUT || 'docs/commercialization/r1/evidence');
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch({
   executablePath,
@@ -93,6 +93,7 @@ try {
     [375, 812],
     [390, 844],
     [768, 1024],
+    [860, 900],
   ]) {
     const context = await browser.newContext({
       viewport: { width, height },
@@ -102,6 +103,24 @@ try {
     const { page, pageErrors, consoleErrors, failedResources } = await open(context, '/');
     await page.waitForSelector('[data-mobile-hub]');
     const initial = await measure(page);
+    if (width === 320) await page.screenshot({ path: path.join(output, 'mobile-home-320.png') });
+    let mobileMenu;
+    if (width === 375) {
+      await page.getByRole('button', { name: 'Open navigation menu' }).click();
+      const drawer = page.locator('#mobile-nav-menu');
+      mobileMenu = {
+        links: await drawer.locator('a').allTextContents(),
+        count: await drawer.locator('a').count(),
+      };
+      await page.keyboard.press('Escape');
+      mobileMenu.closedOnEscape = !(await drawer.isVisible());
+      await page.getByRole('button', { name: 'English' }).click();
+      mobileMenu.englishHome = await page
+        .locator('[data-mobile-hub] > nav button')
+        .first()
+        .innerText();
+      await page.getByRole('button', { name: 'Tiếng Việt' }).click();
+    }
     if (width === 375) await page.screenshot({ path: path.join(output, 'mobile-home-375.png') });
     const nav = page.locator('[data-mobile-hub] > nav');
     await nav.locator('button').nth(1).click();
@@ -112,6 +131,26 @@ try {
       .evaluate((node) => node.getBoundingClientRect().top);
     if (width === 375)
       await page.screenshot({ path: path.join(output, 'mobile-championship-375.png') });
+    let championshipTabs;
+    if (width === 375) {
+      const touchTargets = page.locator(
+        '#giai-dau [data-championship-tab], #giai-dau [data-season-option], #giai-dau [data-championship-refresh]',
+      );
+      const minTargetHeight = await touchTargets.evaluateAll((nodes) =>
+        Math.min(...nodes.map((node) => node.getBoundingClientRect().height)),
+      );
+      await page.locator('#giai-dau [data-championship-tab="calendar"]').click();
+      await page.waitForTimeout(250);
+      championshipTabs = {
+        minTargetHeight,
+        calendarRounds: await page.locator('#giai-dau [id^="calendar-round-"]').count(),
+        calendarSelected: await page
+          .locator('#giai-dau [data-championship-tab="calendar"]')
+          .evaluate((node) => node.classList.contains('bg-f1red')),
+      };
+      await page.screenshot({ path: path.join(output, 'mobile-calendar-375.png') });
+      await page.locator('#giai-dau [data-championship-tab="standings"]').click();
+    }
     await nav.locator('button').nth(2).click();
     await page.locator('#showroom [data-eds-livery]').first().waitFor({ timeout: 15000 });
     await page.waitForTimeout(350);
@@ -127,6 +166,8 @@ try {
     }));
     if (width === 375)
       await page.screenshot({ path: path.join(output, 'mobile-showroom-375.png') });
+    if (width === 320)
+      await page.screenshot({ path: path.join(output, 'mobile-showroom-320.png') });
     let interactions;
     if (width === 375) {
       const liveries = page.locator('#showroom [data-eds-livery]');
@@ -140,10 +181,20 @@ try {
       const hotspots = page.locator('#showroom [data-eds-hotspot]');
       const dialog = page.locator('[role="dialog"][aria-labelledby="eds-detail-title"]');
       let hotspotDialogsOpened = 0;
+      let dialogFocus;
+      let escapeClosedDialog = false;
       for (let index = 0; index < 7; index++) {
         await hotspots.nth(index).click();
         if (await dialog.isVisible()) hotspotDialogsOpened++;
-        await dialog.locator('button[aria-label]').first().click();
+        if (index === 0) {
+          dialogFocus = await page.evaluate(() =>
+            document.activeElement?.getAttribute('aria-label'),
+          );
+          await page.keyboard.press('Escape');
+          escapeClosedDialog = !(await dialog.isVisible());
+        } else {
+          await dialog.locator('button[aria-label]').first().click();
+        }
       }
       await page.goBack();
       const backHash = await page.evaluate(() => location.hash);
@@ -156,6 +207,8 @@ try {
         pressedLivery,
         liverySelectionsVerified,
         hotspotDialogsOpened,
+        dialogFocus,
+        escapeClosedDialog,
         backHash,
         forwardHash,
         keyboardHash,
@@ -173,6 +226,8 @@ try {
       liveryCount: await page.locator('#showroom [data-eds-livery]').count(),
       hotspotCount: await page.locator('#showroom [data-eds-hotspot]').count(),
       interactions,
+      mobileMenu,
+      championshipTabs,
       pageErrors,
       consoleErrors,
       failedResources,
@@ -237,7 +292,7 @@ try {
   const { page } = await open(context, '/showroom?hotspot=floor');
   await page.waitForSelector('[data-mobile-hub]');
   await page.locator('#showroom [data-eds-livery]').first().waitFor({ timeout: 15000 });
-  results.push({
+  const deepLinkResult = {
     deepLink: '/showroom?hotspot=floor',
     ...(await measure(page)),
     hotspotPanel: await page
@@ -246,7 +301,20 @@ try {
     showroomTop: await page
       .locator('#showroom')
       .evaluate((node) => node.getBoundingClientRect().top),
-  });
+  };
+  await page.keyboard.press('Escape');
+  deepLinkResult.closedWithEscape = !(await page
+    .locator('[role="dialog"][aria-labelledby="eds-detail-title"]')
+    .isVisible());
+  await page.locator('[data-mobile-hub] > nav button').first().click();
+  deepLinkResult.afterHome = {
+    hash: await page.evaluate(() => location.hash),
+    query: await page.evaluate(() => location.search),
+    dialogVisible: await page
+      .locator('[role="dialog"][aria-labelledby="eds-detail-title"]')
+      .isVisible(),
+  };
+  results.push(deepLinkResult);
   await context.close();
 } finally {
   await browser.close();
@@ -267,10 +335,26 @@ const failures = results.filter(
       (result.interactions.pressedLivery !== 'true' ||
         result.interactions.liverySelectionsVerified !== 6 ||
         result.interactions.hotspotDialogsOpened !== 7 ||
+        !result.interactions.dialogFocus ||
+        !result.interactions.escapeClosedDialog ||
         result.interactions.backHash !== '#giai-dau' ||
         result.interactions.forwardHash !== '#showroom' ||
         result.interactions.keyboardHash !== '#home')) ||
-    (result.deepLink && (!result.hotspotPanel || Math.abs(result.showroomTop - 64) > 40)) ||
+    (result.deepLink &&
+      (!result.hotspotPanel ||
+        !result.closedWithEscape ||
+        Math.abs(result.showroomTop - 64) > 40 ||
+        result.afterHome.hash !== '#home' ||
+        result.afterHome.query.includes('hotspot') ||
+        result.afterHome.dialogVisible)) ||
+    (result.mobileMenu &&
+      (result.mobileMenu.count !== 4 ||
+        !result.mobileMenu.closedOnEscape ||
+        result.mobileMenu.englishHome !== 'Home')) ||
+    (result.championshipTabs &&
+      (result.championshipTabs.minTargetHeight < 44 ||
+        result.championshipTabs.calendarRounds < 1 ||
+        !result.championshipTabs.calendarSelected)) ||
     (result.initial?.mobileSections?.join(',') !== undefined &&
       result.initial.mobileSections.join(',') !== 'home,giai-dau,showroom') ||
     result.pageErrors?.length ||

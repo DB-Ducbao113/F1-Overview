@@ -541,11 +541,12 @@ canvas.r3f {
 }
 
 .animate-ticker-marquee {
-  animation: tickerMarquee 45s linear infinite !important;
+  animation: tickerMarquee 45s linear infinite;
   will-change: transform;
 }
 
-.animate-ticker-marquee:hover {
+.animate-ticker-marquee:hover,
+.animate-ticker-marquee[data-paused='true'] {
   animation-play-state: paused;
 }
 
@@ -747,6 +748,25 @@ canvas.r3f {
 }
 
 @media (max-width: 860px) {
+  .r1-mobile-hub .podium-hero-image {
+    top: 50%;
+    bottom: auto;
+    height: 38%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.84) contrast(1.1) saturate(1.03);
+  }
+
+  .r1-mobile-hero {
+    background: linear-gradient(
+      180deg,
+      rgba(5, 5, 8, 0.97) 0%,
+      rgba(5, 5, 8, 0.88) 38%,
+      rgba(5, 5, 8, 0.15) 67%,
+      rgba(5, 5, 8, 0.72) 100%
+    );
+  }
+
   .r1-mobile-hub .page-container {
     max-width: 100%;
   }

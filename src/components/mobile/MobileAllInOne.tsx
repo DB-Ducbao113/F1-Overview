@@ -71,25 +71,23 @@ export function MobileAllInOne({ season }: { season: SeasonYear }) {
         ? 'giai-dau'
         : 'home';
   const [active, setActive] = useState<SectionId>(defaultSection);
-  const smoothNavigation = useRef(false);
 
   useEffect(() => {
     const section = ids.find((id) => location.hash === `#${id}`) ?? defaultSection;
     setActive(section);
-    const smooth =
-      smoothNavigation.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    smoothNavigation.current = false;
     let retry: number | undefined;
     let observer: ResizeObserver | undefined;
     let frame: number | undefined;
     const scroll = () => {
       const target = document.getElementById(section);
-      if (target)
-        target.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant', block: 'start' });
+      if (target) {
+        const top = window.scrollY + target.getBoundingClientRect().top - 64;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
+      }
     };
-    // Keep an initial deep link aligned while lazy sections above it expand.
+    // Jump directly between long sections; smooth scrolling can leave the old section visible.
     frame = requestAnimationFrame(scroll);
-    if (!smooth && section !== 'home') {
+    if (section !== 'home') {
       observer = new ResizeObserver(() => {
         if (frame !== undefined) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(scroll);
@@ -115,26 +113,40 @@ export function MobileAllInOne({ season }: { season: SeasonYear }) {
   }, [location.hash, location.pathname, defaultSection]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length) {
-          visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          setActive(visible[0].target.id as SectionId);
-        }
-      },
-      { rootMargin: '-64px 0px -55% 0px', threshold: [0, 0.1, 0.5] },
-    );
+    let frame: number | undefined;
+    const updateActive = () => {
+      frame = undefined;
+      let current: SectionId = 'home';
+      ids.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element && element.getBoundingClientRect().top <= 88) current = id;
+      });
+      setActive((previous) => (previous === current ? previous : current));
+    };
+    const schedule = () => {
+      if (frame === undefined) frame = requestAnimationFrame(updateActive);
+    };
+    const observer = new ResizeObserver(schedule);
     ids.forEach((id) => {
       const element = document.getElementById(id);
       if (element) observer.observe(element);
     });
-    return () => observer.disconnect();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    schedule();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const goTo = (section: SectionId) => {
-    smoothNavigation.current = true;
-    navigate(`${location.pathname}${location.search}#${section}`);
+    const params = new URLSearchParams(location.search);
+    if (section !== 'showroom') params.delete('hotspot');
+    const search = params.size ? `?${params.toString()}` : '';
+    navigate(`${location.pathname}${search}#${section}`);
     setActive(section);
   };
 

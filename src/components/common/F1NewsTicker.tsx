@@ -76,7 +76,8 @@ export function F1NewsTicker() {
         <button
           type="button"
           onClick={() => setPlaying((value) => !value)}
-          className="rounded p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          aria-pressed={!playing}
+          className="rounded p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white motion-reduce:hidden"
           aria-label={
             playing
               ? lang === 'vi'
@@ -93,7 +94,7 @@ export function F1NewsTicker() {
       <div className="min-w-0 flex-1 overflow-hidden">
         <div
           className="flex w-max animate-ticker-marquee items-center motion-reduce:animate-none hover:[animation-play-state:paused]"
-          style={{ animationPlayState: playing ? 'running' : 'paused' }}
+          data-paused={!playing}
         >
           {[...items, ...items, ...items, ...items].map((item, index) => (
             <button

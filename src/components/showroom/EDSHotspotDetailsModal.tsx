@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { BookOpen, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,44 @@ export const EDSHotspotDetailsModal: React.FC<Props> = ({
   onSelectHotspot,
   lang,
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const onCloseRef = useRef(onClose);
+  const isOpen = Boolean(hotspot);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onCloseRef.current();
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>('button, a[href]');
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [isOpen]);
+
   if (!hotspot) return null;
   const index = hotspots.findIndex((item) => item.id === hotspot.id);
   const articleSlug = {
@@ -33,6 +71,7 @@ export const EDSHotspotDetailsModal: React.FC<Props> = ({
     onSelectHotspot(hotspots[(index + offset + hotspots.length) % hotspots.length]);
   const content = (
     <div
+      ref={dialogRef}
       className="fixed inset-0 z-[80] bg-black/65 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5"
       role="dialog"
       aria-modal="true"
@@ -52,6 +91,7 @@ export const EDSHotspotDetailsModal: React.FC<Props> = ({
             </h2>
           </div>
           <button
+            ref={closeRef}
             type="button"
             onClick={onClose}
             className="grid h-11 w-11 place-items-center rounded-xl border border-studio-700 bg-studio-900 hover:bg-studio-800"

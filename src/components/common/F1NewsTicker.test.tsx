@@ -37,5 +37,7 @@ describe('F1NewsTicker Component', () => {
 
     // Pause button is rendered
     expect(html).toMatch(/aria-label="(?:Pause ticker|Tạm dừng dòng tin)"/);
+    expect(html).toContain('aria-pressed="false"');
+    expect(html).toContain('data-paused="false"');
   });
 });

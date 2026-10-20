@@ -155,7 +155,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
       <Card3DTilt
         maxTilt={2}
         glareOpacity={0.08}
-        className="flex items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3"
+        className="flex flex-col items-stretch min-[861px]:flex-row min-[861px]:items-center justify-between p-4 bg-white rounded-xl border border-studio-200 gap-3"
       >
         <div>
           <h3 className="font-display text-base font-bold uppercase tracking-wider text-studio-900">
@@ -172,7 +172,7 @@ export const RaceCalendar: React.FC<RaceCalendarProps> = React.memo(({ season })
         {nextRace ? (
           <button
             onClick={handleJumpToNextRace}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-f1red/10 hover:bg-f1red text-f1red hover:text-white border border-f1red/20 hover:border-f1red text-xs font-bold transition-all shadow-2xs group cursor-pointer shrink-0"
+            className="inline-flex min-h-11 items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-f1red/10 hover:bg-f1red text-f1red hover:text-white border border-f1red/20 hover:border-f1red text-xs font-bold transition-all shadow-2xs group cursor-pointer shrink-0"
             title={
               isVi
                 ? `Chuyển tới chặng kế tiếp: Vòng ${nextRace.round} (${nextRace.name})`

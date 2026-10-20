@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import {
   DEFAULT_EDS_LIVERY_ID,
@@ -17,6 +18,8 @@ const EDSHomeHeroScene = lazy(() =>
 export const PodiumBrandHero: React.FC = () => {
   const lang = useNavigationStore((state) => state.lang);
   const mobile = useMobileHub();
+  const location = useLocation();
+  const navigate = useNavigate();
   const heroRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
   const [hasViewed, setHasViewed] = useState(false);
@@ -79,6 +82,58 @@ export const PodiumBrandHero: React.FC = () => {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,4,6,0.28)_0%,rgba(4,4,6,0.01)_38%,rgba(4,4,6,0.08)_72%,rgba(4,4,6,0.72)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_38%,rgba(2,2,4,0.3)_100%)]" />
 
+      {mobile && (
+        <div className="r1-mobile-hero page-container relative z-20 flex h-full flex-col justify-between pb-[calc(88px+env(safe-area-inset-bottom))] pt-12">
+          <div className="max-w-[34rem]">
+            <p className="mb-5 flex items-center gap-3 text-[10px] font-extrabold uppercase tracking-[0.26em] text-[#ff493f]">
+              <span className="h-px w-8 bg-f1red" aria-hidden="true" />
+              {lang === 'vi' ? 'Podium EDS · kỹ thuật' : 'Podium EDS · engineering'}
+            </p>
+            <h1
+              className={`text-[clamp(2.5rem,11vw,4.4rem)] font-black text-white ${lang === 'vi' ? 'font-sans leading-[1.18] tracking-tight' : 'font-display leading-[1.1] tracking-tight'}`}
+            >
+              {lang === 'vi' ? (
+                <>
+                  Cơ khí của tốc độ.
+                  <br />
+                  <em className="text-f1red">Góc nhìn mới.</em>
+                </>
+              ) : (
+                <>
+                  Engineering speed.
+                  <br />
+                  <em className="text-f1red">A new perspective.</em>
+                </>
+              )}
+            </h1>
+            <p className="mt-5 max-w-[28rem] text-sm leading-6 text-white/75">
+              {lang === 'vi'
+                ? 'Khám phá mẫu xe EDS-G01 nguyên bản và những nguyên lý định hình hiệu năng trên đường đua.'
+                : 'Explore the original EDS-G01 concept and the engineering principles behind on-track performance.'}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => navigate(`${location.pathname}#showroom`)}
+                className="min-h-12 rounded-xl bg-f1red px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-white shadow-[0_12px_32px_rgba(225,6,0,.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                {lang === 'vi' ? 'Khám phá Showroom' : 'Explore Showroom'}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(`${location.pathname}#giai-dau`)}
+                className="min-h-12 rounded-xl border border-white/25 bg-white/10 px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-white backdrop-blur-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                {lang === 'vi' ? 'Bảng điểm' : 'Standings'}
+              </button>
+            </div>
+          </div>
+          <p className="self-end rounded-md border border-white/15 bg-black/65 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
+            EDS-G01 · {lang === 'vi' ? 'nguyên mẫu gốc' : 'original concept'}
+          </p>
+        </div>
+      )}
+
       <div className="absolute left-6 right-6 top-8 z-10 h-px bg-white/20 md:left-12 md:right-12">
         <span className="absolute left-[8%] top-0 h-px w-32 bg-f1red shadow-[0_0_12px_rgba(225,6,0,0.8)]" />
       </div>
@@ -86,7 +141,9 @@ export const PodiumBrandHero: React.FC = () => {
         <span className="absolute right-[4%] top-0 h-px w-36 bg-f1red shadow-[0_0_12px_rgba(225,6,0,0.8)]" />
       </div>
 
-      <div className="page-container pointer-events-none relative z-20 flex h-full flex-col justify-between py-16 md:py-20">
+      <div
+        className={`page-container pointer-events-none relative z-20 h-full flex-col justify-between py-16 md:py-20 ${mobile ? 'hidden' : 'flex'}`}
+      >
         <div className="flex items-center justify-between gap-6 text-[9px] font-bold uppercase tracking-[0.32em] text-white/70 [text-shadow:0_2px_8px_rgba(0,0,0,0.95)] md:text-[10px]">
           <span>Ground effect archive</span>
           <span className="hidden sm:block">Aerodynamics · Telemetry · Heritage</span>

@@ -13,6 +13,9 @@ export const Navbar: React.FC = React.memo(() => {
   const [menuOpen, setMenuOpen] = useState(false);
   const mobileHub = useMobileHub();
   const onHub = mobileHub && isPrimaryPath(location.pathname);
+  const hubParams = new URLSearchParams(location.search);
+  hubParams.delete('hotspot');
+  const hubSearch = hubParams.size ? `?${hubParams.toString()}` : '';
 
   const strings = t[lang].nav;
 
@@ -47,6 +50,39 @@ export const Navbar: React.FC = React.memo(() => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [menuOpen]);
+
+  const drawerItems = onHub
+    ? [
+        NAV_ITEMS[3],
+        {
+          id: 'teams',
+          path: '/teams',
+          label: lang === 'vi' ? 'Đội đua' : 'Teams',
+          icon: <Trophy className="w-4 h-4" />,
+        },
+        {
+          id: 'drivers',
+          path: '/drivers',
+          label: lang === 'vi' ? 'Tay đua' : 'Drivers',
+          icon: <Home className="w-4 h-4" />,
+        },
+        {
+          id: 'about',
+          path: '/about',
+          label: lang === 'vi' ? 'Giới thiệu' : 'About',
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+      ]
+    : NAV_ITEMS;
+
   return (
     <>
       <header
@@ -60,7 +96,7 @@ export const Navbar: React.FC = React.memo(() => {
         <div className="page-container h-full flex items-center justify-between gap-2 sm:gap-6">
           {/* Brand Logo */}
           <Link
-            to={onHub ? `${location.pathname}${location.search}#home` : '/'}
+            to={onHub ? `${location.pathname}${hubSearch}#home` : '/'}
             className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-f1red rounded"
             aria-label="PODIUM — Effet de Sol"
           >
@@ -108,7 +144,8 @@ export const Navbar: React.FC = React.memo(() => {
             <div className="flex items-center bg-white/5 p-0.5 rounded-full border border-white/10">
               <button
                 onClick={() => setLang('vi')}
-                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
+                aria-label="Tiếng Việt"
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   lang === 'vi'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-300 hover:text-white'
@@ -119,7 +156,8 @@ export const Navbar: React.FC = React.memo(() => {
               </button>
               <button
                 onClick={() => setLang('en')}
-                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[32px] sm:min-w-[36px] min-h-[32px] sm:min-h-[36px] flex items-center justify-center ${
+                aria-label="English"
+                className={`px-2 sm:px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   lang === 'en'
                     ? 'bg-f1red text-white shadow-sm'
                     : 'text-studio-300 hover:text-white'
@@ -133,7 +171,7 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="min-[861px]:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+              className="min-[861px]:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
@@ -151,10 +189,11 @@ export const Navbar: React.FC = React.memo(() => {
           onClick={() => setMenuOpen(false)}
         >
           <div
+            id="mobile-nav-menu"
             className="fixed top-16 left-0 right-0 bg-[#0b0b0f]/98 border-b border-white/10 shadow-2xl p-6 flex flex-col gap-4 animate-slide-down"
             onClick={(e) => e.stopPropagation()}
           >
-            {NAV_ITEMS.map((item) => {
+            {drawerItems.map((item) => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
@@ -169,11 +208,7 @@ export const Navbar: React.FC = React.memo(() => {
               return (
                 <Link
                   key={item.id}
-                  to={
-                    mobileHub && item.id !== 'engineering'
-                      ? `${onHub ? location.pathname + location.search : '/'}#${item.id === 'championship' ? 'giai-dau' : item.id === 'collection' ? 'showroom' : 'home'}`
-                      : item.path
-                  }
+                  to={item.path}
                   onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
                     isActive
