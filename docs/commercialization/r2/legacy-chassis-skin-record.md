@@ -40,8 +40,10 @@ It uses the six palettes from `src/data/showroom/edsLiveries.ts`:
 
 Nine original runtime texture slots cover nose, bodywork, wings, floor, suspension and
 mirrors, diffuser/mechanical rear surfaces, cockpit, halo, and wheels/tires. Artwork consists
-of generic carbon weave, gradients, geometric speed bands, accent lines, and unbranded wheel
-graphics drawn with the browser Canvas API. The implementation does not import
+of repository-authored twill carbon weave, gradients, body-part-specific tapered panels,
+geometric speed bands, restrained accent lines, and unbranded wheel graphics drawn with the
+browser Canvas API. Carbon Heritage uses a visible satin weave; Studio Stealth uses a sparse,
+matte treatment. The implementation does not import
 `F1CarTextures.ts`, `teamLiveries.ts`, sponsor helpers, team logos, the legacy wheel texture,
 or third-party imagery. It generates no team wordmarks, sponsor marks or tire lettering.
 
@@ -64,6 +66,13 @@ The six matched A/B camera views are stored in `legacy-skin-evidence/` using the
 One front-three-quarter image per skin is recorded as `skin-<livery-id>.png`. Exact browser,
 geometry, renderer, frame-time and switching samples are in
 `legacy-skin-evidence/browser-report.json`.
+
+The polish acceptance set is stored in `legacy-skin-polish-evidence/`. It contains front
+three-quarter, side, rear, sidepod, front-wing, rear-wing, wheel/suspension and cockpit views
+for each of the six skins (48 captures), plus matched neutral/skinned A/B captures for front
+three-quarter, side and rear. Its `browser-report.json` records the final renderer and
+repeat-switch evidence. The DEV studio uses a single seamless dark enclosure, controlled local
+lights and the same camera/light state for A/B comparisons.
 
 This technical provenance record is not legal clearance. Any commercial use of the legacy
 chassis requires independent rights review even when the applied skin contains no third-party

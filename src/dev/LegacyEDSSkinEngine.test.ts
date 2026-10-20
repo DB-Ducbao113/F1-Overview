@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getLegacySkinSlot } from './LegacyEDSSkinEngine';
+import { getLegacySkinArtDirection, getLegacySkinSlot } from './LegacyEDSSkinEngine';
 
 describe('legacy EDS skin material routing', () => {
   it.each([
@@ -18,5 +18,20 @@ describe('legacy EDS skin material routing', () => {
 
   it('falls back unknown surfaces to bodywork paint', () => {
     expect(getLegacySkinSlot('unknown')).toBe('bodywork');
+  });
+
+  it('keeps Carbon Heritage and Studio Stealth materially distinct', () => {
+    const heritage = getLegacySkinArtDirection('eds-carbon');
+    const stealth = getLegacySkinArtDirection('eds-monochrome');
+    expect(heritage.style).toBe('heritage');
+    expect(stealth.style).toBe('stealth');
+    expect(heritage.weaveStrength).toBeGreaterThan(stealth.weaveStrength);
+    expect(heritage.paintClearcoat).toBeGreaterThan(stealth.paintClearcoat);
+  });
+
+  it('uses restrained accent proportions for the bright palettes', () => {
+    for (const id of ['eds-aero', 'eds-crimson', 'eds-gold', 'eds-electric']) {
+      expect(getLegacySkinArtDirection(id).accentOpacity).toBeLessThanOrEqual(0.7);
+    }
   });
 });

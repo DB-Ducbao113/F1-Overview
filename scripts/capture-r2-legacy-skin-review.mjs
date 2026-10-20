@@ -4,11 +4,21 @@ import { chromium } from 'playwright-core';
 
 const base = process.env.R2_LEGACY_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
-  process.env.R2_LEGACY_OUTPUT || 'docs/commercialization/r2/legacy-skin-evidence',
+  process.env.R2_LEGACY_OUTPUT || 'docs/commercialization/r2/legacy-skin-polish-evidence',
 );
 const executablePath =
   process.env.R2_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const views = ['front-three-quarter', 'side', 'top', 'front', 'rear', 'rear-three-quarter'];
+const comparisonViews = ['front-three-quarter', 'side', 'rear'];
+const acceptanceViews = [
+  'front-three-quarter',
+  'side',
+  'rear',
+  'sidepod-closeup',
+  'front-wing-closeup',
+  'rear-wing-closeup',
+  'wheel-suspension-closeup',
+  'cockpit-closeup',
+];
 const liveries = [
   'eds-carbon',
   'eds-aero',
@@ -57,7 +67,7 @@ try {
   for (const mode of ['legacy-original', 'legacy-eds']) {
     await page.evaluate((value) => window.__legacySkinReview.setMode(value), mode);
     await page.waitForTimeout(600);
-    for (const view of views) {
+    for (const view of comparisonViews) {
       await page.evaluate((value) => window.__legacySkinReview.setView(value), view);
       await page.waitForTimeout(420);
       await page.locator('canvas').screenshot({
@@ -67,11 +77,16 @@ try {
   }
 
   await page.evaluate(() => window.__legacySkinReview.setMode('legacy-eds'));
-  await page.evaluate(() => window.__legacySkinReview.setView('front-three-quarter'));
   for (const livery of liveries) {
     await page.evaluate((value) => window.__legacySkinReview.setLivery(value), livery);
-    await page.waitForTimeout(500);
-    await page.locator('canvas').screenshot({ path: path.join(output, `skin-${livery}.png`) });
+    await page.waitForTimeout(420);
+    for (const view of acceptanceViews) {
+      await page.evaluate((value) => window.__legacySkinReview.setView(value), view);
+      await page.waitForTimeout(280);
+      await page.locator('canvas').screenshot({
+        path: path.join(output, `${livery}-${view}.png`),
+      });
+    }
   }
 
   const memorySamples = [];
@@ -97,7 +112,8 @@ try {
   const report = {
     generatedAt: new Date().toISOString(),
     viewport: [1440, 900],
-    views,
+    comparisonViews,
+    acceptanceViews,
     liveries,
     geometryPreserved: finalStats.geometry?.geometryPreserved ?? false,
     finalStats,

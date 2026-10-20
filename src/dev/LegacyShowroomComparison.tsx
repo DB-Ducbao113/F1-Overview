@@ -14,7 +14,17 @@ import { LegacyDetailedCar, type LegacyDetailedCarStats } from './LegacyDetailed
 
 type ReviewMode = 'legacy-original' | 'legacy-eds' | 'eds-g01' | 'eds-g02';
 type CameraPreset =
-  'front-three-quarter' | 'side' | 'top' | 'front' | 'rear' | 'rear-three-quarter';
+  | 'front-three-quarter'
+  | 'side'
+  | 'top'
+  | 'front'
+  | 'rear'
+  | 'rear-three-quarter'
+  | 'sidepod-closeup'
+  | 'front-wing-closeup'
+  | 'rear-wing-closeup'
+  | 'wheel-suspension-closeup'
+  | 'cockpit-closeup';
 
 const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   { id: 'legacy-original', label: 'A · Original C42', note: 'Neutral material geometry baseline' },
@@ -31,12 +41,20 @@ const CAMERA_PRESETS: Record<
   CameraPreset,
   { position: [number, number, number]; target: [number, number, number] }
 > = {
-  'front-three-quarter': { position: [4.1, 1.7, -4.15], target: [0, 0.42, 0] },
+  'front-three-quarter': { position: [4.1, 1.7, 4.15], target: [0, 0.42, 0] },
   side: { position: [5.45, 1.15, 0], target: [0, 0.38, 0] },
   top: { position: [0.01, 6.7, 0], target: [0, 0.15, 0] },
-  front: { position: [0, 1.02, -5.35], target: [0, 0.34, -0.3] },
-  rear: { position: [0, 0.75, 5.25], target: [0, 0.3, 0.65] },
-  'rear-three-quarter': { position: [-4.15, 1.55, 4.1], target: [0, 0.4, 0.35] },
+  front: { position: [0, 0.82, 5.25], target: [0, 0.32, 0.75] },
+  rear: { position: [0, 0.94, -5.25], target: [0, 0.38, -0.7] },
+  'rear-three-quarter': { position: [-4.15, 1.55, -4.1], target: [0, 0.4, -0.35] },
+  'sidepod-closeup': { position: [3.1, 1.0, -0.25], target: [0.58, 0.54, -0.05] },
+  'front-wing-closeup': { position: [2.35, 0.65, 3.35], target: [0.25, 0.28, 1.92] },
+  'rear-wing-closeup': { position: [-2.35, 1.0, -3.3], target: [-0.1, 0.62, -1.9] },
+  'wheel-suspension-closeup': {
+    position: [2.15, 0.62, 2.0],
+    target: [1.05, 0.38, 1.35],
+  },
+  'cockpit-closeup': { position: [2.25, 1.72, 0.55], target: [0.05, 0.68, 0.12] },
 };
 
 interface RuntimeStats {
@@ -94,6 +112,13 @@ const LocalStudioEnvironment: React.FC = () => {
   }, [environment]);
   return <primitive object={environment} attach="environment" />;
 };
+
+const DarkCyclorama: React.FC = () => (
+  <mesh>
+    <sphereGeometry args={[12, 16, 8]} />
+    <meshBasicMaterial color="#070a0f" side={THREE.BackSide} />
+  </mesh>
+);
 
 const PerformanceProbe: React.FC<{
   statsRef: React.MutableRefObject<RuntimeStats>;
@@ -190,13 +215,14 @@ const ReviewScene: React.FC<{
   statsRef: React.MutableRefObject<RuntimeStats>;
 }> = ({ mode, liveryId, preset, onLegacyReady, statsRef }) => (
   <>
+    <color attach="background" args={['#070a0f']} />
     <CameraRig preset={preset} />
     <LocalStudioEnvironment />
     <PerformanceProbe statsRef={statsRef} resetKey={`${mode}:${liveryId}`} />
-    <ambientLight intensity={0.78} />
-    <directionalLight position={[6, 8, -4.5]} intensity={2.35} castShadow />
-    <directionalLight position={[-5, 4, 3.5]} intensity={1.15} color="#8de7ef" />
-    <directionalLight position={[0, 2, 5]} intensity={0.55} color="#f0d4ae" />
+    <ambientLight intensity={0.34} />
+    <directionalLight position={[6, 8, 4.5]} intensity={1.72} castShadow />
+    <directionalLight position={[-5, 3.5, -3.5]} intensity={0.58} color="#9edce2" />
+    <directionalLight position={[0, 3, -5]} intensity={0.72} color="#d7e6ff" />
     <Suspense fallback={null}>
       {mode === 'legacy-original' || mode === 'legacy-eds' ? (
         <LegacyDetailedCar
@@ -207,12 +233,16 @@ const ReviewScene: React.FC<{
       ) : (
         <EDSReviewCar model={mode} liveryId={liveryId} />
       )}
-      <ContactShadows position={[0, 0.01, 0]} opacity={0.42} scale={9} blur={2.7} far={5} />
+      <ContactShadows
+        position={[0, 0.005, 0]}
+        opacity={0.34}
+        scale={8}
+        blur={3.2}
+        far={4}
+        color="#000000"
+      />
     </Suspense>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]} receiveShadow>
-      <planeGeometry args={[16, 16]} />
-      <meshStandardMaterial color="#222a33" roughness={0.46} metalness={0.35} />
-    </mesh>
+    <DarkCyclorama />
     <OrbitControls
       makeDefault
       enableDamping
@@ -312,7 +342,7 @@ export const LegacyShowroomComparison: React.FC = () => {
             ))}
           </aside>
 
-          <div className="h-[72vh] min-h-[560px] overflow-hidden rounded-2xl border border-studio-700 bg-[#111720]">
+          <div className="h-[72vh] min-h-[560px] overflow-hidden rounded-2xl border border-studio-700 bg-[#070a0f]">
             <Canvas
               camera={{ position: CAMERA_PRESETS[preset].position, fov: 38, near: 0.1, far: 60 }}
               dpr={[1, 1.5]}
@@ -320,7 +350,7 @@ export const LegacyShowroomComparison: React.FC = () => {
               gl={{ antialias: true, powerPreference: 'high-performance' }}
               onCreated={({ gl }) => {
                 gl.toneMapping = THREE.ACESFilmicToneMapping;
-                gl.toneMappingExposure = 1.08;
+                gl.toneMappingExposure = 1.02;
               }}
             >
               <ReviewScene
