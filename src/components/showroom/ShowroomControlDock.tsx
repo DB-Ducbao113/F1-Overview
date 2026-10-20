@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useMobileHub } from '../../hooks/useMobileHub';
 import { CameraPreset } from './CameraController';
 import {
   RotateCcw,
@@ -83,7 +84,12 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     onToggleHotspots,
     onOpenSchematic,
   }) => {
-    const [isExpanded, setIsExpanded] = useState<boolean>(true);
+    const mobile = useMobileHub();
+    const [isExpanded, setIsExpanded] = useState<boolean>(() => !mobile);
+
+    useEffect(() => {
+      if (mobile) setIsExpanded(false);
+    }, [mobile]);
     const [presetCategory, setPresetCategory] = useState<'pano' | 'direct' | 'car'>('pano');
     const [isTouring, setIsTouring] = useState<boolean>(false);
 

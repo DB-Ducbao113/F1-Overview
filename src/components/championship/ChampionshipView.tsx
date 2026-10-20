@@ -9,6 +9,10 @@ import { RaceResults } from './RaceResults';
 import { TeamsDirectoryPage } from '../pages/TeamsDirectoryPage';
 import { DriversDirectoryPage } from '../pages/DriversDirectoryPage';
 import { Trophy, Calendar, CheckCircle2, RefreshCw, Users, UserRound } from 'lucide-react';
+import { CALENDAR_2026 } from '../../data/championship';
+import { getCalendarRaceState } from '../../utils/raceSchedule';
+import { RaceWeekendWidget } from '../home/RaceWeekendWidget';
+import { useMobileHub } from '../../hooks/useMobileHub';
 
 interface ChampionshipViewProps {
   season: SeasonYear;
@@ -22,6 +26,19 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
 
   const strings = t[lang].championship;
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const mobileHub = useMobileHub();
+  const [scheduleNow, setScheduleNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setScheduleNow(Date.now()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+  const nextRace =
+    season === 2026
+      ? CALENDAR_2026.find((race) =>
+          ['current', 'upcoming'].includes(getCalendarRaceState(race, scheduleNow)),
+        )
+      : undefined;
 
   const SEASONS: SeasonYear[] = [2026, 2025, 2024];
   useEffect(() => {
@@ -42,7 +59,7 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
   };
 
   return (
-    <div className="bg-studio-100 min-h-screen py-12 animate-fade-in relative">
+    <div className="r1-primary r1-championship bg-studio-100 min-h-screen py-12 animate-fade-in relative">
       <div className="page-container space-y-8">
         {/* Header */}
         <div className="max-w-3xl space-y-3">
@@ -56,6 +73,8 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
             {strings.desc}
           </p>
         </div>
+
+        {nextRace && !mobileHub && <RaceWeekendWidget race={nextRace} />}
 
         {/* Top Control Bar: Season Selector & Subtabs */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-studio-200 shadow-xs overflow-hidden">

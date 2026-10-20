@@ -68,29 +68,36 @@ const ShowroomWebGLFallback: React.FC<{ accent: string; lang: 'vi' | 'en' }> = (
   lang,
 }) => (
   <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#09090e] text-white">
-    <div
-      className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black mb-4 shadow-xl"
-      style={{ backgroundColor: accent }}
-    >
-      EDS
+    <img
+      src="/images/eds/editorial/eds-g01-hero.svg"
+      alt="EDS-G01 original concept car"
+      className="absolute inset-0 h-full w-full object-cover opacity-35"
+    />
+    <div className="relative flex flex-col items-center">
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black mb-4 shadow-xl"
+        style={{ backgroundColor: accent }}
+      >
+        EDS
+      </div>
+      <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2">
+        Podium EDS — EDS-G01
+      </h3>
+      <p className="text-xs text-studio-400 max-w-md leading-relaxed mb-6">
+        {lang === 'vi'
+          ? 'Thiết bị chưa cung cấp tăng tốc WebGL. Hồ sơ kỹ thuật nguyên bản vẫn có sẵn bên dưới.'
+          : 'WebGL hardware acceleration is unavailable. The original engineering dossier remains available below.'}
+      </p>
+      <button
+        type="button"
+        onClick={() =>
+          document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' })
+        }
+        className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer"
+      >
+        {lang === 'vi' ? 'Xem hồ sơ kỹ thuật' : 'View technical dossier'}
+      </button>
     </div>
-    <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2">
-      Podium EDS — EDS-G01
-    </h3>
-    <p className="text-xs text-studio-400 max-w-md leading-relaxed mb-6">
-      {lang === 'vi'
-        ? 'Thiết bị chưa cung cấp tăng tốc WebGL. Hồ sơ kỹ thuật nguyên bản vẫn có sẵn bên dưới.'
-        : 'WebGL hardware acceleration is unavailable. The original engineering dossier remains available below.'}
-    </p>
-    <button
-      type="button"
-      onClick={() =>
-        document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' })
-      }
-      className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer"
-    >
-      {lang === 'vi' ? 'Xem hồ sơ kỹ thuật' : 'View technical dossier'}
-    </button>
   </div>
 );
 
@@ -101,14 +108,19 @@ export const ShowroomView: React.FC = () => {
   const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
   const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
   const [presetTrigger, setPresetTrigger] = useState(0);
-  const [autoRotate, setAutoRotate] = useState(true);
+  const [autoRotate, setAutoRotate] = useState(
+    () =>
+      typeof window === 'undefined' ||
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   const [showHotspots, setShowHotspots] = useState(false);
   const [enableWheelZoom, setEnableWheelZoom] = useState(false);
   const [zoomTrigger, setZoomTrigger] = useState(0);
   const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
   const [isSchematicOpen, setIsSchematicOpen] = useState(false);
   const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
-  const [isStageVisible, setIsStageVisible] = useState(true);
+  const [isStageVisible, setIsStageVisible] = useState(false);
+  const [hasMountedCanvas, setHasMountedCanvas] = useState(false);
   const [isDocumentVisible, setIsDocumentVisible] = useState(
     () => typeof document === 'undefined' || document.visibilityState === 'visible',
   );
@@ -133,8 +145,19 @@ export const ShowroomView: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setAutoRotate(!media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
     const stage = stageRef.current;
-    if (!stage || typeof IntersectionObserver === 'undefined') return;
+    if (!stage) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsStageVisible(true);
+      return;
+    }
     const observer = new IntersectionObserver(
       ([entry]) => setIsStageVisible(entry.isIntersecting),
       { rootMargin: '160px 0px', threshold: 0.01 },
@@ -142,6 +165,10 @@ export const ShowroomView: React.FC = () => {
     observer.observe(stage);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (isStageVisible) setHasMountedCanvas(true);
+  }, [isStageVisible]);
 
   const handleResetView = useCallback(() => {
     setActiveHotspot(null);
@@ -239,54 +266,57 @@ export const ShowroomView: React.FC = () => {
           />
         </div>
 
-        <ErrorBoundary fallback={<ShowroomWebGLFallback accent={livery.accent} lang={lang} />}>
-          <Canvas
-            shadows
-            dpr={[1, 1.25]}
-            frameloop={isCanvasActive ? 'always' : 'never'}
-            camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-            gl={{
-              antialias: false,
-              alpha: true,
-              powerPreference: 'high-performance',
-              toneMappingExposure: 1.2,
-            }}
-            className="w-full h-full cursor-grab active:cursor-grabbing"
-          >
-            <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
-            <RendererDiagnostics />
-            <EDSStudioStage lang={lang} livery={livery} />
-            <Suspense fallback={<Showroom3DLoader />}>
-              <F1Car3DModel
-                activeHotspot={activeHotspot}
-                onSelectHotspot={handleSelectHotspot}
-                lang={lang}
-                showHotspots={showHotspots}
-                edsLiveryId={selectedLiveryId}
-                hotspots={EDS_HOTSPOTS}
+        {!hasMountedCanvas && <ShowroomWebGLFallback accent={livery.accent} lang={lang} />}
+        {hasMountedCanvas && (
+          <ErrorBoundary fallback={<ShowroomWebGLFallback accent={livery.accent} lang={lang} />}>
+            <Canvas
+              shadows
+              dpr={[1, 1.25]}
+              frameloop={isCanvasActive ? 'always' : 'never'}
+              camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
+              gl={{
+                antialias: false,
+                alpha: true,
+                powerPreference: 'high-performance',
+                toneMappingExposure: 1.2,
+              }}
+              className="w-full h-full cursor-grab active:cursor-grabbing"
+            >
+              <WebGLContextGuard onContextStateChange={setIsWebGLContextLost} />
+              <RendererDiagnostics />
+              <EDSStudioStage lang={lang} livery={livery} />
+              <Suspense fallback={<Showroom3DLoader />}>
+                <F1Car3DModel
+                  activeHotspot={activeHotspot}
+                  onSelectHotspot={handleSelectHotspot}
+                  lang={lang}
+                  showHotspots={showHotspots}
+                  edsLiveryId={selectedLiveryId}
+                  hotspots={EDS_HOTSPOTS}
+                />
+              </Suspense>
+              <ContactShadows
+                position={[0, 0, 0]}
+                opacity={0.9}
+                scale={10}
+                blur={2}
+                far={4.5}
+                frames={1}
+                resolution={256}
+                color="#000000"
               />
-            </Suspense>
-            <ContactShadows
-              position={[0, 0, 0]}
-              opacity={0.9}
-              scale={10}
-              blur={2}
-              far={4.5}
-              frames={1}
-              resolution={256}
-              color="#000000"
-            />
-            <CameraController
-              activeHotspot={activeHotspot}
-              cameraPreset={cameraPreset}
-              presetTrigger={presetTrigger}
-              autoRotate={autoRotate}
-              enableWheelZoom={enableWheelZoom}
-              zoomTrigger={zoomTrigger}
-              zoomDirection={zoomDirection}
-            />
-          </Canvas>
-        </ErrorBoundary>
+              <CameraController
+                activeHotspot={activeHotspot}
+                cameraPreset={cameraPreset}
+                presetTrigger={presetTrigger}
+                autoRotate={autoRotate}
+                enableWheelZoom={enableWheelZoom}
+                zoomTrigger={zoomTrigger}
+                zoomDirection={zoomDirection}
+              />
+            </Canvas>
+          </ErrorBoundary>
+        )}
 
         {isWebGLContextLost && (
           <div className="absolute inset-0 z-30">

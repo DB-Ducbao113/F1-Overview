@@ -338,7 +338,7 @@ export const RaceWeekendWidget: React.FC<RaceWeekendWidgetProps> = ({ race }) =>
 
           {/* ── STATE 2: UPCOMING COUNTDOWN WIDGET (4 Clusters) ── */}
           {state === 'upcoming' && nextSession && (
-            <div className="flex flex-col items-start lg:items-end gap-2 bg-studio-50/80 border border-studio-200/80 p-4 sm:p-5 rounded-2xl">
+            <div className="r1-countdown flex flex-col items-start lg:items-end gap-2 bg-studio-50/80 border border-studio-200/80 p-4 sm:p-5 rounded-2xl">
               {/* Overline next session indicator */}
               <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-f1red">
                 <span className="w-2 h-2 rounded-full bg-f1red animate-pulse" />

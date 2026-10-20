@@ -54,8 +54,7 @@ export const HomeView: React.FC = () => {
     return (
       upcomingRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'current') ||
       upcomingRounds.find((gp) => getCalendarRaceState(gp, scheduleNow) === 'upcoming') ||
-      CALENDAR_2026[CALENDAR_2026.length - 1] ||
-      CALENDAR_2026[0]
+      undefined
     );
   }, [detailedResultsRaw, scheduleNow]);
 
@@ -77,7 +76,7 @@ export const HomeView: React.FC = () => {
   }, [calculatedStandings, currentStandings, standingsSeason]);
 
   return (
-    <div className="bg-studio-100 min-h-screen pb-20 animate-fade-in">
+    <div className="r1-primary r1-home bg-studio-100 min-h-screen pb-20 animate-fade-in">
       {/* ── 0. PODIUM brand statement ── */}
       <PodiumBrandHero />
 
@@ -91,7 +90,15 @@ export const HomeView: React.FC = () => {
         </div>
 
         {/* ── 2. Race weekend countdown ── */}
-        <RaceWeekendWidget race={nextRace} />
+        {nextRace ? (
+          <RaceWeekendWidget race={nextRace} />
+        ) : (
+          <p className="page-container text-sm text-white/65">
+            {lang === 'vi'
+              ? 'Chưa có chặng đua sắp tới trong lịch hiện có.'
+              : 'No upcoming race in the available calendar.'}
+          </p>
+        )}
 
         {/* ── 3. Championship Standings (Official Verified Data) ── */}
         <section ref={standingsRef} className="page-container space-y-6">

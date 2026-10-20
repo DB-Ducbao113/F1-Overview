@@ -230,6 +230,11 @@ canvas.r3f {
   animation: podiumHeroReveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.podium-hero-image.hero-3d-ready {
+  animation: none;
+  opacity: 0;
+}
+
 @keyframes podiumHeroReveal {
   from {
     opacity: 0;
@@ -246,6 +251,8 @@ canvas.r3f {
 @media (max-width: 640px) {
   .podium-hero-image {
     object-position: 50% 66%;
+    animation: none;
+    filter: brightness(1.6) contrast(1.12) saturate(1.12);
   }
 }
 
@@ -671,6 +678,9 @@ canvas.r3f {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .podium-hero-image {
+    animation: none !important;
+  }
   .animate-digit-slide,
   .animate-colon-pulse,
   .animate-live-glow,
@@ -686,5 +696,71 @@ canvas.r3f {
   .animate-f1-depth-enter {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* R1 primary-route treatment. Scoped so secondary editorial and data pages keep their own palette. */
+.r1-primary.bg-studio-100,
+.r1-primary .bg-studio-100 {
+  background-color: #09090b;
+}
+
+.r1-primary .bg-white,
+.r1-primary .bg-studio-50 {
+  background-color: #16161b;
+}
+
+.r1-primary .text-studio-950,
+.r1-primary .text-studio-900,
+.r1-primary .text-studio-800 {
+  color: #f5f5f6;
+}
+
+.r1-primary .text-studio-700,
+.r1-primary .text-studio-600 {
+  color: #c4c4cd;
+}
+
+.r1-primary .text-studio-500,
+.r1-primary .text-studio-400 {
+  color: #a3a3ad;
+}
+
+.r1-primary .border-studio-100,
+.r1-primary .border-studio-200,
+.r1-primary .border-studio-300 {
+  border-color: #34343d;
+}
+
+.r1-primary .from-emerald-50\/60 {
+  background-image: linear-gradient(120deg, #143029, #16161b);
+}
+
+.r1-primary .bg-f1red,
+.r1-primary .bg-studio-900 {
+  color: #fff;
+}
+
+.r1-primary .r1-countdown {
+  background-color: #202027;
+  border-color: #4b4b55;
+}
+
+@media (max-width: 860px) {
+  .r1-mobile-hub .page-container {
+    max-width: 100%;
+  }
+
+  .r1-mobile-hub .r1-championship {
+    padding-top: 3rem;
+  }
+
+  .r1-mobile-hub #showroom > div {
+    max-width: 100%;
+  }
+
+  .r1-mobile-hub .r1-quick-hud {
+    top: min(calc(50svh - 1.5rem), 26.5rem);
+    bottom: auto;
   }
 }

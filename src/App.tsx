@@ -21,6 +21,8 @@ import { getCompleteRaceClassification } from './data/championship/raceClassific
 import { F1SpeedStream } from './components/common/F1SpeedStream';
 import { F1PageTransition } from './components/common/F1PageTransition';
 import { RouteSeo } from './components/seo/RouteSeo';
+import { useMobileHub, isPrimaryPath } from './hooks/useMobileHub';
+import { MobileAllInOne } from './components/mobile/MobileAllInOne';
 
 const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
@@ -76,6 +78,7 @@ function SeasonRoute() {
   const setSelectedSeason = useChampionshipStore((state) => state.setSelectedSeason);
   const setActiveSubTab = useChampionshipStore((state) => state.setActiveSubTab);
   const season = (validSeason(year) ? Number(year) : 2026) as SeasonYear;
+  const mobileHub = useMobileHub();
 
   useEffect(() => {
     if (validSeason(year)) setSelectedSeason(season);
@@ -86,6 +89,7 @@ function SeasonRoute() {
   }, [year, season, setSelectedSeason, searchParams, setActiveSubTab]);
 
   if (!validSeason(year)) return <NotFound />;
+  if (mobileHub) return <MobileAllInOne season={season} />;
   return (
     <ChampionshipView season={season} onSeasonChange={(next) => navigate(`/season/${next}`)} />
   );
@@ -140,6 +144,8 @@ function NotFound() {
 
 export const App: React.FC = () => {
   const location = useLocation();
+  const mobileHub = useMobileHub();
+  const isHubRoute = mobileHub && isPrimaryPath(location.pathname);
   const syncSeasonData = useChampionshipStore((state) => state.syncSeasonData);
 
   useEffect(() => {
@@ -181,8 +187,9 @@ export const App: React.FC = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (mobileHub && isPrimaryPath(location.pathname)) return;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [location.pathname]);
+  }, [location.pathname, mobileHub]);
 
   const isEngineeringRoute = location.pathname.startsWith('/engineering');
 
@@ -193,7 +200,9 @@ export const App: React.FC = () => {
       {!isEngineeringRoute && <F1StartLightsPreloader />}
 
       {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
-      {!location.pathname.startsWith('/showroom') && !isEngineeringRoute && <F1SpeedStream />}
+      {!isHubRoute && !location.pathname.startsWith('/showroom') && !isEngineeringRoute && (
+        <F1SpeedStream />
+      )}
 
       {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div
@@ -218,10 +227,16 @@ export const App: React.FC = () => {
       </div>
 
       <main className="flex-1 pt-16">
-        <F1PageTransition pathname={location.pathname}>
+        <F1PageTransition
+          pathname={isHubRoute ? '/mobile-hub' : location.pathname}
+          noTransform={isHubRoute}
+        >
           <Suspense fallback={<div className="min-h-screen" />}>
             <Routes>
-              <Route path="/" element={<HomeView />} />
+              <Route
+                path="/"
+                element={mobileHub ? <MobileAllInOne season={2026} /> : <HomeView />}
+              />
               {['/live', '/archive', '/timing'].map((path) => (
                 <Route
                   key={path}
@@ -233,7 +248,10 @@ export const App: React.FC = () => {
               <Route path="/championship" element={<Navigate to="/season/2026" replace />} />
               <Route path="/season/:year" element={<SeasonRoute />} />
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
-              <Route path="/showroom" element={<ShowroomView />} />
+              <Route
+                path="/showroom"
+                element={mobileHub ? <MobileAllInOne season={2026} /> : <ShowroomView />}
+              />
               <Route path="/gallery" element={<Navigate to="/showroom" replace />} />
               <Route path="/teams/:teamId" element={<TeamDetailPage />} />
               <Route path="/drivers/:driverId" element={<DriverDetailPage />} />

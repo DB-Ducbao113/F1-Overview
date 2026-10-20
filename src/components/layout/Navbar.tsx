@@ -4,12 +4,15 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
 import { Menu, X, Trophy, Home, Box, BookOpen } from 'lucide-react';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
+import { isPrimaryPath, useMobileHub } from '../../hooks/useMobileHub';
 
 export const Navbar: React.FC = React.memo(() => {
   const { lang, setLang } = useNavigationStore();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const mobileHub = useMobileHub();
+  const onHub = mobileHub && isPrimaryPath(location.pathname);
 
   const strings = t[lang].nav;
 
@@ -57,7 +60,7 @@ export const Navbar: React.FC = React.memo(() => {
         <div className="page-container h-full flex items-center justify-between gap-2 sm:gap-6">
           {/* Brand Logo */}
           <Link
-            to="/"
+            to={onHub ? `${location.pathname}${location.search}#home` : '/'}
             className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-f1red rounded"
             aria-label="PODIUM — Effet de Sol"
           >
@@ -66,7 +69,10 @@ export const Navbar: React.FC = React.memo(() => {
           </Link>
 
           {/* Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-6" aria-label="Main navigation">
+          <nav
+            className="hidden min-[861px]:flex items-center gap-4 lg:gap-6"
+            aria-label="Main navigation"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.id === 'home'
@@ -127,7 +133,7 @@ export const Navbar: React.FC = React.memo(() => {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+              className="min-[861px]:hidden p-2 text-studio-200 hover:text-white transition-colors focus:ring-2 focus:ring-f1red rounded-lg min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav-menu"
@@ -141,7 +147,7 @@ export const Navbar: React.FC = React.memo(() => {
       {/* Mobile Drawer Menu */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden animate-fade-in"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm min-[861px]:hidden animate-fade-in"
           onClick={() => setMenuOpen(false)}
         >
           <div
@@ -163,7 +169,11 @@ export const Navbar: React.FC = React.memo(() => {
               return (
                 <Link
                   key={item.id}
-                  to={item.path}
+                  to={
+                    mobileHub && item.id !== 'engineering'
+                      ? `${onHub ? location.pathname + location.search : '/'}#${item.id === 'championship' ? 'giai-dau' : item.id === 'collection' ? 'showroom' : 'home'}`
+                      : item.path
+                  }
                   onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 p-3 rounded-md text-sm font-bold uppercase tracking-wider text-left transition-colors ${
                     isActive

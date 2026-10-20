@@ -25,7 +25,8 @@ export const EDSLiverySelector: React.FC<EDSLiverySelectorProps> = React.memo(
               data-eds-livery={id}
               type="button"
               onClick={() => onSelect(id)}
-              className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
+              aria-pressed={selected}
+              className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${
                 selected
                   ? 'bg-studio-900 text-white ring-1 ring-white/40'
                   : 'bg-studio-950/80 text-studio-300 border-studio-800/80 hover:bg-studio-900'

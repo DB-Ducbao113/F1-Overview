@@ -1,101 +1,118 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useNavigationStore } from '../../store/useNavigationStore';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Radio, Play, Pause } from 'lucide-react';
+import { CALENDAR_2026, getStandings } from '../../data/championship';
+import { useChampionshipStore } from '../../store/useChampionshipStore';
+import { useNavigationStore } from '../../store/useNavigationStore';
+import { getCalendarRaceState } from '../../utils/raceSchedule';
+import { isPrimaryPath, useMobileHub } from '../../hooks/useMobileHub';
 
-export const F1NewsTicker: React.FC = () => {
-  const { lang } = useNavigationStore();
+export function F1NewsTicker() {
+  const lang = useNavigationStore((state) => state.lang);
+  const calculatedStandings = useChampionshipStore((state) => state.calculatedStandings);
+  const setActiveSubTab = useChampionshipStore((state) => state.setActiveSubTab);
+  const detailedResults = useChampionshipStore((state) => state.detailedResults[2026]);
+  const mobile = useMobileHub();
+  const location = useLocation();
   const navigate = useNavigate();
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-
-  const TICKER_ITEMS = [
+  const [playing, setPlaying] = useState(true);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+  const nextRace =
+    CALENDAR_2026.find((race) => getCalendarRaceState(race, now) === 'current') ??
+    CALENDAR_2026.find((race) => getCalendarRaceState(race, now) === 'upcoming');
+  const latestResult = [...(detailedResults ?? [])]
+    .filter((race) => race.status === 'completed')
+    .sort((a, b) => b.round - a.round)[0];
+  const leader = (calculatedStandings[2026]?.drivers ?? getStandings(2026).drivers)[0];
+  const items = [
     {
-      badge: lang === 'vi' ? 'SẮP DIỄN RA' : 'NEXT UP',
-      text:
-        lang === 'vi'
-          ? 'CHẶNG 17 SINGAPORE GP · FP1 THỨ SÁU 15:30 GIỜ VIỆT NAM'
-          : 'ROUND 17 SINGAPORE GP · FP1 FRIDAY 15:30 VIETNAM TIME',
-      link: '/season/2026?tab=calendar',
+      badge: lang === 'vi' ? 'LỊCH ĐUA' : 'CALENDAR',
+      text: nextRace
+        ? `${lang === 'vi' ? 'Chặng' : 'Round'} ${nextRace.round} · ${nextRace.name} · ${nextRace.dates}`
+        : lang === 'vi'
+          ? 'Chưa có chặng đua sắp tới trong lịch hiện có'
+          : 'No upcoming race in the available calendar',
+      tab: 'calendar' as const,
     },
     {
-      badge: lang === 'vi' ? 'KẾT QUẢ' : 'LATEST',
-      text:
-        lang === 'vi'
-          ? 'CHẶNG 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING CHIẾN THẮNG'
-          : 'ROUND 16 SEPANG: VERSTAPPEN P1 · RED BULL RACING TRIUMPH',
-      link: '/season/2026?tab=results',
+      badge: lang === 'vi' ? 'KẾT QUẢ' : 'RESULTS',
+      text: latestResult
+        ? `${lang === 'vi' ? 'Chặng' : 'Round'} ${latestResult.round} · ${latestResult.grandPrix}`
+        : lang === 'vi'
+          ? 'Chưa có kết quả hoàn tất trong dữ liệu hiện có'
+          : 'No completed result in the available data',
+      tab: 'results' as const,
     },
     {
-      badge: lang === 'vi' ? 'TIẾN TRÌNH' : 'PROGRESS',
-      text:
-        lang === 'vi'
-          ? 'MÙA GIẢI F1 2026: 17 TRÊN TỔNG SỐ 23 CHẶNG ĐUA'
-          : '2026 FIA F1 SEASON: ROUND 17 OF 23 UPCOMING',
-      link: '/season/2026?tab=calendar',
-    },
-    {
-      badge: lang === 'vi' ? 'DẪN ĐẦU' : 'LEADER',
-      text:
-        lang === 'vi'
-          ? 'BẢNG XẾP HẠNG TAY ĐUA: ANTONELLI (MERCEDES) 320 ĐIỂM'
-          : 'DRIVERS CLASSIFICATION: ANTONELLI (MERCEDES) 320 PTS',
-      link: '/season/2026?tab=drivers',
+      badge: lang === 'vi' ? 'XẾP HẠNG' : 'STANDINGS',
+      text: leader
+        ? `${leader.driverName} · ${leader.points} ${lang === 'vi' ? 'điểm' : 'pts'}`
+        : lang === 'vi'
+          ? 'Chưa có bảng xếp hạng'
+          : 'Standings unavailable',
+      tab: 'standings' as const,
     },
   ];
 
+  const open = (tab: 'calendar' | 'results' | 'standings') => {
+    setActiveSubTab(tab);
+    if (mobile && isPrimaryPath(location.pathname)) {
+      navigate(`${location.pathname}${location.search}#giai-dau`);
+      document.getElementById('giai-dau')?.scrollIntoView({
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    } else navigate(`/season/2026?tab=${tab}`);
+  };
+
   return (
-    <div className="w-full h-9 bg-[#050508] border-b border-white/10 overflow-hidden flex items-center select-none text-white relative z-40">
-      {/* Static Label on Left with interactive Play/Pause toggle */}
-      <div className="h-full px-3 bg-f1red flex items-center gap-2 shrink-0 z-20 shadow-md">
-        <Radio className="w-3.5 h-3.5 text-white animate-pulse" />
-        <span className="font-display font-black text-[11px] tracking-widest uppercase text-white">
-          F1 FEED
-        </span>
+    <div className="relative z-20 flex h-10 w-full items-center overflow-hidden border-y border-white/10 bg-[#08080b] text-white">
+      <div className="z-10 flex h-full shrink-0 items-center gap-2 bg-f1red px-3 text-[11px] font-black tracking-widest">
+        <Radio className="h-3.5 w-3.5" aria-hidden="true" />
+        <span>EDS FEED</span>
         <button
           type="button"
-          onClick={() => setIsPlaying((p) => !p)}
-          className="ml-0.5 p-1 rounded hover:bg-black/25 text-white/90 hover:text-white transition-colors cursor-pointer"
-          title={
-            isPlaying
+          onClick={() => setPlaying((value) => !value)}
+          className="rounded p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          aria-label={
+            playing
               ? lang === 'vi'
-                ? 'Tạm dừng chạy chữ'
+                ? 'Tạm dừng dòng tin'
                 : 'Pause ticker'
               : lang === 'vi'
-                ? 'Tiếp tục chạy chữ'
+                ? 'Tiếp tục dòng tin'
                 : 'Resume ticker'
           }
-          aria-label={isPlaying ? 'Pause feed' : 'Resume feed'}
         >
-          {isPlaying ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+          {playing ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
         </button>
       </div>
-
-      {/* Marquee Content Track */}
-      <div className="flex-1 overflow-hidden relative h-full flex items-center">
+      <div className="min-w-0 flex-1 overflow-hidden">
         <div
-          style={{
-            animationPlayState: isPlaying ? 'running' : 'paused',
-          }}
-          className="flex shrink-0 w-max items-center whitespace-nowrap animate-ticker-marquee will-change-transform hover:[animation-play-state:paused]"
+          className="flex w-max animate-ticker-marquee items-center motion-reduce:animate-none hover:[animation-play-state:paused]"
+          style={{ animationPlayState: playing ? 'running' : 'paused' }}
         >
-          {/* Quadrupled items for guaranteed seamless infinite loop across all viewport widths */}
-          {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
-            <div
-              key={idx}
-              onClick={() => item.link && navigate(item.link)}
-              className="inline-flex shrink-0 items-center text-xs tracking-wider font-semibold cursor-pointer group px-2 py-1"
+          {[...items, ...items, ...items, ...items].map((item, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => open(item.tab)}
+              className="flex shrink-0 items-center px-3 text-left text-[11px] font-semibold tracking-wide text-white/75 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-f1red"
             >
-              <span className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-bold text-amber-400 mr-2 group-hover:bg-amber-400 group-hover:text-black transition-colors">
+              <span className="mr-2 rounded bg-white/10 px-1.5 py-0.5 text-[9px] font-bold text-amber-300">
                 {item.badge}
               </span>
-              <span className="text-studio-200 group-hover:text-white transition-colors">
-                {item.text}
+              {item.text}
+              <span aria-hidden="true" className="px-4 font-black text-f1red">
+                ///
               </span>
-              <span className="text-f1red font-black px-4 select-none tracking-widest">///</span>
-            </div>
+            </button>
           ))}
         </div>
       </div>
     </div>
   );
-};
+}

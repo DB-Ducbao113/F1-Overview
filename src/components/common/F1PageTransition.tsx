@@ -2,10 +2,15 @@ import React, { useEffect, useState, useRef } from 'react';
 
 interface F1PageTransitionProps {
   pathname: string;
+  noTransform?: boolean;
   children: React.ReactNode;
 }
 
-export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, children }) => {
+export const F1PageTransition: React.FC<F1PageTransitionProps> = ({
+  pathname,
+  noTransform,
+  children,
+}) => {
   const [displayChildren, setDisplayChildren] = useState(children);
   const [isWiping, setIsWiping] = useState(false);
   const prevPathRef = useRef(pathname);
@@ -46,7 +51,11 @@ export const F1PageTransition: React.FC<F1PageTransitionProps> = ({ pathname, ch
       {/* ── 3D Perspective Page Entrance Container ── */}
       <div
         key={pathname}
-        className={immediateContent ? undefined : 'animate-f1-depth-enter will-change-transform'}
+        className={
+          immediateContent || noTransform
+            ? undefined
+            : 'animate-f1-depth-enter will-change-transform'
+        }
       >
         {displayChildren}
       </div>

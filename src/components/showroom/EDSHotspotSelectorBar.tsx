@@ -39,7 +39,8 @@ export const EDSHotspotSelectorBar: React.FC<Props> = React.memo(
                 type="button"
                 data-eds-hotspot={hotspot.id}
                 onClick={() => onSelectHotspot(hotspot)}
-                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition-all ${selected ? 'border-white/60 bg-gradient-to-r from-f1red to-red-700 text-white shadow-lg shadow-f1red/30' : 'border-studio-800 bg-studio-900/90 text-studio-300 hover:border-studio-700 hover:text-white'}`}
+                aria-pressed={selected}
+                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${selected ? 'border-white/60 bg-gradient-to-r from-f1red to-red-700 text-white shadow-lg shadow-f1red/30' : 'border-studio-800 bg-studio-900/90 text-studio-300 hover:border-studio-700 hover:text-white'}`}
                 aria-label={
                   lang === 'vi' ? `Xem cận cảnh ${hotspot.nameVi}` : `Inspect ${hotspot.nameEn}`
                 }
