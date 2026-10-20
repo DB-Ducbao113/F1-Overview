@@ -1,0 +1,168 @@
+{
+  "generatedAt": "2026-10-20T14:35:24.677Z",
+  "viewport": [
+    1440,
+    900
+  ],
+  "views": [
+    "front-three-quarter",
+    "side",
+    "top",
+    "front",
+    "rear",
+    "rear-three-quarter"
+  ],
+  "liveries": [
+    "eds-carbon",
+    "eds-aero",
+    "eds-crimson",
+    "eds-monochrome",
+    "eds-gold",
+    "eds-electric"
+  ],
+  "geometryPreserved": true,
+  "finalStats": {
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "calls": 13,
+    "triangles": 237486,
+    "geometries": 13,
+    "textures": 13,
+    "frameSamples": 63,
+    "medianRafMs": 16.69999998807907,
+    "p95RafMs": 17,
+    "mode": "legacy-eds",
+    "livery": "eds-electric",
+    "geometry": {
+      "meshCount": 11,
+      "sharedGeometryCount": 11,
+      "geometryPreserved": true,
+      "ownedMaterialCount": 9,
+      "ownedTextureCount": 9
+    }
+  },
+  "memorySamples": [
+    {
+      "cycle": 0,
+      "stats": {
+        "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "calls": 13,
+        "triangles": 237486,
+        "geometries": 13,
+        "textures": 13,
+        "frameSamples": 0,
+        "medianRafMs": null,
+        "p95RafMs": null,
+        "mode": "legacy-eds",
+        "livery": "eds-electric",
+        "geometry": {
+          "meshCount": 11,
+          "sharedGeometryCount": 11,
+          "geometryPreserved": true,
+          "ownedMaterialCount": 9,
+          "ownedTextureCount": 9
+        }
+      },
+      "jsHeapBytes": 39800687
+    },
+    {
+      "cycle": 1,
+      "stats": {
+        "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "calls": 13,
+        "triangles": 237486,
+        "geometries": 13,
+        "textures": 13,
+        "frameSamples": 0,
+        "medianRafMs": null,
+        "p95RafMs": null,
+        "mode": "legacy-eds",
+        "livery": "eds-electric",
+        "geometry": {
+          "meshCount": 11,
+          "sharedGeometryCount": 11,
+          "geometryPreserved": true,
+          "ownedMaterialCount": 9,
+          "ownedTextureCount": 9
+        }
+      },
+      "jsHeapBytes": 40675103
+    },
+    {
+      "cycle": 2,
+      "stats": {
+        "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "calls": 13,
+        "triangles": 237486,
+        "geometries": 13,
+        "textures": 13,
+        "frameSamples": 0,
+        "medianRafMs": null,
+        "p95RafMs": null,
+        "mode": "legacy-eds",
+        "livery": "eds-electric",
+        "geometry": {
+          "meshCount": 11,
+          "sharedGeometryCount": 11,
+          "geometryPreserved": true,
+          "ownedMaterialCount": 9,
+          "ownedTextureCount": 9
+        }
+      },
+      "jsHeapBytes": 35738773
+    },
+    {
+      "cycle": 3,
+      "stats": {
+        "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "calls": 13,
+        "triangles": 237486,
+        "geometries": 13,
+        "textures": 13,
+        "frameSamples": 0,
+        "medianRafMs": null,
+        "p95RafMs": null,
+        "mode": "legacy-eds",
+        "livery": "eds-electric",
+        "geometry": {
+          "meshCount": 11,
+          "sharedGeometryCount": 11,
+          "geometryPreserved": true,
+          "ownedMaterialCount": 9,
+          "ownedTextureCount": 9
+        }
+      },
+      "jsHeapBytes": 37393738
+    },
+    {
+      "cycle": 4,
+      "stats": {
+        "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "calls": 13,
+        "triangles": 237486,
+        "geometries": 13,
+        "textures": 13,
+        "frameSamples": 0,
+        "medianRafMs": null,
+        "p95RafMs": null,
+        "mode": "legacy-eds",
+        "livery": "eds-electric",
+        "geometry": {
+          "meshCount": 11,
+          "sharedGeometryCount": 11,
+          "geometryPreserved": true,
+          "ownedMaterialCount": 9,
+          "ownedTextureCount": 9
+        }
+      },
+      "jsHeapBytes": 39431631
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failedLocalRequests": [],
+  "limitations": [
+    "Headless desktop Chrome only; no physical mobile GPU or sustained thermal test.",
+    "RAF intervals include headless capture overhead and are not field Web Vitals.",
+    "JS heap and renderer counters are short-run leak indicators, not proof of leak freedom."
+  ]
+}

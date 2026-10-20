@@ -46,7 +46,7 @@ export const EDS_LIVERIES: Record<EDSLiveryId, EDSLiveryPreset> = {
   },
   'eds-crimson': {
     id: 'eds-crimson',
-    name: 'Scuderia Prototype',
+    name: 'Crimson Prototype',
     nameVi: 'Nguyên mẫu Đỏ',
     primary: '#d90429',
     secondary: '#7f0018',

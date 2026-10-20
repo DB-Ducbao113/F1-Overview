@@ -105,6 +105,7 @@ const ShowroomWebGLFallback: React.FC<{ accent: string; lang: 'vi' | 'en' }> = (
 export const ShowroomView: React.FC = () => {
   const { lang } = useNavigationStore();
   const [searchParams] = useSearchParams();
+  const reviewG02 = import.meta.env.DEV && searchParams.get('model') === 'eds-g02';
   const location = useLocation();
   const mobileHub = useMobileHub();
   const [selectedLiveryId, setSelectedLiveryId] = useState<EDSLiveryId>(DEFAULT_EDS_LIVERY_ID);
@@ -218,10 +219,22 @@ export const ShowroomView: React.FC = () => {
               </span>
               <div>
                 <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider">
-                  {lang === 'vi' ? 'Showroom Kỹ thuật EDS-G01' : 'EDS-G01 Technical Showroom'}
+                  {reviewG02
+                    ? lang === 'vi'
+                      ? 'Xem thử EDS-G02 — chưa duyệt'
+                      : 'EDS-G02 Review — Not Approved'
+                    : lang === 'vi'
+                      ? 'Showroom Kỹ thuật EDS-G01'
+                      : 'EDS-G01 Technical Showroom'}
                 </h1>
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">
-                  {lang === 'vi' ? 'NGUYÊN MẪU GỐC' : 'ORIGINAL PROTOTYPE'}
+                  {reviewG02
+                    ? lang === 'vi'
+                      ? 'CHỈ XEM THỬ TRONG DEV'
+                      : 'DEV REVIEW ONLY'
+                    : lang === 'vi'
+                      ? 'NGUYÊN MẪU GỐC'
+                      : 'ORIGINAL PROTOTYPE'}
                 </span>
               </div>
             </div>
@@ -259,7 +272,7 @@ export const ShowroomView: React.FC = () => {
             PODIUM EDS · {livery.name}
           </span>
           <h2 className="font-display text-sm sm:text-base font-black uppercase">
-            EDS-G01 Ground Effect Prototype
+            {reviewG02 ? 'EDS-G02 · Visual Review Candidate' : 'EDS-G01 Ground Effect Prototype'}
           </h2>
           <p className="text-[11px] text-studio-300 pt-1.5 border-t border-studio-800/60">
             5.05 m · 3.60 m wheelbase · original procedural source
@@ -306,6 +319,7 @@ export const ShowroomView: React.FC = () => {
                   showHotspots={showHotspots}
                   edsLiveryId={selectedLiveryId}
                   hotspots={EDS_HOTSPOTS}
+                  reviewG02={reviewG02}
                 />
               </Suspense>
               <ContactShadows

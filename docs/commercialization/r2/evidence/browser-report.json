@@ -1,0 +1,78 @@
+[
+  {
+    "model": "eds-g01",
+    "width": 1200,
+    "height": 750,
+    "loadMs": 2153,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "calls": 15,
+    "triangles": 9006,
+    "geometries": 26,
+    "textures": 3,
+    "viewport": [
+      1200,
+      750
+    ],
+    "frameSamples": 66,
+    "medianRafMs": 16.699999999999818,
+    "p95RafMs": 33.5,
+    "exceptions": []
+  },
+  {
+    "model": "eds-g01",
+    "width": 375,
+    "height": 700,
+    "loadMs": 606,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "calls": 15,
+    "triangles": 9006,
+    "geometries": 26,
+    "textures": 3,
+    "viewport": [
+      375,
+      700
+    ],
+    "frameSamples": 104,
+    "medianRafMs": 16.699999999999818,
+    "p95RafMs": 16.800000000000182,
+    "exceptions": []
+  },
+  {
+    "model": "eds-g02",
+    "width": 1200,
+    "height": 750,
+    "loadMs": 494,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "calls": 10,
+    "triangles": 72918,
+    "geometries": 21,
+    "textures": 3,
+    "viewport": [
+      1200,
+      750
+    ],
+    "frameSamples": 38,
+    "medianRafMs": 33.30000000000018,
+    "p95RafMs": 50.09999999999991,
+    "exceptions": []
+  },
+  {
+    "model": "eds-g02",
+    "width": 375,
+    "height": 700,
+    "loadMs": 548,
+    "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "calls": 10,
+    "triangles": 72918,
+    "geometries": 21,
+    "textures": 3,
+    "viewport": [
+      375,
+      700
+    ],
+    "frameSamples": 88,
+    "medianRafMs": 16.699999999999818,
+    "p95RafMs": 33.299999999999955,
+    "exceptions": []
+  }
+]

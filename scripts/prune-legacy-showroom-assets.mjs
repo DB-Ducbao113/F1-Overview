@@ -17,6 +17,7 @@ const legacyTargets = [
   'dist/images/podium-diffuser-hero-v2.webp',
   'dist/dev-showroom.html',
 ];
+const reviewOnlyTargets = ['dist/models/eds-g02.glb'];
 const originalTeamStudies = [
   'ferrari',
   'mclaren',
@@ -101,7 +102,7 @@ const requiredOriginalAssets = [
   ].map((id) => `dist/images/eds/circuits/${id}.svg`),
 ];
 
-for (const relativeTarget of legacyTargets) {
+for (const relativeTarget of [...legacyTargets, ...reviewOnlyTargets]) {
   const target = path.resolve(relativeTarget);
   const distRoot = `${path.resolve('dist')}${path.sep}`;
   if (!target.startsWith(distRoot)) throw new Error(`Refusing to prune outside dist: ${target}`);
@@ -109,7 +110,7 @@ for (const relativeTarget of legacyTargets) {
 }
 
 const remaining = [];
-for (const relativeTarget of legacyTargets) {
+for (const relativeTarget of [...legacyTargets, ...reviewOnlyTargets]) {
   try {
     await fs.access(path.resolve(relativeTarget));
     remaining.push(relativeTarget);
@@ -122,5 +123,5 @@ if (remaining.length > 0)
 
 for (const requiredAsset of requiredOriginalAssets) await fs.access(path.resolve(requiredAsset));
 console.log(
-  `Commercial artifact guard: removed ${legacyTargets.length} legacy visual targets and verified ${requiredOriginalAssets.length} original EDS assets.`,
+  `Commercial artifact guard: removed ${legacyTargets.length} legacy and ${reviewOnlyTargets.length} review-only visual targets; verified ${requiredOriginalAssets.length} original EDS assets.`,
 );

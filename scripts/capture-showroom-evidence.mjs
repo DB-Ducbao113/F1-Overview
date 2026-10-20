@@ -116,6 +116,13 @@ try {
     }
     if (!ready) throw new Error(`Showroom did not become ready at ${viewport.name}.`);
 
+    if (process.env.SHOWROOM_QA_SCROLL_STAGE === '1') {
+      await send('Runtime.evaluate', {
+        expression: `document.getElementById('showroom')?.scrollIntoView({ block: 'center' })`,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 550));
+    }
+
     await send(
       'Runtime.evaluate',
       {
@@ -154,9 +161,11 @@ try {
             ...(globalThis.__edsRendererStats || {}),
           } : null;
           const navigation = performance.getEntriesByType('navigation')[0];
-          const modelResource = performance.getEntriesByType('resource').find(
-            (entry) => entry.name.includes('/eds-g01.glb') || entry.name.includes('/c42.v2.glb'),
+          const modelResources = performance.getEntriesByType('resource').filter(
+            (entry) => entry.name.includes('/eds-g01.glb') || entry.name.includes('/eds-g02.glb') || entry.name.includes('/c42.v2.glb'),
           );
+          const requestedModel = new URL(location.href).searchParams.get('model');
+          const modelResource = modelResources.find((entry) => entry.name.includes(requestedModel === 'eds-g02' ? '/eds-g02.glb' : '/eds-g01.glb')) ?? modelResources[0];
           const liverySwitchLatencyMs = [];
           for (const button of ${JSON.stringify(qaMode)} === 'eds' ? liveryButtons : []) {
             const started = performance.now();

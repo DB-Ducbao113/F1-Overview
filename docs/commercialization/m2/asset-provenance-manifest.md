@@ -36,3 +36,23 @@ The production guard now removes the C42 GLB, branded wheel texture, 11 legacy s
 No new visual asset was required or created. Phase 3 verified that the eight EDS SVGs cover every live original-mode image slot: one showroom schematic plus seven technical hotspots. The 82 excluded legacy images are constructor-specific variants for the DEV-only comparison experience, not 82 distinct EDS runtime slots.
 
 The production guard now requires all nine original outputs (one GLB and eight SVGs) after pruning prohibited legacy assets. Two independent temporary generations and the checked-in GLB produced the same SHA-256 `A9A1226D87EC10B3188B82CAD01039200E81BE4999A88EBB27E75D0DA9AC8325`. Khronos glTF Validator 2.0.0-dev.3.10 reported 0 errors, warnings, infos and hints. These technical results do not replace independent rights review.
+
+## R2 review candidate — not a replacement approval
+
+| Exported asset path         | Editable source and generation                                                        | Authorship and dependencies                                                                                                                                                           | Rights evidence                                                                                                                                                                           | Commercial-readiness status                                                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `public/models/eds-g02.glb` | `scripts/eds-g02-design.mjs`, `scripts/generate-eds-g02.mjs`; `npm run asset:eds-g02` | Repository-authored parametric lofts, aerofoils, tires, suspension and floor, exported using Three.js/GLTFExporter (MIT). No imported C42 mesh, logo, texture or third-party imagery. | Source, identical SHA-256 from two independent generations (`90B4A7096AE3DCA468D6C8EED1FBAA8BBC9B38CB84B6672AB53F2539D64D0ADF`), `docs/commercialization/r2/eds-g02-authoring-record.md`. | **REVIEW ONLY** — geometry and visual approval pending; independent rights review still required. Production build removes this file. |
+
+The G02 palette preview reuses the six repository-authored EDS liveries. It does not change the provenance or approval status of those livery concepts.
+
+## R2 legacy detailed chassis skin review
+
+The standalone DEV skin system in `src/dev/LegacyEDSSkinEngine.ts` creates nine original
+runtime Canvas textures and PBR materials for the retained C42-derived geometry. It reuses only
+the six EDS palette definitions; it does not import legacy branding/texture generators, team
+logos, sponsor assets, branded tire lettering or external imagery. Authorship, exact model
+provenance, SHA-256, cleanup ownership and visual evidence are recorded in
+`docs/commercialization/r2/legacy-chassis-skin-record.md`.
+
+This work does not change the model's **NOT COMMERCIAL READY** status. The C42 GLB and DEV
+comparison page remain production-pruned and outside the commercial Showroom source graph.

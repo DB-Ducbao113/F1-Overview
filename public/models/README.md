@@ -1,8 +1,11 @@
 # 3D model inventory
 
-- Runtime asset: `c42.v2.glb`
-- Size: approximately 2.1 MiB
-- Usage: one shared geometry model; constructor liveries are generated procedurally at runtime.
+- Commercial runtime asset: `eds-g01.glb` (original EDS-G01; remains the default).
+- Postponed development artifact: `eds-g02.glb` (original EDS-G02; retained for local D-view
+  comparison only, removed from production `dist/` by the build guard; no further geometry
+  development is planned).
+- Legacy comparison only: `c42.v2.glb` (approximately 2.1 MiB; excluded from the
+  commercial build). Its geometry and marks must not be used for EDS-G02 authoring.
 
 ## Provenance required before public release
 

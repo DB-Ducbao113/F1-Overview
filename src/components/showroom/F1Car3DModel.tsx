@@ -12,10 +12,16 @@ interface F1Car3DModelProps {
   showHotspots?: boolean;
   edsLiveryId?: EDSLiveryId;
   hotspots?: HotspotItem[];
+  reviewG02?: boolean;
 }
 
-const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
-  const { scene } = useGLTF('/models/eds-g01.glb');
+const EDSModelMesh: React.FC<{ liveryId: EDSLiveryId; reviewG02: boolean }> = ({
+  liveryId,
+  reviewG02,
+}) => {
+  const { scene } = useGLTF(
+    import.meta.env.DEV && reviewG02 ? '/models/eds-g02.glb' : '/models/eds-g01.glb',
+  );
   const livery = getEDSLivery(liveryId);
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
 
@@ -61,32 +67,54 @@ const EDSG01Mesh: React.FC<{ liveryId: EDSLiveryId }> = ({ liveryId }) => {
         livery.metalness,
         livery.clearcoat,
       ),
+      carbon: createMaterial('carbon', '#0c1115', 0.63, 0.08, 0.12),
+      cockpit: createMaterial('cockpit', '#080c10', 0.72, 0.1, 0.08),
+      intake: createMaterial('intake', '#05090c', 0.85, 0.04, 0),
+      seam: createMaterial('seam', '#05080b', 0.68, 0.04, 0),
     };
 
     clonedScene.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
       const name = child.name.toLowerCase();
-      const material = name.includes('tire')
-        ? materials.tire
-        : name.includes('rim')
-          ? materials.rim
-          : name.includes('floor') ||
-              name.includes('cockpit') ||
-              name.includes('suspension') ||
-              name.includes('brake') ||
-              name.includes('fence') ||
-              name.includes('diffuser')
-            ? materials.mechanical
-            : name.includes('wing') || name.includes('halo') || name.includes('cooling')
-              ? materials.accent
-              : materials.body;
+      const material = reviewG02
+        ? name.endsWith('_tire')
+          ? materials.tire
+          : name.endsWith('_rim')
+            ? materials.rim
+            : name.endsWith('_metal')
+              ? materials.mechanical
+              : name.endsWith('_carbon')
+                ? materials.carbon
+                : name.endsWith('_cockpit')
+                  ? materials.cockpit
+                  : name.endsWith('_intake')
+                    ? materials.intake
+                    : name.endsWith('_seam')
+                      ? materials.seam
+                      : name.endsWith('_accent')
+                        ? materials.accent
+                        : materials.body
+        : name.includes('tire')
+          ? materials.tire
+          : name.includes('rim')
+            ? materials.rim
+            : name.includes('floor') ||
+                name.includes('cockpit') ||
+                name.includes('suspension') ||
+                name.includes('brake') ||
+                name.includes('fence') ||
+                name.includes('diffuser')
+              ? materials.mechanical
+              : name.includes('wing') || name.includes('halo') || name.includes('cooling')
+                ? materials.accent
+                : materials.body;
       child.castShadow = true;
       child.receiveShadow = true;
       child.material = material;
     });
 
     return () => Object.values(materials).forEach((material) => material.dispose());
-  }, [clonedScene, livery]);
+  }, [clonedScene, livery, reviewG02]);
 
   return <primitive object={clonedScene} position={[0, 0, 0]} />;
 };
@@ -98,9 +126,10 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   showHotspots = false,
   edsLiveryId = DEFAULT_EDS_LIVERY_ID,
   hotspots = EDS_HOTSPOTS,
+  reviewG02 = false,
 }) => (
   <group position={[0, 0, 0]}>
-    <EDSG01Mesh liveryId={edsLiveryId} />
+    <EDSModelMesh liveryId={edsLiveryId} reviewG02={reviewG02} />
     {(showHotspots || activeHotspot !== null) &&
       hotspots.map((hotspot, index) => {
         const isSelected = activeHotspot?.id === hotspot.id;
