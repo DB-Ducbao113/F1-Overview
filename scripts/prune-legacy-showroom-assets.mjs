@@ -17,7 +17,7 @@ const legacyTargets = [
   'dist/images/podium-diffuser-hero-v2.webp',
   'dist/dev-showroom.html',
 ];
-const reviewOnlyTargets = ['dist/models/eds-g02.glb'];
+const reviewOnlyTargets = ['dist/models/eds-g02.glb', 'dist/models/eds-g03-preview.glb'];
 const originalTeamStudies = [
   'ferrari',
   'mclaren',

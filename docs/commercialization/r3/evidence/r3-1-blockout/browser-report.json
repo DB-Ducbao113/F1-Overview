@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-10-20T16:07:46.954Z",
+  "viewport": [1440, 900],
+  "comparisonResolution": [1600, 700],
+  "views": ["front-three-quarter", "side", "top", "front", "rear", "rear-three-quarter"],
+  "candidateMode": "eds-g03",
+  "referenceMode": "legacy-eds",
+  "candidateViewerTransform": {
+    "rotationYRadians": 3.141592653589793,
+    "reason": "Match +Z-front legacy camera convention"
+  },
+  "runtime": {
+    "stats": {
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "calls": 7,
+      "triangles": 31602,
+      "geometries": 18,
+      "textures": 10,
+      "frameSamples": 178,
+      "medianRafMs": 16.69999998807907,
+      "p95RafMs": 16.80000001192093,
+      "mode": "eds-g03"
+    },
+    "jsHeapBytes": 40998098
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failedLocalRequests": [],
+  "physicalDevice": "NOT TESTED",
+  "limitations": [
+    "Headless desktop Chrome only; no physical-device or sustained thermal test.",
+    "Detailed + EDS is a visual-quality reference only; its geometry is not used by EDS-G03.",
+    "Contact sheets compare matched perspective cameras; they are not pixel-fidelity targets."
+  ]
+}

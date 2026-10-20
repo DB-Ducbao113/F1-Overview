@@ -20,6 +20,7 @@ const bannedSourceModules = [
 const forbiddenArtifactTokens = [
   '/models/c42.v2.glb',
   '/models/eds-g02.glb',
+  '/models/eds-g03-preview.glb',
   '/textures/wheel_base.webp',
   'server.arcgisonline.com',
   'tile.openstreetmap.org',

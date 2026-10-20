@@ -12,7 +12,7 @@ import {
 } from '../data/showroom/edsLiveries';
 import { LegacyDetailedCar, type LegacyDetailedCarStats } from './LegacyDetailedCar';
 
-type ReviewMode = 'legacy-original' | 'legacy-eds' | 'eds-g01' | 'eds-g02';
+type ReviewMode = 'legacy-original' | 'legacy-eds' | 'eds-g01' | 'eds-g02' | 'eds-g03';
 type CameraPreset =
   | 'front-three-quarter'
   | 'side'
@@ -35,6 +35,7 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.1 neutral proportion blockout' },
 ];
 
 const CAMERA_PRESETS: Record<
@@ -207,6 +208,21 @@ const EDSReviewCar: React.FC<{ model: 'eds-g01' | 'eds-g02'; liveryId: EDSLivery
   return <primitive object={clone} />;
 };
 
+const EDSG03ReviewCar: React.FC = () => {
+  const { scene } = useGLTF('/models/eds-g03-preview.glb');
+  const clone = useMemo(() => scene.clone(true), [scene]);
+  useEffect(() => {
+    clone.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      object.castShadow = true;
+      object.receiveShadow = true;
+    });
+  }, [clone]);
+  // G03 is authored with -Z front. The review-only rotation matches the legacy viewer's
+  // +Z-front camera convention without altering the GLB hardpoint coordinate system.
+  return <primitive object={clone} rotation={[0, Math.PI, 0]} />;
+};
+
 const ReviewScene: React.FC<{
   mode: ReviewMode;
   liveryId: EDSLiveryId;
@@ -230,6 +246,8 @@ const ReviewScene: React.FC<{
           original={mode === 'legacy-original'}
           onReady={onLegacyReady}
         />
+      ) : mode === 'eds-g03' ? (
+        <EDSG03ReviewCar />
       ) : (
         <EDSReviewCar model={mode} liveryId={liveryId} />
       )}
@@ -420,3 +438,4 @@ export const LegacyShowroomComparison: React.FC = () => {
 
 useGLTF.preload('/models/eds-g01.glb');
 useGLTF.preload('/models/eds-g02.glb');
+useGLTF.preload('/models/eds-g03-preview.glb');

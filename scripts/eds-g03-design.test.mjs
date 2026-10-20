@@ -1,0 +1,36 @@
+import { EDS_G03_DESIGN as D, getEDS_G03TargetRatios } from './eds-g03-design.mjs';
+
+describe('EDS-G03 R3.1 hardpoint registry', () => {
+  it('keeps axle stations and wheelbase internally consistent', () => {
+    expect(D.axles.rearZ - D.axles.frontZ).toBeCloseTo(D.axles.wheelbase, 8);
+    expect(D.axles.wheelbase).toBeCloseTo(3.6, 8);
+  });
+
+  it('locks the owner-specified overall envelope', () => {
+    const [minX, minY, minZ] = D.dimensions.bounds.min;
+    const [maxX, maxY, maxZ] = D.dimensions.bounds.max;
+    expect(maxZ - minZ).toBeCloseTo(D.dimensions.length, 8);
+    expect(maxX - minX).toBeCloseTo(D.dimensions.width, 8);
+    expect(maxY - minY).toBeCloseTo(D.dimensions.height, 8);
+  });
+
+  it('places all tyres on the neutral ground plane', () => {
+    expect(D.wheels.front.centerY - D.wheels.front.radius).toBe(0);
+    expect(D.wheels.rear.centerY - D.wheels.rear.radius).toBe(0);
+  });
+
+  it('matches the required normalized ratios', () => {
+    const ratios = getEDS_G03TargetRatios();
+    expect(ratios.wheelbaseToLength).toBeCloseTo(0.712871, 5);
+    expect(ratios.widthToLength).toBeCloseTo(0.39604, 5);
+    expect(ratios.frontWheelDiameterToLength).toBeCloseTo(0.142574, 5);
+    expect(ratios.rearWheelDiameterToLength).toBeCloseTo(0.150495, 5);
+  });
+
+  it('keeps the blockout clear of obvious front-wheel envelope collisions', () => {
+    const innerFrontWheelX = D.axles.frontTrack / 2 - D.wheels.front.width / 2;
+    expect(innerFrontWheelX - D.landmarks.sidepods.envelope.x[1]).toBeGreaterThanOrEqual(0.015);
+    const frontWheelLeadingZ = D.axles.frontZ - D.wheels.front.radius;
+    expect(frontWheelLeadingZ - D.landmarks.frontWing.envelope.z[1]).toBeGreaterThanOrEqual(0.08);
+  });
+});

@@ -37,4 +37,13 @@ describe('commercial visual isolation', () => {
       expect(showroomSource).not.toContain(forbidden);
     }
   });
+
+  it('keeps unapproved G02 and G03 review models behind the commercial artifact guard', () => {
+    const pruneSource = readFileSync('scripts/prune-legacy-showroom-assets.mjs', 'utf8');
+    const isolationSource = readFileSync('scripts/check-commercial-visual-isolation.mjs', 'utf8');
+    for (const model of ['/models/eds-g02.glb', '/models/eds-g03-preview.glb']) {
+      expect(pruneSource).toContain(model.slice(1));
+      expect(isolationSource).toContain(model);
+    }
+  });
 });
