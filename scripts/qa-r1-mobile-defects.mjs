@@ -4,7 +4,9 @@ import { chromium } from 'playwright-core';
 
 const base = process.env.R1_QA_URL || 'http://127.0.0.1:4182';
 const label = process.env.R1_QA_LABEL || 'current';
-const output = path.resolve('docs/commercialization/r1/phase2-evidence');
+const output = path.resolve(
+  process.env.R1_QA_OUTPUT || 'docs/commercialization/r1/phase2-evidence',
+);
 const browser = await chromium.launch({
   executablePath:
     process.env.R1_QA_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
@@ -48,6 +50,7 @@ for (const [index, id] of [
 await page.screenshot({ path: path.join(output, `mobile-defect-${label}.png`) });
 const pause = page.getByRole('button', { name: /Tạm dừng dòng tin|Pause ticker/ });
 await pause.click();
+await page.waitForTimeout(50);
 const ticker = await page.evaluate(() => {
   const track = document.querySelector('.animate-ticker-marquee');
   return {

@@ -1,0 +1,57 @@
+{
+  "sections": [
+    {
+      "requested": "showroom",
+      "hash": "#showroom",
+      "targetTop": 64,
+      "activeLabel": "Showroom",
+      "visibleSection": "showroom",
+      "scrollY": 6437
+    },
+    {
+      "requested": "home",
+      "hash": "#home",
+      "targetTop": 64,
+      "activeLabel": "Trang chủ",
+      "visibleSection": "home",
+      "scrollY": 0
+    },
+    {
+      "requested": "giai-dau",
+      "hash": "#giai-dau",
+      "targetTop": 63.75,
+      "activeLabel": "Giải đấu",
+      "visibleSection": "giai-dau",
+      "scrollY": 4288
+    },
+    {
+      "requested": "showroom",
+      "hash": "#showroom",
+      "targetTop": 64,
+      "activeLabel": "Showroom",
+      "visibleSection": "showroom",
+      "scrollY": 6437
+    },
+    {
+      "requested": "home",
+      "hash": "#home",
+      "targetTop": 64,
+      "activeLabel": "Trang chủ",
+      "visibleSection": "home",
+      "scrollY": 0
+    }
+  ],
+  "ticker": {
+    "label": "Tiếp tục dòng tin",
+    "computedPlayState": "paused",
+    "transform": "matrix(1, 0, 0, 1, -378.322, 0)",
+    "pausedTransformAfterWait": "matrix(1, 0, 0, 1, -378.322, 0)",
+    "resumedPlayState": "running"
+  },
+  "fonts": {
+    "displayLoaded": true,
+    "bodyFont": "Inter, system-ui, sans-serif",
+    "heroFont": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+  },
+  "errors": []
+}

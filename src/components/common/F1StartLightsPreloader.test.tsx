@@ -3,13 +3,53 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { F1StartLightsPreloader } from './F1StartLightsPreloader';
 import { getStartLightsFrame, START_LIGHT_CUE, START_LIGHT_TIMING } from './startLightsTiming';
+import { isDocumentReload } from './documentReload';
 
 describe('F1StartLightsPreloader', () => {
-  it('renders immediately on every fresh App mount without a storage gate', () => {
+  it('renders the unchanged animation when the document controller mounts it', () => {
     const html = renderToStaticMarkup(<F1StartLightsPreloader />);
     expect(html).toContain('F1 Start Lights Preloader');
     expect(html).toContain('PREPARING GRID...');
     expect(html.match(/data-testid="start-light"/g)).toHaveLength(10);
+  });
+
+  it.each([
+    ['navigate', false],
+    ['back_forward', false],
+    ['prerender', false],
+    ['reload', true],
+  ])('recognizes navigation type %s as reload = %s', (type, expected) => {
+    const timing = {
+      getEntriesByType: () => [{ entryType: 'navigation', type }],
+    } as unknown as Pick<Performance, 'getEntriesByType'>;
+    expect(isDocumentReload(timing)).toBe(expected);
+  });
+
+  it('fails closed when navigation timing is missing, ambiguous or throws', () => {
+    expect(isDocumentReload(undefined)).toBe(false);
+    expect(
+      isDocumentReload({ getEntriesByType: () => [] } as Pick<Performance, 'getEntriesByType'>),
+    ).toBe(false);
+    expect(
+      isDocumentReload({
+        getEntriesByType: () => [
+          { entryType: 'navigation', type: 'reload' },
+          { entryType: 'navigation', type: 'reload' },
+        ],
+      } as unknown as Pick<Performance, 'getEntriesByType'>),
+    ).toBe(false);
+    expect(
+      isDocumentReload({
+        getEntriesByType: () => [{ entryType: 'resource', type: 'reload' }],
+      } as unknown as Pick<Performance, 'getEntriesByType'>),
+    ).toBe(false);
+    expect(
+      isDocumentReload({
+        getEntriesByType: () => {
+          throw new Error('timing unavailable');
+        },
+      }),
+    ).toBe(false);
   });
 
   it.each([

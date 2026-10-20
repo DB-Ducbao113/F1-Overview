@@ -1,0 +1,473 @@
+{
+  "results": [
+    {
+      "viewport": "mobile",
+      "scenario": "A new navigation to /",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "B refresh / once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "L Escape then no reappearance",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "K second refresh once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "L Skip then no reappearance",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "C completes once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "D repeat Home",
+      "pass": true,
+      "observed": {
+        "route": "/#home",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "E Home Championship Showroom Home",
+      "pass": true,
+      "observed": {
+        "route": "/#home",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "F Engineering to Home",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "G Back",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "G Forward",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "H VI EN season mobile section",
+      "pass": true,
+      "observed": {
+        "route": "/season/2025#showroom",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "I resize 860 to 861 and back",
+      "pass": true,
+      "observed": {
+        "route": "/season/2025#showroom",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J navigate /season/2026 before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/season/2026",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J refresh /season/2026 once",
+      "pass": true,
+      "observed": {
+        "route": "/season/2026",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J navigate /showroom before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/showroom",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J refresh /showroom once",
+      "pass": true,
+      "observed": {
+        "route": "/showroom",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J navigate /engineering before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "J refresh /engineering once",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "scenario": "no uncaught browser exceptions",
+      "pass": true,
+      "observed": []
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "A new navigation to /",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "B refresh / once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "L Escape then no reappearance",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "K second refresh once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "L Skip then no reappearance",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "C completes once",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "D repeat Home",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "E Home Championship Showroom Home",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "F Engineering to Home",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "G Back",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "G Forward",
+      "pass": true,
+      "observed": {
+        "route": "/",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "H VI EN season mobile section",
+      "pass": true,
+      "observed": {
+        "route": "/season/2025",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "I resize 860 to 861 and back",
+      "pass": true,
+      "observed": {
+        "route": "/season/2025",
+        "navigationType": "reload",
+        "introVisible": false,
+        "introAppearances": 1,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J navigate /season/2026 before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/season/2026",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J refresh /season/2026 once",
+      "pass": true,
+      "observed": {
+        "route": "/season/2026",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J navigate /showroom before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/showroom",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J refresh /showroom once",
+      "pass": true,
+      "observed": {
+        "route": "/showroom",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J navigate /engineering before refresh",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "navigate",
+        "introVisible": false,
+        "introAppearances": 0,
+        "bodyOverflow": ""
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "J refresh /engineering once",
+      "pass": true,
+      "observed": {
+        "route": "/engineering",
+        "navigationType": "reload",
+        "introVisible": true,
+        "introAppearances": 1,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "viewport": "desktop",
+      "scenario": "no uncaught browser exceptions",
+      "pass": true,
+      "observed": []
+    }
+  ],
+  "failures": []
+}

@@ -102,6 +102,8 @@ try {
     });
     const { page, pageErrors, consoleErrors, failedResources } = await open(context, '/');
     await page.waitForSelector('[data-mobile-hub]');
+    await page.locator('.r1-mobile-hero h1').waitFor({ state: 'visible' });
+    await page.waitForTimeout(1200);
     const initial = await measure(page);
     if (width === 320) await page.screenshot({ path: path.join(output, 'mobile-home-320.png') });
     let mobileMenu;

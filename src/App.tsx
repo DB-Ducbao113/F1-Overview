@@ -11,7 +11,6 @@ import {
 } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { F1StartLightsPreloader } from './components/common/F1StartLightsPreloader';
 import { useChampionshipStore } from './store/useChampionshipStore';
 import { useNavigationStore } from './store/useNavigationStore';
 import { SeasonYear, isSeasonYear } from './types';
@@ -196,9 +195,6 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-studio-100 text-studio-900 flex flex-col font-sans selection:bg-f1red selection:text-white relative">
       <RouteSeo />
-      {/* ── A1. F1 Start Lights Preloader ── */}
-      {!isEngineeringRoute && <F1StartLightsPreloader />}
-
       {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
       {!isHubRoute && !location.pathname.startsWith('/showroom') && !isEngineeringRoute && (
         <F1SpeedStream />
