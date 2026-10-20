@@ -153,7 +153,7 @@ export const DriverDetailPage: React.FC = () => {
               </div>
 
               {/* Driver Headline Name */}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-none">
+              <h1 className="font-display text-[clamp(1.75rem,8vw,2.25rem)] sm:text-5xl lg:text-6xl font-bold uppercase tracking-normal text-white leading-[1.2] [overflow-wrap:anywhere]">
                 {name}
               </h1>
 

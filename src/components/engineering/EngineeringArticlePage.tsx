@@ -44,7 +44,13 @@ export const EngineeringArticlePage: React.FC = () => {
               <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">
                 {article.topic[lang]}
               </p>
-              <h1 className="mt-4 font-display text-4xl font-black uppercase leading-[0.95] sm:text-6xl">
+              <h1
+                className={`mt-4 text-balance text-4xl uppercase sm:text-6xl ${
+                  lang === 'vi'
+                    ? 'font-body font-bold leading-[1.2] tracking-normal'
+                    : 'font-display font-black leading-[1.08]'
+                }`}
+              >
                 {article.title[lang]}
               </h1>
               <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70">
@@ -76,7 +82,13 @@ export const EngineeringArticlePage: React.FC = () => {
                 <span className="font-mono text-xs text-red-300">
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <h2 className="font-display text-2xl font-black uppercase leading-tight sm:text-3xl">
+                <h2
+                  className={`text-2xl uppercase sm:text-3xl ${
+                    lang === 'vi'
+                      ? 'font-body font-bold leading-[1.2] tracking-normal'
+                      : 'font-display font-black leading-tight'
+                  }`}
+                >
                   {section.heading[lang]}
                 </h2>
               </div>

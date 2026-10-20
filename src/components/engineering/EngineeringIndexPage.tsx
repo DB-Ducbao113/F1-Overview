@@ -15,7 +15,13 @@ export const EngineeringIndexPage: React.FC = () => {
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/5 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200">
             <BookOpen className="h-4 w-4" /> Podium EDS Engineering Insights
           </div>
-          <h1 className="max-w-5xl font-display text-4xl font-black uppercase leading-[0.94] tracking-tight sm:text-6xl lg:text-7xl">
+          <h1
+            className={`max-w-5xl uppercase text-4xl sm:text-6xl lg:text-7xl ${
+              lang === 'vi'
+                ? 'font-body font-bold leading-[1.2] tracking-normal'
+                : 'font-display font-black leading-[1.08] tracking-tight'
+            }`}
+          >
             {lang === 'vi'
               ? 'Kỹ thuật xe đua, giải thích từ nguyên lý'
               : 'Race engineering, explained from first principles'}
@@ -51,7 +57,13 @@ export const EngineeringIndexPage: React.FC = () => {
                     <Clock3 className="h-4 w-4" />
                     {article.readingMinutes} {lang === 'vi' ? 'phút đọc' : 'min read'}
                   </div>
-                  <h2 className="font-display text-2xl font-black uppercase leading-tight text-white sm:text-3xl">
+                  <h2
+                    className={`text-2xl uppercase text-white sm:text-3xl ${
+                      lang === 'vi'
+                        ? 'font-body font-bold leading-[1.2] tracking-normal'
+                        : 'font-display font-black leading-tight'
+                    }`}
+                  >
                     {article.title[lang]}
                   </h2>
                   <p className="mt-4 text-sm leading-6 text-white/70">

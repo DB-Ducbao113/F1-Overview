@@ -134,28 +134,28 @@ export const StandingsTable: React.FC<StandingsTableProps> = React.memo(({ seaso
       </Card3DTilt>
 
       {/* Category Toggle (Drivers vs Constructors) */}
-      <div className="flex items-center gap-2 p-1 rounded-xl bg-white border border-studio-200 max-w-md shadow-xs">
+      <div className="flex w-full max-w-md min-w-0 items-center gap-2 rounded-xl border border-studio-200 bg-white p-1 shadow-xs">
         <button
           onClick={() => setStandingsCategory('drivers')}
-          className={`flex-1 py-2 px-4 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+          className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-center text-[11px] font-bold uppercase leading-tight tracking-normal transition-all sm:px-4 sm:text-xs sm:tracking-wider ${
             standingsCategory === 'drivers'
               ? 'bg-f1red text-white shadow-sm'
               : 'text-studio-600 hover:text-studio-950'
           }`}
         >
-          <Award className="w-4 h-4" />
-          <span>{strings.driversTab}</span>
+          <Award className="h-4 w-4 shrink-0" />
+          <span className="min-w-0 break-words">{strings.driversTab}</span>
         </button>
         <button
           onClick={() => setStandingsCategory('constructors')}
-          className={`flex-1 py-2 px-4 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+          className={`flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-center text-[11px] font-bold uppercase leading-tight tracking-normal transition-all sm:px-4 sm:text-xs sm:tracking-wider ${
             standingsCategory === 'constructors'
               ? 'bg-f1red text-white shadow-sm'
               : 'text-studio-600 hover:text-studio-950'
           }`}
         >
-          <Trophy className="w-4 h-4" />
-          <span>{strings.constructorsTab}</span>
+          <Trophy className="h-4 w-4 shrink-0" />
+          <span className="min-w-0 break-words">{strings.constructorsTab}</span>
         </button>
       </div>
 

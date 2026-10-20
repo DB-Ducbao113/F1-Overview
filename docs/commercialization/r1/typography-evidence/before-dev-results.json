@@ -1,0 +1,51 @@
+[
+  {
+    "name": "before-dev-375-vi-fallback-reduce",
+    "width": 327,
+    "height": 60,
+    "lang": "vi",
+    "fontMode": "fallback",
+    "motion": "reduce",
+    "text": "Đỉnh Cao Tốc Độ. · Kỷ Nguyên Mới.",
+    "html": "Đỉnh Cao Tốc Độ. · Kỷ Nguyên Mới.",
+    "fontFamily": "\"Playfair Display\", Georgia, serif",
+    "fontWeight": "900",
+    "lineHeight": "30px",
+    "letterSpacing": "-0.6px",
+    "scrollHeight": 60,
+    "scrollWidth": 327,
+    "viewportOverflow": 0,
+    "loadedFaces": [],
+    "fetchPriority": "high"
+  },
+  {
+    "name": "before-dev-375-en-fallback-reduce",
+    "width": 327,
+    "height": 60,
+    "lang": "en",
+    "fontMode": "fallback",
+    "motion": "reduce",
+    "text": "Pinnacle Pace. · The New Era.",
+    "html": "Pinnacle Pace. · The New Era.",
+    "fontFamily": "\"Playfair Display\", Georgia, serif",
+    "fontWeight": "900",
+    "lineHeight": "30px",
+    "letterSpacing": "-0.6px",
+    "scrollHeight": 60,
+    "scrollWidth": 327,
+    "viewportOverflow": 0,
+    "loadedFaces": [],
+    "fetchPriority": "high"
+  },
+  {
+    "fontMode": "fallback",
+    "warnings": [
+      "Failed to load resource: net::ERR_BLOCKED_BY_CLIENT.Inspector",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s fetchPriority fetchpriority \n    at img\n    at section\n    at PodiumBrandHero (http://127.0.0.1:4183/src/components/home/PodiumBrandHero.tsx:35:16)\n    at div\n    at HomeView (http://127.0.0.1:4183/src/components/home/HomeView.tsx:35:20)\n    at Suspense\n    at section\n    at div\n    at MobileAllInOne (http://127.0.0.1:4183/src/components/mobile/MobileAllInOne.tsx:103:34)\n    at RenderedRoute (http://127.0.0.1:4183/node_modules/.vite/deps/react-router-dom.js?v=1c026a2b:6758:26)\n    at Routes (http://127.0.0.1:4183/node_modules/.vite/deps/react-router-dom.js?v=1c026a2b:7700:3)\n    at Suspense\n    at div\n    at div\n    at F1PageTransition (http://127.0.0.1:4183/src/components/common/F1PageTransition.tsx:20:3)\n    at main\n    at div\n    at App (http://127.0.0.1:4183/src/App.tsx:220:20)\n    at Router (http://127.0.0.1:4183/node_modules/.vite/deps/react-router-dom.js?v=1c026a2b:7639:13)\n    at BrowserRouter (http://127.0.0.1:4183/node_modules/.vite/deps/react-router-dom.js?v=1c026a2b:10958:3)\n    at ErrorBoundary (http://127.0.0.1:4183/src/components/common/ErrorBoundary.tsx:6:8)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+      "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    ],
+    "errors": []
+  }
+]

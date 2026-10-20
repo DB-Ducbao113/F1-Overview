@@ -185,6 +185,18 @@ const MagneticButton: React.FC<{
   );
 };
 
+export function FullscreenCarStageHeading({ lang }: { lang: keyof typeof t }) {
+  const { heroTitle1, heroTitle2 } = t[lang].home;
+  return (
+    <h1
+      data-testid="car-stage-heading"
+      className={`text-2xl sm:text-4xl font-bold uppercase text-white ${lang === 'vi' ? 'font-body leading-[1.3] tracking-normal' : 'font-display leading-[1.2] tracking-normal'}`}
+    >
+      <span className="block">{heroTitle1}</span> <span className="block">{heroTitle2}</span>
+    </h1>
+  );
+}
+
 export const FullscreenCarStage: React.FC = React.memo(() => {
   const { lang } = useNavigationStore();
   const navigate = useNavigate();
@@ -321,9 +333,7 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
             </span>
           </div>
 
-          <h1 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-white leading-tight">
-            {strings.heroTitle1} · {strings.heroTitle2}
-          </h1>
+          <FullscreenCarStageHeading lang={lang} />
         </div>
 
         {/* ── A2. Magnetic Action CTAs ── */}
@@ -508,7 +518,6 @@ export const FullscreenCarStage: React.FC = React.memo(() => {
                           className="max-h-full max-w-full object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.95)] hover:scale-102 transition-transform duration-500 ease-out animate-ken-burns"
                           loading="eager"
                           decoding="async"
-                          fetchPriority="high"
                         />
                       )}
 

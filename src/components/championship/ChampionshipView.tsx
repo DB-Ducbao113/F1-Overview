@@ -66,7 +66,13 @@ export const ChampionshipView: React.FC<ChampionshipViewProps> = ({ season, onSe
           <span className="text-xs font-bold uppercase tracking-widest text-f1red block">
             {strings.badge}
           </span>
-          <h1 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-studio-950">
+          <h1
+            className={`text-3xl uppercase text-studio-950 sm:text-5xl ${
+              lang === 'vi'
+                ? 'font-body font-bold leading-[1.2] tracking-normal'
+                : 'font-display font-black leading-[1.08] tracking-tight'
+            }`}
+          >
             {strings.title}
           </h1>
           <p className="text-sm sm:text-base text-studio-600 font-light leading-relaxed">

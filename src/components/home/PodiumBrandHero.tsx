@@ -65,7 +65,7 @@ export const PodiumBrandHero: React.FC = () => {
         alt=""
         aria-hidden="true"
         className={`absolute inset-0 h-full w-full object-cover object-[50%_60%] podium-hero-image transition-opacity duration-700 ${ready && !mobile ? 'hero-3d-ready' : ''}`}
-        fetchPriority="high"
+        {...{ fetchpriority: 'high' }}
         decoding="async"
       />
 
