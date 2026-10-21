@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.1-revision-1",
+  "revision": "R3.2-primary-surfaces-1",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "8a63d6834b28e4a436b4012946dc033f50664a514b109cc30b49282c2a4fb861",
-  "bytes": 702020,
+  "sha256": "97c60980185db2ba491d9fa9244da70e2bb1ae73d829ec231fceb0050d957dc9",
+  "bytes": 1977056,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 33688,
-    "vertices": 20589,
+    "triangles": 102072,
+    "vertices": 56620,
     "materials": 5,
     "textures": 0
   },

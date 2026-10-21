@@ -47,3 +47,35 @@
   final exports matched.
 - No stage, commit, push, merge or deployment performed.
 - Status: **WAITING_FOR_OWNER_REVIEW — REVISION 1**
+
+## 2026-10-21 — R3.2 high-fidelity primary surface refinement
+
+- Owner Gate 1 decision: **GO**; verified baseline `0808b72d62420ff7bfbcab2e6aa7e48f25a692d1`.
+- Locked 5.050 x 2.000 x 1.180 m bounds, 3.600 m wheelbase, axles, tracks, tyre sizes,
+  ground contact and all approved R3.1 sidepod/halo/cockpit/rear-wing envelopes were preserved.
+- Re-authored primary surfaces with deterministic cross-section lofts, connected floor channels,
+  integrated airbox/engine spine, curved airfoil volumes and blended halo mounts. No skin, UV,
+  branding, secondary-detail pass or C42-derived geometry was added.
+- Preview: 1,977,056 bytes; 102,072 triangles; 56,620 vertices; five draw calls/materials; zero
+  textures; SHA-256 `97c60980185db2ba491d9fa9244da70e2bb1ae73d829ec231fceb0050d957dc9`.
+- Evidence: six normalized views, six physical-camera views, six R3.1/R3.2 before/after sheets,
+  side/top silhouette sheet and six diffuse/reflective close-ups under
+  `evidence/r3-2-surfaces/`.
+- Local gates: deterministic export, internal GLB validation, ESLint, TypeScript, 39 files/281
+  tests, production build, commercial isolation and DEV browser capture passed. Khronos,
+  physical-device, Blender and sustained thermal tests were not run.
+- Existing owner changes in Cloudflare/CI/references and all G01/G02/R2 work were preserved.
+- No stage, commit, push, merge or deployment performed.
+- Status: **WAITING_FOR_OWNER_REVIEW — OWNER GATE 2**
+
+## 2026-10-21 — Owner-authorized review-branch push
+
+- Owner explicitly requested `push đi` after the local R3.2 Gate 2 handoff. This authorizes a
+  focused commit and push to `Per-PEDS`; it is not a Gate 2 shape GO or a production release.
+- Remote `Per-PEDS` was verified at baseline `0808b72d62420ff7bfbcab2e6aa7e48f25a692d1`.
+- Commit scope: R3.2 source, preview GLB, DEV viewer, visual evidence and R3 documentation only.
+  Existing unrelated Cloudflare, CI, master-plan and `references/` edits remain local.
+- Tracked `ci.yml` does not trigger on `Per-PEDS`; the local `per-peds-ci.yml` is unrelated
+  untracked owner work and is excluded from this commit. No CI run is expected for this push.
+- Deployment status: **NOT RUN**; this is a review-branch push.
+- Owner Gate 2 shape decision: **HOLD — visual review still required**.

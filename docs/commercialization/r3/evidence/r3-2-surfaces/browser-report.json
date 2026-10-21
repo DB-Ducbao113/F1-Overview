@@ -1,0 +1,352 @@
+{
+  "generatedAt": "2026-10-21T01:59:02.347Z",
+  "viewport": [
+    1440,
+    900
+  ],
+  "comparisonResolution": [
+    1600,
+    700
+  ],
+  "views": [
+    "front-three-quarter",
+    "side",
+    "top",
+    "front",
+    "rear",
+    "rear-three-quarter"
+  ],
+  "closeups": [
+    "nose-monocoque-closeup",
+    "sidepod-floor-closeup",
+    "engine-cover-closeup",
+    "front-wing-closeup",
+    "rear-wing-closeup",
+    "halo-mounts-closeup"
+  ],
+  "revisionLabel": "R3.2 primary surfaces",
+  "beforeDirectory": "docs/commercialization/r3/evidence/r3-1-blockout",
+  "candidateMode": "eds-g03",
+  "referenceMode": "legacy-eds",
+  "candidateViewerTransform": {
+    "rotationYRadians": 3.141592653589793,
+    "reason": "Match +Z-front legacy camera convention"
+  },
+  "comparisonMethodology": {
+    "physicalScale": "Identical camera position, target, FOV, viewport and world-space model transforms; no crop normalization.",
+    "normalized": "Foreground bounds are measured against the canvas background, cropped with 10 px padding, assigned identical panel width and bottom-aligned except top view.",
+    "targetApparentWidthPercent": 92,
+    "silhouetteThresholdRgbDistance": 48,
+    "minimumActivePixelsPerAxis": 8
+  },
+  "silhouetteMeasurements": {
+    "front-three-quarter": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 114,
+          "minY": 239,
+          "maxX": 673,
+          "maxY": 461
+        },
+        "visibleWidth": 560,
+        "visibleHeight": 223,
+        "groundLineY": 461
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 28,
+          "minY": 199,
+          "maxX": 694,
+          "maxY": 502
+        },
+        "visibleWidth": 667,
+        "visibleHeight": 304,
+        "groundLineY": 502
+      },
+      "physicalApparentWidthRatio": 1.1910714285714286,
+      "normalizationScaleRatio": 0.8395802098950524
+    },
+    "side": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 116,
+          "minY": 251,
+          "maxX": 751,
+          "maxY": 384
+        },
+        "visibleWidth": 636,
+        "visibleHeight": 134,
+        "groundLineY": 384
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 43,
+          "minY": 219,
+          "maxX": 769,
+          "maxY": 386
+        },
+        "visibleWidth": 727,
+        "visibleHeight": 168,
+        "groundLineY": 386
+      },
+      "physicalApparentWidthRatio": 1.1430817610062893,
+      "normalizationScaleRatio": 0.874828060522696
+    },
+    "top": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 131,
+          "minY": 211,
+          "maxX": 736,
+          "maxY": 434
+        },
+        "visibleWidth": 606,
+        "visibleHeight": 224,
+        "groundLineY": 434
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 108,
+          "minY": 193,
+          "maxX": 769,
+          "maxY": 453
+        },
+        "visibleWidth": 662,
+        "visibleHeight": 261,
+        "groundLineY": 453
+      },
+      "physicalApparentWidthRatio": 1.0924092409240924,
+      "normalizationScaleRatio": 0.9154078549848943
+    },
+    "front": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 248,
+          "minY": 218,
+          "maxX": 607,
+          "maxY": 415
+        },
+        "visibleWidth": 360,
+        "visibleHeight": 198,
+        "groundLineY": 415
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 176,
+          "minY": 195,
+          "maxX": 679,
+          "maxY": 435
+        },
+        "visibleWidth": 504,
+        "visibleHeight": 241,
+        "groundLineY": 435
+      },
+      "physicalApparentWidthRatio": 1.4,
+      "normalizationScaleRatio": 0.7142857142857143
+    },
+    "rear": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 237,
+          "minY": 228,
+          "maxX": 610,
+          "maxY": 417
+        },
+        "visibleWidth": 374,
+        "visibleHeight": 190,
+        "groundLineY": 417
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 203,
+          "minY": 179,
+          "maxX": 640,
+          "maxY": 394
+        },
+        "visibleWidth": 438,
+        "visibleHeight": 216,
+        "groundLineY": 394
+      },
+      "physicalApparentWidthRatio": 1.1711229946524064,
+      "normalizationScaleRatio": 0.8538812785388128
+    },
+    "rear-three-quarter": {
+      "reference": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 127,
+          "minY": 248,
+          "maxX": 708,
+          "maxY": 440
+        },
+        "visibleWidth": 582,
+        "visibleHeight": 193,
+        "groundLineY": 440
+      },
+      "candidate": {
+        "canvas": {
+          "width": 856,
+          "height": 646
+        },
+        "backgroundRgb": [
+          9,
+          9,
+          11
+        ],
+        "bounds": {
+          "minX": 103,
+          "minY": 227,
+          "maxX": 760,
+          "maxY": 428
+        },
+        "visibleWidth": 658,
+        "visibleHeight": 202,
+        "groundLineY": 428
+      },
+      "physicalApparentWidthRatio": 1.1305841924398625,
+      "normalizationScaleRatio": 0.8844984802431611
+    }
+  },
+  "runtime": {
+    "stats": {
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "calls": 7,
+      "triangles": 102298,
+      "geometries": 32,
+      "textures": 10,
+      "frameSamples": 33,
+      "medianRafMs": 16.69999998807907,
+      "p95RafMs": 17.19999998807907,
+      "mode": "eds-g03",
+      "inspection": "diffuse"
+    },
+    "jsHeapBytes": 43237032
+  },
+  "resourceLifetime": {
+    "inspectionSwitches": 12,
+    "modelUnmountRemountCycles": 6,
+    "alternateModel": "eds-g01",
+    "before": {
+      "geometries": 32,
+      "textures": 10
+    },
+    "after": {
+      "geometries": 32,
+      "textures": 10
+    },
+    "afterInspection": {
+      "geometries": 32,
+      "textures": 10
+    },
+    "inspectionStable": true,
+    "modelReloadStable": true
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failedLocalRequests": [],
+  "physicalDevice": "NOT TESTED",
+  "limitations": [
+    "Headless desktop Chrome only; no physical-device or sustained thermal test.",
+    "Detailed + EDS is a visual-quality reference only; its geometry is not used by EDS-G03.",
+    "Physical-scale sheets preserve matched cameras; normalized sheets deliberately remove apparent-size differences.",
+    "Visible bounds use a documented RGB-distance segmentation threshold and are comparative, not metrology."
+  ]
+}

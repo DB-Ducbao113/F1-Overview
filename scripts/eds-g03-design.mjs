@@ -2,7 +2,7 @@
 // Native authoring coordinates: +Y up, -Z front/nose, +Z rear, +/-X left/right.
 export const EDS_G03_DESIGN = Object.freeze({
   id: 'EDS-G03',
-  revision: 'R3.1-revision-1',
+  revision: 'R3.2-primary-surfaces-1',
   units: 'metres',
   coordinateSystem: {
     up: '+Y',
@@ -133,6 +133,21 @@ export const EDS_G03_DESIGN = Object.freeze({
       'ground plane',
       'front wing envelope',
     ],
+    gate1Approval: {
+      baselineCommit: '0808b72',
+      decision: 'GO',
+      approvedRevision: 'R3.1-revision-1',
+    },
+  },
+  surfaceAuthoring: {
+    workflow: 'deterministic spline and connected cross-section lofts',
+    bodyRadialSegments: 56,
+    bodyAxialSegments: 144,
+    sidepodRadialSegments: 44,
+    sidepodAxialSegments: 88,
+    wingSpanSegments: 48,
+    wingChordSegments: 18,
+    inspectionMaterials: ['neutral-diffuse', 'subtle-reflective'],
   },
 });
 

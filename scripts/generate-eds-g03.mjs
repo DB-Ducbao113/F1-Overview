@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_1_Original_Blockout';
+scene.name = 'EDS-G03_R3_2_Original_Primary_Surfaces';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -34,7 +34,7 @@ scene.userData = {
   source: 'scripts/generate-eds-g03.mjs; scripts/eds-g03-design.mjs',
   units: D.units,
   coordinateSystem: '+Y up; -Z front; +Z rear; X=0 centerline',
-  reviewStatus: 'OWNER GATE 1; proportion blockout only; not production approved',
+  reviewStatus: 'OWNER GATE 2; primary surfaces only; not production approved',
   provenance: 'No C42 mesh, vertices, UVs, textures, deformation or retopology used',
 };
 
@@ -44,11 +44,11 @@ const createMaterial = (name, color, roughness, metalness = 0) => {
   return value;
 };
 const materials = {
-  body: createMaterial('BLOCKOUT_BODY', '#6f767d', 0.74),
-  aero: createMaterial('BLOCKOUT_AERO', '#50575e', 0.8),
-  tire: createMaterial('BLOCKOUT_TIRE', '#17191b', 0.92),
-  mechanical: createMaterial('BLOCKOUT_MECHANICAL', '#4d545a', 0.7, 0.08),
-  cockpit: createMaterial('BLOCKOUT_COCKPIT', '#262a2e', 0.9),
+  body: createMaterial('INSPECTION_BODY', '#7b8288', 0.68),
+  aero: createMaterial('INSPECTION_AERO', '#596168', 0.74),
+  tire: createMaterial('INSPECTION_TIRE', '#17191b', 0.92),
+  mechanical: createMaterial('INSPECTION_MECHANICAL', '#4d545a', 0.66, 0.08),
+  cockpit: createMaterial('INSPECTION_COCKPIT', '#20252a', 0.88),
 };
 const parts = new Map(Object.keys(materials).map((key) => [key, []]));
 
@@ -126,6 +126,31 @@ function ellipsoid(center, radii, width = 24, height = 14) {
   return geometry;
 }
 
+function ellipseDiscZ(center, radii, segments = 40, reverse = false) {
+  const geometry = new THREE.CircleGeometry(1, segments);
+  geometry.scale(radii[0], radii[1], 1);
+  if (reverse) geometry.rotateY(Math.PI);
+  geometry.translate(...center);
+  return geometry;
+}
+
+function ellipseLoopZ(center, radii, radius = 0.012, segments = 40) {
+  return curveTube(
+    Array.from({ length: segments }, (_, index) => {
+      const angle = (index / segments) * Math.PI * 2;
+      return [
+        center[0] + Math.cos(angle) * radii[0],
+        center[1] + Math.sin(angle) * radii[1],
+        center[2],
+      ];
+    }),
+    radius,
+    segments * 2,
+    10,
+    true,
+  );
+}
+
 function rod(a, b, radius, radial = 8) {
   const start = new THREE.Vector3(...a);
   const end = new THREE.Vector3(...b);
@@ -152,17 +177,19 @@ function curveTube(points, radius, tubular = 48, radial = 8, closed = false) {
 
 function tireGeometry(x, z, radius, width) {
   const profile = [
-    [-0.5, 0.7],
-    [-0.46, 0.88],
-    [-0.34, 0.98],
+    [-0.5, 0.72],
+    [-0.48, 0.84],
+    [-0.42, 0.93],
+    [-0.3, 0.985],
     [0, 1],
-    [0.34, 0.98],
-    [0.46, 0.88],
-    [0.5, 0.7],
+    [0.3, 0.985],
+    [0.42, 0.93],
+    [0.48, 0.84],
+    [0.5, 0.72],
   ];
   const positions = [];
   const indices = [];
-  const radial = 40;
+  const radial = 64;
   for (const [offset, scale] of profile) {
     for (let index = 0; index < radial; index += 1) {
       const angle = (index / radial) * Math.PI * 2;
@@ -197,23 +224,66 @@ function axialCylinder(radius, depth, x, y, z, segments = 32) {
   return geometry;
 }
 
-function airfoilVolume({ span, z, chord, y, sweep = 0, dihedral = 0, thickness = 0.015 }) {
+function rimRing(radius, tube, x, y, z) {
+  const geometry = new THREE.TorusGeometry(radius, tube, 10, 48);
+  geometry.rotateY(Math.PI / 2);
+  geometry.translate(x, y, z);
+  return geometry;
+}
+
+function airfoilVolume({
+  span,
+  z,
+  chord,
+  y,
+  sweep = 0,
+  dihedral = 0,
+  thickness = 0.04,
+  camber = 0.012,
+  arch = 0,
+}) {
   const surface = (u, v, upper) => {
     const x = (u - 0.5) * span;
     const spanPosition = Math.abs(2 * u - 1);
-    const profile = Math.sin(Math.PI * v);
+    const edge = Math.min(0.9999, Math.max(0.0001, v));
+    const thicknessProfile =
+      5 *
+      (0.2969 * Math.sqrt(edge) -
+        0.126 * edge -
+        0.3516 * edge ** 2 +
+        0.2843 * edge ** 3 -
+        0.1036 * edge ** 4);
+    const camberLine = camber * Math.sin(Math.PI * v);
+    const crown = arch * (1 - spanPosition ** 1.7);
     return [
       x,
-      y + dihedral * spanPosition + (upper ? 1 : -1) * (0.004 + thickness * profile),
+      y +
+        dihedral * spanPosition +
+        crown +
+        camberLine +
+        (upper ? 1 : -1) * thickness * thicknessProfile,
       z + chord * v + sweep * spanPosition,
     ];
   };
   const geometries = [
-    grid(30, 8, (u, v) => surface(u, v, true), true),
-    grid(30, 8, (u, v) => surface(u, v, false)),
+    grid(
+      D.surfaceAuthoring.wingSpanSegments,
+      D.surfaceAuthoring.wingChordSegments,
+      (u, v) => surface(u, v, true),
+      true,
+    ),
+    grid(D.surfaceAuthoring.wingSpanSegments, D.surfaceAuthoring.wingChordSegments, (u, v) =>
+      surface(u, v, false),
+    ),
   ];
-  for (const v of [0, 1]) geometries.push(grid(30, 1, (u, w) => surface(u, v, w === 1), v === 1));
-  for (const u of [0, 1]) geometries.push(grid(1, 8, (w, v) => surface(u, v, w === 1), u === 0));
+  for (const v of [0, 1])
+    geometries.push(
+      grid(D.surfaceAuthoring.wingSpanSegments, 1, (u, w) => surface(u, v, w === 1), v === 1),
+    );
+  for (const u of [0, 1])
+    geometries.push(
+      grid(1, D.surfaceAuthoring.wingChordSegments, (w, v) => surface(u, v, w === 1), u === 0),
+    );
   return geometries;
 }
 
@@ -232,7 +302,8 @@ function plateAtX(x, outline) {
   return geometry;
 }
 
-// A continuous low centreline loft establishes nose, survival cell and engine-cover proportion.
+// Re-authored R3.2 centreline shell: controlled super-elliptic sections blend the split-keel
+// nose, survival cell and engine cover without primitive junctions.
 const centerBody = [
   { z: -2.48, x: 0, y: 0.3, rx: 0.035, ry: 0.035 },
   { z: -2.15, x: 0, y: 0.34, rx: 0.09, ry: 0.07 },
@@ -247,15 +318,27 @@ const centerBody = [
 ];
 addPart(
   'body',
-  loft(centerBody, 36, 92, ({ x, y, rx, ry, c, s, z }) => {
-    const cockpit = Math.exp(-Math.pow((z + 0.18) / 0.54, 4));
-    const valley = 0.13 * cockpit * Math.max(0, s) ** 4;
-    const noseKeel = z < -1.05 ? 0.018 * Math.cos(Math.PI * Math.min(1, (-z - 1.05) / 1.43)) : 0;
-    return [x + c * rx, y + s * ry - valley - Math.max(0, s) * noseKeel, z];
-  }),
+  loft(
+    centerBody,
+    D.surfaceAuthoring.bodyRadialSegments,
+    D.surfaceAuthoring.bodyAxialSegments,
+    ({ x, y, rx, ry, c, s, z }) => {
+      const cockpit = Math.exp(-Math.pow((z + 0.18) / 0.54, 4));
+      const valley = 0.13 * cockpit * Math.max(0, s) ** 4;
+      const noseFactor = 1 - THREE.MathUtils.smoothstep(z, -2.42, -0.95);
+      const lowerKeel = s < 0 ? 0.024 * noseFactor * Math.exp(-Math.pow(c / 0.28, 2)) * -s : 0;
+      const twinRelief =
+        s < 0 ? 0.01 * noseFactor * Math.exp(-Math.pow((Math.abs(c) - 0.52) / 0.18, 2)) * -s : 0;
+      const lateral = Math.sign(c) * Math.pow(Math.abs(c), 0.84) * rx;
+      const vertical = Math.sign(s) * Math.pow(Math.abs(s), 1.08) * ry;
+      const shoulder = 0.012 * Math.max(0, s) * Math.sin(Math.PI * Math.abs(c));
+      return [x + lateral, y + vertical + shoulder - valley - lowerKeel + twinRelief, z];
+    },
+  ),
 );
 
-// Crescent-entry sidepods use a falling outer shoulder and taper independently from the benchmark.
+// Crescent-entry sidepods are spline lofts with an upper shoulder, deep undercut and progressive
+// rear taper. Connected fairing patches bridge them into the monocoque and floor envelope.
 for (const side of [-1, 1]) {
   const stations = [
     { z: -0.55, x: side * 0.38, y: 0.46, rx: 0.025, ry: 0.03 },
@@ -267,20 +350,58 @@ for (const side of [-1, 1]) {
   ];
   addPart(
     'body',
-    loft(stations, 28, 52, ({ x, y, rx, ry, c, s, z }) => {
-      const outer = side * c > 0 ? 1 : 0;
-      const shoulderFall = outer * 0.055 * THREE.MathUtils.smoothstep(z, -0.08, 1.22);
-      const undercut = s < 0 ? 1 + 0.5 * s : 1;
-      const lowerLift = s < 0 ? -0.035 * s : 0;
-      return [x + c * rx * undercut, y + s * ry + lowerLift - shoulderFall, z];
-    }),
+    loft(
+      stations,
+      D.surfaceAuthoring.sidepodRadialSegments,
+      D.surfaceAuthoring.sidepodAxialSegments,
+      ({ x, y, rx, ry, c, s, z }) => {
+        const outer = side * c > 0 ? 1 : 0;
+        const shoulderFall = outer * 0.055 * THREE.MathUtils.smoothstep(z, -0.08, 1.22);
+        const undercut = s < 0 ? 1 + 0.58 * s : 1;
+        const lowerLift = s < 0 ? -0.045 * s : 0;
+        const crown = s > 0 ? 0.018 * Math.sin(Math.PI * Math.abs(c)) * s : 0;
+        const lateral = Math.sign(c) * Math.pow(Math.abs(c), 0.9) * rx * undercut;
+        return [x + lateral, y + s * ry + crown + lowerLift - shoulderFall, z];
+      },
+    ),
   );
-  addPart('cockpit', ellipsoid([side * 0.615, 0.47, -0.38], [0.014, 0.08, 0.11], 18, 10));
+  addPart(
+    'body',
+    grid(
+      14,
+      56,
+      (u, v) => {
+        const z = THREE.MathUtils.lerp(-0.48, 1.08, v);
+        const taper = THREE.MathUtils.smoothstep(z, -0.48, 1.08);
+        const innerX = side * THREE.MathUtils.lerp(0.27, 0.16, taper);
+        const outerX = side * THREE.MathUtils.lerp(0.55, 0.3, taper);
+        const blend = THREE.MathUtils.smootherstep(u, 0, 1);
+        const x = THREE.MathUtils.lerp(innerX, outerX, blend);
+        const innerY = THREE.MathUtils.lerp(0.55, 0.46, taper);
+        const outerY = THREE.MathUtils.lerp(0.58, 0.43, taper);
+        return [x, THREE.MathUtils.lerp(innerY, outerY, blend) + 0.012 * Math.sin(Math.PI * u), z];
+      },
+      side === -1,
+    ),
+  );
+  const inletCenter = [side * 0.515, 0.47, -0.392];
+  addPart('cockpit', ellipseDiscZ(inletCenter, [0.1, 0.072], 44, true));
+  addPart('body', ellipseLoopZ(inletCenter, [0.112, 0.083], 0.011, 44));
 }
 
-// Cockpit opening, compact airbox and two subtle dorsal ridges are blockout landmarks.
+// Open cockpit inspection recess and integrated airbox/engine spine.
 addPart('cockpit', ellipsoid([0, 0.58, -0.14], [0.235, 0.085, 0.42], 30, 12));
-addPart('cockpit', ellipsoid([0, 0.95, 0.5], [0.13, 0.1, 0.055], 22, 12));
+const airboxStations = [
+  { z: 0.24, x: 0, y: 0.82, rx: 0.07, ry: 0.055 },
+  { z: 0.34, x: 0, y: 0.84, rx: 0.12, ry: 0.105 },
+  { z: 0.56, x: 0, y: 0.8, rx: 0.13, ry: 0.1 },
+  { z: 0.86, x: 0, y: 0.69, rx: 0.1, ry: 0.095 },
+  { z: 1.18, x: 0, y: 0.56, rx: 0.065, ry: 0.07 },
+  { z: 1.5, x: 0, y: 0.46, rx: 0.025, ry: 0.035 },
+];
+addPart('body', loft(airboxStations, 36, 72));
+addPart('cockpit', ellipseDiscZ([0, 0.845, 0.238], [0.082, 0.06], 44, true));
+addPart('body', ellipseLoopZ([0, 0.845, 0.236], [0.094, 0.071], 0.01, 44));
 for (const side of [-1, 1]) {
   addPart(
     'body',
@@ -291,16 +412,17 @@ for (const side of [-1, 1]) {
         [side * 0.08, 0.67, 1.25],
         [side * 0.04, 0.49, 1.57],
       ],
-      0.025,
-      42,
-      8,
+      0.018,
+      64,
+      10,
     ),
   );
 }
 
-// Continuous floor shell with a shallow throat and a rising twin-channel diffuser.
-const floorStart = -1.08;
-const floorEnd = 2.3;
+// Connected underfloor: twin Venturi channels contract through the sidepod region and rise into
+// the approved diffuser exit. Upper and lower skins share the same planform and sealed edges.
+const floorStart = D.landmarks.floor.startZ;
+const floorEnd = D.landmarks.floor.endZ;
 const floorWidthStations = [
   [-1.08, 0.3],
   [-0.58, 0.52],
@@ -318,23 +440,27 @@ const floorHalfWidth = (z) => {
   const [z1, width1] = floorWidthStations[index + 1];
   return THREE.MathUtils.lerp(width0, width1, THREE.MathUtils.smoothstep(z, z0, z1));
 };
-const floorY = (x, z) => {
-  const throat = 0.035 * Math.exp(-Math.pow((z - 0.25) / 0.75, 2));
-  const channel = Math.exp(-Math.pow((Math.abs(x) - 0.38) / 0.2, 2));
-  const diffuser = 0.23 * THREE.MathUtils.smoothstep(z, 1, 2.3);
-  const edgeBlend = 0.055 * Math.pow(Math.abs(x) / floorHalfWidth(z), 4);
-  return 0.09 - throat * channel + diffuser + edgeBlend;
+const floorY = (x, z, upper) => {
+  const halfWidth = floorHalfWidth(z);
+  const lateral = Math.abs(x) / halfWidth;
+  const channel = Math.exp(-Math.pow((Math.abs(x) - 0.36) / 0.145, 2));
+  const throat = 0.034 * Math.exp(-Math.pow((z - 0.32) / 0.72, 2)) * channel;
+  const diffuser = 0.2 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
+  const edgeRoll = 0.05 * lateral ** 4;
+  const lower = 0.065 - throat + diffuser + edgeRoll * 0.35;
+  const thickness = D.landmarks.floor.shellThickness + 0.018 * channel;
+  return lower + (upper ? thickness + edgeRoll * 0.65 : 0);
 };
 for (const upper of [false, true]) {
   addPart(
     'aero',
     grid(
-      24,
-      52,
+      36,
+      96,
       (u, v) => {
         const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
         const x = (u * 2 - 1) * floorHalfWidth(z);
-        return [x, floorY(x, z) + (upper ? 0.065 : 0), z];
+        return [x, floorY(x, z, upper), z];
       },
       !upper,
     ),
@@ -343,10 +469,10 @@ for (const upper of [false, true]) {
 for (const side of [-1, 1]) {
   addPart(
     'aero',
-    grid(1, 52, (u, v) => {
+    grid(1, 96, (u, v) => {
       const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
       const x = side * floorHalfWidth(z);
-      return [x, floorY(x, z) + u * 0.065, z];
+      return [x, THREE.MathUtils.lerp(floorY(x, z, false), floorY(x, z, true), u), z];
     }),
   );
   addPart(
@@ -359,13 +485,14 @@ for (const side of [-1, 1]) {
         { z: 1.0, x: side * 0.51, y: 0.21, rx: 0.03, ry: 0.06 },
         { z: 1.45, x: side * 0.39, y: 0.24, rx: 0.02, ry: 0.035 },
       ],
-      16,
-      36,
+      24,
+      64,
     ),
   );
 }
 
-// Front and rear wing envelopes are volumetric but intentionally free of R3.2 surface detail.
+// Curved NACA-derived wing volumes replace the R3.1 sinusoidal plates while retaining every
+// approved span and longitudinal envelope.
 for (let index = 0; index < 3; index += 1) {
   const geometries = airfoilVolume({
     span: 2 - index * 0.09,
@@ -374,7 +501,9 @@ for (let index = 0; index < 3; index += 1) {
     y: 0.11 + index * 0.055,
     sweep: 0.11 + index * 0.015,
     dihedral: 0.045 + index * 0.012,
-    thickness: 0.012,
+    thickness: 0.03 - index * 0.003,
+    camber: 0.012 + index * 0.002,
+    arch: 0.008 + index * 0.003,
   });
   geometries.forEach((geometry) => addPart('aero', geometry));
 }
@@ -387,16 +516,25 @@ const frontPlate = [
 ];
 for (const side of [-1, 1]) addPart('aero', plateAtX(side * 0.991, frontPlate));
 
-airfoilVolume({ span: 1.36, z: 2.1, chord: 0.31, y: 0.91, sweep: 0.04, thickness: 0.018 }).forEach(
-  (geometry) => addPart('aero', geometry),
-);
+airfoilVolume({
+  span: D.landmarks.rearWing.span,
+  z: 2.1,
+  chord: 0.31,
+  y: 0.91,
+  sweep: 0.04,
+  thickness: 0.046,
+  camber: 0.017,
+  arch: 0.01,
+}).forEach((geometry) => addPart('aero', geometry));
 airfoilVolume({
   span: 1.3,
   z: 2.17,
   chord: 0.235,
   y: 1.08,
   sweep: 0.045,
-  thickness: 0.016,
+  thickness: 0.038,
+  camber: 0.013,
+  arch: 0.008,
 }).forEach((geometry) => addPart('aero', geometry));
 const rearPlate = [
   [2.06, 0.84],
@@ -423,6 +561,7 @@ for (const side of [-1, 1]) {
     addPart('tire', tireGeometry(x, z, radius, width));
     addPart('mechanical', axialCylinder(radius * 0.5, width * 0.82, x, radius, z));
     addPart('cockpit', axialCylinder(radius * 0.28, width * 0.86, x, radius, z));
+    addPart('mechanical', rimRing(radius * 0.38, 0.012, x + side * width * 0.38, radius, z));
     const innerX = side * (rear ? 0.31 : 0.28);
     for (const upper of [false, true]) {
       const innerY = upper ? 0.58 : 0.28;
@@ -438,7 +577,7 @@ for (const side of [-1, 1]) {
   }
 }
 
-// Compact halo envelope keeps the protection landmark legible without dominating the cockpit.
+// Continuous halo tube and blended attachment fairings retain the owner-approved envelope.
 addPart(
   'mechanical',
   curveTube(
@@ -452,11 +591,15 @@ addPart(
       [0.26, 0.66, 0.12],
     ],
     0.022,
-    64,
-    10,
+    96,
+    14,
   ),
 );
 addPart('mechanical', rod([0, 0.65, -0.65], [0, 0.94, -0.5], 0.022, 10));
+addPart('body', ellipsoid([0, 0.66, -0.64], [0.06, 0.055, 0.095], 28, 16));
+for (const side of [-1, 1]) {
+  addPart('body', ellipsoid([side * 0.26, 0.66, 0.12], [0.065, 0.045, 0.09], 24, 14));
+}
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
@@ -466,7 +609,7 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.1', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

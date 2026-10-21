@@ -13,6 +13,7 @@ import {
 import { LegacyDetailedCar, type LegacyDetailedCarStats } from './LegacyDetailedCar';
 
 type ReviewMode = 'legacy-original' | 'legacy-eds' | 'eds-g01' | 'eds-g02' | 'eds-g03';
+type G03InspectionMode = 'diffuse' | 'reflective';
 type CameraPreset =
   | 'front-three-quarter'
   | 'side'
@@ -20,11 +21,12 @@ type CameraPreset =
   | 'front'
   | 'rear'
   | 'rear-three-quarter'
-  | 'sidepod-closeup'
+  | 'nose-monocoque-closeup'
+  | 'sidepod-floor-closeup'
+  | 'engine-cover-closeup'
   | 'front-wing-closeup'
   | 'rear-wing-closeup'
-  | 'wheel-suspension-closeup'
-  | 'cockpit-closeup';
+  | 'halo-mounts-closeup';
 
 const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   { id: 'legacy-original', label: 'A · Original C42', note: 'Neutral material geometry baseline' },
@@ -35,7 +37,7 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
-  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.1 revision 1 neutral blockout' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 high-fidelity primary surfaces' },
 ];
 
 const CAMERA_PRESETS: Record<
@@ -48,14 +50,12 @@ const CAMERA_PRESETS: Record<
   front: { position: [0, 0.95, 6.25], target: [0, 0.32, 0.75] },
   rear: { position: [0, 1.05, -6.25], target: [0, 0.38, -0.7] },
   'rear-three-quarter': { position: [-4.8, 1.8, -4.8], target: [0, 0.4, -0.35] },
-  'sidepod-closeup': { position: [3.1, 1.0, -0.25], target: [0.58, 0.54, -0.05] },
-  'front-wing-closeup': { position: [2.35, 0.65, 3.35], target: [0.25, 0.28, 1.92] },
-  'rear-wing-closeup': { position: [-2.35, 1.0, -3.3], target: [-0.1, 0.62, -1.9] },
-  'wheel-suspension-closeup': {
-    position: [2.15, 0.62, 2.0],
-    target: [1.05, 0.38, 1.35],
-  },
-  'cockpit-closeup': { position: [2.25, 1.72, 0.55], target: [0.05, 0.68, 0.12] },
+  'nose-monocoque-closeup': { position: [2.25, 1.08, 3.15], target: [0, 0.47, 1.05] },
+  'sidepod-floor-closeup': { position: [2.75, 0.76, 0.25], target: [0.52, 0.35, -0.08] },
+  'engine-cover-closeup': { position: [-2.1, 1.46, -2.0], target: [0, 0.77, -0.7] },
+  'front-wing-closeup': { position: [2.15, 0.62, 3.35], target: [0.18, 0.2, 2.12] },
+  'rear-wing-closeup': { position: [-2.1, 1.22, -3.35], target: [0, 0.9, -2.12] },
+  'halo-mounts-closeup': { position: [1.85, 1.62, 0.82], target: [0, 0.72, 0.18] },
 };
 
 interface RuntimeStats {
@@ -74,9 +74,11 @@ interface ReviewApi {
   setMode: (mode: ReviewMode) => void;
   setLivery: (livery: EDSLiveryId) => void;
   setView: (view: CameraPreset) => void;
+  setInspection: (inspection: G03InspectionMode) => void;
   getStats: () => RuntimeStats & {
     mode: ReviewMode;
     livery: EDSLiveryId;
+    inspection: G03InspectionMode;
     geometry: LegacyDetailedCarStats | null;
   };
 }
@@ -208,16 +210,51 @@ const EDSReviewCar: React.FC<{ model: 'eds-g01' | 'eds-g02'; liveryId: EDSLivery
   return <primitive object={clone} />;
 };
 
-const EDSG03ReviewCar: React.FC = () => {
+const EDSG03ReviewCar: React.FC<{ inspection: G03InspectionMode }> = ({ inspection }) => {
   const { scene } = useGLTF('/models/eds-g03-preview.glb');
-  const clone = useMemo(() => scene.clone(true), [scene]);
+  const clone = useMemo(() => {
+    const next = scene.clone(true);
+    next.userData.inspectionMode = inspection;
+    return next;
+  }, [inspection, scene]);
+  const inspectionMaterials = useMemo(() => {
+    if (inspection === 'diffuse') return null;
+    const palette: Record<string, string> = {
+      body: '#aeb8c0',
+      aero: '#87939d',
+      tire: '#11161b',
+      mechanical: '#65717a',
+      cockpit: '#202930',
+    };
+    return Object.fromEntries(
+      Object.entries(palette).map(([category, color]) => [
+        category,
+        new THREE.MeshPhysicalMaterial({
+          name: `EDS_G03_R3_2_INSPECTION_${category.toUpperCase()}`,
+          color,
+          roughness: category === 'tire' ? 0.78 : 0.3,
+          metalness: category === 'mechanical' ? 0.42 : 0.08,
+          clearcoat: category === 'body' || category === 'aero' ? 0.36 : 0,
+          clearcoatRoughness: 0.24,
+          envMapIntensity: 0.82,
+        }),
+      ]),
+    ) as Record<string, THREE.MeshPhysicalMaterial>;
+  }, [inspection]);
   useEffect(() => {
     clone.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
+      if (inspectionMaterials) {
+        const category = object.name.replace('EDS_G03_', '').toLowerCase();
+        object.material = inspectionMaterials[category] ?? inspectionMaterials.body;
+      }
       object.castShadow = true;
       object.receiveShadow = true;
     });
-  }, [clone]);
+    return () => {
+      Object.values(inspectionMaterials ?? {}).forEach((material) => material.dispose());
+    };
+  }, [clone, inspectionMaterials]);
   // G03 is authored with -Z front. The review-only rotation matches the legacy viewer's
   // +Z-front camera convention without altering the GLB hardpoint coordinate system.
   return <primitive object={clone} rotation={[0, Math.PI, 0]} />;
@@ -226,15 +263,16 @@ const EDSG03ReviewCar: React.FC = () => {
 const ReviewScene: React.FC<{
   mode: ReviewMode;
   liveryId: EDSLiveryId;
+  inspection: G03InspectionMode;
   preset: CameraPreset;
   onLegacyReady: (stats: LegacyDetailedCarStats) => void;
   statsRef: React.MutableRefObject<RuntimeStats>;
-}> = ({ mode, liveryId, preset, onLegacyReady, statsRef }) => (
+}> = ({ mode, liveryId, inspection, preset, onLegacyReady, statsRef }) => (
   <>
     <color attach="background" args={['#070a0f']} />
     <CameraRig preset={preset} />
     <LocalStudioEnvironment />
-    <PerformanceProbe statsRef={statsRef} resetKey={`${mode}:${liveryId}`} />
+    <PerformanceProbe statsRef={statsRef} resetKey={`${mode}:${liveryId}:${inspection}`} />
     <ambientLight intensity={0.34} />
     <directionalLight position={[6, 8, 4.5]} intensity={1.72} castShadow />
     <directionalLight position={[-5, 3.5, -3.5]} intensity={0.58} color="#9edce2" />
@@ -247,7 +285,7 @@ const ReviewScene: React.FC<{
           onReady={onLegacyReady}
         />
       ) : mode === 'eds-g03' ? (
-        <EDSG03ReviewCar />
+        <EDSG03ReviewCar inspection={inspection} />
       ) : (
         <EDSReviewCar model={mode} liveryId={liveryId} />
       )}
@@ -290,6 +328,9 @@ export const LegacyShowroomComparison: React.FC = () => {
   const [preset, setPreset] = useState<CameraPreset>(() =>
     getInitialValue('view', Object.keys(CAMERA_PRESETS) as CameraPreset[], 'front-three-quarter'),
   );
+  const [inspection, setInspection] = useState<G03InspectionMode>(() =>
+    getInitialValue('inspection', ['diffuse', 'reflective'] as const, 'diffuse'),
+  );
   const [legacyStats, setLegacyStats] = useState<LegacyDetailedCarStats | null>(null);
   const statsRef = useRef<RuntimeStats>({
     gpu: 'Pending',
@@ -309,12 +350,19 @@ export const LegacyShowroomComparison: React.FC = () => {
       setMode,
       setLivery: setLiveryId,
       setView: setPreset,
-      getStats: () => ({ ...statsRef.current, mode, livery: liveryId, geometry: legacyStats }),
+      setInspection,
+      getStats: () => ({
+        ...statsRef.current,
+        mode,
+        livery: liveryId,
+        inspection,
+        geometry: legacyStats,
+      }),
     };
     return () => {
       delete window.__legacySkinReview;
     };
-  }, [legacyStats, liveryId, mode]);
+  }, [inspection, legacyStats, liveryId, mode]);
 
   const selectedMode = REVIEW_MODES.find((item) => item.id === mode) ?? REVIEW_MODES[1];
   return (
@@ -375,6 +423,7 @@ export const LegacyShowroomComparison: React.FC = () => {
                 mode={mode}
                 liveryId={liveryId}
                 preset={preset}
+                inspection={inspection}
                 onLegacyReady={onLegacyReady}
                 statsRef={statsRef}
               />
@@ -382,6 +431,24 @@ export const LegacyShowroomComparison: React.FC = () => {
           </div>
 
           <aside className="space-y-4 rounded-2xl border border-studio-800 bg-studio-900/80 p-3">
+            <div>
+              <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-studio-300">
+                G03 inspection
+              </h2>
+              <div className="mt-2 grid grid-cols-2 gap-1.5">
+                {(['diffuse', 'reflective'] as const).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    data-review-inspection={value}
+                    onClick={() => setInspection(value)}
+                    className={`rounded-lg border px-2 py-2 text-[10px] font-bold uppercase ${inspection === value ? 'border-cyan-400 bg-cyan-400/10 text-cyan-200' : 'border-studio-700 bg-black/20 text-studio-300'}`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div>
               <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-studio-300">
                 EDS skin

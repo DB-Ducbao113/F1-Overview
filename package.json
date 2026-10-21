@@ -37,6 +37,7 @@
     "qa:r2:model-review": "node scripts/capture-r2-model-review.mjs",
     "qa:r2:legacy-skins": "node scripts/capture-r2-legacy-skin-review.mjs",
     "qa:r3:blockout": "node scripts/capture-r3-g03-blockout.mjs",
+    "qa:r3:surfaces": "node scripts/capture-r3-g03-surfaces.mjs",
     "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs",
     "qa:m3:visuals": "node scripts/qa-m3-visual-assets.mjs",
     "qa:m3:comparison": "node scripts/capture-m3-phase2-comparison.mjs",
