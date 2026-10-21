@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 const query = new URLSearchParams(location.search);
 const region = query.get('region') ?? 'diffuser';
+const modelScale = Number(query.get('scale') ?? '1');
+const modelRotationY = Number(query.get('rotationY') ?? '0');
 const mode =
   query.get('mode') === 'reflective'
     ? 'reflective'
@@ -30,6 +33,12 @@ scene.add(rim);
 
 const camera = new THREE.PerspectiveCamera(38, 900 / 650, 0.05, 30);
 const revision7Views: Record<string, { position: [number, number, number]; target: [number, number, number] }> = {
+  'design-front-three-quarter': { position: [4.8, 1.95, -4.85], target: [0, 0.42, 0] },
+  'design-side': { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
+  'design-top': { position: [0, 9.3, 0], target: [0, 0.25, 0] },
+  'design-front': { position: [0, 1.15, -6.6], target: [0, 0.42, -0.25] },
+  'design-rear': { position: [0, 1.1, 6.6], target: [0, 0.43, 0.3] },
+  'design-rear-three-quarter': { position: [-4.8, 1.8, 4.8], target: [0, 0.4, 0.35] },
   'full-front-three-quarter': { position: [4.8, 1.95, -4.85], target: [0, 0.42, 0] },
   'full-side': { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
   'full-rear-three-quarter': { position: [-4.8, 1.8, 4.8], target: [0, 0.4, 0.35] },
@@ -71,9 +80,12 @@ if (revision7Views[region]) {
 
 const materials: THREE.Material[] = [];
 const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
 loader.load(
   '/gdr-prototype.glb',
   ({ scene: model }) => {
+    model.scale.setScalar(Number.isFinite(modelScale) ? modelScale : 1);
+    model.rotation.y = Number.isFinite(modelRotationY) ? modelRotationY : 0;
     model.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
       const material =

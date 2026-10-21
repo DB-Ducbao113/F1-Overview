@@ -20,6 +20,7 @@ if (bytes.readUInt32LE(8) !== bytes.length) errors.push('GLB length mismatch');
 const jsonLength = bytes.readUInt32LE(12);
 if (bytes.toString('ascii', 16, 20) !== 'JSON') errors.push('Missing JSON chunk');
 const gltf = JSON.parse(bytes.toString('utf8', 20, 20 + jsonLength));
+const assetRevision = gltf.scenes?.[gltf.scene ?? 0]?.extras?.revision ?? D.revision;
 const binaryChunkOffset = 20 + jsonLength;
 if (bytes.toString('ascii', binaryChunkOffset + 4, binaryChunkOffset + 7) !== 'BIN')
   errors.push('Missing binary chunk');
@@ -59,6 +60,7 @@ for (const required of requiredMeshes) {
 
 const bounds = { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] };
 const tirePoints = [];
+const aeroPoints = [];
 let triangles = 0;
 let vertices = 0;
 let invalidValues = 0;
@@ -89,6 +91,7 @@ for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
         bounds.max[axis] = Math.max(bounds.max[axis], value);
       });
       if (meshNames.get(meshIndex) === 'EDS_G03_TIRE') tirePoints.push(point);
+      if (meshNames.get(meshIndex) === 'EDS_G03_AERO') aeroPoints.push(point);
     }
     for (let index = 0; index < indices.definition.count; index += 3) {
       const ids = [indices.read(index), indices.read(index + 1), indices.read(index + 2)];
@@ -163,6 +166,12 @@ const measuredAxles = {
   rearTrack: wheels.rearRight.center[0] - wheels.rearLeft.center[0],
 };
 measuredAxles.wheelbase = measuredAxles.rearZ - measuredAxles.frontZ;
+const diffuserExitPoints = aeroPoints.filter(([, y, z]) => y < 0.5 && z > 2.28);
+const diffuserExitWidth = diffuserExitPoints.length
+  ? Math.max(...diffuserExitPoints.map(([x]) => x)) -
+    Math.min(...diffuserExitPoints.map(([x]) => x))
+  : null;
+const requiresDiffuserExitCheck = assetRevision.includes('full vehicle design reset');
 
 const tolerance = {
   dimensionsPercent: 2,
@@ -202,6 +211,10 @@ const checks = {
   noDegenerateTriangles: degenerateTriangles === 0,
   unitVertexNormals: invalidNormals === 0,
   normalWindingAgreement: reversedVertexNormals === 0,
+  diffuserExitWidth:
+    !requiresDiffuserExitCheck ||
+    (diffuserExitWidth !== null &&
+      Math.abs(diffuserExitWidth - D.landmarks.diffuser.exit.width) <= 0.002),
   materialCount: (gltf.materials?.length ?? 0) === 5,
   textureCount: (gltf.images?.length ?? 0) === 0,
   sidepodFrontWheelClearance:
@@ -219,7 +232,7 @@ const ratios = {
 };
 const report = {
   asset: D.id,
-  revision: gltf.scenes?.[gltf.scene ?? 0]?.extras?.revision ?? D.revision,
+  revision: assetRevision,
   file: path.relative(process.cwd(), filename).replaceAll('\\', '/'),
   sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
   bytes: bytes.length,
@@ -261,6 +274,7 @@ const report = {
       ]),
     ),
     ratios: Object.fromEntries(Object.entries(ratios).map(([key, value]) => [key, round(value)])),
+    diffuserExitWidth: diffuserExitWidth === null ? null : round(diffuserExitWidth),
   },
   tolerance,
   checks,
