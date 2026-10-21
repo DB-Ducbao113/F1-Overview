@@ -7,6 +7,7 @@ tests exclude coplanar contacts and are limited to the modified regions.
 import importlib.util
 import io
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -14,9 +15,9 @@ import numpy as np
 import trimesh
 
 
-BASELINE = "47fcfca54cc5a2208216af19c36806806ba8d415"
+BASELINE = os.environ.get("R3_G03_BASELINE_COMMIT", "47fcfca54cc5a2208216af19c36806ba8d415")
 MODEL = Path("public/models/eds-g03-preview.glb")
-REPORT = Path("docs/commercialization/r3/evidence/r3-2-revision-5/topology.json")
+REPORT = Path(os.environ.get("R3_G03_TOPOLOGY_REPORT", "docs/commercialization/r3/evidence/r3-2-revision-5/topology.json"))
 DIAGRAM = REPORT.with_name("diffuser-cross-sections.svg")
 spec = importlib.util.spec_from_file_location(
     "topology_helper", Path("scripts/check-eds-g03-topology.py")

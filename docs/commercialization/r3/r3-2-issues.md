@@ -1,5 +1,39 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Gate 2 Revision 6 retest (2026-10-21)
+
+Baseline `ff29e5ae526ddc1df6034861987e112a63e5cc70`; candidate evidence
+in `evidence/r3-2-revision-6/`. The new upper halo T uses an arch aperture
+stitched to the trimmed front support in the same BODY index buffer, not an
+overlapping fairing. Independent bounded strict crossings fell from **140 to
+0**; BODY open edges fell from **400 to 372** (the former 28-edge free support
+tip is closed). Winding remained consistent and the three mount coordinates
+and other locked dimensions remained unchanged.
+
+- **R3-G03-008, P2, halo junctions:** Upper T collision is resolved by the
+  bounded intersection test and matched diffuse/reflective/wireframe renders.
+  The rear mount sleeve still reads as a triangular pedestal in
+  `continuity-halo-rear-mount.png` and the upper blend still has visible
+  faceting in `halo-prototype-reflective.png`. A broader/lower rear fairing
+  trial had no meaningful visual benefit and was reverted. **Retest: topology
+  PASS, visual REVISE; owner review required.**
+- **R3-G03-009, P2, diffuser exit:** The approved 1.160 m lower exit is
+  preserved. Terminal channel clearance at the sampled low point changes
+  from 0.192363 to 0.152364 m, with a broader paired profile and no bounded
+  strict crossing. The matched low-rear image still reads as a broad plate
+  with a central gable rather than two unmistakable exits; the accepted
+  continuous-shell architecture occludes the channel relief from that view.
+  **Retest: geometric profile changed, visual acceptance NOT MET.**
+- **R3-G03-006, P2, accepted sidepod:** The sidepod, inlet and primary floor
+  source functions were not remodeled. Independent vertex-set comparison in
+  the sidepod envelope found **0 missing of 1,502 unique baseline vertices**.
+  **Retest: preserved in sampled geometry and matched renders.**
+
+Limitations: local strict edge/triangle tests are bounded; zero detected
+crossings does not prove globally collision-free or watertight geometry.
+BODY retains 372 classified open edges. Physical-device and long-duration
+performance testing were **NOT TESTED**. Final Gate 2 remains **HOLD**.
+
 ## Gate 2 Revision 4 retest (2026-10-21)
 
 Baseline: `4762005`. Reproduction evidence: twelve matched four-panel

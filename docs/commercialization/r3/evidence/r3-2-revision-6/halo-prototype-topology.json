@@ -1,0 +1,25 @@
+{
+  "asset": "docs\\commercialization\\r3\\evidence\\r3-2-revision-6\\halo-prototype.glb",
+  "region": "halo",
+  "triangles": 3228,
+  "nonfiniteVertices": 0,
+  "degenerateTrianglesBelow1e-10m2": 0,
+  "windingConsistent": true,
+  "strictCrossings": 0,
+  "testedAabbPairs": 2273,
+  "firstCrossings": [],
+  "openBoundaryEdges": 136,
+  "openEdgesAtHaloT": 0,
+  "bounds": [
+    [
+      -0.188168,
+      0.786718,
+      -0.626164
+    ],
+    [
+      0.187323,
+      0.961991,
+      -0.390397
+    ]
+  ]
+}

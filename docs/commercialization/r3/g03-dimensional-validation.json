@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.2-revision-5-local-topology",
+  "revision": "R3.2-revision-6-halo-t-and-diffuser-prototype",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "d083d75f2b76f825e58272412ea7925dd251385a5d97d76a917391a763211fde",
-  "bytes": 1236212,
+  "sha256": "ba04651b1f6f79971c8c69bc0667e7000b87f6d170b55614604c869831a2544f",
+  "bytes": 1238204,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 62864,
-    "vertices": 35546,
+    "triangles": 62992,
+    "vertices": 35595,
     "materials": 5,
     "textures": 0
   },

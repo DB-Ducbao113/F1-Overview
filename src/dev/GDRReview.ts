@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const query = new URLSearchParams(location.search);
-const region = query.get('region') === 'halo' ? 'halo' : 'diffuser';
+const region = query.get('region') ?? 'diffuser';
 const mode =
   query.get('mode') === 'reflective'
     ? 'reflective'
@@ -29,7 +29,13 @@ rim.position.set(-2.5, 1.7, -2.5);
 scene.add(rim);
 
 const camera = new THREE.PerspectiveCamera(38, 900 / 650, 0.05, 30);
-if (region === 'diffuser') {
+if (region === 'diffuser-rev6') {
+  camera.position.set(0.46, 0.24, 3.12);
+  camera.lookAt(0, 0.26, 2.12);
+} else if (region === 'halo-upper') {
+  camera.position.set(0.43, 1.13, -0.12);
+  camera.lookAt(0, 0.895, -0.5);
+} else if (region === 'diffuser') {
   camera.position.set(0.6, 0.29, 4.15);
   camera.lookAt(0, 0.27, 1.8);
 } else {

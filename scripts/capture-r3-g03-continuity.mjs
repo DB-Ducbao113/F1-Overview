@@ -34,6 +34,7 @@ const reviews = [
   ['halo-rear-mount', 'halo-rear-mount-closeup'],
   ['halo-rear-right-mount', 'halo-rear-right-mount-closeup'],
   ['halo-front-mount', 'halo-front-mount-closeup'],
+  ['halo-upper-junction', 'halo-upper-junction-closeup'],
 ];
 const wireframes = [
   ['sidepod', 'sidepod-topology-closeup'],
@@ -41,7 +42,15 @@ const wireframes = [
   ['halo-rear-mount', 'halo-topology-closeup'],
   ['halo-rear-right-mount', 'halo-rear-right-mount-closeup'],
   ['halo-front-mount', 'halo-front-mount-closeup'],
+  ['halo-upper-junction', 'halo-upper-junction-closeup'],
 ];
+const selectedLabels = process.env.R3_G03_ONLY_LABELS?.split(',').map((value) => value.trim());
+const selectedReviews = selectedLabels
+  ? reviews.filter(([label]) => selectedLabels.includes(label))
+  : reviews;
+const selectedWireframes = selectedLabels
+  ? wireframes.filter(([label]) => selectedLabels.includes(label))
+  : wireframes;
 const errors = { page: [], console: [], localRequests: [] };
 
 await fs.mkdir(output, { recursive: true });
@@ -146,7 +155,7 @@ let after;
 try {
   before = await createReviewPage('before', true);
   after = await createReviewPage('after', false);
-  for (const [label, view] of reviews) {
+  for (const [label, view] of selectedReviews) {
     const captures = {
       before: {
         diffuse: await capture(before, view, 'diffuse'),
@@ -159,7 +168,7 @@ try {
     };
     await renderSheet(label, view, captures);
   }
-  for (const [label, view] of wireframes) {
+  for (const [label, view] of selectedWireframes) {
     await renderWireframe(
       label,
       view,
@@ -190,8 +199,8 @@ try {
     cameraFovDegrees: 38,
     method:
       'Two fresh DEV viewer pages use the same code, viewport, preset, lighting, FOV, model transform and zoom. The before page receives the committed baseline GLB through a local Playwright response override; the after page loads the revised GLB.',
-    reviews: reviews.map(([label, view]) => ({ label, view, modes: ['diffuse', 'reflective'] })),
-    wireframes: wireframes.map(([label, view]) => ({ label, view })),
+    reviews: selectedReviews.map(([label, view]) => ({ label, view, modes: ['diffuse', 'reflective'] })),
+    wireframes: selectedWireframes.map(([label, view]) => ({ label, view })),
     runtime,
     errors,
     physicalDevice: 'NOT TESTED',

@@ -6,6 +6,7 @@ import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferG
 import { EDS_G03_DESIGN as D } from './eds-g03-design.mjs';
 
 const output = path.resolve(process.argv[2] || 'public/models/eds-g03-preview.glb');
+const prototypeRegion = process.env.EDS_G03_PROTOTYPE_REGION;
 
 class NodeFileReader {
   result = null;
@@ -26,12 +27,12 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_5_Local_Topology';
+scene.name = 'EDS-G03_R3_2_Revision_6_Halo_T_Diffuser';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
   author: 'Podium Effet De Sol / AI-assisted original parametric workflow',
-  source: 'scripts/generate-eds-g03.mjs; scripts/eds-g03-design.mjs',
+  source: 'scripts/generate-eds-g03.mjs; scripts/eds-g03-design.mjs; original EDS parametric geometry',
   units: D.units,
   coordinateSystem: '+Y up; -Z front; +Z rear; X=0 centerline',
   reviewStatus: 'OWNER GATE 2 REVISE; primary surface continuity only; not production approved',
@@ -452,6 +453,7 @@ function cutSidepodDucts(geometry) {
         [0, 0.94, -0.5],
       ],
       ends: [{ hole: 'front', t: 0.19, mount: [0, 0.65, -0.65] }],
+      junctionT: 0.78,
       segments: 40,
       radius: (t) => 0.022 + 0.018 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.48)),
     },
@@ -470,6 +472,7 @@ function cutSidepodDucts(geometry) {
       indices.push(outer[i], outer[next], inner[i], outer[next], inner[next], inner[i]);
     }
   }
+  let archJunction = null;
   for (const path of tubePaths) {
     const curve = new THREE.CatmullRomCurve3(
       path.points.map((point) => new THREE.Vector3(...point)),
@@ -479,7 +482,7 @@ function cutSidepodDucts(geometry) {
     const tubeRings = [];
     const slices = path.segments;
     const firstT = path.ends[0].t;
-    const lastT = path.ends.length === 2 ? path.ends[1].t : 1;
+    const lastT = path.junctionT ?? (path.ends.length === 2 ? path.ends[1].t : 1);
     const ringCount = boundary(haloHoles.find((hole) => hole.name === path.ends[0].hole)).length;
     const frames = curve.computeFrenetFrames(slices, false);
     for (let v = 0; v <= slices; v += 1) {
@@ -501,9 +504,48 @@ function cutSidepodDucts(geometry) {
       const a = tubeRings[v];
       const b = tubeRings[v + 1];
       for (let u = 0; u < ringCount; u += 1) {
+        // Remove a real aperture from the underside of the rear arch. The front
+        // support terminates in this aperture rather than intersecting the arch.
+        if (path === tubePaths[0] && u >= 20 && u < 28 && v >= 45 && v < 51) continue;
         const next = (u + 1) % ringCount;
         indices.push(a[u], a[next], b[u], a[next], b[next], b[u]);
       }
+    }
+    if (path === tubePaths[0]) {
+      const aperture = [];
+      for (let u = 20; u < 28; u += 1) aperture.push(tubeRings[45][u]);
+      for (let v = 45; v < 51; v += 1) aperture.push(tubeRings[v][28]);
+      for (let u = 28; u > 20; u -= 1) aperture.push(tubeRings[51][u]);
+      for (let v = 51; v > 45; v -= 1) aperture.push(tubeRings[v][20]);
+      archJunction = aperture;
+    } else {
+      const terminal = tubeRings.at(-1);
+      if (archJunction.length !== terminal.length) throw new Error('Halo T-junction ring mismatch');
+      let best = null;
+      for (const direction of [1, -1])
+        for (let shift = 0; shift < terminal.length; shift += 1) {
+          const mapped = archJunction.map((_, i) =>
+            terminal[(shift + direction * i + terminal.length * 2) % terminal.length],
+          );
+          const score = mapped.reduce((sum, id, i) => {
+            const p = coordinate(archJunction[i]);
+            const q = coordinate(id);
+            return sum + (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2;
+          }, 0);
+          if (!best || score < best.score) best = { mapped, score, direction, shift };
+        }
+      console.log(`Halo upper T loop: direction ${best.direction}, shift ${best.shift}, squared fit ${best.score.toFixed(4)}`);
+      let previous = archJunction;
+      for (const blend of [0.22, 0.48, 0.74]) {
+        const next = archJunction.map((id, i) => {
+          const from = coordinate(id);
+          const to = coordinate(best.mapped[i]);
+          return append(from.map((value, axis) => THREE.MathUtils.lerp(value, to[axis], axis === 1 ? THREE.MathUtils.smoothstep(blend, 0, 1) : blend)));
+        });
+        bridge(previous, next);
+        previous = next;
+      }
+      bridge(previous, best.mapped);
     }
     for (const [endIndex, end] of path.ends.entries()) {
       const hole = haloHoles.find((item) => item.name === end.hole);
@@ -646,6 +688,11 @@ addPart(
         // retaining a softer twin-channel depression and the accepted throat.
         const channelPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.16, 2));
         bodyY += exitBlend * underbodyWeight * (0.047 - 0.013 * channelPair);
+        // Two deliberately recessed terminal channels remain within the accepted
+        // floor envelope. Their depth builds only after the rear-floor transition.
+        const channelExit = THREE.MathUtils.smootherstep(z, 1.55, 2.25);
+        const broadExitPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.22, 2));
+        bodyY -= 0.04 * broadExitPair * channelExit * underbodyWeight;
         bodyY += 0.018 * exitBlend * s;
         const exitWidthBlend =
           THREE.MathUtils.smootherstep(z, 1.9, 2.3) * THREE.MathUtils.smootherstep(-s, 0.38, 0.78);
@@ -773,15 +820,35 @@ for (const side of [-1, 1]) {
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
+  if (prototypeRegion && category !== 'body') continue;
   const merged = mergeGeometries(geometries, false);
   if (!merged) throw new Error(`Unable to merge ${category} geometry`);
+  if (prototypeRegion) {
+    const source = merged.getAttribute('position');
+    const sourceIndices = merged.getIndex().array;
+    const kept = [];
+    for (let i = 0; i < sourceIndices.length; i += 3) {
+      const ids = [sourceIndices[i], sourceIndices[i + 1], sourceIndices[i + 2]];
+      const x = ids.reduce((sum, id) => sum + source.getX(id), 0) / 3;
+      const y = ids.reduce((sum, id) => sum + source.getY(id), 0) / 3;
+      const z = ids.reduce((sum, id) => sum + source.getZ(id), 0) / 3;
+      const inside = prototypeRegion === 'halo'
+        ? Math.abs(x) < 0.18 && y > 0.79 && z > -0.7 && z < -0.3
+        : prototypeRegion === 'diffuser'
+          ? Math.abs(x) < 0.72 && y < 0.54 && z > 1.5
+          : false;
+      if (inside) kept.push(...ids);
+    }
+    if (!kept.length) throw new Error(`No triangles in ${prototypeRegion} prototype`);
+    merged.setIndex(kept);
+  }
   if (merged.getAttribute('position').count !== merged.getAttribute('normal').count)
     throw new Error(`${category} position/normal count mismatch before export`);
   merged.computeBoundingBox();
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 5', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 6', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

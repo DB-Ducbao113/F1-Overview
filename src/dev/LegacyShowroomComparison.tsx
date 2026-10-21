@@ -31,6 +31,7 @@ type CameraPreset =
   | 'halo-rear-mount-closeup'
   | 'halo-rear-right-mount-closeup'
   | 'halo-front-mount-closeup'
+  | 'halo-upper-junction-closeup'
   | 'sidepod-topology-closeup'
   | 'diffuser-topology-closeup'
   | 'halo-topology-closeup'
@@ -48,7 +49,7 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
-  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 Revision 4 Gate 2 review' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 Revision 6 Gate 2 review' },
 ];
 
 const CAMERA_PRESETS: Record<
@@ -71,6 +72,7 @@ const CAMERA_PRESETS: Record<
   'halo-rear-mount-closeup': { position: [-1.35, 1.22, -0.55], target: [-0.25, 0.68, -0.1] },
   'halo-rear-right-mount-closeup': { position: [1.35, 1.22, -0.55], target: [0.25, 0.68, -0.1] },
   'halo-front-mount-closeup': { position: [0.9, 1.25, 1.35], target: [0, 0.68, 0.65] },
+  'halo-upper-junction-closeup': { position: [0.43, 1.13, 0.12], target: [0, 0.895, 0.5] },
   'sidepod-topology-closeup': { position: [1.32, 0.82, 0.92], target: [0.5, 0.46, 0.24] },
   'diffuser-topology-closeup': { position: [0.1, 0.18, -2.85], target: [0, 0.2, -2.03] },
   'halo-topology-closeup': { position: [-0.92, 1.15, -0.3], target: [-0.25, 0.68, -0.1] },
@@ -346,7 +348,7 @@ const ReviewScene: React.FC<{
     <OrbitControls
       makeDefault
       enableDamping
-      minDistance={3.2}
+      minDistance={preset.includes('closeup') ? 0.35 : 3.2}
       maxDistance={8}
       target={CAMERA_PRESETS[preset].target}
     />
