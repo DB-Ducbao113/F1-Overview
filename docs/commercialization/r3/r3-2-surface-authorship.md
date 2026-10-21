@@ -142,3 +142,38 @@ Reproduce with `npm.cmd run asset:eds-g03`,
 against a DEV server at port 4173. The capture defaults to committed
 `14b99b6` for BEFORE and the working GLB for AFTER. This is a DEV-only
 Gate 2 candidate, not an owner-approved or commercial design.
+## Revision 5 local topology authorship (2026-10-21)
+
+The owner approved Option C for a DEV-only Gate 2 candidate, not for
+production. All new geometry is original scripted work in
+`scripts/generate-eds-g03.mjs`; the measured 1.160 m exit target comes from
+the existing independent registry in `scripts/eds-g03-design.mjs`. No C42
+geometry, UV, texture, mesh scan, team mark or protected reference was used.
+
+The accepted continuous BODY loft, sidepod mouth, nose, wings and global
+hardpoints remain intact. A rear-only authored profile widens the lower exit
+to the registered width and makes the last 0.2 m rise rather than fall; it
+does not add a detached diffuser plate. At each halo foot, the generator
+removes a small rectangular group of survival-cell grid faces, retains the
+aperture perimeter vertices, and stitches four intermediate oblong rings
+to the halo sweep. The stitched support shares BODY indices at the root;
+no separate fairing collar or spherical pad was added. The original locked
+centreline control points remain the source curves, although visible tube
+surface begins where it emerges from the body rather than at the embedded
+mount control point. This is a local topology replacement, not a deformation
+or retopology of the DEV-only C42 benchmark.
+
+The fitted rings use winding-sensitive ordering; the generator searches for
+the least-twist alignment of each shell perimeter with its tube ring. The
+rear apertures use the same authored dimensions bilaterally. The upper
+front-support-to-arch T-junction was not rebuilt by this root-only design;
+its crossing/open-boundary limitation is documented in the Revision 5 issue
+and QA reports. The small root may still read as a sharp triangular gusset
+under reflective inspection, so this is **not** a visual-quality claim.
+
+Reproduce with `npm.cmd run asset:eds-g03`,
+`npm.cmd run asset:eds-g03:validate`,
+`python scripts/inspect-g03-rev5.py` with independent geometry dependencies,
+and `npm.cmd run qa:r3:continuity` with the local DEV server. The candidate
+GLB has five neutral materials and zero textures; it is excluded from the
+commercial distribution by the existing build guard.

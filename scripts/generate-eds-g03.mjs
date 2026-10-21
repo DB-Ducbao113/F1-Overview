@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_4_Diffuser_Halo';
+scene.name = 'EDS-G03_R3_2_Revision_5_Local_Topology';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -141,30 +141,6 @@ function rod(a, b, radius, radial = 8) {
     ),
   );
   return geometry;
-}
-
-function variableHaloTube(points, radiusAt, tubular = 64, radial = 16) {
-  const curve = new THREE.CatmullRomCurve3(
-    points.map((point) => new THREE.Vector3(...point)),
-    false,
-    'centripetal',
-  );
-  const frames = curve.computeFrenetFrames(tubular, false);
-  return grid(
-    radial,
-    tubular,
-    (u, v) => {
-      const station = Math.min(tubular, Math.round(v * tubular));
-      const center = curve.getPointAt(v);
-      const angle = u * Math.PI * 2;
-      const radius = radiusAt(v);
-      center.addScaledVector(frames.normals[station], radius * Math.cos(angle));
-      center.addScaledVector(frames.binormals[station], radius * Math.sin(angle));
-      return center.toArray();
-    },
-    false,
-    true,
-  );
 }
 
 function tireGeometry(x, z, radius, width) {
@@ -324,6 +300,13 @@ function cutSidepodDucts(geometry) {
   const front = 72;
   const rear = 81;
   const centers = [0, radial / 2];
+  // Rectangles are holes in the original survival-cell grid, not overlays. The three
+  // attachment sleeves below reuse these exact boundary vertices and become BODY faces.
+  const haloHoles = [
+    { name: 'front', u0: 15, u1: 21, v0: 60, v1: 68 },
+    { name: 'left', u0: 22, u1: 29, v0: 86, v1: 96 },
+    { name: 'right', u0: 7, u1: 14, v0: 86, v1: 96 },
+  ];
   const original = Array.from(geometry.getAttribute('position').array);
   const positions = [...original];
   const sample = (u, v) => {
@@ -373,7 +356,10 @@ function cutSidepodDucts(geometry) {
           const relative = ((u - center + radial + radial / 2) % radial) - radial / 2;
           return relative >= -5 && relative < 5;
         });
-      if (!opening) indices.push(...old.slice(cursor, cursor + 6));
+      const haloHole = haloHoles.some(
+        (hole) => u >= hole.u0 && u < hole.u1 && v >= hole.v0 && v < hole.v1,
+      );
+      if (!opening && !haloHole) indices.push(...old.slice(cursor, cursor + 6));
       cursor += 6;
     }
   }
@@ -433,6 +419,136 @@ function cutSidepodDucts(geometry) {
     ]);
     for (let index = 0; index < outer.length; index += 1)
       ductIndices.push(deepest[index], deepest[(index + 1) % outer.length], capCenter);
+  }
+  // Join three local shell apertures to tubes in the same indexed mesh. Each sleeve
+  // contracts an oblong grid boundary into a small oblique tube section. Its inner
+  // ring is part of the swept halo, so there is no independent shell/tube overlap.
+  const tubePaths = [
+    {
+      points: [
+        [-0.26, 0.66, 0.12],
+        [-0.3, 0.82, -0.12],
+        [-0.22, 0.9, -0.38],
+        [0, 0.94, -0.5],
+        [0.22, 0.9, -0.38],
+        [0.3, 0.82, -0.12],
+        [0.26, 0.66, 0.12],
+      ],
+      ends: [
+        { hole: 'left', t: 0.075, mount: [-0.26, 0.66, 0.12] },
+        { hole: 'right', t: 0.925, mount: [0.26, 0.66, 0.12] },
+      ],
+      segments: 96,
+      radius: (t) =>
+        0.022 +
+        0.018 *
+          (1 - THREE.MathUtils.smootherstep(t, 0, 0.16) + THREE.MathUtils.smootherstep(t, 0.84, 1)),
+    },
+    {
+      points: [
+        [0, 0.65, -0.65],
+        [0, 0.74, -0.625],
+        [0, 0.87, -0.55],
+        [0, 0.94, -0.5],
+      ],
+      ends: [{ hole: 'front', t: 0.19, mount: [0, 0.65, -0.65] }],
+      segments: 40,
+      radius: (t) => 0.022 + 0.018 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.48)),
+    },
+  ];
+  function boundary(hole) {
+    const loop = [];
+    for (let u = hole.u0; u < hole.u1; u += 1) loop.push(at(u, hole.v0));
+    for (let v = hole.v0; v < hole.v1; v += 1) loop.push(at(hole.u1, v));
+    for (let u = hole.u1; u > hole.u0; u -= 1) loop.push(at(u, hole.v1));
+    for (let v = hole.v1; v > hole.v0; v -= 1) loop.push(at(hole.u0, v));
+    return loop;
+  }
+  function bridge(outer, inner) {
+    for (let i = 0; i < outer.length; i += 1) {
+      const next = (i + 1) % outer.length;
+      indices.push(outer[i], outer[next], inner[i], outer[next], inner[next], inner[i]);
+    }
+  }
+  for (const path of tubePaths) {
+    const curve = new THREE.CatmullRomCurve3(
+      path.points.map((point) => new THREE.Vector3(...point)),
+      false,
+      'centripetal',
+    );
+    const tubeRings = [];
+    const slices = path.segments;
+    const firstT = path.ends[0].t;
+    const lastT = path.ends.length === 2 ? path.ends[1].t : 1;
+    const ringCount = boundary(haloHoles.find((hole) => hole.name === path.ends[0].hole)).length;
+    const frames = curve.computeFrenetFrames(slices, false);
+    for (let v = 0; v <= slices; v += 1) {
+      const t = THREE.MathUtils.lerp(firstT, lastT, v / slices);
+      const frame = Math.min(slices, Math.round(t * slices));
+      const center = curve.getPointAt(t);
+      const ring = [];
+      for (let u = 0; u < ringCount; u += 1) {
+        const angle = (u / ringCount) * Math.PI * 2;
+        const point = center
+          .clone()
+          .addScaledVector(frames.normals[frame], path.radius(t) * Math.cos(angle))
+          .addScaledVector(frames.binormals[frame], path.radius(t) * Math.sin(angle));
+        ring.push(append(point.toArray()));
+      }
+      tubeRings.push(ring);
+    }
+    for (let v = 0; v < slices; v += 1) {
+      const a = tubeRings[v];
+      const b = tubeRings[v + 1];
+      for (let u = 0; u < ringCount; u += 1) {
+        const next = (u + 1) % ringCount;
+        indices.push(a[u], a[next], b[u], a[next], b[next], b[u]);
+      }
+    }
+    for (const [endIndex, end] of path.ends.entries()) {
+      const hole = haloHoles.find((item) => item.name === end.hole);
+      const outer = boundary(hole);
+      const tubeRing = endIndex === 0 ? tubeRings[0] : tubeRings.at(-1);
+      const target = tubeRing.map(coordinate);
+      // Match the original grid perimeter to the swept-tube ring with the
+      // least torsion. Both orders are checked because the two feet face opposite ways.
+      let best = null;
+      for (const direction of [1, -1])
+        for (let shift = 0; shift < outer.length; shift += 1) {
+          const mapped = outer.map(
+            (_, i) => tubeRing[(shift + direction * i + outer.length * 2) % outer.length],
+          );
+          const score = mapped.reduce((sum, id, i) => {
+            const p = coordinate(outer[i]);
+            const q = coordinate(id);
+            return sum + (p[0] - q[0]) ** 2 + (p[2] - q[2]) ** 2;
+          }, 0);
+          if (!best || score < best.score) best = { mapped, score, direction, shift };
+        }
+      console.log(
+        `Halo ${end.hole} loop: direction ${best.direction}, shift ${best.shift}, squared fit ${best.score.toFixed(4)}`,
+      );
+      let previous = outer;
+      for (const blend of [0.18, 0.42, 0.68, 0.88]) {
+        const next = outer.map((id, i) => {
+          const from = coordinate(id);
+          const to = coordinate(best.mapped[i]);
+          return append(
+            from.map((value, axis) =>
+              THREE.MathUtils.lerp(
+                value,
+                to[axis],
+                axis === 1 ? THREE.MathUtils.smoothstep(blend, 0, 1) : blend,
+              ),
+            ),
+          );
+        });
+        bridge(previous, next);
+        previous = next;
+      }
+      bridge(previous, best.mapped);
+      if (target.length !== outer.length) throw new Error(`Halo ${end.hole} ring mismatch`);
+    }
   }
   // The dark inner duct has real walls and a back wall. Its first ring is
   // coincident with the light lip, creating an intentional material boundary.
@@ -526,7 +642,19 @@ addPart(
           0.075 + 0.085 * lipFraction + diffuserRise - channel + centerSpine + outerRidge;
         bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
         const exitBlend = THREE.MathUtils.smootherstep(z, 1.98, 2.3);
+        // An authored terminal section removes the old downward turn while
+        // retaining a softer twin-channel depression and the accepted throat.
+        const channelPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.16, 2));
+        bodyY += exitBlend * underbodyWeight * (0.047 - 0.013 * channelPair);
         bodyY += 0.018 * exitBlend * s;
+        const exitWidthBlend =
+          THREE.MathUtils.smootherstep(z, 1.9, 2.3) * THREE.MathUtils.smootherstep(-s, 0.38, 0.78);
+        if (exitWidthBlend > 0 && Math.abs(bodyX) > 0.39) {
+          bodyX +=
+            side *
+            Math.max(0, D.landmarks.diffuser.exit.width / 2 - Math.abs(bodyX)) *
+            exitWidthBlend;
+        }
         const roundedExitZ = z - 0.022 * exitBlend * (1 - THREE.MathUtils.smoothstep(-s, 0, 0.65));
 
         // The airbox spine and halo-foot fairings deform this shell instead of sitting on pads.
@@ -641,41 +769,7 @@ for (const side of [-1, 1]) {
   }
 }
 
-// Radius transitions are built into the halo tubes themselves, not overlaid collars.
-addPart(
-  'mechanical',
-  variableHaloTube(
-    [
-      [-0.26, 0.66, 0.12],
-      [-0.3, 0.82, -0.12],
-      [-0.22, 0.9, -0.38],
-      [0, 0.94, -0.5],
-      [0.22, 0.9, -0.38],
-      [0.3, 0.82, -0.12],
-      [0.26, 0.66, 0.12],
-    ],
-    (t) =>
-      0.022 +
-      0.018 *
-        (1 - THREE.MathUtils.smootherstep(t, 0, 0.16) + THREE.MathUtils.smootherstep(t, 0.84, 1)),
-    96,
-    14,
-  ),
-);
-addPart(
-  'mechanical',
-  variableHaloTube(
-    [
-      [0, 0.65, -0.65],
-      [0, 0.74, -0.625],
-      [0, 0.87, -0.55],
-      [0, 0.94, -0.5],
-    ],
-    (t) => 0.022 + 0.018 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.48)),
-    40,
-    14,
-  ),
-);
+// Halo root sections and their original centreline controls are now part of BODY.
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
@@ -687,7 +781,7 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 4', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 5', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

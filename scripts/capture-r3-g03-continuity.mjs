@@ -4,8 +4,9 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 
-const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || '4762005';
-const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 4';
+const baselineCommit =
+  process.env.R3_G03_BASELINE_COMMIT || '47fcfca54cc5a2208216af19c36806806ba8d415';
+const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 5';
 const modelPath = 'public/models/eds-g03-preview.glb';
 const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${modelPath}`], {
   maxBuffer: 8 * 1024 * 1024,
@@ -14,8 +15,7 @@ const candidateBytes = await fs.readFile(modelPath);
 const sha256 = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
 const base = process.env.R3_G03_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
-  process.env.R3_G03_CONTINUITY_OUTPUT ||
-    'docs/commercialization/r3/evidence/r3-2-revision-4-gate-2-closure',
+  process.env.R3_G03_CONTINUITY_OUTPUT || 'docs/commercialization/r3/evidence/r3-2-revision-5',
 );
 const executablePath =
   process.env.R3_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -32,11 +32,15 @@ const reviews = [
   ['diffuser-low-rear', 'diffuser-low-rear-closeup'],
   ['diffuser-underside', 'diffuser-underside-closeup'],
   ['halo-rear-mount', 'halo-rear-mount-closeup'],
+  ['halo-rear-right-mount', 'halo-rear-right-mount-closeup'],
+  ['halo-front-mount', 'halo-front-mount-closeup'],
 ];
 const wireframes = [
   ['sidepod', 'sidepod-topology-closeup'],
   ['diffuser-low-rear', 'diffuser-topology-closeup'],
   ['halo-rear-mount', 'halo-topology-closeup'],
+  ['halo-rear-right-mount', 'halo-rear-right-mount-closeup'],
+  ['halo-front-mount', 'halo-front-mount-closeup'],
 ];
 const errors = { page: [], console: [], localRequests: [] };
 

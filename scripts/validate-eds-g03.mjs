@@ -111,7 +111,12 @@ for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
           const name = meshNames.get(meshIndex) ?? `mesh-${meshIndex}`;
           reversedByMesh[name] = (reversedByMesh[name] ?? 0) + 1;
           if (reversedSamples.length < 12)
-            reversedSamples.push(points[0].map((value) => Number(value.toFixed(3))));
+            reversedSamples.push({
+              triangle: index / 3,
+              point: points[0].map((value) => Number(value.toFixed(3))),
+              faceCross: cross.map((value) => Number(value.toFixed(6))),
+              averageNormal: averageNormal.map((value) => Number(value.toFixed(4))),
+            });
         }
       }
     }

@@ -187,3 +187,32 @@
 - Unrelated Cloudflare/CI/master-plan/reference changes preserved. No push,
   merge, deploy, Revision 5 or R3.3. **OWNER DESIGN GATE — DECISION REQUIRED;
   HOLD / REVISE.**
+## 2026-10-21 — R3.2 Revision 5, hybrid local topology
+
+- Branch/baseline: `Per-PEDS` at `47fcfca54cc5a2208216af19c36806806ba8d415`.
+  Owner authorized Option C and later explicitly authorized pushing only to
+  `Per-PEDS`, including any automatic Preview. No `main`/merge/production work.
+- Source: authored rear terminal diffuser section and three grid-hole/stitched
+  halo mounting sleeves, preserving original G03 global dimensions, sidepods,
+  nose, wings, registry hardpoints, neutral materials and commercial G01.
+- Preview GLB: 1,236,212 bytes, 62,864 triangles, 5 material groups, zero
+  textures. Two exports matched SHA-256
+  `d083d75f2b76f825e58272412ea7925dd251385a5d97d76a917391a763211fde`.
+  Measured bounds 5.050 × 2.000 × 1.180 m; wheelbase 3.600 m.
+- Exit width corrected from 1.019646 to the locked 1.160000 m. Prior terminal
+  channel drop eliminated. Original 96 strict rear BODY/MECHANICAL crossing
+  pairs reduced to 0, with 0 bounded crossings at all three modified feet.
+- Evidence: 14 matched four-panel diffuse/reflective comparison sheets,
+  5 wireframe sheets, cross-section SVG and machine-readable browser,
+  Khronos/topology reports under `evidence/r3-2-revision-5/`.
+- QA: internal dimensional/normal/degenerate checks, Khronos, deterministic
+  export, ESLint, TypeScript, 39 files/281 tests, build, commercial isolation
+  and DEV Chrome capture PASS for their stated scope. Physical-device,
+  sustained GPU and exhaustive collision testing NOT TESTED.
+- Open issues: low-rear twin exit still visually weak; rear mount shoulder
+  appears too angular. Upper front support/arch junction retains 140 bounded
+  strict BODY self-crossings and a 28-edge branch opening. See
+  `r3-2-revision-5-qa-report.md` and `r3-2-issues.md`. No shape GO.
+- Pre-existing Cloudflare/CI/master-plan/reference changes preserved outside
+  the revision commit scope. Next action: owner reviews evidence and requests
+  another focused Gate 2 revision if desired. **OWNER GATE 2 HOLD / REVISE.**

@@ -35,16 +35,25 @@ describe('EDS-G03 R3.1 hardpoint registry', () => {
   });
 
   it('locks revision 1 local envelopes without moving the approved chassis hardpoints', () => {
-    expect(D.revision).toBe('R3.2-revision-4-diffuser-halo-closure');
+    expect(D.revision).toBe('R3.2-revision-5-local-topology');
     expect(D.landmarks.sidepods.envelope.x).toEqual([-0.66, 0.66]);
     expect(D.landmarks.floor.maxHalfWidth).toBe(0.68);
     expect(D.landmarks.rearWing.span).toBe(1.36);
     expect(D.landmarks.halo.top).toEqual([0, 0.94, -0.46]);
+    expect(D.landmarks.halo.frontMount).toEqual([0, 0.65, -0.65]);
+    expect(D.landmarks.halo.rearMounts).toEqual([
+      [-0.26, 0.66, 0.12],
+      [0.26, 0.66, 0.12],
+    ]);
+    expect(D.landmarks.diffuser.exit.width).toBe(1.16);
     expect(D.revisionHistory.lockedWithoutChange).toContain('wheelbase');
     expect(D.revisionHistory.gate1Approval.baselineCommit).toBe('0808b72');
     expect(D.revisionHistory.gate2Revision.baselineCommit).toBe('a6549c6');
     expect(D.revisionHistory.gate2Revision2.baselineCommit).toBe('a4a36a0');
     expect(D.revisionHistory.gate2Revision3.baselineCommit).toBe('14b99b6');
     expect(D.revisionHistory.gate2Revision4.baselineCommit).toBe('4762005');
+    expect(D.revisionHistory.gate2Revision5.baselineCommit).toBe(
+      '47fcfca54cc5a2208216af19c36806806ba8d415',
+    );
   });
 });

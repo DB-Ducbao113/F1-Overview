@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.2-revision-4-diffuser-halo-closure",
+  "revision": "R3.2-revision-5-local-topology",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "c197b483bcee8736f74a998a4763bf6f66be1197f645c831b789aacd8d41eb10",
-  "bytes": 1136864,
+  "sha256": "d083d75f2b76f825e58272412ea7925dd251385a5d97d76a917391a763211fde",
+  "bytes": 1236212,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 57320,
-    "vertices": 32791,
+    "triangles": 62864,
+    "vertices": 35546,
     "materials": 5,
     "textures": 0
   },

@@ -29,6 +29,8 @@ type CameraPreset =
   | 'diffuser-low-rear-closeup'
   | 'diffuser-underside-closeup'
   | 'halo-rear-mount-closeup'
+  | 'halo-rear-right-mount-closeup'
+  | 'halo-front-mount-closeup'
   | 'sidepod-topology-closeup'
   | 'diffuser-topology-closeup'
   | 'halo-topology-closeup'
@@ -67,6 +69,8 @@ const CAMERA_PRESETS: Record<
   'diffuser-low-rear-closeup': { position: [0, 0.15, -3.05], target: [0, 0.18, -1.98] },
   'diffuser-underside-closeup': { position: [0.45, 0.1, -2.75], target: [0, 0.18, -1.93] },
   'halo-rear-mount-closeup': { position: [-1.35, 1.22, -0.55], target: [-0.25, 0.68, -0.1] },
+  'halo-rear-right-mount-closeup': { position: [1.35, 1.22, -0.55], target: [0.25, 0.68, -0.1] },
+  'halo-front-mount-closeup': { position: [0.9, 1.25, 1.35], target: [0, 0.68, 0.65] },
   'sidepod-topology-closeup': { position: [1.32, 0.82, 0.92], target: [0.5, 0.46, 0.24] },
   'diffuser-topology-closeup': { position: [0.1, 0.18, -2.85], target: [0, 0.2, -2.03] },
   'halo-topology-closeup': { position: [-0.92, 1.15, -0.3], target: [-0.25, 0.68, -0.1] },

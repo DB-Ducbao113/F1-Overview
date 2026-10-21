@@ -2,7 +2,7 @@
 // Native authoring coordinates: +Y up, -Z front/nose, +Z rear, +/-X left/right.
 export const EDS_G03_DESIGN = Object.freeze({
   id: 'EDS-G03',
-  revision: 'R3.2-revision-4-diffuser-halo-closure',
+  revision: 'R3.2-revision-5-local-topology',
   units: 'metres',
   coordinateSystem: {
     up: '+Y',
@@ -158,9 +158,15 @@ export const EDS_G03_DESIGN = Object.freeze({
       decision: 'REVISE',
       scope: 'rear diffuser and three halo mount transitions only',
     },
+    gate2Revision5: {
+      baselineCommit: '47fcfca54cc5a2208216af19c36806806ba8d415',
+      decision: 'OWNER APPROVED OPTION C IMPLEMENTATION; SHAPE REVIEW PENDING',
+      scope: 'registered diffuser exit and connected local halo mount topology',
+    },
   },
   surfaceAuthoring: {
-    workflow: 'single parametric body and underfloor cross-section loft',
+    workflow:
+      'parametric body loft with authored diffuser sections and locally stitched halo apertures',
     bodyRadialSegments: 72,
     bodyAxialSegments: 168,
     wingSpanSegments: 48,

@@ -187,3 +187,37 @@ approval.
   does not certify watertight manifold topology.
 - Physical devices, sustained thermals, Blender inspection and Khronos glTF Validator remain
   **NOT TESTED**.
+## R3.2 Revision 5 Gate 2 retest (2026-10-21)
+
+Baseline: `47fcfca54cc5a2208216af19c36806806ba8d415` (Revision 4 GLB).
+Matched diffuse/reflective WebGL sheets and wireframes are in
+`evidence/r3-2-revision-5/`; dimensional and independent topology measurements
+are in `g03-dimensional-validation.json` and `evidence/r3-2-revision-5/topology.json`.
+
+- **R3-G03-009, P2, diffuser exit:** Registry and exported width now both
+  measure **1.160 m**, up from 1.019646 m. At `|X|≈0.30 m`, lower profile
+  rises from Y=0.17654 m at Z=2.1 to Y=0.19236 m at Z=2.3; Revision 4 fell
+  from 0.16703 to 0.15836 m. No bounded strict diffuser crossing, invalid
+  normal or degenerate triangle was found. **Retest: NUMERIC FIX PASS; VISUAL
+  REVISE.** The low-rear and underside renders still make the twin exits look
+  shallow/occluded by the rear body and suspension. This is not owner approval.
+- **R3-G03-008, P2, halo feet:** Three body-grid apertures now share indexed
+  edge loops with lofted mounting sleeves and swept halo geometry. The prior
+  bounded rear BODY/MECHANICAL count of 96 strict crossings is now **0**; the
+  front and rear mount zones have **0** bounded BODY self-crossings. Winding
+  and normal checks pass. **Retest: TOPOLOGY IMPROVED; VISUAL REVISE.** The rear
+  sleeves still form an abrupt triangular-looking shoulder in the close-up.
+  The upper front-support-to-arch T-junction, outside the three revised feet,
+  still contains **140** strict crossings after both surfaces were moved into
+  BODY, plus an intentional 28-edge open branch end. That overlap existed as
+  separate intersecting surfaces before; it is now exposed by the integrated
+  BODY self-intersection test. It is not resolved or visually approved.
+- **R3-G03-006, sidepod regression:** 1,502 sampled unique sidepod-shell
+  vertices in the unaffected volume are present unchanged in the candidate;
+  matched sidepod sheets show no deliberate redesign. **Retest: PASS for scoped
+  vertex-preservation check, not a full surface identity proof.**
+
+All findings above are bounded strict geometric tests; coplanar overlap,
+containment, exhaustive collision clearance and physical-device rendering
+remain **NOT TESTED**. **OWNER GATE 2: HOLD / REVISE.** Do not start R3.3 or
+commercial activation.
