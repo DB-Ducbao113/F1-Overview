@@ -159,3 +159,31 @@
   `r3-2-revision-4-qa-report.md`. The diffuser still reads shallow and rear
   halo attachment boundaries remain visible. **OWNER GATE 2 HOLD; recommend
   REVISE, not R3.3.** No merge, deploy or push.
+
+## 2026-10-21 — R3.2 Geometry Design Review (GDR)
+
+- Branch/baseline: `Per-PEDS`, `4a40ddc5c6bbf52e2513a1b9bd32c10de7e29855`.
+  Accepted Revision 4 GLB unchanged at SHA-256
+  `c197b483bcee8736f74a998a4763bf6f66be1197f645c831b789aacd8d41eb10`.
+- Investigation: exported diffuser lower exit measured about 1.020 m wide
+  against 1.160 m in the registry; channel lower envelope falls near its
+  rear termination. BODY and MECHANICAL halo meshes cross at 96 strict
+  local triangle pairs around the rear mounts.
+- Six isolated region GLBs (Revision 4 crops plus two prototypes for each
+  problem), six matched diffuse/reflective/wireframe comparison sheets,
+  cross-section/profile, topology, normal and Khronos results in `gdr/evidence/`.
+  No prototype replaced the full-car preview.
+- A profile-only diffuser is still subtle; B's stronger local resection
+  looks too harsh. A broader halo fairing raises crossings to 106; the
+  welded-loop concept eliminates that separate junction but its specimen
+  still looks like round pads. Neither exact prototype is approved.
+- GDR local QA: ESLint, TypeScript, 39 files/281 tests, build/commercial
+  isolation, deterministic region exports, Khronos Validator and DEV WebGL
+  capture PASS for their stated scope. Physical-device, integrated full-car
+  prototype and exhaustive collision inspection NOT TESTED.
+- Recommendation: hybrid global procedural shell plus explicitly stitched
+  original local diffuser/halo topology, subject to owner approval of the
+  architecture and 1.160 m diffuser exit target. See `gdr/r3-2-gdr-decision.md`.
+- Unrelated Cloudflare/CI/master-plan/reference changes preserved. No push,
+  merge, deploy, Revision 5 or R3.3. **OWNER DESIGN GATE — DECISION REQUIRED;
+  HOLD / REVISE.**

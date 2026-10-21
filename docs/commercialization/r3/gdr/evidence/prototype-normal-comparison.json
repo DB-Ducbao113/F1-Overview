@@ -1,0 +1,27 @@
+{
+  "diffuserA_vs_rev4": {
+    "faces": 5453,
+    "negativeDotCount": 0,
+    "minDot": 0.96543
+  },
+  "diffuserB_vs_unsculpted_same_tessellation": {
+    "faces": 21812,
+    "negativeDotCount": 0,
+    "minDot": 0.586
+  },
+  "haloA_body_vs_rev4": {
+    "faces": 3465,
+    "negativeDotCount": 0,
+    "minDot": 0.9575
+  },
+  "haloB_shell_topFacing": {
+    "left_welded_specimen": {
+      "positiveYCount": 400,
+      "negativeYCount": 0
+    },
+    "right_welded_specimen": {
+      "positiveYCount": 400,
+      "negativeYCount": 0
+    }
+  }
+}
