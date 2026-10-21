@@ -4,7 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 
-const baselineCommit = 'a6549c6';
+const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || 'a4a36a0';
+const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 2';
 const modelPath = 'public/models/eds-g03-preview.glb';
 const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${modelPath}`], {
   maxBuffer: 8 * 1024 * 1024,
@@ -14,7 +15,7 @@ const sha256 = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex'
 const base = process.env.R3_G03_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
   process.env.R3_G03_CONTINUITY_OUTPUT ||
-    'docs/commercialization/r3/evidence/r3-2-revision-1-continuity',
+    'docs/commercialization/r3/evidence/r3-2-revision-2-surface-refinement',
 );
 const executablePath =
   process.env.R3_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -22,9 +23,11 @@ const reviews = [
   ['sidepod', 'sidepod-inlet-closeup'],
   ['sidepod-floor', 'sidepod-floor-closeup'],
   ['rear-underfloor', 'rear-underfloor-closeup'],
+  ['diffuser-exit', 'diffuser-exit-closeup'],
   ['halo-mounts', 'halo-mounts-closeup'],
   ['full-side', 'side'],
   ['full-front-three-quarter', 'front-three-quarter'],
+  ['full-rear', 'rear'],
   ['full-rear-three-quarter', 'rear-three-quarter'],
 ];
 const errors = { page: [], console: [], localRequests: [] };
@@ -99,12 +102,12 @@ async function renderSheet(label, view, captures) {
       figcaption { padding:9px 13px; border-bottom:1px solid #29313a; font-size:13px; font-weight:800; text-transform:uppercase; }
       img { display:block; width:100%; height:553px; object-fit:contain; }
     </style></head><body>
-      <header><h1>${label.replaceAll('-', ' ')}</h1><span class="tag">GATE 2 REVISION 1 · ${view} · MATCHED CAMERA</span></header>
+      <header><h1>${label.replaceAll('-', ' ')}</h1><span class="tag">GATE 2 ${revisionLabel.toUpperCase()} · ${view} · MATCHED CAMERA</span></header>
       <div class="grid">
-        ${panel('Before · R3.2 neutral diffuse', captures.before.diffuse)}
-        ${panel('After · Revision 1 neutral diffuse', captures.after.diffuse)}
-        ${panel('Before · R3.2 controlled reflective', captures.before.reflective)}
-        ${panel('After · Revision 1 controlled reflective', captures.after.reflective)}
+        ${panel('Before · committed baseline neutral diffuse', captures.before.diffuse)}
+        ${panel(`After · ${revisionLabel} neutral diffuse`, captures.after.diffuse)}
+        ${panel('Before · committed baseline controlled reflective', captures.before.reflective)}
+        ${panel(`After · ${revisionLabel} controlled reflective`, captures.after.reflective)}
       </div>
     </body></html>
   `);
@@ -145,6 +148,7 @@ try {
   const report = {
     generatedAt: new Date().toISOString(),
     baselineCommit,
+    revisionLabel,
     baselineSha256: sha256(baselineBytes),
     candidateSha256: sha256(candidateBytes),
     viewport: [1440, 900],

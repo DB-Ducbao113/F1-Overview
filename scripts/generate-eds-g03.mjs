@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_1_Integrated_Primary_Surfaces';
+scene.name = 'EDS-G03_R3_2_Revision_2_Intake_Diffuser_Halo';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -55,6 +55,8 @@ const parts = new Map(Object.keys(materials).map((key) => [key, []]));
 function addPart(category, geometry) {
   geometry.deleteAttribute('uv');
   if (!geometry.getAttribute('normal')) geometry.computeVertexNormals();
+  if (geometry.getAttribute('position').count !== geometry.getAttribute('normal').count)
+    throw new Error(`${category} source position/normal count mismatch`);
   if (!geometry.index) geometry = mergeVertices(geometry);
   parts.get(category).push(geometry);
 }
@@ -135,6 +137,21 @@ function rod(a, b, radius, radial = 8) {
     new THREE.Matrix4().compose(
       start.clone().add(end).multiplyScalar(0.5),
       new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()),
+      new THREE.Vector3(1, 1, 1),
+    ),
+  );
+  return geometry;
+}
+
+function taperedHaloJoint(mount, toward) {
+  const base = new THREE.Vector3(...mount);
+  const direction = new THREE.Vector3(...toward).sub(base).normalize();
+  const length = 0.09;
+  const geometry = new THREE.CylinderGeometry(0.023, 0.046, length, 16, 3);
+  geometry.applyMatrix4(
+    new THREE.Matrix4().compose(
+      base.clone().addScaledVector(direction, length * 0.42),
+      new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction),
       new THREE.Vector3(1, 1, 1),
     ),
   );
@@ -297,6 +314,116 @@ function floorHalfWidth(z) {
   return THREE.MathUtils.lerp(width0, width1, THREE.MathUtils.smootherstep(z, z0, z1));
 }
 
+// Cut each intake from the existing body grid. The lip, tapered duct and back wall
+// share its boundary vertices: the dark cavity is geometric, not a painted patch.
+function cutSidepodDucts(geometry) {
+  const radial = D.surfaceAuthoring.bodyRadialSegments;
+  const axial = D.surfaceAuthoring.bodyAxialSegments;
+  const rowLength = axial + 1;
+  const at = (u, v) => ((u + radial) % radial) * rowLength + v;
+  const front = 72;
+  const rear = 81;
+  const centers = [0, radial / 2];
+  const old = geometry.getIndex().array;
+  const indices = [];
+  const ductIndices = [];
+  let cursor = 0;
+  for (let u = 0; u < radial; u += 1) {
+    for (let v = 0; v < axial; v += 1) {
+      const opening =
+        v >= front &&
+        v < rear &&
+        centers.some((center) => {
+          const relative = ((u - center + radial + radial / 2) % radial) - radial / 2;
+          return relative >= -5 && relative < 5;
+        });
+      if (!opening) indices.push(...old.slice(cursor, cursor + 6));
+      cursor += 6;
+    }
+  }
+
+  const positions = Array.from(geometry.getAttribute('position').array);
+  const coordinate = (id) => positions.slice(id * 3, id * 3 + 3);
+  const append = (point) => {
+    const id = positions.length / 3;
+    positions.push(...point);
+    return id;
+  };
+  for (const center of centers) {
+    const outer = [];
+    for (let u = center - 5; u < center + 5; u += 1) outer.push(at(u, front));
+    for (let v = front; v < rear; v += 1) outer.push(at(center + 5, v));
+    for (let u = center + 5; u > center - 5; u -= 1) outer.push(at(u, rear));
+    for (let v = rear; v > front; v -= 1) outer.push(at(center - 5, v));
+    const side = center === 0 ? 1 : -1;
+    const meanAbsX = outer.reduce((sum, id) => sum + Math.abs(coordinate(id)[0]), 0) / outer.length;
+    const meanY = outer.reduce((sum, id) => sum + coordinate(id)[1], 0) / outer.length;
+    const meanZ = outer.reduce((sum, id) => sum + coordinate(id)[2], 0) / outer.length;
+    // Keep a mechanically deliberate inlet seam: the wall starts at the exact
+    // cut boundary but carries its own normals through the rolled lip.
+    const rings = [outer.map((id) => append(coordinate(id)))];
+    for (const [depth, shrink, rearward] of [
+      [0.012, 0.97, 0.01],
+      [0.115, 0.76, 0.105],
+      [0.17, 0.48, 0.19],
+    ]) {
+      rings.push(
+        outer.map((id) => {
+          const [x, y, z] = coordinate(id);
+          const ductX = THREE.MathUtils.lerp(
+            x - side * depth,
+            side * (meanAbsX - depth),
+            depth / 0.17,
+          );
+          return append([
+            ductX,
+            meanY + (y - meanY) * shrink,
+            meanZ + (z - meanZ) * shrink + rearward,
+          ]);
+        }),
+      );
+    }
+    for (let layer = 0; layer < rings.length - 1; layer += 1) {
+      const outside = rings[layer];
+      const inside = rings[layer + 1];
+      const target = layer === 0 ? indices : ductIndices;
+      for (let index = 0; index < outer.length; index += 1) {
+        const next = (index + 1) % outer.length;
+        target.push(outside[index], outside[next], inside[index]);
+        target.push(outside[next], inside[next], inside[index]);
+      }
+    }
+    const deepest = rings.at(-1);
+    const capCenter = append([
+      deepest.reduce((sum, id) => sum + coordinate(id)[0], 0) / deepest.length,
+      meanY,
+      meanZ + 0.19,
+    ]);
+    for (let index = 0; index < outer.length; index += 1)
+      ductIndices.push(deepest[index], deepest[(index + 1) % outer.length], capCenter);
+  }
+  // The dark inner duct has real walls and a back wall. Its first ring is
+  // coincident with the light lip, creating an intentional material boundary.
+  const compact = (meshIndices) => {
+    const mapping = new Map();
+    const compactPositions = [];
+    const compactIndices = meshIndices.map((id) => {
+      if (!mapping.has(id)) {
+        mapping.set(id, compactPositions.length / 3);
+        compactPositions.push(...positions.slice(id * 3, id * 3 + 3));
+      }
+      return mapping.get(id);
+    });
+    const result = new THREE.BufferGeometry();
+    result.setAttribute('position', new THREE.Float32BufferAttribute(compactPositions, 3));
+    result.setIndex(compactIndices);
+    result.computeVertexNormals();
+    return result;
+  };
+  addPart('cockpit', compact(ductIndices));
+  return compact(indices);
+}
+
 // One closed lateral cross-section now carries the nose, survival cell, sidepod shoulder,
 // undercut, floor edge, Venturi throat and diffuser exit. No sidepod or floor cover mesh is glued
 // over the shell. Z windows have zero slope at their ends to preserve the approved nose outline.
@@ -315,73 +442,79 @@ const centerBody = [
 ];
 addPart(
   'body',
-  loft(
-    centerBody,
-    D.surfaceAuthoring.bodyRadialSegments,
-    D.surfaceAuthoring.bodyAxialSegments,
-    ({ x, y, rx, ry, c, s, z }) => {
-      const cockpit = Math.exp(-Math.pow((z + 0.18) / 0.54, 4));
-      const valley = 0.13 * cockpit * Math.max(0, s) ** 4;
-      const noseFactor = 1 - THREE.MathUtils.smoothstep(z, -2.42, -0.95);
-      const lowerKeel = s < 0 ? 0.024 * noseFactor * Math.exp(-Math.pow(c / 0.28, 2)) * -s : 0;
-      const twinRelief =
-        s < 0 ? 0.01 * noseFactor * Math.exp(-Math.pow((Math.abs(c) - 0.52) / 0.18, 2)) * -s : 0;
-      const side = Math.sign(c);
-      const lateral = side * Math.pow(Math.abs(c), 0.84) * rx;
-      const vertical = Math.sign(s) * Math.pow(Math.abs(s), 1.08) * ry;
-      const shoulder = 0.012 * Math.max(0, s) * Math.sin(Math.PI * Math.abs(c));
-      const sidepodActive =
-        THREE.MathUtils.smootherstep(z, -0.55, -0.15) *
-        (1 - THREE.MathUtils.smootherstep(z, 0.48, 1.22));
-      const sidepodCrown = Math.exp(-Math.pow((s - 0.08) / 0.58, 4));
-      const undercut = Math.exp(-Math.pow((s + 0.55) / 0.2, 2));
-      const inlet =
-        sidepodActive *
-        Math.exp(-Math.pow((z + 0.34) / 0.13, 2)) *
-        Math.exp(-Math.pow((s - 0.13) / 0.22, 2));
-      let bodyX = x + lateral + side * sidepodActive * (0.33 * sidepodCrown - 0.04 * undercut);
-      bodyX -= side * inlet * 0.045;
-      let bodyY =
-        y +
-        vertical +
-        shoulder -
-        valley -
-        lowerKeel +
-        twinRelief +
-        sidepodActive * (0.033 * Math.max(0, s) * sidepodCrown + 0.028 * undercut);
+  cutSidepodDucts(
+    loft(
+      centerBody,
+      D.surfaceAuthoring.bodyRadialSegments,
+      D.surfaceAuthoring.bodyAxialSegments,
+      ({ x, y, rx, ry, c, s, z }) => {
+        const cockpit = Math.exp(-Math.pow((z + 0.18) / 0.54, 4));
+        const valley = 0.13 * cockpit * Math.max(0, s) ** 4;
+        const noseFactor = 1 - THREE.MathUtils.smoothstep(z, -2.42, -0.95);
+        const lowerKeel = s < 0 ? 0.024 * noseFactor * Math.exp(-Math.pow(c / 0.28, 2)) * -s : 0;
+        const twinRelief =
+          s < 0 ? 0.01 * noseFactor * Math.exp(-Math.pow((Math.abs(c) - 0.52) / 0.18, 2)) * -s : 0;
+        const side = Math.sign(c);
+        const lateral = side * Math.pow(Math.abs(c), 0.84) * rx;
+        const vertical = Math.sign(s) * Math.pow(Math.abs(s), 1.08) * ry;
+        const shoulder = 0.012 * Math.max(0, s) * Math.sin(Math.PI * Math.abs(c));
+        const sidepodActive =
+          THREE.MathUtils.smootherstep(z, -0.55, -0.15) *
+          (1 - THREE.MathUtils.smootherstep(z, 0.48, 1.22));
+        const sidepodCrown = Math.exp(-Math.pow((s - 0.08) / 0.58, 4));
+        const undercut = Math.exp(-Math.pow((s + 0.55) / 0.2, 2));
+        let bodyX = x + lateral + side * sidepodActive * (0.33 * sidepodCrown - 0.04 * undercut);
+        let bodyY =
+          y +
+          vertical +
+          shoulder -
+          valley -
+          lowerKeel +
+          twinRelief +
+          sidepodActive * (0.033 * Math.max(0, s) * sidepodCrown + 0.028 * undercut);
 
-      // The floor lip and Venturi underside are sculpted into the same ring. This removes the
-      // broad exposed upper/lower floor sheets and their unsupported side-edge junctions.
-      const floorActive = THREE.MathUtils.smootherstep(z, D.landmarks.floor.startZ, -0.38);
-      const lipWeight =
-        Math.pow(Math.abs(c), 0.5) * THREE.MathUtils.smoothstep(-s, 0.2, 0.65);
-      bodyX += side * Math.max(0, floorHalfWidth(z) - Math.abs(bodyX)) * floorActive * lipWeight;
-      const underbodyWeight = floorActive * THREE.MathUtils.smootherstep(-s, 0.35, 0.8);
-      const lipFraction = THREE.MathUtils.smoothstep(s, -1, -0.58);
-      const channel =
-        0.028 *
-        Math.exp(-Math.pow((Math.abs(bodyX) - 0.35) / 0.15, 2)) *
-        Math.exp(-Math.pow((z - 0.25) / 0.7, 2));
-      const diffuserRise = 0.16 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
-      const underbodyY = 0.075 + 0.085 * lipFraction + diffuserRise - channel;
-      bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
+        // The floor lip and Venturi underside are sculpted into the same ring. This removes the
+        // broad exposed upper/lower floor sheets and their unsupported side-edge junctions.
+        const floorActive = THREE.MathUtils.smootherstep(z, D.landmarks.floor.startZ, -0.38);
+        const lipWeight = Math.pow(Math.abs(c), 0.5) * THREE.MathUtils.smoothstep(-s, 0.2, 0.65);
+        bodyX += side * Math.max(0, floorHalfWidth(z) - Math.abs(bodyX)) * floorActive * lipWeight;
+        const underbodyWeight = floorActive * THREE.MathUtils.smootherstep(-s, 0.35, 0.8);
+        const lipFraction = THREE.MathUtils.smoothstep(s, -1, -0.58);
+        const channel =
+          0.028 *
+            Math.exp(-Math.pow((Math.abs(bodyX) - 0.35) / 0.15, 2)) *
+            Math.exp(-Math.pow((z - 0.25) / 0.7, 2)) +
+          0.022 *
+            Math.exp(-Math.pow((Math.abs(bodyX) - 0.29) / 0.19, 2)) *
+            THREE.MathUtils.smootherstep(z, 0.9, 2.1);
+        const diffuserRise = 0.16 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
+        const underbodyY = 0.075 + 0.085 * lipFraction + diffuserRise - channel;
+        bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
+        const exitBlend = THREE.MathUtils.smootherstep(z, 1.98, 2.3);
+        bodyY += 0.018 * exitBlend * s;
+        const roundedExitZ = z - 0.035 * exitBlend * (1 - THREE.MathUtils.smoothstep(-s, 0, 0.65));
 
-      // The airbox spine and halo-foot fairings deform this shell instead of sitting on pads.
-      const topWeight = Math.max(0, s) ** 5;
-      bodyY +=
-        topWeight *
-        Math.exp(-Math.pow(bodyX / 0.17, 2)) *
-        (0.12 * Math.exp(-Math.pow((z - 0.48) / 0.42, 2)) +
-          0.055 * Math.exp(-Math.pow((z - 0.98) / 0.5, 2)));
-      for (const mountX of [-0.26, 0.26]) {
-        const foot =
-          Math.exp(-Math.pow((bodyX - mountX) / 0.09, 4)) *
-          Math.exp(-Math.pow((z - 0.12) / 0.14, 4)) *
-          Math.max(0, s) ** 2;
-        bodyY += foot * Math.max(0, 0.66 - bodyY);
-      }
-      return [bodyX, bodyY, z];
-    },
+        // The airbox spine and halo-foot fairings deform this shell instead of sitting on pads.
+        const topWeight = Math.max(0, s) ** 5;
+        bodyY +=
+          topWeight *
+          Math.exp(-Math.pow(bodyX / 0.17, 2)) *
+          (0.12 * Math.exp(-Math.pow((z - 0.48) / 0.42, 2)) +
+            0.055 * Math.exp(-Math.pow((z - 0.98) / 0.5, 2)));
+        for (const [mountX, mountY, mountZ, spreadX, spreadZ] of [
+          [0, 0.65, -0.65, 0.12, 0.2],
+          [-0.26, 0.66, 0.12, 0.11, 0.18],
+          [0.26, 0.66, 0.12, 0.11, 0.18],
+        ]) {
+          const foot =
+            Math.exp(-Math.pow((bodyX - mountX) / spreadX, 2)) *
+            Math.exp(-Math.pow((z - mountZ) / spreadZ, 2)) *
+            Math.max(0, s) ** 3;
+          bodyY += foot * Math.max(0, mountY - bodyY);
+        }
+        return [bodyX, bodyY, roundedExitZ];
+      },
+    ),
   ),
 );
 
@@ -476,6 +609,9 @@ for (const side of [-1, 1]) {
 }
 
 // The accepted halo tubes enter the analytically fairied body shell at their locked mount points.
+for (const side of [-1, 1])
+  addPart('mechanical', taperedHaloJoint([side * 0.26, 0.66, 0.12], [side * 0.3, 0.82, -0.12]));
+addPart('mechanical', taperedHaloJoint([0, 0.65, -0.65], [0, 0.94, -0.5]));
 addPart(
   'mechanical',
   curveTube(
@@ -499,11 +635,13 @@ for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
   const merged = mergeGeometries(geometries, false);
   if (!merged) throw new Error(`Unable to merge ${category} geometry`);
+  if (merged.getAttribute('position').count !== merged.getAttribute('normal').count)
+    throw new Error(`${category} position/normal count mismatch before export`);
   merged.computeBoundingBox();
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 1', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 2', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

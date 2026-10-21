@@ -1,5 +1,28 @@
 # EDS-G03 R3.2 primary-surface authorship and provenance
 
+## Revision 2 original-geometry addendum
+
+Starting from Revision 1 `a4a36a0`, two inlet apertures are cut directly from
+the original parametric body grid. Their co-located lip/duct boundary, tapered
+duct walls and terminal wall are generated analytically in
+`scripts/generate-eds-g03.mjs`; the dark interior uses the existing neutral
+cockpit inspection material **in addition to, not in place of, real geometry**.
+The diffuser uses a revised underbody-channel section and rounded longitudinal
+termination. Three small tapered mechanical halo collars join unchanged
+centreline mounts to fairings formed in the original body shell. No C42-derived
+mesh, vertices, topology, UVs, textures, branded graphics or protected surface
+samples were imported. The GLB remains DEV-only with five neutral materials,
+zero textures and no skins.
+
+Reproduce with `npm.cmd run asset:eds-g03`,
+`npm.cmd run asset:eds-g03:validate` and `npm.cmd run qa:r3:continuity` while
+the DEV Vite server listens on port 4173. The capture script defaults to the
+committed Revision 1 GLB for BEFORE and to the working GLB for AFTER.
+
+Revision 2 preview SHA-256:
+`93a1416b3d68e7323c1b2ff0bbb666d7d6008b75dc1b21e1de3cc0af8ab1ec33`.
+This is a Gate 2 visual-review candidate, not an approved production design.
+
 ## Revision 1 continuity addendum (2026-10-21)
 
 Owner Gate 2 rejected the separate-shell appearance of the R3.2 baseline

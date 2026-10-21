@@ -79,3 +79,33 @@
   untracked owner work and is excluded from this commit. No CI run is expected for this push.
 - Deployment status: **NOT RUN**; this is a review-branch push.
 - Owner Gate 2 shape decision: **HOLD — visual review still required**.
+
+## 2026-10-21 — R3.2 Revision 2 intake, diffuser and halo review
+
+- Branch/baseline: `Per-PEDS`, `a4a36a0`; unrelated Cloudflare, local CI,
+  master-plan and `references/` edits preserved.
+- Owner instruction: revise three Gate 2 visual items; no R3.3, merge or
+  deployment. A push is conditional on not triggering a deployment.
+- Source: parametric body grid apertures plus recessed ducts; revised diffuser
+  channel/exit profile; three tapered halo joint collars and shell fairings.
+  Hardpoint registry unchanged apart from revision metadata.
+- Preview: `npm.cmd run asset:eds-g03`; 1,129,672 bytes; 56,472 triangles,
+  32,704 vertices; five neutral materials and no textures. Two generated GLBs
+  matched SHA-256 `93a1416b3d68e7323c1b2ff0bbb666d7d6008b75dc1b21e1de3cc0af8ab1ec33`.
+- Actual bounds: 5.050 x 2.000 x 1.180 m; wheelbase 3.600 m; all locked
+  axle/track/tyre/ground checks PASS. No invalid normals, winding disagreements
+  or degenerate triangles in the internal validator.
+- Visual evidence: nine matched diffuse/reflective sheets in
+  `evidence/r3-2-revision-2-surface-refinement/`. Inlet is an actual dark duct
+  but mouth remains angular; diffuser improvement is subtle; halo joints remain
+  simple. Owner Gate 2 is **HOLD**, not visually approved.
+- QA: ESLint, TypeScript, 39 files/281 tests, production build, commercial
+  isolation and DEV browser capture PASS. Khronos validator, physical devices,
+  Blender and sustained performance NOT TESTED.
+- Deployment guard: Vercel lists preview deployments for prior `Per-PEDS`
+  pushes, including `a4a36a0`. Therefore this candidate must **not be pushed**
+  under the owner's no-deployment condition. No deploy/merge/main action.
+  This corrects the older review-push entry's "no deployment expected" claim:
+  that claim did not account for Vercel's Git-triggered previews.
+- Next action: local handoff for owner Gate 2 review and deployment-policy
+  clarification if remote sharing is required.

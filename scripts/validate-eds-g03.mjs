@@ -64,6 +64,7 @@ let vertices = 0;
 let invalidValues = 0;
 let degenerateTriangles = 0;
 let invalidNormals = 0;
+const invalidNormalSamples = [];
 let reversedVertexNormals = 0;
 const reversedByMesh = {};
 const reversedSamples = [];
@@ -79,7 +80,10 @@ for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
       const point = [0, 1, 2].map((axis) => positions.read(index, axis));
       const normal = [0, 1, 2].map((axis) => normals.read(index, axis));
       if (![...point, ...normal].every(Number.isFinite)) invalidValues += 1;
-      if (Math.abs(Math.hypot(...normal) - 1) > 0.02) invalidNormals += 1;
+      if (Math.abs(Math.hypot(...normal) - 1) > 0.02) {
+        invalidNormals += 1;
+        if (invalidNormalSamples.length < 12) invalidNormalSamples.push({ point, normal });
+      }
       point.forEach((value, axis) => {
         bounds.min[axis] = Math.min(bounds.min[axis], value);
         bounds.max[axis] = Math.max(bounds.max[axis], value);
@@ -259,6 +263,7 @@ const report = {
     invalidValues,
     degenerateTriangles,
     invalidNormals,
+    invalidNormalSamples,
     reversedVertexNormals,
     reversedByMesh,
     reversedSamples,

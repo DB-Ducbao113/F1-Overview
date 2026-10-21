@@ -1,5 +1,39 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Gate 2 Revision 2 retest (2026-10-21)
+
+Baseline: committed Revision 1 `a4a36a0`. Evidence:
+`evidence/r3-2-revision-2-surface-refinement/` (nine matched four-panel sheets,
+including diffuse and controlled reflective modes).
+
+- **R3-G03-006, P2, sidepod inlet:** Reproduce with the `sidepod` and
+  `sidepod-floor` sheets. Revision 1 presented a shallow solid depression.
+  Revision 2 removes two sets of body-grid faces and adds a lip, tapered
+  three-stage duct and geometric back wall. The cavity is real, not a dark
+  decal. Internal validator reports no degenerate or reversed-normal faces.
+  **Retest: IMPROVED; OWNER REVIEW PENDING.** The mouth remains visibly
+  rectilinear in exact side view; the inner cap shows a triangular highlight
+  under reflective inspection. Rounded-lip quality and all-angle
+  self-intersection clearance are not proven. No obvious floating exterior
+  patch was seen in the captured views.
+- **R3-G03-009, P2, rear diffuser exit:** Reproduce with `rear-underfloor`,
+  `diffuser-exit`, `full-rear` and `full-rear-three-quarter`. Revision 2 adds
+  modest twin-channel curvature and rounds the final longitudinal profile
+  within the existing floor envelope. No profile foldover or inverted normal
+  was found by the internal GLB validator. **Retest: PARTIAL; OWNER REVIEW
+  PENDING.** The trailing edge remains visually broad/simple; the rendered
+  difference is subtle and should not be described as an approved fix.
+- **R3-G03-008, P2, halo junctions:** Reproduce with `halo-mounts` and
+  `full-front-three-quarter`. The three survival-cell fairings now use wider
+  smooth shell deformations and each tube receives a short tapered mechanical
+  collar at its unchanged locked mount coordinate. **Retest: IMPROVED;
+  OWNER REVIEW PENDING.** No spherical pad is present, but the tiny tube-to-
+  fairing boundary remains visible and simplified in close-up.
+
+No P0/P1 was detected in scoped local checks. Physical-device inspection,
+independent Khronos validation, watertightness and exhaustive self-intersection
+testing are **NOT TESTED**. Technical PASS is not visual acceptance.
+
 ## Gate 2 Revision 1 owner correction (2026-10-21)
 
 The owner rejected the visual conclusion below at commit `a6549c6`. The older R3-G03-006

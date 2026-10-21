@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.2-revision-1-continuity",
+  "revision": "R3.2-revision-2-intake-diffuser-halo",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "dcd203387f584d2b68160a1f740eb413274d9204a651b113434a668ab3496af8",
-  "bytes": 1110992,
+  "sha256": "93a1416b3d68e7323c1b2ff0bbb666d7d6008b75dc1b21e1de3cc0af8ab1ec33",
+  "bytes": 1129672,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 55916,
-    "vertices": 32064,
+    "triangles": 56472,
+    "vertices": 32704,
     "materials": 5,
     "textures": 0
   },
@@ -171,6 +171,7 @@
     "invalidValues": 0,
     "degenerateTriangles": 0,
     "invalidNormals": 0,
+    "invalidNormalSamples": [],
     "reversedVertexNormals": 0,
     "reversedByMesh": {},
     "reversedSamples": [],
