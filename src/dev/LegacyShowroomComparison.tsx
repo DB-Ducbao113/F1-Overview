@@ -22,7 +22,9 @@ type CameraPreset =
   | 'rear'
   | 'rear-three-quarter'
   | 'nose-monocoque-closeup'
+  | 'sidepod-inlet-closeup'
   | 'sidepod-floor-closeup'
+  | 'rear-underfloor-closeup'
   | 'engine-cover-closeup'
   | 'front-wing-closeup'
   | 'rear-wing-closeup'
@@ -37,7 +39,7 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
-  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 high-fidelity primary surfaces' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 Revision 1 surface continuity' },
 ];
 
 const CAMERA_PRESETS: Record<
@@ -51,7 +53,9 @@ const CAMERA_PRESETS: Record<
   rear: { position: [0, 1.05, -6.25], target: [0, 0.38, -0.7] },
   'rear-three-quarter': { position: [-4.8, 1.8, -4.8], target: [0, 0.4, -0.35] },
   'nose-monocoque-closeup': { position: [2.25, 1.08, 3.15], target: [0, 0.47, 1.05] },
+  'sidepod-inlet-closeup': { position: [2.2, 1.02, 1.52], target: [0.5, 0.46, 0.24] },
   'sidepod-floor-closeup': { position: [2.75, 0.76, 0.25], target: [0.52, 0.35, -0.08] },
+  'rear-underfloor-closeup': { position: [-2.4, 0.45, -3.1], target: [-0.28, 0.2, -1.48] },
   'engine-cover-closeup': { position: [-2.1, 1.46, -2.0], target: [0, 0.77, -0.7] },
   'front-wing-closeup': { position: [2.15, 0.62, 3.35], target: [0.18, 0.2, 2.12] },
   'rear-wing-closeup': { position: [-2.1, 1.22, -3.35], target: [0, 0.9, -2.12] },

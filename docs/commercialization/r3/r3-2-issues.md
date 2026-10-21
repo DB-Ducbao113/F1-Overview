@@ -1,5 +1,44 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Gate 2 Revision 1 owner correction (2026-10-21)
+
+The owner rejected the visual conclusion below at commit `a6549c6`. The older R3-G03-006
+"PASS" describes only the agent's prior inspection; it is **superseded, not an owner approval**.
+Matched diffuse/reflective before/after sheets are in
+`evidence/r3-2-revision-1-continuity/`.
+
+- **R3-G03-006, P2, sidepod/monocoque and floor:** Reproduction: open the baseline
+  sidepod, sidepod-floor, full-side and rear-three-quarter views. Expected: one believable
+  body/floor mass with a sculpted undercut. Actual baseline: exposed tube end, separate
+  fairing and broad detached floor shell. Root cause: independent lofts, fairing patches,
+  and floor sheets intersected without shared topology. Revision: a single closed
+  parametric shell carries sidepod, undercut, floor lip and diffuser profile. Retest:
+  **IMPROVED, OWNER REVIEW PENDING**. No old tube end or floor-shell junction is visible
+  in the matched renders; a shallow rather than open sidepod inlet and soft rounded
+  shoulder remain visual limitations.
+- **R3-G03-008, P2, halo mount feet:** Reproduction: compare the halo-mount sheet.
+  Expected: mounts meet survival-cell fairings without spherical pads. Baseline:
+  three raised round pads. Root cause: independent ellipsoid mounts. Revision: local
+  fairings are deformations of the main shell; halo centreline/hardpoints unchanged.
+  Retest: **IMPROVED, OWNER REVIEW PENDING**. The tubular mount ends still have a
+  visibly simple junction and require owner scrutiny; no pad remains.
+- **R3-G03-009, P2, rear floor topology:** Reproduction: inspect baseline/revision
+  rear-underfloor and rear-three-quarter sheets, then run
+  `npm.cmd run asset:eds-g03:validate`. Expected: continuous underfloor with outward,
+  valid normals. Initial revision contained 152 local normal/winding disagreements
+  despite zero degenerate triangles. Root cause: a narrow floor-lip bump and diffuser
+  rise folded the rear shell profile. Resolution: monotone lip weighting and a lower
+  diffuser rise within the locked envelope. Final retest: **PASS by internal normal
+  and degenerate-triangle checks** (0 reversed, 0 invalid normals, 0 degenerate).
+  The diffuser exit remains a pointed, primary-form edge in rear views; watertightness
+  and independent glTF validation are not established.
+
+Visual audit of final seven matched sheets: sidepod inlet is closed/shallow; floor
+and undercut connect with no apparent open gap; rear exit has a sharp terminal edge;
+halo tube-to-shell joints are simple but no raised pads remain. No obvious white
+patch, flipped shaded region or broad overlapping floor shell appears in these views.
+This is limited to these cameras and lighting modes, not universal geometry clearance.
+
 Status: **RETESTED — OWNER GATE 2 REVIEW**. Technical PASS does not replace owner visual
 approval.
 

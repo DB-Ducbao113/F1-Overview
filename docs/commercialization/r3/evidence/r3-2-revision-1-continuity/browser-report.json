@@ -1,0 +1,110 @@
+{
+  "generatedAt": "2026-10-21T02:32:45.920Z",
+  "baselineCommit": "a6549c6",
+  "baselineSha256": "97c60980185db2ba491d9fa9244da70e2bb1ae73d829ec231fceb0050d957dc9",
+  "candidateSha256": "dcd203387f584d2b68160a1f740eb413274d9204a651b113434a668ab3496af8",
+  "viewport": [
+    1440,
+    900
+  ],
+  "sheetResolution": [
+    1600,
+    1280
+  ],
+  "cameraFovDegrees": 38,
+  "method": "Two fresh DEV viewer pages use the same code, viewport, preset, lighting, FOV, model transform and zoom. The before page receives the committed baseline GLB through a local Playwright response override; the after page loads the revised GLB.",
+  "reviews": [
+    {
+      "label": "sidepod",
+      "view": "sidepod-inlet-closeup",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "sidepod-floor",
+      "view": "sidepod-floor-closeup",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "rear-underfloor",
+      "view": "rear-underfloor-closeup",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "halo-mounts",
+      "view": "halo-mounts-closeup",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "full-side",
+      "view": "side",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "full-front-three-quarter",
+      "view": "front-three-quarter",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    },
+    {
+      "label": "full-rear-three-quarter",
+      "view": "rear-three-quarter",
+      "modes": [
+        "diffuse",
+        "reflective"
+      ]
+    }
+  ],
+  "runtime": {
+    "before": {
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "calls": 7,
+      "triangles": 102298,
+      "geometries": 7,
+      "textures": 4,
+      "frameSamples": 176,
+      "medianRafMs": 16.69999998807907,
+      "p95RafMs": 16.80000001192093,
+      "mode": "eds-g03",
+      "livery": "eds-aero",
+      "inspection": "diffuse",
+      "geometry": null
+    },
+    "after": {
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "calls": 7,
+      "triangles": 56142,
+      "geometries": 7,
+      "textures": 4,
+      "frameSamples": 176,
+      "medianRafMs": 16.69999998807907,
+      "p95RafMs": 16.80000001192093,
+      "mode": "eds-g03",
+      "livery": "eds-aero",
+      "inspection": "diffuse",
+      "geometry": null
+    }
+  },
+  "errors": {
+    "page": [],
+    "console": [],
+    "localRequests": []
+  },
+  "physicalDevice": "NOT TESTED"
+}

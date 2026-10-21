@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Original_Primary_Surfaces';
+scene.name = 'EDS-G03_R3_2_Revision_1_Integrated_Primary_Surfaces';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -34,7 +34,7 @@ scene.userData = {
   source: 'scripts/generate-eds-g03.mjs; scripts/eds-g03-design.mjs',
   units: D.units,
   coordinateSystem: '+Y up; -Z front; +Z rear; X=0 centerline',
-  reviewStatus: 'OWNER GATE 2; primary surfaces only; not production approved',
+  reviewStatus: 'OWNER GATE 2 REVISE; primary surface continuity only; not production approved',
   provenance: 'No C42 mesh, vertices, UVs, textures, deformation or retopology used',
 };
 
@@ -124,31 +124,6 @@ function ellipsoid(center, radii, width = 24, height = 14) {
   geometry.scale(...radii);
   geometry.translate(...center);
   return geometry;
-}
-
-function ellipseDiscZ(center, radii, segments = 40, reverse = false) {
-  const geometry = new THREE.CircleGeometry(1, segments);
-  geometry.scale(radii[0], radii[1], 1);
-  if (reverse) geometry.rotateY(Math.PI);
-  geometry.translate(...center);
-  return geometry;
-}
-
-function ellipseLoopZ(center, radii, radius = 0.012, segments = 40) {
-  return curveTube(
-    Array.from({ length: segments }, (_, index) => {
-      const angle = (index / segments) * Math.PI * 2;
-      return [
-        center[0] + Math.cos(angle) * radii[0],
-        center[1] + Math.sin(angle) * radii[1],
-        center[2],
-      ];
-    }),
-    radius,
-    segments * 2,
-    10,
-    true,
-  );
 }
 
 function rod(a, b, radius, radial = 8) {
@@ -302,8 +277,29 @@ function plateAtX(x, outline) {
   return geometry;
 }
 
-// Re-authored R3.2 centreline shell: controlled super-elliptic sections blend the split-keel
-// nose, survival cell and engine cover without primitive junctions.
+// The floor edge is part of the same body cross-section as the sidepod and underbody. These
+// approved planform stations constrain the surface rather than producing separate floor plates.
+const floorWidthStations = [
+  [-1.08, 0.3],
+  [-0.58, 0.52],
+  [-0.12, 0.66],
+  [0.72, 0.68],
+  [1.48, 0.62],
+  [2.3, 0.58],
+];
+function floorHalfWidth(z) {
+  let index = 0;
+  while (index < floorWidthStations.length - 2 && z > floorWidthStations[index + 1][0]) {
+    index += 1;
+  }
+  const [z0, width0] = floorWidthStations[index];
+  const [z1, width1] = floorWidthStations[index + 1];
+  return THREE.MathUtils.lerp(width0, width1, THREE.MathUtils.smootherstep(z, z0, z1));
+}
+
+// One closed lateral cross-section now carries the nose, survival cell, sidepod shoulder,
+// undercut, floor edge, Venturi throat and diffuser exit. No sidepod or floor cover mesh is glued
+// over the shell. Z windows have zero slope at their ends to preserve the approved nose outline.
 const centerBody = [
   { z: -2.48, x: 0, y: 0.3, rx: 0.035, ry: 0.035 },
   { z: -2.15, x: 0, y: 0.34, rx: 0.09, ry: 0.07 },
@@ -315,6 +311,7 @@ const centerBody = [
   { z: 1.05, x: 0, y: 0.49, rx: 0.18, ry: 0.18 },
   { z: 1.57, x: 0, y: 0.42, rx: 0.12, ry: 0.14 },
   { z: 1.93, x: 0, y: 0.38, rx: 0.055, ry: 0.07 },
+  { z: 2.3, x: 0, y: 0.34, rx: 0.025, ry: 0.035 },
 ];
 addPart(
   'body',
@@ -329,167 +326,68 @@ addPart(
       const lowerKeel = s < 0 ? 0.024 * noseFactor * Math.exp(-Math.pow(c / 0.28, 2)) * -s : 0;
       const twinRelief =
         s < 0 ? 0.01 * noseFactor * Math.exp(-Math.pow((Math.abs(c) - 0.52) / 0.18, 2)) * -s : 0;
-      const lateral = Math.sign(c) * Math.pow(Math.abs(c), 0.84) * rx;
+      const side = Math.sign(c);
+      const lateral = side * Math.pow(Math.abs(c), 0.84) * rx;
       const vertical = Math.sign(s) * Math.pow(Math.abs(s), 1.08) * ry;
       const shoulder = 0.012 * Math.max(0, s) * Math.sin(Math.PI * Math.abs(c));
-      return [x + lateral, y + vertical + shoulder - valley - lowerKeel + twinRelief, z];
+      const sidepodActive =
+        THREE.MathUtils.smootherstep(z, -0.55, -0.15) *
+        (1 - THREE.MathUtils.smootherstep(z, 0.48, 1.22));
+      const sidepodCrown = Math.exp(-Math.pow((s - 0.08) / 0.58, 4));
+      const undercut = Math.exp(-Math.pow((s + 0.55) / 0.2, 2));
+      const inlet =
+        sidepodActive *
+        Math.exp(-Math.pow((z + 0.34) / 0.13, 2)) *
+        Math.exp(-Math.pow((s - 0.13) / 0.22, 2));
+      let bodyX = x + lateral + side * sidepodActive * (0.33 * sidepodCrown - 0.04 * undercut);
+      bodyX -= side * inlet * 0.045;
+      let bodyY =
+        y +
+        vertical +
+        shoulder -
+        valley -
+        lowerKeel +
+        twinRelief +
+        sidepodActive * (0.033 * Math.max(0, s) * sidepodCrown + 0.028 * undercut);
+
+      // The floor lip and Venturi underside are sculpted into the same ring. This removes the
+      // broad exposed upper/lower floor sheets and their unsupported side-edge junctions.
+      const floorActive = THREE.MathUtils.smootherstep(z, D.landmarks.floor.startZ, -0.38);
+      const lipWeight =
+        Math.pow(Math.abs(c), 0.5) * THREE.MathUtils.smoothstep(-s, 0.2, 0.65);
+      bodyX += side * Math.max(0, floorHalfWidth(z) - Math.abs(bodyX)) * floorActive * lipWeight;
+      const underbodyWeight = floorActive * THREE.MathUtils.smootherstep(-s, 0.35, 0.8);
+      const lipFraction = THREE.MathUtils.smoothstep(s, -1, -0.58);
+      const channel =
+        0.028 *
+        Math.exp(-Math.pow((Math.abs(bodyX) - 0.35) / 0.15, 2)) *
+        Math.exp(-Math.pow((z - 0.25) / 0.7, 2));
+      const diffuserRise = 0.16 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
+      const underbodyY = 0.075 + 0.085 * lipFraction + diffuserRise - channel;
+      bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
+
+      // The airbox spine and halo-foot fairings deform this shell instead of sitting on pads.
+      const topWeight = Math.max(0, s) ** 5;
+      bodyY +=
+        topWeight *
+        Math.exp(-Math.pow(bodyX / 0.17, 2)) *
+        (0.12 * Math.exp(-Math.pow((z - 0.48) / 0.42, 2)) +
+          0.055 * Math.exp(-Math.pow((z - 0.98) / 0.5, 2)));
+      for (const mountX of [-0.26, 0.26]) {
+        const foot =
+          Math.exp(-Math.pow((bodyX - mountX) / 0.09, 4)) *
+          Math.exp(-Math.pow((z - 0.12) / 0.14, 4)) *
+          Math.max(0, s) ** 2;
+        bodyY += foot * Math.max(0, 0.66 - bodyY);
+      }
+      return [bodyX, bodyY, z];
     },
   ),
 );
 
-// Crescent-entry sidepods are spline lofts with an upper shoulder, deep undercut and progressive
-// rear taper. Connected fairing patches bridge them into the monocoque and floor envelope.
-for (const side of [-1, 1]) {
-  const stations = [
-    { z: -0.55, x: side * 0.38, y: 0.46, rx: 0.025, ry: 0.03 },
-    { z: -0.38, x: side * 0.46, y: 0.46, rx: 0.16, ry: 0.12 },
-    { z: -0.08, x: side * 0.48, y: 0.45, rx: 0.18, ry: 0.15 },
-    { z: 0.38, x: side * 0.4, y: 0.41, rx: 0.17, ry: 0.14 },
-    { z: 0.82, x: side * 0.32, y: 0.39, rx: 0.14, ry: 0.11 },
-    { z: 1.22, x: side * 0.22, y: 0.39, rx: 0.055, ry: 0.06 },
-  ];
-  addPart(
-    'body',
-    loft(
-      stations,
-      D.surfaceAuthoring.sidepodRadialSegments,
-      D.surfaceAuthoring.sidepodAxialSegments,
-      ({ x, y, rx, ry, c, s, z }) => {
-        const outer = side * c > 0 ? 1 : 0;
-        const shoulderFall = outer * 0.055 * THREE.MathUtils.smoothstep(z, -0.08, 1.22);
-        const undercut = s < 0 ? 1 + 0.58 * s : 1;
-        const lowerLift = s < 0 ? -0.045 * s : 0;
-        const crown = s > 0 ? 0.018 * Math.sin(Math.PI * Math.abs(c)) * s : 0;
-        const lateral = Math.sign(c) * Math.pow(Math.abs(c), 0.9) * rx * undercut;
-        return [x + lateral, y + s * ry + crown + lowerLift - shoulderFall, z];
-      },
-    ),
-  );
-  addPart(
-    'body',
-    grid(
-      14,
-      56,
-      (u, v) => {
-        const z = THREE.MathUtils.lerp(-0.48, 1.08, v);
-        const taper = THREE.MathUtils.smoothstep(z, -0.48, 1.08);
-        const innerX = side * THREE.MathUtils.lerp(0.27, 0.16, taper);
-        const outerX = side * THREE.MathUtils.lerp(0.55, 0.3, taper);
-        const blend = THREE.MathUtils.smootherstep(u, 0, 1);
-        const x = THREE.MathUtils.lerp(innerX, outerX, blend);
-        const innerY = THREE.MathUtils.lerp(0.55, 0.46, taper);
-        const outerY = THREE.MathUtils.lerp(0.58, 0.43, taper);
-        return [x, THREE.MathUtils.lerp(innerY, outerY, blend) + 0.012 * Math.sin(Math.PI * u), z];
-      },
-      side === -1,
-    ),
-  );
-  const inletCenter = [side * 0.515, 0.47, -0.392];
-  addPart('cockpit', ellipseDiscZ(inletCenter, [0.1, 0.072], 44, true));
-  addPart('body', ellipseLoopZ(inletCenter, [0.112, 0.083], 0.011, 44));
-}
-
-// Open cockpit inspection recess and integrated airbox/engine spine.
+// The cockpit inspection recess is retained while all exterior airbox/engine-cover mass comes
+// from the continuous body shell above.
 addPart('cockpit', ellipsoid([0, 0.58, -0.14], [0.235, 0.085, 0.42], 30, 12));
-const airboxStations = [
-  { z: 0.24, x: 0, y: 0.82, rx: 0.07, ry: 0.055 },
-  { z: 0.34, x: 0, y: 0.84, rx: 0.12, ry: 0.105 },
-  { z: 0.56, x: 0, y: 0.8, rx: 0.13, ry: 0.1 },
-  { z: 0.86, x: 0, y: 0.69, rx: 0.1, ry: 0.095 },
-  { z: 1.18, x: 0, y: 0.56, rx: 0.065, ry: 0.07 },
-  { z: 1.5, x: 0, y: 0.46, rx: 0.025, ry: 0.035 },
-];
-addPart('body', loft(airboxStations, 36, 72));
-addPart('cockpit', ellipseDiscZ([0, 0.845, 0.238], [0.082, 0.06], 44, true));
-addPart('body', ellipseLoopZ([0, 0.845, 0.236], [0.094, 0.071], 0.01, 44));
-for (const side of [-1, 1]) {
-  addPart(
-    'body',
-    curveTube(
-      [
-        [side * 0.09, 0.87, 0.5],
-        [side * 0.11, 0.82, 0.82],
-        [side * 0.08, 0.67, 1.25],
-        [side * 0.04, 0.49, 1.57],
-      ],
-      0.018,
-      64,
-      10,
-    ),
-  );
-}
-
-// Connected underfloor: twin Venturi channels contract through the sidepod region and rise into
-// the approved diffuser exit. Upper and lower skins share the same planform and sealed edges.
-const floorStart = D.landmarks.floor.startZ;
-const floorEnd = D.landmarks.floor.endZ;
-const floorWidthStations = [
-  [-1.08, 0.3],
-  [-0.58, 0.52],
-  [-0.12, 0.66],
-  [0.72, 0.68],
-  [1.48, 0.62],
-  [2.3, 0.58],
-];
-const floorHalfWidth = (z) => {
-  let index = 0;
-  while (index < floorWidthStations.length - 2 && z > floorWidthStations[index + 1][0]) {
-    index += 1;
-  }
-  const [z0, width0] = floorWidthStations[index];
-  const [z1, width1] = floorWidthStations[index + 1];
-  return THREE.MathUtils.lerp(width0, width1, THREE.MathUtils.smoothstep(z, z0, z1));
-};
-const floorY = (x, z, upper) => {
-  const halfWidth = floorHalfWidth(z);
-  const lateral = Math.abs(x) / halfWidth;
-  const channel = Math.exp(-Math.pow((Math.abs(x) - 0.36) / 0.145, 2));
-  const throat = 0.034 * Math.exp(-Math.pow((z - 0.32) / 0.72, 2)) * channel;
-  const diffuser = 0.2 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
-  const edgeRoll = 0.05 * lateral ** 4;
-  const lower = 0.065 - throat + diffuser + edgeRoll * 0.35;
-  const thickness = D.landmarks.floor.shellThickness + 0.018 * channel;
-  return lower + (upper ? thickness + edgeRoll * 0.65 : 0);
-};
-for (const upper of [false, true]) {
-  addPart(
-    'aero',
-    grid(
-      36,
-      96,
-      (u, v) => {
-        const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
-        const x = (u * 2 - 1) * floorHalfWidth(z);
-        return [x, floorY(x, z, upper), z];
-      },
-      !upper,
-    ),
-  );
-}
-for (const side of [-1, 1]) {
-  addPart(
-    'aero',
-    grid(1, 96, (u, v) => {
-      const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
-      const x = side * floorHalfWidth(z);
-      return [x, THREE.MathUtils.lerp(floorY(x, z, false), floorY(x, z, true), u), z];
-    }),
-  );
-  addPart(
-    'aero',
-    loft(
-      [
-        { z: -0.55, x: side * 0.48, y: 0.19, rx: 0.025, ry: 0.035 },
-        { z: -0.12, x: side * 0.6, y: 0.2, rx: 0.035, ry: 0.065 },
-        { z: 0.48, x: side * 0.62, y: 0.2, rx: 0.035, ry: 0.075 },
-        { z: 1.0, x: side * 0.51, y: 0.21, rx: 0.03, ry: 0.06 },
-        { z: 1.45, x: side * 0.39, y: 0.24, rx: 0.02, ry: 0.035 },
-      ],
-      24,
-      64,
-    ),
-  );
-}
 
 // Curved NACA-derived wing volumes replace the R3.1 sinusoidal plates while retaining every
 // approved span and longitudinal envelope.
@@ -577,7 +475,7 @@ for (const side of [-1, 1]) {
   }
 }
 
-// Continuous halo tube and blended attachment fairings retain the owner-approved envelope.
+// The accepted halo tubes enter the analytically fairied body shell at their locked mount points.
 addPart(
   'mechanical',
   curveTube(
@@ -596,10 +494,6 @@ addPart(
   ),
 );
 addPart('mechanical', rod([0, 0.65, -0.65], [0, 0.94, -0.5], 0.022, 10));
-addPart('body', ellipsoid([0, 0.66, -0.64], [0.06, 0.055, 0.095], 28, 16));
-for (const side of [-1, 1]) {
-  addPart('body', ellipsoid([side * 0.26, 0.66, 0.12], [0.065, 0.045, 0.09], 24, 14));
-}
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
@@ -609,7 +503,7 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 1', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

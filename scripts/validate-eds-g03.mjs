@@ -63,6 +63,10 @@ let triangles = 0;
 let vertices = 0;
 let invalidValues = 0;
 let degenerateTriangles = 0;
+let invalidNormals = 0;
+let reversedVertexNormals = 0;
+const reversedByMesh = {};
+const reversedSamples = [];
 
 for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
   for (const primitive of mesh.primitives ?? []) {
@@ -75,6 +79,7 @@ for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
       const point = [0, 1, 2].map((axis) => positions.read(index, axis));
       const normal = [0, 1, 2].map((axis) => normals.read(index, axis));
       if (![...point, ...normal].every(Number.isFinite)) invalidValues += 1;
+      if (Math.abs(Math.hypot(...normal) - 1) > 0.02) invalidNormals += 1;
       point.forEach((value, axis) => {
         bounds.min[axis] = Math.min(bounds.min[axis], value);
         bounds.max[axis] = Math.max(bounds.max[axis], value);
@@ -91,7 +96,20 @@ for (const [meshIndex, mesh] of (gltf.meshes ?? []).entries()) {
         a[2] * b[0] - a[0] * b[2],
         a[0] * b[1] - a[1] * b[0],
       ];
-      if (Math.hypot(...cross) < 1e-9) degenerateTriangles += 1;
+      const faceLength = Math.hypot(...cross);
+      if (faceLength < 1e-9) degenerateTriangles += 1;
+      if (faceLength >= 1e-9) {
+        const averageNormal = [0, 1, 2].map(
+          (axis) => ids.reduce((sum, id) => sum + normals.read(id, axis), 0) / 3,
+        );
+        if (cross.reduce((sum, value, axis) => sum + value * averageNormal[axis], 0) < -1e-8) {
+          reversedVertexNormals += 1;
+          const name = meshNames.get(meshIndex) ?? `mesh-${meshIndex}`;
+          reversedByMesh[name] = (reversedByMesh[name] ?? 0) + 1;
+          if (reversedSamples.length < 12)
+            reversedSamples.push(points[0].map((value) => Number(value.toFixed(3))));
+        }
+      }
     }
   }
 }
@@ -173,6 +191,8 @@ const checks = {
   lateralSymmetry: Math.abs(bounds.max[0] + bounds.min[0]) <= tolerance.symmetryAbsoluteMetres,
   finiteGeometry: invalidValues === 0,
   noDegenerateTriangles: degenerateTriangles === 0,
+  unitVertexNormals: invalidNormals === 0,
+  normalWindingAgreement: reversedVertexNormals === 0,
   materialCount: (gltf.materials?.length ?? 0) === 5,
   textureCount: (gltf.images?.length ?? 0) === 0,
   sidepodFrontWheelClearance:
@@ -235,7 +255,16 @@ const report = {
   },
   tolerance,
   checks,
-  diagnostics: { invalidValues, degenerateTriangles, errors, warnings },
+  diagnostics: {
+    invalidValues,
+    degenerateTriangles,
+    invalidNormals,
+    reversedVertexNormals,
+    reversedByMesh,
+    reversedSamples,
+    errors,
+    warnings,
+  },
   khronosValidator: 'NOT TESTED — Khronos glTF Validator CLI is not installed locally',
 };
 

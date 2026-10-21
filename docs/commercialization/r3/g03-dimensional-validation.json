@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.2-primary-surfaces-1",
+  "revision": "R3.2-revision-1-continuity",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "97c60980185db2ba491d9fa9244da70e2bb1ae73d829ec231fceb0050d957dc9",
-  "bytes": 1977056,
+  "sha256": "dcd203387f584d2b68160a1f740eb413274d9204a651b113434a668ab3496af8",
+  "bytes": 1110992,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 102072,
-    "vertices": 56620,
+    "triangles": 55916,
+    "vertices": 32064,
     "materials": 5,
     "textures": 0
   },
@@ -160,6 +160,8 @@
     "lateralSymmetry": true,
     "finiteGeometry": true,
     "noDegenerateTriangles": true,
+    "unitVertexNormals": true,
+    "normalWindingAgreement": true,
     "materialCount": true,
     "textureCount": true,
     "sidepodFrontWheelClearance": true,
@@ -168,6 +170,10 @@
   "diagnostics": {
     "invalidValues": 0,
     "degenerateTriangles": 0,
+    "invalidNormals": 0,
+    "reversedVertexNormals": 0,
+    "reversedByMesh": {},
+    "reversedSamples": [],
     "errors": [],
     "warnings": []
   },

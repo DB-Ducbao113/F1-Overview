@@ -2,7 +2,7 @@
 // Native authoring coordinates: +Y up, -Z front/nose, +Z rear, +/-X left/right.
 export const EDS_G03_DESIGN = Object.freeze({
   id: 'EDS-G03',
-  revision: 'R3.2-primary-surfaces-1',
+  revision: 'R3.2-revision-1-continuity',
   units: 'metres',
   coordinateSystem: {
     up: '+Y',
@@ -138,13 +138,16 @@ export const EDS_G03_DESIGN = Object.freeze({
       decision: 'GO',
       approvedRevision: 'R3.1-revision-1',
     },
+    gate2Revision: {
+      baselineCommit: 'a6549c6',
+      decision: 'REVISE',
+      scope: 'sidepod, floor and halo-mount surface continuity only',
+    },
   },
   surfaceAuthoring: {
-    workflow: 'deterministic spline and connected cross-section lofts',
-    bodyRadialSegments: 56,
-    bodyAxialSegments: 144,
-    sidepodRadialSegments: 44,
-    sidepodAxialSegments: 88,
+    workflow: 'single parametric body and underfloor cross-section loft',
+    bodyRadialSegments: 72,
+    bodyAxialSegments: 168,
     wingSpanSegments: 48,
     wingChordSegments: 18,
     inspectionMaterials: ['neutral-diffuse', 'subtle-reflective'],
