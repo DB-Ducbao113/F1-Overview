@@ -4,8 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 
-const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || '14b99b6';
-const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 3';
+const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || '4762005';
+const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 4';
 const modelPath = 'public/models/eds-g03-preview.glb';
 const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${modelPath}`], {
   maxBuffer: 8 * 1024 * 1024,
@@ -15,7 +15,7 @@ const sha256 = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex'
 const base = process.env.R3_G03_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
   process.env.R3_G03_CONTINUITY_OUTPUT ||
-    'docs/commercialization/r3/evidence/r3-2-revision-3-surface-refinement',
+    'docs/commercialization/r3/evidence/r3-2-revision-4-gate-2-closure',
 );
 const executablePath =
   process.env.R3_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';

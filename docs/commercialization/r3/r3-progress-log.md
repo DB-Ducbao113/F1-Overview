@@ -137,3 +137,25 @@
 - Proposed next action: owner reviews images and decides Gate 2 GO or REVISE.
 - Status: **WAITING_FOR_OWNER_REVIEW — OWNER GATE 2 HOLD**. No R3.3, push,
   merge or deployment.
+
+## 2026-10-21 — R3.2 Revision 4 focused Gate 2 closure attempt
+
+- Branch/baseline: `Per-PEDS`, `4762005`. Existing unrelated Cloudflare
+  document, CI draft, R3 master-plan file and `references/` preserved.
+- Scope: preserved rounded inlet and body/floor; revised only rear underbody
+  channel/rise and the three shell-to-halo mount transitions. Accepted
+  hardpoints, wheelbase, tracks and 5.050 × 2.000 × 1.180 m bounds unchanged.
+- Final deterministic DEV GLB SHA-256:
+  `c197b483bcee8736f74a998a4763bf6f66be1197f645c831b789aacd8d41eb10`;
+  1,136,864 bytes, 57,320 triangles, 32,791 vertices, five material groups,
+  zero textures. No polygon increase over the Revision 3 baseline.
+- Evidence: twelve matched diffuse/reflective comparison sheets, three
+  targeted wireframe sheets and browser metadata under
+  `evidence/r3-2-revision-4-gate-2-closure/`.
+- Independent topology: unchanged open-edge counts and consistent winding;
+  no strict local BODY triangle crossings in bounded diffuser/halo zones.
+  Inter-mesh/coplanar and physical-device inspection are unverified.
+- Technical QA and precise visual disposition: see
+  `r3-2-revision-4-qa-report.md`. The diffuser still reads shallow and rear
+  halo attachment boundaries remain visible. **OWNER GATE 2 HOLD; recommend
+  REVISE, not R3.3.** No merge, deploy or push.

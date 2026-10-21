@@ -1,5 +1,26 @@
 # EDS-G03 R3.2 primary-surface authorship and provenance
 
+## Revision 4 focused diffuser/halo addendum (2026-10-21)
+
+Baseline `4762005` is retained for all accepted inlet, sidepod, nose, wing,
+body/floor and hardpoint construction. The only generated-shape edits in
+`scripts/generate-eds-g03.mjs` are a wider moderate paired underbody relief,
+rear diffuser rise and local halo-foot fairing deformations of the existing
+original body cross-section. The three halo tubes remain separate mechanical
+parts following their previously locked centrelines; their starting sweep is
+slightly tapered into the body. No added collar, spherical pad, separate floor
+shell, skin, third-party mesh/UV/texture, branding or C42-derived geometry is
+used. DEV comparison camera and wireframe visibility edits affect inspection
+only, not the GLB or commercial Showroom.
+
+Reproduce with `npm.cmd run asset:eds-g03`,
+`npm.cmd run asset:eds-g03:validate`, and `npm.cmd run qa:r3:continuity` with
+the DEV Vite server on port 4173. The capture uses baseline `4762005` via a
+local response override. Final GLB SHA-256:
+`c197b483bcee8736f74a998a4763bf6f66be1197f645c831b789aacd8d41eb10`.
+This is a DEV-only Gate 2 candidate; its remaining visual issues are recorded
+in the issue log, not self-approved.
+
 ## Revision 2 original-geometry addendum
 
 Starting from Revision 1 `a4a36a0`, two inlet apertures are cut directly from

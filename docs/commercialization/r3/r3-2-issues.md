@@ -1,5 +1,41 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Gate 2 Revision 4 retest (2026-10-21)
+
+Baseline: `4762005`. Reproduction evidence: twelve matched four-panel
+diffuse/reflective sheets and three targeted wireframe sheets in
+`evidence/r3-2-revision-4-gate-2-closure/`. The same DEV camera, FOV, lighting,
+viewer and model transform are used in each BEFORE/AFTER pair.
+
+- **R3-G03-009, P2, diffuser exit:** Compare `diffuser-low-rear`,
+  `diffuser-underside`, `diffuser-exit` and the diffuser wireframe. The paired
+  channels have slightly stronger, wider relief and a more progressive rear
+  rise without changing the locked envelope. An initially deeper trial made
+  the underside transition look too abrupt and was rejected before handoff.
+  The final low-rear exit is still visually shallow and the central body gable
+  remains conspicuous. No new normal/winding error or strict local triangle
+  crossing was detected. **Retest: PARTIAL; visual acceptance NOT MET.**
+- **R3-G03-008, P2, three halo mounts:** Compare `halo-mounts`,
+  `halo-rear-mount` and the halo wireframe. A broader deformation of the same
+  survival-cell shell rises toward each unchanged mount; the variable-radius
+  tubes retain their locked centreline and no collar/pad was added. The front
+  junction reads cleaner, but a distinct body/tube boundary remains at the
+  rear attachments. **Retest: PARTIAL; visual acceptance NOT MET.**
+- **R3-G03-006, P2, inlet/body/floor preservation:** Compare `sidepod`,
+  `sidepod-floor`, `full-side` and `full-front-three-quarter`. No inlet cutting,
+  sidepod loft, body/floor join or hardpoint source was changed in Revision 4.
+  The matched images show no evident regression in those accepted regions.
+  **Retest: PRESERVED in sampled views; owner review pending.**
+
+Independent `trimesh` inspection reports the same open-edge counts in all five
+mesh groups as baseline; BODY has 372 open edges (72 rear exit, 72 front tip,
+228 inlet zone). All five groups retain consistent winding but are not
+watertight. The bounded BODY diffuser and halo-shell strict edge/triangle
+intersection tests found 0 crossings in both versions. Coplanar contact,
+inter-mesh overlap and exhaustive all-surface intersections were **NOT TESTED**.
+Khronos glTF Validator found 0 errors/warnings. No technical check overrides
+the remaining visual defects. **Owner Gate 2: HOLD / recommend REVISE.**
+
 ## Gate 2 Revision 3 retest (2026-10-21)
 
 Baseline: `14b99b6`. Twelve matched diffuse/reflective four-panel views and

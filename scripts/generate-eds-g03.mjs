@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_3_Intake_Diffuser_Halo';
+scene.name = 'EDS-G03_R3_2_Revision_4_Diffuser_Halo';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -517,11 +517,11 @@ addPart(
           0.028 *
             Math.exp(-Math.pow((Math.abs(bodyX) - 0.35) / 0.15, 2)) *
             Math.exp(-Math.pow((z - 0.25) / 0.7, 2)) +
-          0.05 * Math.exp(-Math.pow((Math.abs(bodyX) - 0.32) / 0.19, 2)) * rearExpansion;
-        const centerSpine = 0.014 * Math.exp(-Math.pow(bodyX / 0.22, 2)) * rearExpansion;
+          0.09 * Math.exp(-Math.pow((Math.abs(bodyX) - 0.32) / 0.19, 2)) * rearExpansion;
+        const centerSpine = -0.018 * Math.exp(-Math.pow(bodyX / 0.2, 2)) * rearExpansion;
         const outerRidge =
           0.012 * Math.exp(-Math.pow((Math.abs(bodyX) - 0.55) / 0.08, 2)) * rearExpansion;
-        const diffuserRise = 0.16 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
+        const diffuserRise = 0.19 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
         const underbodyY =
           0.075 + 0.085 * lipFraction + diffuserRise - channel + centerSpine + outerRidge;
         bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
@@ -537,15 +537,13 @@ addPart(
           (0.12 * Math.exp(-Math.pow((z - 0.48) / 0.42, 2)) +
             0.055 * Math.exp(-Math.pow((z - 0.98) / 0.5, 2)));
         for (const [mountX, mountY, mountZ, spreadX, spreadZ] of [
-          [0, 0.65, -0.65, 0.12, 0.2],
-          [-0.26, 0.66, 0.12, 0.11, 0.18],
-          [0.26, 0.66, 0.12, 0.11, 0.18],
+          [0, 0.65, -0.65, 0.18, 0.32],
+          [-0.26, 0.66, 0.12, 0.18, 0.34],
+          [0.26, 0.66, 0.12, 0.18, 0.34],
         ]) {
-          const foot =
-            Math.exp(-Math.pow((bodyX - mountX) / spreadX, 2)) *
-            Math.exp(-Math.pow((z - mountZ) / spreadZ, 2)) *
-            Math.max(0, s) ** 3;
-          bodyY += foot * Math.max(0, mountY - bodyY);
+          const radius = Math.hypot((bodyX - mountX) / spreadX, (z - mountZ) / spreadZ);
+          const fairing = (1 - THREE.MathUtils.smootherstep(radius, 0, 1)) * Math.max(0, s);
+          bodyY += fairing * Math.max(0, mountY + 0.045 - bodyY);
         }
         return [bodyX, bodyY, roundedExitZ];
       },
@@ -658,8 +656,8 @@ addPart(
     ],
     (t) =>
       0.022 +
-      0.025 *
-        (1 - THREE.MathUtils.smootherstep(t, 0, 0.1) + THREE.MathUtils.smootherstep(t, 0.9, 1)),
+      0.018 *
+        (1 - THREE.MathUtils.smootherstep(t, 0, 0.16) + THREE.MathUtils.smootherstep(t, 0.84, 1)),
     96,
     14,
   ),
@@ -673,7 +671,7 @@ addPart(
       [0, 0.87, -0.55],
       [0, 0.94, -0.5],
     ],
-    (t) => 0.022 + 0.025 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.42)),
+    (t) => 0.022 + 0.018 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.48)),
     40,
     14,
   ),
@@ -689,7 +687,7 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 3', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 4', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

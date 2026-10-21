@@ -271,7 +271,7 @@ const report = {
     warnings,
   },
   khronosValidator:
-    'NOT RUN by this internal checker; independent result is recorded in the Revision 3 QA report',
+    'NOT RUN by this internal checker; see the current gate QA report for independent validation',
 };
 
 await fs.mkdir(path.dirname(reportFile), { recursive: true });
