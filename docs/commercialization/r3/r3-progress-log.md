@@ -29,3 +29,21 @@
 - Proposed next action: owner reviews stance, wheel placement, nose/cockpit, sidepod envelope,
   floor planform and wing balance.
 - Status: **WAITING_FOR_OWNER_REVIEW**
+
+## 2026-10-21 — R3.1 Revision 1 proportion correction
+
+- Owner decision: **REVISE** at Gate 1; R3.2 remained prohibited.
+- Verified baseline: `Per-PEDS` at `c182a668540129d19da26cc8bb6fe6127843668c`.
+- Locked dimensions preserved: 5.050 x 2.000 x 1.180 m, 3.600 m wheelbase, axle stations,
+  track, tyres, front-wing envelope and ground contact unchanged.
+- Local envelope corrections: sidepod half-width 0.76 to 0.66 m; halo top 1.08 to 0.94 m;
+  rear-wing span 1.48 to 1.36 m; floor planform narrowed and given an undercut bridge.
+- Comparison correction: added six physical-scale sheets and six normalized silhouette sheets;
+  recorded per-view visible pixel bounds and ground alignment in `browser-report.json`.
+- Ratio disposition: retained wheelbase/length 0.712871. Older 0.63-0.66 illustrative values
+  conflict with locked 5.05 m / 3.60 m dimensions and were not used.
+- Reproducible generation: `npm.cmd run asset:eds-g03`; candidate SHA-256
+  `8a63d6834b28e4a436b4012946dc033f50664a514b109cc30b49282c2a4fb861`; two consecutive
+  final exports matched.
+- No stage, commit, push, merge or deployment performed.
+- Status: **WAITING_FOR_OWNER_REVIEW — REVISION 1**

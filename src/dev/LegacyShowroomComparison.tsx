@@ -35,19 +35,19 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
-  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.1 neutral proportion blockout' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.1 revision 1 neutral blockout' },
 ];
 
 const CAMERA_PRESETS: Record<
   CameraPreset,
   { position: [number, number, number]; target: [number, number, number] }
 > = {
-  'front-three-quarter': { position: [4.1, 1.7, 4.15], target: [0, 0.42, 0] },
-  side: { position: [5.45, 1.15, 0], target: [0, 0.38, 0] },
-  top: { position: [0.01, 6.7, 0], target: [0, 0.15, 0] },
-  front: { position: [0, 0.82, 5.25], target: [0, 0.32, 0.75] },
-  rear: { position: [0, 0.94, -5.25], target: [0, 0.38, -0.7] },
-  'rear-three-quarter': { position: [-4.15, 1.55, -4.1], target: [0, 0.4, -0.35] },
+  'front-three-quarter': { position: [4.8, 1.95, 4.85], target: [0, 0.42, 0] },
+  side: { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
+  top: { position: [0.01, 7.8, 0], target: [0, 0.15, 0] },
+  front: { position: [0, 0.95, 6.25], target: [0, 0.32, 0.75] },
+  rear: { position: [0, 1.05, -6.25], target: [0, 0.38, -0.7] },
+  'rear-three-quarter': { position: [-4.8, 1.8, -4.8], target: [0, 0.4, -0.35] },
   'sidepod-closeup': { position: [3.1, 1.0, -0.25], target: [0.58, 0.54, -0.05] },
   'front-wing-closeup': { position: [2.35, 0.65, 3.35], target: [0.25, 0.28, 1.92] },
   'rear-wing-closeup': { position: [-2.35, 1.0, -3.3], target: [-0.1, 0.62, -1.9] },

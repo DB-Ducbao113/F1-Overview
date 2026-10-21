@@ -2,7 +2,7 @@
 // Native authoring coordinates: +Y up, -Z front/nose, +Z rear, +/-X left/right.
 export const EDS_G03_DESIGN = Object.freeze({
   id: 'EDS-G03',
-  revision: 'R3.1-blockout-1',
+  revision: 'R3.1-revision-1',
   units: 'metres',
   coordinateSystem: {
     up: '+Y',
@@ -44,23 +44,30 @@ export const EDS_G03_DESIGN = Object.freeze({
     cockpitOpening: {
       frontZ: -0.58,
       rearZ: 0.28,
-      width: 0.52,
-      sillY: 0.62,
+      width: 0.48,
+      sillY: 0.59,
     },
     halo: {
-      frontMount: [0, 0.66, -0.68],
+      frontMount: [0, 0.65, -0.65],
       rearMounts: [
-        [-0.3, 0.67, 0.15],
-        [0.3, 0.67, 0.15],
+        [-0.26, 0.66, 0.12],
+        [0.26, 0.66, 0.12],
       ],
-      top: [0, 1.08, -0.3],
+      top: [0, 0.94, -0.46],
     },
     sidepods: {
       inletCenters: [
-        [-0.51, 0.49, -0.43],
-        [0.51, 0.49, -0.43],
+        [-0.46, 0.47, -0.38],
+        [0.46, 0.47, -0.38],
       ],
-      envelope: { x: [-0.76, 0.76], y: [0.2, 0.73], z: [-0.62, 1.18] },
+      envelope: { x: [-0.66, 0.66], y: [0.22, 0.63], z: [-0.55, 1.22] },
+    },
+    floor: {
+      startZ: -1.08,
+      endZ: 2.3,
+      maxHalfWidth: 0.68,
+      rearHalfWidth: 0.58,
+      shellThickness: 0.065,
     },
     airbox: [0, 0.95, 0.5],
     engineCoverTaper: [0, 0.43, 1.57],
@@ -74,21 +81,21 @@ export const EDS_G03_DESIGN = Object.freeze({
       envelope: { x: [-1, 1], y: [0.08, 0.34], z: [-2.6, -2.2] },
     },
     rearWing: {
-      span: 1.48,
-      root: [0, 0.9, 2.08],
-      envelope: { x: [-0.74, 0.74], y: [0.7, 1.18], z: [1.98, 2.45] },
+      span: 1.36,
+      root: [0, 0.91, 2.1],
+      envelope: { x: [-0.68, 0.68], y: [0.82, 1.18], z: [2.06, 2.45] },
     },
     diffuser: {
-      inlet: { width: 1.18, y: 0.08, z: 0.95 },
-      exit: { width: 1.32, y: 0.36, z: 2.3 },
+      inlet: { width: 1.12, y: 0.08, z: 1 },
+      exit: { width: 1.16, y: 0.34, z: 2.3 },
     },
   },
   futureHotspots: {
     wings: [0, 0.22, -2.42],
     drs: [0, 1.03, 2.18],
     power_unit: [0, 0.58, 0.82],
-    halo: [0, 0.98, -0.3],
-    sidepods: [0.65, 0.5, 0.16],
+    halo: [0, 0.9, -0.38],
+    sidepods: [0.56, 0.45, 0.16],
     tires: [0.89, 0.36, -1.75],
     floor: [0, 0.13, 1.2],
   },
@@ -99,12 +106,12 @@ export const EDS_G03_DESIGN = Object.freeze({
     rear: { position: [-4.15, 1.55, 4.1], target: [0, 0.4, 0.35], fov: 38 },
   },
   standardizedReviewCameras: {
-    'front-three-quarter': { position: [4.1, 1.7, -4.15], target: [0, 0.42, 0] },
-    side: { position: [5.45, 1.15, 0], target: [0, 0.38, 0] },
-    top: { position: [0.01, 6.7, 0], target: [0, 0.15, 0] },
-    front: { position: [0, 0.82, -5.25], target: [0, 0.32, -0.75] },
-    rear: { position: [0, 0.94, 5.25], target: [0, 0.38, 0.7] },
-    'rear-three-quarter': { position: [-4.15, 1.55, 4.1], target: [0, 0.4, 0.35] },
+    'front-three-quarter': { position: [4.8, 1.95, -4.85], target: [0, 0.42, 0] },
+    side: { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
+    top: { position: [0.01, 7.8, 0], target: [0, 0.15, 0] },
+    front: { position: [0, 0.95, -6.25], target: [0, 0.32, -0.75] },
+    rear: { position: [0, 1.05, 6.25], target: [0, 0.38, 0.7] },
+    'rear-three-quarter': { position: [-4.8, 1.8, 4.8], target: [0, 0.4, 0.35] },
   },
   originalDesignMarkers: [
     'low split-keel nose with a shallow centre valley',
@@ -113,6 +120,20 @@ export const EDS_G03_DESIGN = Object.freeze({
     'forward-swept front-wing tips with clipped pentagonal endplates',
     'continuous floor edge rising into a twin-channel diffuser exit',
   ],
+  revisionHistory: {
+    baselineCommit: 'c182a66',
+    baselineRevision: 'R3.1-blockout-1',
+    decision: 'OWNER GATE 1 REVISE',
+    lockedWithoutChange: [
+      'overall dimensions',
+      'front and rear axle stations',
+      'wheelbase',
+      'front and rear track',
+      'wheel radii and widths',
+      'ground plane',
+      'front wing envelope',
+    ],
+  },
 });
 
 export function getEDS_G03TargetRatios() {

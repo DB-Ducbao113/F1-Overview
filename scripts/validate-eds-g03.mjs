@@ -142,6 +142,7 @@ const tolerance = {
   axlePercent: 1,
   wheelAbsoluteMetres: 0.005,
   symmetryAbsoluteMetres: 0.002,
+  lockedBoundsAbsoluteMetres: 0.005,
 };
 const percentDelta = (actual, target) => ((actual - target) / target) * 100;
 const checks = {
@@ -150,6 +151,12 @@ const checks = {
   width:
     Math.abs(percentDelta(dimensions.width, D.dimensions.width)) <= tolerance.dimensionsPercent,
   heightLocked: Math.abs(dimensions.height - D.dimensions.height) <= 0.01,
+  boundsLocked: ['min', 'max'].every((edge) =>
+    bounds[edge].every(
+      (value, axis) =>
+        Math.abs(value - D.dimensions.bounds[edge][axis]) <= tolerance.lockedBoundsAbsoluteMetres,
+    ),
+  ),
   wheelbase:
     Math.abs(percentDelta(measuredAxles.wheelbase, D.axles.wheelbase)) <= tolerance.axlePercent,
   frontAxle: Math.abs(measuredAxles.frontZ - D.axles.frontZ) <= 0.01,

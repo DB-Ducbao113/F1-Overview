@@ -33,4 +33,13 @@ describe('EDS-G03 R3.1 hardpoint registry', () => {
     const frontWheelLeadingZ = D.axles.frontZ - D.wheels.front.radius;
     expect(frontWheelLeadingZ - D.landmarks.frontWing.envelope.z[1]).toBeGreaterThanOrEqual(0.08);
   });
+
+  it('locks revision 1 local envelopes without moving the approved chassis hardpoints', () => {
+    expect(D.revision).toBe('R3.1-revision-1');
+    expect(D.landmarks.sidepods.envelope.x).toEqual([-0.66, 0.66]);
+    expect(D.landmarks.floor.maxHalfWidth).toBe(0.68);
+    expect(D.landmarks.rearWing.span).toBe(1.36);
+    expect(D.landmarks.halo.top).toEqual([0, 0.94, -0.46]);
+    expect(D.revisionHistory.lockedWithoutChange).toContain('wheelbase');
+  });
 });

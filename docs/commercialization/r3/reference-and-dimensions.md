@@ -1,6 +1,6 @@
-# R3.1 EDS-G03 reference and dimensions
+# R3.1 Revision 1 EDS-G03 reference and dimensions
 
-Status: **DEV REVIEW — OWNER GATE 1**. Date: 2026-10-20. Branch: `Per-PEDS`.
+Status: **DEV REVIEW — OWNER GATE 1 REVISED**. Date: 2026-10-21. Branch: `Per-PEDS`.
 
 ## Reference boundary and authoring method
 
@@ -28,18 +28,20 @@ existing legacy review viewer regards `+Z` as the visual front after its legacy 
 EDS-G03 is rotated exactly `π` radians around Y in the DEV viewer only. This does not alter the
 GLB or its measured hardpoints.
 
-The six comparisons use the same perspective camera, target, FOV, viewport, light rig and canvas
-for both vehicles. The legacy asset retains its existing `0.105` review scale; G03 is authored
-directly in metres. No pixel-outline matching or C42 dimension inference is used.
+The physical-scale comparisons use the same perspective camera, target, FOV, viewport, light rig
+and canvas for both vehicles. The legacy asset retains its existing `0.105` review scale; G03 is
+authored directly in metres. A separate normalized set crops measured visible bounds, assigns
+equal apparent width and aligns the ground line. No C42 geometry or inferred C42 dimensions are
+used. Full methodology and pixel extents are in `r3-1-revision-1-measurements.md`.
 
 | View                | Camera position        | Target             |
 | ------------------- | ---------------------- | ------------------ |
-| Front three-quarter | `[4.10, 1.70, 4.15]`   | `[0, 0.42, 0]`     |
-| Side                | `[5.45, 1.15, 0]`      | `[0, 0.38, 0]`     |
-| Top                 | `[0.01, 6.70, 0]`      | `[0, 0.15, 0]`     |
-| Front               | `[0, 0.82, 5.25]`      | `[0, 0.32, 0.75]`  |
-| Rear                | `[0, 0.94, -5.25]`     | `[0, 0.38, -0.70]` |
-| Rear three-quarter  | `[-4.15, 1.55, -4.10]` | `[0, 0.40, -0.35]` |
+| Front three-quarter | `[4.80, 1.95, 4.85]`   | `[0, 0.42, 0]`     |
+| Side                | `[7.20, 1.35, 0]`      | `[0, 0.38, 0]`     |
+| Top                 | `[0.01, 7.80, 0]`      | `[0, 0.15, 0]`     |
+| Front               | `[0, 0.95, 6.25]`      | `[0, 0.32, 0.75]`  |
+| Rear                | `[0, 1.05, -6.25]`     | `[0, 0.38, -0.70]` |
+| Rear three-quarter  | `[-4.80, 1.80, -4.80]` | `[0, 0.40, -0.35]` |
 
 ## Target versus measured GLB
 
@@ -79,13 +81,13 @@ source is `g03-hardpoints.json`; measured results are in `g03-dimensional-valida
   views. The larger rear tyre and narrower rear track remain visible.
 - The nose-to-front-axle distance is plausible and the low nose connects continuously into the
   monocoque; its final sectional curvature is intentionally deferred to R3.2.
-- Cockpit location is balanced between the axles. The halo envelope is readable but visually
-  oversized from the front and remains an owner-review item.
-- Sidepod volume is now lower and the floor tapers from the nose/monocoque rather than appearing
-  as a full-width rectangle. The undercut and body-to-floor junction remain coarse blockout
-  surfaces.
-- Front-wing span is tied to the 2.00 m envelope and clears the front tyre leading plane by
-  0.09 m. The rear wing fits the rear overhang but its endplates still dominate the rear view.
+- Cockpit location remains fixed between the axles. The opening is 0.04 m narrower and the halo
+  arch is 0.08 m narrower per side and 0.14 m lower than the rejected baseline.
+- Sidepod maximum half-width fell from 0.76 m to 0.66 m. The intake, waist and rear taper are now
+  distinct in top and three-quarter views. A separate floor-edge bridge establishes the undercut
+  relationship without adding R3.2 surface detail.
+- Front-wing span remains tied to the 2.00 m envelope. Rear-wing span fell from 1.48 m to 1.36 m
+  and its endplate height/depth were reduced while preserving rear-most Z and total height.
 - The exported blockout is intentionally neutral grey: five simple inspection materials, zero
   textures, skins, decals or detailed PBR treatment.
 
@@ -106,6 +108,7 @@ source is `g03-hardpoints.json`; measured results are in `g03-dimensional-valida
 - `evidence/r3-1-blockout/comparison-rear.png`
 - `evidence/r3-1-blockout/comparison-rear-three-quarter.png`
 - `evidence/r3-1-blockout/silhouette-side-top-contact-sheet.png`
+- `evidence/r3-1-blockout/physical-comparison-*.png` (six non-normalized camera views)
 
 These are real local WebGL renders captured in headless Chrome at 1440×900. They are
 qualitative review evidence, not proof of rights clearance or physical-device performance.

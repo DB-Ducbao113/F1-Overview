@@ -1,60 +1,55 @@
-# R3.1 EDS-G03 proportion issues log
+# R3.1 Revision 1 EDS-G03 proportion issues log
 
-Status: **OPEN — OWNER GATE 1**. These are observed visual issues, not hidden by the numeric
-dimension PASS.
+Status: **RETESTED — OWNER GATE 1 REVIEW**. Numeric PASS does not substitute for owner visual
+approval.
 
-## R3-G03-001 — Floor/body junction remains schematic
+## R3-G03-001 — Floor/body junction read as a detached plate
 
-- Severity: P2 Major for future surface quality.
-- Affected views: side, rear three-quarter, rear.
-- Expected: floor volume should appear structurally continuous with sidepod undercut and diffuser.
-- Actual: the tapered planform is improved, but the side profile still reads as a broad, thin
-  shell beneath the body.
-- Evidence: `evidence/r3-1-blockout/comparison-side.png` and
-  `comparison-rear-three-quarter.png`.
-- Suspected cause: R3.1 floor uses upper/lower blockout grids without the R3.2 Venturi sectional
-  progression.
-- Status: OPEN; address only after Gate 1 GO, unless the owner requests a hardpoint revision.
+- Severity: P2 Major in rejected baseline.
+- Expected: coherent floor volume with a readable sidepod undercut and rear diffuser rise.
+- Baseline actual: broad thin shell appeared detached from the body in side/rear views.
+- Revision: floor starts 0.27 m farther rearward, maximum half-width drops 0.04 m, shell thickness
+  rises from 0.045 m to 0.065 m, and an original floor-edge bridge joins the undercut envelope.
+- Evidence: normalized and physical `comparison-side.png`, `comparison-rear-three-quarter.png`.
+- Retest: **PASS FOR R3.1**. The floor/undercut relationship is coherent at blockout resolution.
+  Venturi sections and fine floor-edge geometry remain prohibited R3.2 work.
 
-## R3-G03-002 — Sidepod and engine-cover transition is too full
+## R3-G03-002 — Sidepod/engine transition was capsule-like
 
-- Severity: P2 Major for future surface quality.
-- Affected views: front three-quarter, side, top.
-- Expected: a clear intake shoulder, undercut and controlled rear taper.
-- Actual: the volume establishes location and envelope but still reads as one soft capsule at
-  some angles.
+- Severity: P2 Major in rejected baseline.
+- Expected: identifiable intake, waist, undercut and controlled rear taper.
+- Baseline actual: 0.76 m half-width and soft elliptical progression merged into one full volume.
+- Revision: envelope half-width is 0.66 m, height is 0.41 m, inlet is moved inboard and the
+  lower section is pinched more strongly; engine-cover stations are narrower and lower.
 - Evidence: `comparison-front-three-quarter.png`, `comparison-side.png`, `comparison-top.png`.
-- Suspected cause: coarse elliptical blockout sections intentionally omit R3.2 primary-surface
-  control.
-- Status: OPEN; owner may accept the volume envelope or request a hardpoint revision.
+- Retest: **PASS FOR R3.1**. The three mass zones are independently readable. Surface quality is
+  intentionally deferred.
 
-## R3-G03-003 — Rear wing/endplates dominate the rear silhouette
+## R3-G03-003 — Rear wing/endplates dominated the silhouette
 
-- Severity: P2 Major proportion-review item.
-- Affected views: rear and rear three-quarter.
-- Expected: rear aero should balance the tyres, diffuser and engine-cover taper.
-- Actual: span and bounds are valid, but the slab-like endplate blockout appears visually heavy.
-- Evidence: `comparison-rear.png` and `comparison-rear-three-quarter.png`.
-- Suspected cause: endplate envelope has no R3.2 cut-outs, curvature or thickness transitions.
-- Status: OPEN; revise hardpoints now only if the owner rejects the current wing balance.
+- Severity: P2 Major in rejected baseline.
+- Expected: rear aero mass balanced against tyres, diffuser and engine cover.
+- Revision: span 1.48 to 1.36 m; endplate envelope height 0.48 to 0.36 m; depth 0.47 to 0.39 m;
+  polygon corners tightened while rear-most Z and 1.18 m overall height remain locked.
+- Evidence: `comparison-rear.png`, `comparison-rear-three-quarter.png` and physical equivalents.
+- Retest: **PASS FOR R3.1**. Rectangular visual dominance is materially reduced.
 
-## R3-G03-004 — Halo envelope reads oversized from the front
+## R3-G03-004 — Halo read as an oversized circular ring
 
-- Severity: P3 Minor at blockout stage.
-- Affected views: front and front three-quarter.
-- Expected: credible driver protection scale without dominating the cockpit.
-- Actual: the 1.08 m top point is consistent, but the lateral arch looks broad relative to the
-  simplified cockpit opening.
-- Evidence: `comparison-front.png`.
-- Suspected cause: thick inspection tube and coarse cockpit aperture amplify the visual width.
-- Status: OPEN for owner decision; hardpoint width can be revised within R3.1.
+- Severity: P3 Minor in rejected baseline.
+- Revision: maximum half-width 0.38 to 0.30 m; top Y 1.08 to 0.94 m; tube radius 0.028 to
+  0.022 m; cockpit opening width 0.52 to 0.48 m.
+- Evidence: `comparison-front.png`, `comparison-front-three-quarter.png`.
+- Retest: **PASS FOR R3.1**. The halo no longer dominates the cockpit opening.
 
-## R3-G03-005 — Wheel/rim forms are deliberately simplified
+## R3-G03-005 — Simplified wheel/rim and aero sections
 
-- Severity: P3 Minor at blockout stage.
-- Affected views: all.
-- Expected: accurate tyre diameter, width, track and contact patch for Gate 1.
-- Actual: those dimensions pass, but wheel faces are simple concentric volumes and not an
-  engineering-detail proposal.
-- Evidence: all six comparisons.
-- Status: ACCEPTED LIMITATION for R3.1; detail work is prohibited before later gates.
+- Severity: P3 Minor, accepted blockout limitation.
+- Actual: tyre dimensions, track and contact pass; wheel faces, wing sections and suspension are
+  still coarse neutral blockout forms.
+- Status: **OPEN / ACCEPTED FOR GATE 1**. Refining these now would violate the R3.1 stop condition.
+
+## Remaining risk
+
+No P0/P1/P2 defect remains open from the requested proportion correction. Owner aesthetic
+approval is still mandatory, and a GO would authorize only the next explicitly approved stage.

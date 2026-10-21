@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.1-blockout-1",
+  "revision": "R3.1-revision-1",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "89b6077efbca5562ac57334e32b9b80d2729a401bb7b3ebeffb73a12286520a8",
-  "bytes": 659444,
+  "sha256": "8a63d6834b28e4a436b4012946dc033f50664a514b109cc30b49282c2a4fb861",
+  "bytes": 702020,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 31376,
-    "vertices": 19393,
+    "triangles": 33688,
+    "vertices": 20589,
     "materials": 5,
     "textures": 0
   },
@@ -25,8 +25,16 @@
       "width": 2,
       "height": 1.18,
       "bounds": {
-        "min": [-1, 0, -2.6],
-        "max": [1, 1.18, 2.45]
+        "min": [
+          -1,
+          0,
+          -2.6
+        ],
+        "max": [
+          1,
+          1.18,
+          2.45
+        ]
       }
     },
     "axles": {
@@ -57,8 +65,16 @@
   },
   "measured": {
     "bounds": {
-      "min": [-1, 0, -2.6],
-      "max": [1, 1.18, 2.45]
+      "min": [
+        -1,
+        0,
+        -2.6
+      ],
+      "max": [
+        1,
+        1.18,
+        2.45
+      ]
     },
     "dimensions": {
       "length": 5.05,
@@ -74,25 +90,41 @@
     },
     "wheels": {
       "frontLeft": {
-        "center": [-0.89, 0.36, -1.75],
+        "center": [
+          -0.89,
+          0.36,
+          -1.75
+        ],
         "radius": 0.36,
         "width": 0.22,
         "groundY": 0
       },
       "frontRight": {
-        "center": [0.89, 0.36, -1.75],
+        "center": [
+          0.89,
+          0.36,
+          -1.75
+        ],
         "radius": 0.36,
         "width": 0.22,
         "groundY": 0
       },
       "rearLeft": {
-        "center": [-0.86, 0.38, 1.85],
+        "center": [
+          -0.86,
+          0.38,
+          1.85
+        ],
         "radius": 0.38,
         "width": 0.28,
         "groundY": 0
       },
       "rearRight": {
-        "center": [0.86, 0.38, 1.85],
+        "center": [
+          0.86,
+          0.38,
+          1.85
+        ],
         "radius": 0.38,
         "width": 0.28,
         "groundY": 0
@@ -109,12 +141,14 @@
     "dimensionsPercent": 2,
     "axlePercent": 1,
     "wheelAbsoluteMetres": 0.005,
-    "symmetryAbsoluteMetres": 0.002
+    "symmetryAbsoluteMetres": 0.002,
+    "lockedBoundsAbsoluteMetres": 0.005
   },
   "checks": {
     "length": true,
     "width": true,
     "heightLocked": true,
+    "boundsLocked": true,
     "wheelbase": true,
     "frontAxle": true,
     "rearAxle": true,

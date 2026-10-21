@@ -237,12 +237,12 @@ const centerBody = [
   { z: -2.48, x: 0, y: 0.3, rx: 0.035, ry: 0.035 },
   { z: -2.15, x: 0, y: 0.34, rx: 0.09, ry: 0.07 },
   { z: -1.75, x: 0, y: 0.39, rx: 0.16, ry: 0.11 },
-  { z: -1.1, x: 0, y: 0.47, rx: 0.28, ry: 0.18 },
-  { z: -0.58, x: 0, y: 0.52, rx: 0.35, ry: 0.22 },
-  { z: 0.05, x: 0, y: 0.52, rx: 0.36, ry: 0.22 },
-  { z: 0.55, x: 0, y: 0.58, rx: 0.32, ry: 0.31 },
-  { z: 1.05, x: 0, y: 0.55, rx: 0.27, ry: 0.27 },
-  { z: 1.57, x: 0, y: 0.43, rx: 0.15, ry: 0.16 },
+  { z: -1.1, x: 0, y: 0.46, rx: 0.24, ry: 0.17 },
+  { z: -0.58, x: 0, y: 0.5, rx: 0.31, ry: 0.2 },
+  { z: 0.05, x: 0, y: 0.5, rx: 0.33, ry: 0.2 },
+  { z: 0.55, x: 0, y: 0.54, rx: 0.25, ry: 0.24 },
+  { z: 1.05, x: 0, y: 0.49, rx: 0.18, ry: 0.18 },
+  { z: 1.57, x: 0, y: 0.42, rx: 0.12, ry: 0.14 },
   { z: 1.93, x: 0, y: 0.38, rx: 0.055, ry: 0.07 },
 ];
 addPart(
@@ -258,27 +258,28 @@ addPart(
 // Crescent-entry sidepods use a falling outer shoulder and taper independently from the benchmark.
 for (const side of [-1, 1]) {
   const stations = [
-    { z: -0.62, x: side * 0.38, y: 0.47, rx: 0.025, ry: 0.03 },
-    { z: -0.43, x: side * 0.51, y: 0.47, rx: 0.16, ry: 0.13 },
-    { z: -0.08, x: side * 0.52, y: 0.46, rx: 0.24, ry: 0.18 },
-    { z: 0.45, x: side * 0.48, y: 0.43, rx: 0.28, ry: 0.17 },
-    { z: 0.9, x: side * 0.4, y: 0.41, rx: 0.24, ry: 0.14 },
-    { z: 1.18, x: side * 0.27, y: 0.4, rx: 0.08, ry: 0.08 },
+    { z: -0.55, x: side * 0.38, y: 0.46, rx: 0.025, ry: 0.03 },
+    { z: -0.38, x: side * 0.46, y: 0.46, rx: 0.16, ry: 0.12 },
+    { z: -0.08, x: side * 0.48, y: 0.45, rx: 0.18, ry: 0.15 },
+    { z: 0.38, x: side * 0.4, y: 0.41, rx: 0.17, ry: 0.14 },
+    { z: 0.82, x: side * 0.32, y: 0.39, rx: 0.14, ry: 0.11 },
+    { z: 1.22, x: side * 0.22, y: 0.39, rx: 0.055, ry: 0.06 },
   ];
   addPart(
     'body',
     loft(stations, 28, 52, ({ x, y, rx, ry, c, s, z }) => {
       const outer = side * c > 0 ? 1 : 0;
-      const shoulderFall = outer * 0.045 * THREE.MathUtils.smoothstep(z, -0.1, 1.18);
-      const undercut = s < 0 ? 1 + 0.28 * s : 1;
-      return [x + c * rx * undercut, y + s * ry - shoulderFall, z];
+      const shoulderFall = outer * 0.055 * THREE.MathUtils.smoothstep(z, -0.08, 1.22);
+      const undercut = s < 0 ? 1 + 0.5 * s : 1;
+      const lowerLift = s < 0 ? -0.035 * s : 0;
+      return [x + c * rx * undercut, y + s * ry + lowerLift - shoulderFall, z];
     }),
   );
-  addPart('cockpit', ellipsoid([side * 0.67, 0.5, -0.43], [0.015, 0.1, 0.13], 18, 10));
+  addPart('cockpit', ellipsoid([side * 0.615, 0.47, -0.38], [0.014, 0.08, 0.11], 18, 10));
 }
 
 // Cockpit opening, compact airbox and two subtle dorsal ridges are blockout landmarks.
-addPart('cockpit', ellipsoid([0, 0.59, -0.14], [0.255, 0.09, 0.43], 30, 12));
+addPart('cockpit', ellipsoid([0, 0.58, -0.14], [0.235, 0.085, 0.42], 30, 12));
 addPart('cockpit', ellipsoid([0, 0.95, 0.5], [0.13, 0.1, 0.055], 22, 12));
 for (const side of [-1, 1]) {
   addPart(
@@ -298,15 +299,15 @@ for (const side of [-1, 1]) {
 }
 
 // Continuous floor shell with a shallow throat and a rising twin-channel diffuser.
-const floorStart = -1.35;
+const floorStart = -1.08;
 const floorEnd = 2.3;
 const floorWidthStations = [
-  [-1.35, 0.34],
-  [-0.78, 0.62],
-  [-0.18, 0.72],
-  [0.78, 0.72],
-  [1.55, 0.68],
-  [2.3, 0.66],
+  [-1.08, 0.3],
+  [-0.58, 0.52],
+  [-0.12, 0.66],
+  [0.72, 0.68],
+  [1.48, 0.62],
+  [2.3, 0.58],
 ];
 const floorHalfWidth = (z) => {
   let index = 0;
@@ -320,8 +321,9 @@ const floorHalfWidth = (z) => {
 const floorY = (x, z) => {
   const throat = 0.035 * Math.exp(-Math.pow((z - 0.25) / 0.75, 2));
   const channel = Math.exp(-Math.pow((Math.abs(x) - 0.38) / 0.2, 2));
-  const diffuser = 0.25 * THREE.MathUtils.smoothstep(z, 1.05, 2.3);
-  return 0.09 - throat * channel + diffuser;
+  const diffuser = 0.23 * THREE.MathUtils.smoothstep(z, 1, 2.3);
+  const edgeBlend = 0.055 * Math.pow(Math.abs(x) / floorHalfWidth(z), 4);
+  return 0.09 - throat * channel + diffuser + edgeBlend;
 };
 for (const upper of [false, true]) {
   addPart(
@@ -332,7 +334,7 @@ for (const upper of [false, true]) {
       (u, v) => {
         const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
         const x = (u * 2 - 1) * floorHalfWidth(z);
-        return [x, floorY(x, z) + (upper ? 0.045 : 0), z];
+        return [x, floorY(x, z) + (upper ? 0.065 : 0), z];
       },
       !upper,
     ),
@@ -344,8 +346,22 @@ for (const side of [-1, 1]) {
     grid(1, 52, (u, v) => {
       const z = THREE.MathUtils.lerp(floorStart, floorEnd, v);
       const x = side * floorHalfWidth(z);
-      return [x, floorY(x, z) + u * 0.045, z];
+      return [x, floorY(x, z) + u * 0.065, z];
     }),
+  );
+  addPart(
+    'aero',
+    loft(
+      [
+        { z: -0.55, x: side * 0.48, y: 0.19, rx: 0.025, ry: 0.035 },
+        { z: -0.12, x: side * 0.6, y: 0.2, rx: 0.035, ry: 0.065 },
+        { z: 0.48, x: side * 0.62, y: 0.2, rx: 0.035, ry: 0.075 },
+        { z: 1.0, x: side * 0.51, y: 0.21, rx: 0.03, ry: 0.06 },
+        { z: 1.45, x: side * 0.39, y: 0.24, rx: 0.02, ry: 0.035 },
+      ],
+      16,
+      36,
+    ),
   );
 }
 
@@ -371,26 +387,27 @@ const frontPlate = [
 ];
 for (const side of [-1, 1]) addPart('aero', plateAtX(side * 0.991, frontPlate));
 
-airfoilVolume({ span: 1.48, z: 2.08, chord: 0.32, y: 0.92, sweep: 0.05, thickness: 0.02 }).forEach(
+airfoilVolume({ span: 1.36, z: 2.1, chord: 0.31, y: 0.91, sweep: 0.04, thickness: 0.018 }).forEach(
   (geometry) => addPart('aero', geometry),
 );
 airfoilVolume({
-  span: 1.42,
-  z: 2.16,
-  chord: 0.24,
+  span: 1.3,
+  z: 2.17,
+  chord: 0.235,
   y: 1.08,
   sweep: 0.045,
   thickness: 0.016,
 }).forEach((geometry) => addPart('aero', geometry));
 const rearPlate = [
-  [1.98, 0.7],
-  [2.04, 1.15],
-  [2.22, 1.18],
-  [2.45, 1.12],
-  [2.4, 0.73],
+  [2.06, 0.84],
+  [2.1, 1.12],
+  [2.18, 1.18],
+  [2.36, 1.08],
+  [2.34, 0.88],
+  [2.24, 0.82],
 ];
 for (const side of [-1, 1]) {
-  addPart('aero', plateAtX(side * 0.731, rearPlate));
+  addPart('aero', plateAtX(side * 0.671, rearPlate));
   addPart('mechanical', rod([side * 0.48, 0.86, 2.08], [side * 0.24, 0.47, 1.63], 0.024));
 }
 
@@ -421,25 +438,25 @@ for (const side of [-1, 1]) {
   }
 }
 
-// Halo envelope uses three mounts and stays below the locked 1.18 m rear-wing height.
+// Compact halo envelope keeps the protection landmark legible without dominating the cockpit.
 addPart(
   'mechanical',
   curveTube(
     [
-      [-0.3, 0.67, 0.15],
-      [-0.38, 0.84, -0.12],
-      [-0.29, 1.0, -0.45],
-      [0, 1.08, -0.56],
-      [0.29, 1.0, -0.45],
-      [0.38, 0.84, -0.12],
-      [0.3, 0.67, 0.15],
+      [-0.26, 0.66, 0.12],
+      [-0.3, 0.82, -0.12],
+      [-0.22, 0.9, -0.38],
+      [0, 0.94, -0.5],
+      [0.22, 0.9, -0.38],
+      [0.3, 0.82, -0.12],
+      [0.26, 0.66, 0.12],
     ],
-    0.028,
+    0.022,
     64,
     10,
   ),
 );
-addPart('mechanical', rod([0, 0.66, -0.68], [0, 1.08, -0.56], 0.027, 10));
+addPart('mechanical', rod([0, 0.65, -0.65], [0, 0.94, -0.5], 0.022, 10));
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;

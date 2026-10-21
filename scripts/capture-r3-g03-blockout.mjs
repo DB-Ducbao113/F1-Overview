@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
+import { PNG } from 'pngjs';
 
 const base = process.env.R3_G03_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
@@ -47,7 +48,66 @@ async function captureCanvas(mode, view) {
   return page.locator('canvas').screenshot();
 }
 
-async function renderComparison(view, reference, candidate) {
+function measureSilhouette(bytes) {
+  const png = PNG.sync.read(bytes);
+  const corners = [
+    [0, 0],
+    [png.width - 1, 0],
+    [0, png.height - 1],
+    [png.width - 1, png.height - 1],
+  ];
+  const background = corners
+    .map(([x, y]) => {
+      const index = (y * png.width + x) * 4;
+      return [png.data[index], png.data[index + 1], png.data[index + 2]];
+    })
+    .reduce((sum, pixel) => sum.map((value, index) => value + pixel[index]), [0, 0, 0])
+    .map((value) => value / corners.length);
+  const columns = new Uint32Array(png.width);
+  const rows = new Uint32Array(png.height);
+  for (let y = 0; y < png.height; y += 1) {
+    for (let x = 0; x < png.width; x += 1) {
+      const index = (y * png.width + x) * 4;
+      const distance = Math.hypot(
+        png.data[index] - background[0],
+        png.data[index + 1] - background[1],
+        png.data[index + 2] - background[2],
+      );
+      if (distance > 48) {
+        columns[x] += 1;
+        rows[y] += 1;
+      }
+    }
+  }
+  const activeColumns = [...columns.keys()].filter((x) => columns[x] >= 8);
+  const activeRows = [...rows.keys()].filter((y) => rows[y] >= 8);
+  if (!activeColumns.length || !activeRows.length) throw new Error('Unable to measure silhouette');
+  const minX = activeColumns[0];
+  const maxX = activeColumns.at(-1);
+  const minY = activeRows[0];
+  const maxY = activeRows.at(-1);
+  return {
+    canvas: { width: png.width, height: png.height },
+    backgroundRgb: background.map((value) => Math.round(value)),
+    bounds: { minX, minY, maxX, maxY },
+    visibleWidth: maxX - minX + 1,
+    visibleHeight: maxY - minY + 1,
+    groundLineY: maxY,
+  };
+}
+
+function cropSilhouette(bytes, measurement, padding = 10) {
+  const source = PNG.sync.read(bytes);
+  const minX = Math.max(0, measurement.bounds.minX - padding);
+  const minY = Math.max(0, measurement.bounds.minY - padding);
+  const maxX = Math.min(source.width - 1, measurement.bounds.maxX + padding);
+  const maxY = Math.min(source.height - 1, measurement.bounds.maxY + padding);
+  const outputPng = new PNG({ width: maxX - minX + 1, height: maxY - minY + 1 });
+  PNG.bitblt(source, outputPng, minX, minY, outputPng.width, outputPng.height, 0, 0);
+  return PNG.sync.write(outputPng);
+}
+
+async function renderComparison(view, reference, candidate, normalized) {
   const comparison = await browser.newPage({
     viewport: { width: 1600, height: 700 },
     deviceScaleFactor: 1,
@@ -63,16 +123,18 @@ async function renderComparison(view, reference, candidate) {
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
       figure { margin: 0; border: 1px solid #36404a; border-radius: 12px; overflow: hidden; background: #070a0f; }
       figcaption { padding: 10px 14px; border-bottom: 1px solid #29313a; font-size: 14px; font-weight: 800; text-transform: uppercase; }
-      img { display: block; width: 100%; height: 575px; object-fit: contain; background: #070a0f; }
+      .viewport { height: 575px; display: flex; align-items: ${view === 'top' ? 'center' : 'flex-end'}; justify-content: center; overflow: hidden; background: #070a0f; }
+      img { display: block; ${normalized ? 'width: 92%; height: auto; max-height: 555px;' : 'width: 100%; height: 575px; object-fit: contain;'} }
     </style></head><body>
-      <header><h1>${view.replaceAll('-', ' ')}</h1><div class="tag">DEV REVIEW · MATCHED CAMERA</div></header>
+      <header><h1>${view.replaceAll('-', ' ')}</h1><div class="tag">DEV REVIEW · ${normalized ? 'NORMALIZED SILHOUETTE' : 'PHYSICAL-SCALE CAMERA'}</div></header>
       <div class="grid">
-        <figure><figcaption>A · Detailed + EDS quality reference</figcaption><img src="data:image/png;base64,${reference.toString('base64')}" /></figure>
-        <figure><figcaption>B · EDS-G03 R3.1 neutral blockout</figcaption><img src="data:image/png;base64,${candidate.toString('base64')}" /></figure>
+        <figure><figcaption>A · Detailed + EDS quality reference</figcaption><div class="viewport"><img src="data:image/png;base64,${reference.toString('base64')}" /></div></figure>
+        <figure><figcaption>B · EDS-G03 R3.1 revision 1</figcaption><div class="viewport"><img src="data:image/png;base64,${candidate.toString('base64')}" /></div></figure>
       </div>
     </body></html>
   `);
-  await comparison.screenshot({ path: path.join(output, `comparison-${view}.png`) });
+  const prefix = normalized ? 'comparison' : 'physical-comparison';
+  await comparison.screenshot({ path: path.join(output, `${prefix}-${view}.png`) });
   await comparison.close();
 }
 
@@ -97,12 +159,12 @@ async function renderSilhouetteSheet(captures) {
       figcaption { padding: 8px 12px; border-bottom: 1px solid #29313a; font-size: 13px; font-weight: 800; text-transform: uppercase; }
       img { display: block; width: 100%; height: 440px; object-fit: contain; filter: grayscale(1) contrast(1.25); }
     </style></head><body>
-      <header><h1>Side / top silhouette comparison</h1><div class="tag">DEV REVIEW · NORMALIZED FRAMING</div></header>
+      <header><h1>Side / top silhouette comparison</h1><div class="tag">DEV REVIEW · NORMALIZED LENGTH + GROUND</div></header>
       <div class="grid">
-        ${panel('Side · Detailed + EDS reference', captures.side.reference)}
-        ${panel('Side · EDS-G03 R3.1', captures.side.candidate)}
-        ${panel('Top · Detailed + EDS reference', captures.top.reference)}
-        ${panel('Top · EDS-G03 R3.1', captures.top.candidate)}
+        ${panel('Side · Detailed + EDS reference', captures.side.referenceCrop)}
+        ${panel('Side · EDS-G03 R3.1 revision 1', captures.side.candidateCrop)}
+        ${panel('Top · Detailed + EDS reference', captures.top.referenceCrop)}
+        ${panel('Top · EDS-G03 R3.1 revision 1', captures.top.candidateCrop)}
       </div>
     </body></html>
   `);
@@ -121,8 +183,20 @@ try {
   for (const view of views) {
     const reference = await captureCanvas('legacy-eds', view);
     const candidate = await captureCanvas('eds-g03', view);
-    captures[view] = { reference, candidate };
-    await renderComparison(view, reference, candidate);
+    const referenceMeasurement = measureSilhouette(reference);
+    const candidateMeasurement = measureSilhouette(candidate);
+    const referenceCrop = cropSilhouette(reference, referenceMeasurement);
+    const candidateCrop = cropSilhouette(candidate, candidateMeasurement);
+    captures[view] = {
+      reference,
+      candidate,
+      referenceCrop,
+      candidateCrop,
+      referenceMeasurement,
+      candidateMeasurement,
+    };
+    await renderComparison(view, reference, candidate, false);
+    await renderComparison(view, referenceCrop, candidateCrop, true);
   }
   await renderSilhouetteSheet(captures);
 
@@ -159,6 +233,31 @@ try {
       rotationYRadians: Math.PI,
       reason: 'Match +Z-front legacy camera convention',
     },
+    comparisonMethodology: {
+      physicalScale:
+        'Identical camera position, target, FOV, viewport and world-space model transforms; no crop normalization.',
+      normalized:
+        'Foreground bounds are measured against the canvas background, cropped with 10 px padding, assigned identical panel width and bottom-aligned except top view.',
+      targetApparentWidthPercent: 92,
+      silhouetteThresholdRgbDistance: 48,
+      minimumActivePixelsPerAxis: 8,
+    },
+    silhouetteMeasurements: Object.fromEntries(
+      views.map((view) => {
+        const capture = captures[view];
+        return [
+          view,
+          {
+            reference: capture.referenceMeasurement,
+            candidate: capture.candidateMeasurement,
+            physicalApparentWidthRatio:
+              capture.candidateMeasurement.visibleWidth / capture.referenceMeasurement.visibleWidth,
+            normalizationScaleRatio:
+              capture.referenceMeasurement.visibleWidth / capture.candidateMeasurement.visibleWidth,
+          },
+        ];
+      }),
+    ),
     runtime,
     pageErrors,
     consoleErrors,
@@ -167,7 +266,8 @@ try {
     limitations: [
       'Headless desktop Chrome only; no physical-device or sustained thermal test.',
       'Detailed + EDS is a visual-quality reference only; its geometry is not used by EDS-G03.',
-      'Contact sheets compare matched perspective cameras; they are not pixel-fidelity targets.',
+      'Physical-scale sheets preserve matched cameras; normalized sheets deliberately remove apparent-size differences.',
+      'Visible bounds use a documented RGB-distance segmentation threshold and are comparative, not metrology.',
     ],
   };
   await fs.writeFile(
