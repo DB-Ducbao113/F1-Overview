@@ -7,6 +7,7 @@ import { EDS_G03_DESIGN as D } from './eds-g03-design.mjs';
 
 const output = path.resolve(process.argv[2] || 'public/models/eds-g03-preview.glb');
 const prototypeRegion = process.env.EDS_G03_PROTOTYPE_REGION;
+const revision7Experiment = process.env.EDS_G03_REV7_EXPERIMENT === '1';
 
 class NodeFileReader {
   result = null;
@@ -27,15 +28,19 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_6_Halo_T_Diffuser';
+scene.name = revision7Experiment
+  ? 'EDS-G03_R3_2_Revision_7_Diffuser_A_Halo_B_Experiment'
+  : 'EDS-G03_R3_2_Revision_6_Halo_T_Diffuser';
 scene.userData = {
   asset: D.id,
-  revision: D.revision,
+  revision: revision7Experiment ? 'R3.2-revision-7-diffuser-A-halo-B-experiment' : D.revision,
   author: 'Podium Effet De Sol / AI-assisted original parametric workflow',
   source: 'scripts/generate-eds-g03.mjs; scripts/eds-g03-design.mjs; original EDS parametric geometry',
   units: D.units,
   coordinateSystem: '+Y up; -Z front; +Z rear; X=0 centerline',
-  reviewStatus: 'OWNER GATE 2 REVISE; primary surface continuity only; not production approved',
+  reviewStatus: revision7Experiment
+    ? 'OWNER GATE 2 HOLD; rejected integrated experiment; not production approved'
+    : 'OWNER GATE 2 REVISE; primary surface continuity only; not production approved',
   provenance: 'No C42 mesh, vertices, UVs, textures, deformation or retopology used',
 };
 
@@ -305,6 +310,8 @@ function cutSidepodDucts(geometry) {
   // attachment sleeves below reuse these exact boundary vertices and become BODY faces.
   const haloHoles = [
     { name: 'front', u0: 15, u1: 21, v0: 60, v1: 68 },
+    // Retain the approved apertures and arch ring count; B is shaped by the
+    // surrounding shell and local bridge profile, not a larger cutout.
     { name: 'left', u0: 22, u1: 29, v0: 86, v1: 96 },
     { name: 'right', u0: 7, u1: 14, v0: 86, v1: 96 },
   ];
@@ -571,7 +578,9 @@ function cutSidepodDucts(geometry) {
         `Halo ${end.hole} loop: direction ${best.direction}, shift ${best.shift}, squared fit ${best.score.toFixed(4)}`,
       );
       let previous = outer;
-      for (const blend of [0.18, 0.42, 0.68, 0.88]) {
+      for (const blend of revision7Experiment && end.hole !== 'front'
+        ? [0.16, 0.36, 0.60, 0.82]
+        : [0.18, 0.42, 0.68, 0.88]) {
         const next = outer.map((id, i) => {
           const from = coordinate(id);
           const to = coordinate(best.mapped[i]);
@@ -580,7 +589,9 @@ function cutSidepodDucts(geometry) {
               THREE.MathUtils.lerp(
                 value,
                 to[axis],
-                axis === 1 ? THREE.MathUtils.smoothstep(blend, 0, 1) : blend,
+                !revision7Experiment || end.hole === 'front'
+                  ? (axis === 1 ? THREE.MathUtils.smoothstep(blend, 0, 1) : blend)
+                  : (axis === 1 ? blend * blend : THREE.MathUtils.smoothstep(blend, 0, 1)),
               ),
             ),
           );
@@ -683,17 +694,22 @@ addPart(
         const underbodyY =
           0.075 + 0.085 * lipFraction + diffuserRise - channel + centerSpine + outerRidge;
         bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
-        const exitBlend = THREE.MathUtils.smootherstep(z, 1.98, 2.3);
-        // An authored terminal section removes the old downward turn while
-        // retaining a softer twin-channel depression and the accepted throat.
-        const channelPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.16, 2));
-        bodyY += exitBlend * underbodyWeight * (0.047 - 0.013 * channelPair);
-        // Two deliberately recessed terminal channels remain within the accepted
-        // floor envelope. Their depth builds only after the rear-floor transition.
-        const channelExit = THREE.MathUtils.smootherstep(z, 1.55, 2.25);
-        const broadExitPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.22, 2));
-        bodyY -= 0.04 * broadExitPair * channelExit * underbodyWeight;
-        bodyY += 0.018 * exitBlend * s;
+        let exitBlend;
+        if (revision7Experiment) {
+          // Selected A concept trial on the existing shell. This is retained
+          // only as a rejected design experiment: the low-rear view reads flat.
+          exitBlend = THREE.MathUtils.smootherstep(z, 1.64, 2.3);
+          const pair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.30) / 0.21, 2));
+          bodyY += 0.14 * pair * exitBlend * underbodyWeight;
+        } else {
+          exitBlend = THREE.MathUtils.smootherstep(z, 1.98, 2.3);
+          const channelPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.16, 2));
+          bodyY += exitBlend * underbodyWeight * (0.047 - 0.013 * channelPair);
+          const channelExit = THREE.MathUtils.smootherstep(z, 1.55, 2.25);
+          const broadExitPair = Math.exp(-Math.pow((Math.abs(bodyX) - 0.3) / 0.22, 2));
+          bodyY -= 0.04 * broadExitPair * channelExit * underbodyWeight;
+          bodyY += 0.018 * exitBlend * s;
+        }
         const exitWidthBlend =
           THREE.MathUtils.smootherstep(z, 1.9, 2.3) * THREE.MathUtils.smootherstep(-s, 0.38, 0.78);
         if (exitWidthBlend > 0 && Math.abs(bodyX) > 0.39) {
@@ -711,14 +727,21 @@ addPart(
           Math.exp(-Math.pow(bodyX / 0.17, 2)) *
           (0.12 * Math.exp(-Math.pow((z - 0.48) / 0.42, 2)) +
             0.055 * Math.exp(-Math.pow((z - 0.98) / 0.5, 2)));
-        for (const [mountX, mountY, mountZ, spreadX, spreadZ] of [
-          [0, 0.65, -0.65, 0.18, 0.32],
-          [-0.26, 0.66, 0.12, 0.18, 0.34],
-          [0.26, 0.66, 0.12, 0.18, 0.34],
-        ]) {
+        const fairingSpecs = revision7Experiment
+          ? [
+              [0, 0.65, -0.65, 0.18, 0.32, 0.045],
+              [-0.26, 0.66, 0.065, 0.155, 0.485, 0.025],
+              [0.26, 0.66, 0.065, 0.155, 0.485, 0.025],
+            ]
+          : [
+              [0, 0.65, -0.65, 0.18, 0.32, 0.045],
+              [-0.26, 0.66, 0.12, 0.18, 0.34, 0.045],
+              [0.26, 0.66, 0.12, 0.18, 0.34, 0.045],
+            ];
+        for (const [mountX, mountY, mountZ, spreadX, spreadZ, rise] of fairingSpecs) {
           const radius = Math.hypot((bodyX - mountX) / spreadX, (z - mountZ) / spreadZ);
           const fairing = (1 - THREE.MathUtils.smootherstep(radius, 0, 1)) * Math.max(0, s);
-          bodyY += fairing * Math.max(0, mountY + 0.045 - bodyY);
+          bodyY += fairing * Math.max(0, mountY + rise - bodyY);
         }
         return [bodyX, bodyY, roundedExitZ];
       },
@@ -848,7 +871,11 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 6', originalGeometry: true };
+  mesh.userData = {
+    assembly: category,
+    gate: revision7Experiment ? 'R3.2 Revision 7 Phase B experiment' : 'R3.2 Revision 6',
+    originalGeometry: true,
+  };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

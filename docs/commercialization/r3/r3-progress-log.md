@@ -216,3 +216,52 @@
 - Pre-existing Cloudflare/CI/master-plan/reference changes preserved outside
   the revision commit scope. Next action: owner reviews evidence and requests
   another focused Gate 2 revision if desired. **OWNER GATE 2 HOLD / REVISE.**
+
+## 2026-10-21 — R3.2 Revision 7, prototype design gate
+
+- Baseline: `Per-PEDS` at `48ddf12818fc978b9b4d7d6ef649897f3e83ea10`.
+  Phase A only: two local diffuser exit concepts and two rear halo fairing
+  concepts, exported as isolated GLBs. Accepted integrated G03 SHA-256 stayed
+  `ba04651b1f6f79971c8c69bc0667e7000b87f6d170b55614604c869831a2544f`.
+- Both diffuser exits measure 1.160 m wide; four candidate meshes have zero
+  degenerate triangles, consistent winding, zero bounded strict self-crossings,
+  and only classified intentional crop boundaries. Khronos: zero errors and
+  warnings, with bufferView-target hints.
+- Twelve matched Chrome/WebGL diffuse, reflective and wireframe sheets plus
+  exit-profile SVG are in `evidence/r3-2-revision-7-prototypes/`.
+- ESLint, TypeScript, 39 files / 281 tests, production build and commercial
+  isolation passed. Integrated collision/full-car visual checks and physical
+  device performance are NOT TESTED because integration was not authorized.
+- Design recommendation: diffuser A / rear halo B, conditionally. Their exposed
+  specimen boundaries still need direct shell stitching; no visual GO claimed.
+  See `r3-2-revision-7-prototype-design-gate.md`. No stage, commit, push,
+  merge or deployment. **HOLD — owner selection required before Phase B.**
+
+## 2026-10-21 — R3.2 Revision 7 Phase B, selected-prototype integration trial
+
+- Owner authorized Diffuser A and Halo B implementation and local commits,
+  but not push, merge, Preview or production deployment. Branch/HEAD at
+  pre-flight: `Per-PEDS` / `48ddf12818fc978b9b4d7d6ef649897f3e83ea10`.
+  Phase A and unrelated Cloudflare/CI/reference changes were preserved.
+- Trial source: `EDS_G03_REV7_EXPERIMENT=1 node scripts/generate-eds-g03.mjs
+  docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb`.
+  Two candidate exports matched SHA-256
+  `414330bb130614f720927dedac0536f96e8d9256e64dc0a066e16453f72e78ac`.
+  Unflagged output still reproduces the Revision 6 GLB hash
+  `ba04651b1f6f79971c8c69bc0667e7000b87f6d170b55614604c869831a2544f`.
+- Measured locked bounds 5.050 × 2.000 × 1.180 m, wheelbase 3.600 m, diffuser
+  exit width 1.160 m; 62,992 triangles, 5 material groups, 0 textures.
+  Sampled sidepod inlet and upper halo T vertices remained unchanged.
+- QA: internal dimensions/normals/degenerates, bounded strict crossings,
+  inherited open-edge comparison, Khronos, ESLint, TypeScript, 281 tests,
+  build and commercial isolation PASS in their stated scopes. Local
+  inter-mesh test had no mechanical triangles in its target box; whole-car
+  collision and physical-device GPU performance NOT TESTED.
+- 27 matched real-WebGL comparison sheets, browser stats, machine-readable
+  geometry reports and cross-section diagram in `evidence/r3-2-revision-7/`.
+  **Visual FAIL:** candidate diffuser reads flatter than Revision 6 and does
+  not retain Prototype A's two open channels. Halo rear shoulder is still
+  visually too steep. See `r3-2-revision-7-qa-report.md` and `r3-2-issues.md`.
+- The experimental GLB was not promoted to `public/models`; G01/commercial
+  Showroom, Results Engine, main, production and unrelated work untouched.
+  **OWNER GATE 2 HOLD / REVISE.** No R3.3.

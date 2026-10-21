@@ -29,7 +29,33 @@ rim.position.set(-2.5, 1.7, -2.5);
 scene.add(rim);
 
 const camera = new THREE.PerspectiveCamera(38, 900 / 650, 0.05, 30);
-if (region === 'diffuser-rev6') {
+const revision7Views: Record<string, { position: [number, number, number]; target: [number, number, number] }> = {
+  'full-front-three-quarter': { position: [4.8, 1.95, -4.85], target: [0, 0.42, 0] },
+  'full-side': { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
+  'full-rear-three-quarter': { position: [-4.8, 1.8, 4.8], target: [0, 0.4, 0.35] },
+  'diffuser-outlet': { position: [0, 0.28, 2.82], target: [0, 0.27, 2.22] },
+  'halo-front-mount': { position: [0.66, 0.85, -1.05], target: [0, 0.65, -0.65] },
+  'halo-rear-left': { position: [-0.86, 0.93, 0.58], target: [-0.26, 0.66, 0.12] },
+  'halo-rear-right': { position: [0.86, 0.93, 0.58], target: [0.26, 0.66, 0.12] },
+  'halo-upper-t': { position: [0.43, 1.13, -0.12], target: [0, 0.895, -0.5] },
+  'sidepod-regression': { position: [1.18, 0.86, -1.08], target: [0.45, 0.45, -0.18] },
+};
+if (revision7Views[region]) {
+  camera.position.set(...revision7Views[region].position);
+  camera.lookAt(...revision7Views[region].target);
+} else if (region === 'diffuser-r7-rear') {
+  camera.position.set(0, 0.20, 3.35);
+  camera.lookAt(0, 0.24, 2.04);
+} else if (region === 'diffuser-r7-under') {
+  camera.position.set(0.42, 0.08, 2.92);
+  camera.lookAt(0, 0.25, 1.97);
+} else if (region === 'halo-r7-rear') {
+  camera.position.set(-1.12, 1.02, 0.91);
+  camera.lookAt(-0.26, 0.68, 0.12);
+} else if (region === 'halo-r7-side') {
+  camera.position.set(-1.05, 0.86, -0.62);
+  camera.lookAt(-0.26, 0.68, 0.12);
+} else if (region === 'diffuser-rev6') {
   camera.position.set(0.46, 0.24, 3.12);
   camera.lookAt(0, 0.26, 2.12);
 } else if (region === 'halo-upper') {
@@ -50,7 +76,6 @@ loader.load(
   ({ scene: model }) => {
     model.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
-      object.geometry.computeVertexNormals();
       const material =
         mode === 'wireframe'
           ? new THREE.MeshBasicMaterial({
@@ -59,7 +84,7 @@ loader.load(
               side: THREE.DoubleSide,
             })
           : mode === 'diffuse'
-            ? new THREE.MeshBasicMaterial({ color: '#b4c2cb', side: THREE.DoubleSide })
+            ? new THREE.MeshLambertMaterial({ color: '#b4c2cb', side: THREE.DoubleSide })
             : new THREE.MeshPhongMaterial({
                 color: object.name.includes('tube') ? '#9faeb9' : '#c2d0d8',
                 specular: '#e5f1fa',

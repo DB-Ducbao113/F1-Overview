@@ -1,5 +1,47 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Revision 7 Phase B integration trial (2026-10-21)
+
+The owner selected Phase A Diffuser A (`06b5a236…`) and Halo B
+(`33889613…`) for integration, but did not approve the resulting car. The
+current `eds-g03-rev7-candidate.glb` is a **rejected experimental candidate**;
+the accepted Revision 6 `public/models/eds-g03-preview.glb` remains unchanged.
+
+- **R3-G03-009, P2, diffuser outlet — OPEN / visual FAIL.** Reproduce with
+  `diffuser-low-rear-diffuse.png` and `diffuser-outlet-reflective.png` in
+  `evidence/r3-2-revision-7/`. Expected: two obvious outlet passages with
+  lower outer walls. Actual: an even broader nearly flat shelf obscures the
+  two outlets. Measured lower exit width remains 1.160 m, but sampled lower
+  exit Y rose from 0.152364 to 0.259913 m. Root cause **verified** by
+  `integration-measurements.json`: the full vehicle uses a closed BODY ring;
+  raising a paired underside profile does not transfer the open-bottom
+  topology of Prototype A. A purely local height blend cannot produce two
+  legible open passages. Retest: geometry locks PASS; visual FAIL. Next step
+  is a real indexed local cut/replacement with floor boundary stitching,
+  not another amplitude adjustment.
+- **R3-G03-008, P2, rear halo mounts — OPEN / visual REVISE.** Reproduce with
+  `halo-rear-left-reflective.png`, `halo-rear-right-diffuse.png` and their
+  wireframes. Expected: low-profile elongated B fairings directly integrated
+  into the survival cell. Actual: rear shoulders are smoother than Revision 6
+  but still rise too steeply into the tube and do not conclusively read as
+  authored boat-tail junctions. The mathematical B footprint was adapted to
+  the unchanged existing hole and bridge grid, not fully transplanted as
+  distinct local topology. The 372 inherited BODY open edges are unchanged;
+  upper T and sidepod inlet sampled vertices are unchanged. Retest: bounded
+  topology PASS; visual acceptance NOT MET. A rear-only indexed bridge
+  replacement is still needed; the upper T must remain frozen.
+- **R3-G03-006, P2, sidepod inlet — PRESERVED in sampled region.** Reproduce
+  with `sidepod-regression-diffuse.png`. The independent vertex correspondence
+  check finds 0 changed of 276 sampled outer-inlet vertices. No new visual
+  defect was observed in that view. This is not a whole-sidepod clearance
+  certificate.
+
+Scope limitation: the candidate's local tests do not establish global
+inter-mesh clearance. In the defined rear mount body/mechanical test box,
+0 mechanical triangles met the box, so it yielded 0 AABB candidate pairs;
+this is an absence of test coverage, not proof of clearance. Physical-device
+performance is NOT TESTED. **Owner Gate 2 stays HOLD / REVISE.**
+
 ## Gate 2 Revision 6 retest (2026-10-21)
 
 Baseline `ff29e5ae526ddc1df6034861987e112a63e5cc70`; candidate evidence

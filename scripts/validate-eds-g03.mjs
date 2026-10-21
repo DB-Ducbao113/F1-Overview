@@ -219,7 +219,7 @@ const ratios = {
 };
 const report = {
   asset: D.id,
-  revision: D.revision,
+  revision: gltf.scenes?.[gltf.scene ?? 0]?.extras?.revision ?? D.revision,
   file: path.relative(process.cwd(), filename).replaceAll('\\', '/'),
   sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
   bytes: bytes.length,

@@ -1,0 +1,27 @@
+{
+  "file": "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/diffuser-A-rounded.glb",
+  "sha256": "06b5a236b7946626523fc9175bb712017c08c5e8e07d18ee28724c8837157c6d",
+  "bytes": 91948,
+  "validatorVersion": "2.0.0-dev.3.10",
+  "issues": {
+    "numErrors": 0,
+    "numWarnings": 0,
+    "numInfos": 0,
+    "numHints": 2,
+    "messages": [
+      {
+        "code": "BUFFER_VIEW_TARGET_MISSING",
+        "message": "bufferView.target should be set for vertex or index data.",
+        "severity": 3,
+        "pointer": "/meshes/0/primitives/0/attributes/POSITION"
+      },
+      {
+        "code": "BUFFER_VIEW_TARGET_MISSING",
+        "message": "bufferView.target should be set for vertex or index data.",
+        "severity": 3,
+        "pointer": "/meshes/0/primitives/0/indices"
+      }
+    ],
+    "truncated": false
+  }
+}
