@@ -109,3 +109,31 @@
   that claim did not account for Vercel's Git-triggered previews.
 - Next action: local handoff for owner Gate 2 review and deployment-policy
   clarification if remote sharing is required.
+
+## 2026-10-21 — R3.2 Revision 3 rounded inlet, diffuser and halo
+
+- Branch/baseline: `Per-PEDS`, `14b99b6`; pre-existing Cloudflare document,
+  untracked CI draft, R3 master plan and `references/` preserved.
+- Owner decision: **REVISE** at Gate 2. Owner explicitly authorized a local
+  commit but did not authorize a push or any deployment for this revision.
+- Source: rounded aperture and deeper duct cut into the original shell grid;
+  wider twin-channel rear underbody relief; variable-radius halo sweeps at the
+  three unchanged mount centres. No skins or R3.3 details.
+- Generator: `npm.cmd run asset:eds-g03`; two GLBs matched SHA-256
+  `9a9424af2fd6ad1b83b9a49d6c8ab0c580a518c9b9a850b9f62f7b73c56a0604`.
+  Preview size 1,136,876 bytes; 57,320 triangles, 32,791 vertices, five
+  materials/draw calls and no textures.
+- Measured bounds: 5.050 × 2.000 × 1.180 m; wheelbase 3.600 m. Axles, tracks,
+  tyre radii, ground plane and approved wing/halo envelopes unchanged.
+- Evidence: 12 matched four-panel diffuse/reflective sheets and three matched
+  closer wireframes under `evidence/r3-2-revision-3-surface-refinement/`.
+- Local QA: internal validator, Khronos glTF Validator, deterministic export,
+  browser capture, ESLint, TypeScript, 39 files/281 unit tests, production build
+  and commercial isolation PASS. Independent trimesh winding consistent; all
+  five mesh groups remain non-watertight as in the baseline. Physical device,
+  Blender and sustained GPU performance NOT TESTED.
+- Shape issues: inlet visibly rounder; diffuser exit still shallow with a small
+  central gable; halo body/tube boundary remains visible. No owner visual GO.
+- Proposed next action: owner reviews images and decides Gate 2 GO or REVISE.
+- Status: **WAITING_FOR_OWNER_REVIEW — OWNER GATE 2 HOLD**. No R3.3, push,
+  merge or deployment.

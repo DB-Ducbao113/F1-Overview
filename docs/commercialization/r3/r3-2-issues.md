@@ -1,5 +1,41 @@
 # EDS-G03 R3.2 primary-surface issue log
 
+## Gate 2 Revision 3 retest (2026-10-21)
+
+Baseline: `14b99b6`. Twelve matched diffuse/reflective four-panel views and
+three closer wireframe comparisons are under
+`evidence/r3-2-revision-3-surface-refinement/`. The DEV viewer applies the
+same camera, FOV, lighting and model transform to baseline and candidate.
+
+- **R3-G03-006, P2, sidepod inlet:** The rectangular body-grid mouth was
+  reshaped to a rounded superellipse in the _same_ shell grid. Its immediate
+  surrounding vertices are repositioned continuously; a multi-ring duct is
+  recessed behind the continuous lip. In the sidepod sheet the mouth now reads
+  as an oval/crescent rather than a rectangle. No exposed triangular terminal
+  cap is visible in the diffuse view. A narrow diagonal highlight remains on
+  the inner duct under reflective inspection, so all-angle fold/intersection
+  clearance remains unproven. **Retest: IMPROVED; owner review required.**
+- **R3-G03-009, P2, diffuser definition:** Broadened paired channel relief,
+  reduced the pointed central spine after the first Revision 3 visual pass,
+  and kept the existing rear/floor envelope. The new low-rear and underside
+  cameras reveal a modest sculpted exit compared with the flat baseline.
+  However, the rear lip remains shallow and the centre still forms a small
+  gable in the low-rear silhouette. **Retest: PARTIAL; recommend REVISE if a
+  clearly legible Venturi exit is the acceptance standard.**
+- **R3-G03-008, P2, halo junctions:** Removed the three separate conical
+  collars. The locked centreline now carries smoothly varying tube radii into
+  the existing shell fairings. The front and two rear attachment points are
+  unchanged. The junction reads less like an add-on, but its body-to-tube
+  boundary is still visible in the rear-mount close-up. **Retest: IMPROVED;
+  owner review required.**
+
+No new internal degenerate triangles or normal/winding disagreements were
+found. Khronos glTF Validator reported 0 errors and 0 warnings. Independent
+`trimesh` inspection found consistent winding for all five mesh groups, but
+neither the baseline nor candidate groups are watertight. These checks cannot
+certify the absence of every self-intersection. Physical-device testing was
+not performed. **Owner Gate 2 remains HOLD; no R3.3 work is authorized.**
+
 ## Gate 2 Revision 2 retest (2026-10-21)
 
 Baseline: committed Revision 1 `a4a36a0`. Evidence:

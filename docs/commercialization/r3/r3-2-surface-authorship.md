@@ -96,3 +96,28 @@ npm.cmd run qa:r3:surfaces
 Final preview SHA-256: `97c60980185db2ba491d9fa9244da70e2bb1ae73d829ec231fceb0050d957dc9`.
 
 Status: DEV-only, OWNER GATE 2 review. Not production approved.
+
+## Revision 3 surface authorship (2026-10-21)
+
+Starting from the committed Revision 2 GLB at `14b99b6`, the original
+parametric body grid—not any C42 geometry—now maps the two inlet boundaries
+and adjacent shell rows toward a rounded superellipse. The existing grid cut
+retains bilateral topology, while four analytic duct rings create a rolled
+mouth, deeper interior and planar back wall. The first ring shares the shell
+boundary; the interior is a separate neutral inspection material, not a
+painted recess. The diffuser's paired relief and broad centre spine are
+deformations of the same rear underbody cross-section, with no added floor
+plate. Halo tubes now use an authored variable-radius sweep on the locked
+centreline, replacing the separate tapered collar cylinders. Their shell
+fairings remain primary-body deformations; the material boundary is still
+mechanically visible.
+
+No third-party mesh, UV, texture, branding or protected styling contour was
+imported. The GLB has five neutral materials, no textures and no skins. Its
+Revision 3 SHA-256 is
+`9a9424af2fd6ad1b83b9a49d6c8ab0c580a518c9b9a850b9f62f7b73c56a0604`.
+Reproduce with `npm.cmd run asset:eds-g03`,
+`npm.cmd run asset:eds-g03:validate`, then `npm.cmd run qa:r3:continuity`
+against a DEV server at port 4173. The capture defaults to committed
+`14b99b6` for BEFORE and the working GLB for AFTER. This is a DEV-only
+Gate 2 candidate, not an owner-approved or commercial design.

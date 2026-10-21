@@ -2,7 +2,7 @@
 // Native authoring coordinates: +Y up, -Z front/nose, +Z rear, +/-X left/right.
 export const EDS_G03_DESIGN = Object.freeze({
   id: 'EDS-G03',
-  revision: 'R3.2-revision-2-intake-diffuser-halo',
+  revision: 'R3.2-revision-3-rounded-intake-diffuser-halo',
   units: 'metres',
   coordinateSystem: {
     up: '+Y',
@@ -147,6 +147,11 @@ export const EDS_G03_DESIGN = Object.freeze({
       baselineCommit: 'a4a36a0',
       decision: 'REVISE',
       scope: 'recessed inlet, diffuser exit and halo junctions only',
+    },
+    gate2Revision3: {
+      baselineCommit: '14b99b6',
+      decision: 'REVISE',
+      scope: 'rounded inlet, diffuser definition and integrated halo junctions only',
     },
   },
   surfaceAuthoring: {

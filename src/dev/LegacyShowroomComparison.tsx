@@ -13,7 +13,7 @@ import {
 import { LegacyDetailedCar, type LegacyDetailedCarStats } from './LegacyDetailedCar';
 
 type ReviewMode = 'legacy-original' | 'legacy-eds' | 'eds-g01' | 'eds-g02' | 'eds-g03';
-type G03InspectionMode = 'diffuse' | 'reflective';
+type G03InspectionMode = 'diffuse' | 'reflective' | 'wireframe';
 type CameraPreset =
   | 'front-three-quarter'
   | 'side'
@@ -26,6 +26,12 @@ type CameraPreset =
   | 'sidepod-floor-closeup'
   | 'rear-underfloor-closeup'
   | 'diffuser-exit-closeup'
+  | 'diffuser-low-rear-closeup'
+  | 'diffuser-underside-closeup'
+  | 'halo-rear-mount-closeup'
+  | 'sidepod-topology-closeup'
+  | 'diffuser-topology-closeup'
+  | 'halo-topology-closeup'
   | 'engine-cover-closeup'
   | 'front-wing-closeup'
   | 'rear-wing-closeup'
@@ -40,7 +46,7 @@ const REVIEW_MODES: Array<{ id: ReviewMode; label: string; note: string }> = [
   },
   { id: 'eds-g01', label: 'C · EDS-G01', note: 'Current commercial original prototype' },
   { id: 'eds-g02', label: 'D · EDS-G02', note: 'Postponed local candidate, when available' },
-  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 Revision 2 surface refinement' },
+  { id: 'eds-g03', label: 'E · EDS-G03', note: 'R3.2 Revision 3 surface refinement' },
 ];
 
 const CAMERA_PRESETS: Record<
@@ -58,6 +64,12 @@ const CAMERA_PRESETS: Record<
   'sidepod-floor-closeup': { position: [2.75, 0.76, 0.25], target: [0.52, 0.35, -0.08] },
   'rear-underfloor-closeup': { position: [-2.4, 0.45, -3.1], target: [-0.28, 0.2, -1.48] },
   'diffuser-exit-closeup': { position: [-1.2, 0.16, -3.15], target: [0, 0.2, -1.95] },
+  'diffuser-low-rear-closeup': { position: [0, 0.14, -3.65], target: [0, 0.18, -1.55] },
+  'diffuser-underside-closeup': { position: [0.65, 0.09, -2.95], target: [0, 0.19, -1.65] },
+  'halo-rear-mount-closeup': { position: [-1.35, 1.22, -0.55], target: [-0.25, 0.68, -0.1] },
+  'sidepod-topology-closeup': { position: [1.32, 0.82, 0.92], target: [0.5, 0.46, 0.24] },
+  'diffuser-topology-closeup': { position: [0.12, 0.18, -2.75], target: [0, 0.2, -1.95] },
+  'halo-topology-closeup': { position: [-0.92, 1.15, -0.3], target: [-0.25, 0.68, -0.1] },
   'engine-cover-closeup': { position: [-2.1, 1.46, -2.0], target: [0, 0.77, -0.7] },
   'front-wing-closeup': { position: [2.15, 0.62, 3.35], target: [0.18, 0.2, 2.12] },
   'rear-wing-closeup': { position: [-2.1, 1.22, -3.35], target: [0, 0.9, -2.12] },
@@ -225,6 +237,21 @@ const EDSG03ReviewCar: React.FC<{ inspection: G03InspectionMode }> = ({ inspecti
   }, [inspection, scene]);
   const inspectionMaterials = useMemo(() => {
     if (inspection === 'diffuse') return null;
+    if (inspection === 'wireframe') {
+      return Object.fromEntries(
+        ['body', 'aero', 'tire', 'mechanical', 'cockpit'].map((category) => [
+          category,
+          new THREE.MeshBasicMaterial({
+            name: `EDS_G03_WIREFRAME_${category.toUpperCase()}`,
+            color: category === 'body' ? '#91d9ea' : '#708994',
+            wireframe: true,
+            transparent: true,
+            opacity: 0.72,
+            depthWrite: false,
+          }),
+        ]),
+      ) as Record<string, THREE.Material>;
+    }
     const palette: Record<string, string> = {
       body: '#aeb8c0',
       aero: '#87939d',
@@ -245,13 +272,16 @@ const EDSG03ReviewCar: React.FC<{ inspection: G03InspectionMode }> = ({ inspecti
           envMapIntensity: 0.82,
         }),
       ]),
-    ) as Record<string, THREE.MeshPhysicalMaterial>;
+    ) as Record<string, THREE.Material>;
   }, [inspection]);
   useEffect(() => {
     clone.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
+      const category = object.name.replace('EDS_G03_', '').toLowerCase();
+      if (inspection === 'wireframe' && !['body', 'mechanical'].includes(category)) {
+        object.visible = false;
+      }
       if (inspectionMaterials) {
-        const category = object.name.replace('EDS_G03_', '').toLowerCase();
         object.material = inspectionMaterials[category] ?? inspectionMaterials.body;
       }
       object.castShadow = true;
@@ -260,7 +290,7 @@ const EDSG03ReviewCar: React.FC<{ inspection: G03InspectionMode }> = ({ inspecti
     return () => {
       Object.values(inspectionMaterials ?? {}).forEach((material) => material.dispose());
     };
-  }, [clone, inspectionMaterials]);
+  }, [clone, inspection, inspectionMaterials]);
   // G03 is authored with -Z front. The review-only rotation matches the legacy viewer's
   // +Z-front camera convention without altering the GLB hardpoint coordinate system.
   return <primitive object={clone} rotation={[0, Math.PI, 0]} />;
@@ -335,7 +365,7 @@ export const LegacyShowroomComparison: React.FC = () => {
     getInitialValue('view', Object.keys(CAMERA_PRESETS) as CameraPreset[], 'front-three-quarter'),
   );
   const [inspection, setInspection] = useState<G03InspectionMode>(() =>
-    getInitialValue('inspection', ['diffuse', 'reflective'] as const, 'diffuse'),
+    getInitialValue('inspection', ['diffuse', 'reflective', 'wireframe'] as const, 'diffuse'),
   );
   const [legacyStats, setLegacyStats] = useState<LegacyDetailedCarStats | null>(null);
   const statsRef = useRef<RuntimeStats>({
@@ -442,7 +472,7 @@ export const LegacyShowroomComparison: React.FC = () => {
                 G03 inspection
               </h2>
               <div className="mt-2 grid grid-cols-2 gap-1.5">
-                {(['diffuse', 'reflective'] as const).map((value) => (
+                {(['diffuse', 'reflective', 'wireframe'] as const).map((value) => (
                   <button
                     key={value}
                     type="button"

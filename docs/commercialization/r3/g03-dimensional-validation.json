@@ -1,14 +1,14 @@
 {
   "asset": "EDS-G03",
-  "revision": "R3.2-revision-2-intake-diffuser-halo",
+  "revision": "R3.2-revision-3-rounded-intake-diffuser-halo",
   "file": "public/models/eds-g03-preview.glb",
-  "sha256": "93a1416b3d68e7323c1b2ff0bbb666d7d6008b75dc1b21e1de3cc0af8ab1ec33",
-  "bytes": 1129672,
+  "sha256": "9a9424af2fd6ad1b83b9a49d6c8ab0c580a518c9b9a850b9f62f7b73c56a0604",
+  "bytes": 1136876,
   "scene": {
     "nodes": 5,
     "drawCalls": 5,
-    "triangles": 56472,
-    "vertices": 32704,
+    "triangles": 57320,
+    "vertices": 32791,
     "materials": 5,
     "textures": 0
   },
@@ -178,5 +178,5 @@
     "errors": [],
     "warnings": []
   },
-  "khronosValidator": "NOT TESTED — Khronos glTF Validator CLI is not installed locally"
+  "khronosValidator": "NOT RUN by this internal checker; independent result is recorded in the Revision 3 QA report"
 }

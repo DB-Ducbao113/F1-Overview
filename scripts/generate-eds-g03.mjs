@@ -26,7 +26,7 @@ class NodeFileReader {
 globalThis.FileReader ??= NodeFileReader;
 
 const scene = new THREE.Scene();
-scene.name = 'EDS-G03_R3_2_Revision_2_Intake_Diffuser_Halo';
+scene.name = 'EDS-G03_R3_2_Revision_3_Intake_Diffuser_Halo';
 scene.userData = {
   asset: D.id,
   revision: D.revision,
@@ -143,28 +143,28 @@ function rod(a, b, radius, radial = 8) {
   return geometry;
 }
 
-function taperedHaloJoint(mount, toward) {
-  const base = new THREE.Vector3(...mount);
-  const direction = new THREE.Vector3(...toward).sub(base).normalize();
-  const length = 0.09;
-  const geometry = new THREE.CylinderGeometry(0.023, 0.046, length, 16, 3);
-  geometry.applyMatrix4(
-    new THREE.Matrix4().compose(
-      base.clone().addScaledVector(direction, length * 0.42),
-      new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction),
-      new THREE.Vector3(1, 1, 1),
-    ),
-  );
-  return geometry;
-}
-
-function curveTube(points, radius, tubular = 48, radial = 8, closed = false) {
+function variableHaloTube(points, radiusAt, tubular = 64, radial = 16) {
   const curve = new THREE.CatmullRomCurve3(
     points.map((point) => new THREE.Vector3(...point)),
-    closed,
+    false,
     'centripetal',
   );
-  return new THREE.TubeGeometry(curve, tubular, radius, radial, closed);
+  const frames = curve.computeFrenetFrames(tubular, false);
+  return grid(
+    radial,
+    tubular,
+    (u, v) => {
+      const station = Math.min(tubular, Math.round(v * tubular));
+      const center = curve.getPointAt(v);
+      const angle = u * Math.PI * 2;
+      const radius = radiusAt(v);
+      center.addScaledVector(frames.normals[station], radius * Math.cos(angle));
+      center.addScaledVector(frames.binormals[station], radius * Math.sin(angle));
+      return center.toArray();
+    },
+    false,
+    true,
+  );
 }
 
 function tireGeometry(x, z, radius, width) {
@@ -324,6 +324,42 @@ function cutSidepodDucts(geometry) {
   const front = 72;
   const rear = 81;
   const centers = [0, radial / 2];
+  const original = Array.from(geometry.getAttribute('position').array);
+  const positions = [...original];
+  const sample = (u, v) => {
+    const u0 = Math.floor(u);
+    const v0 = Math.floor(v);
+    const fu = u - u0;
+    const fv = v - v0;
+    const point = (row, column, axis) => original[at(row, column) * 3 + axis];
+    return [0, 1, 2].map((axis) =>
+      THREE.MathUtils.lerp(
+        THREE.MathUtils.lerp(point(u0, v0, axis), point(u0 + 1, v0, axis), fu),
+        THREE.MathUtils.lerp(point(u0, v0 + 1, axis), point(u0 + 1, v0 + 1, axis), fu),
+        fv,
+      ),
+    );
+  };
+  // A rounded superellipse deforms the aperture boundary and its neighbouring body grid.
+  // The surrounding shell shares these vertices, so the opening cannot float over the body.
+  for (const center of centers) {
+    for (let u = center - 8; u <= center + 8; u += 1) {
+      for (let v = front - 4; v <= rear + 4; v += 1) {
+        const p = (u - center) / 5;
+        const q = (v - (front + rear) / 2) / ((rear - front) / 2);
+        const squareRadius = Math.max(Math.abs(p), Math.abs(q));
+        if (squareRadius < 1 || squareRadius > 1.65) continue;
+        const roundRadius = (Math.abs(p) ** 2.5 + Math.abs(q) ** 2.5) ** (-1 / 2.5);
+        const weight = 1 - THREE.MathUtils.smoothstep(squareRadius, 1, 1.65);
+        const scale = 1 + (roundRadius - 1) * weight;
+        const moved = sample(center + p * 5 * scale, (front + rear) / 2 + q * 4.5 * scale);
+        const id = at(u, v) * 3;
+        positions.splice(id, 3, ...moved);
+      }
+    }
+  }
+  geometry.getAttribute('position').array.set(positions);
+  geometry.getAttribute('position').needsUpdate = true;
   const old = geometry.getIndex().array;
   const indices = [];
   const ductIndices = [];
@@ -342,7 +378,6 @@ function cutSidepodDucts(geometry) {
     }
   }
 
-  const positions = Array.from(geometry.getAttribute('position').array);
   const coordinate = (id) => positions.slice(id * 3, id * 3 + 3);
   const append = (point) => {
     const id = positions.length / 3;
@@ -363,18 +398,15 @@ function cutSidepodDucts(geometry) {
     // cut boundary but carries its own normals through the rolled lip.
     const rings = [outer.map((id) => append(coordinate(id)))];
     for (const [depth, shrink, rearward] of [
-      [0.012, 0.97, 0.01],
-      [0.115, 0.76, 0.105],
-      [0.17, 0.48, 0.19],
+      [0.016, 0.975, 0.012],
+      [0.05, 0.9, 0.045],
+      [0.125, 0.72, 0.115],
+      [0.185, 0.52, 0.2],
     ]) {
       rings.push(
         outer.map((id) => {
           const [x, y, z] = coordinate(id);
-          const ductX = THREE.MathUtils.lerp(
-            x - side * depth,
-            side * (meanAbsX - depth),
-            depth / 0.17,
-          );
+          const ductX = side * (meanAbsX - depth) + (x - side * meanAbsX) * (1 - depth / 0.185);
           return append([
             ductX,
             meanY + (y - meanY) * shrink,
@@ -397,7 +429,7 @@ function cutSidepodDucts(geometry) {
     const capCenter = append([
       deepest.reduce((sum, id) => sum + coordinate(id)[0], 0) / deepest.length,
       meanY,
-      meanZ + 0.19,
+      meanZ + 0.2,
     ]);
     for (let index = 0; index < outer.length; index += 1)
       ductIndices.push(deepest[index], deepest[(index + 1) % outer.length], capCenter);
@@ -480,19 +512,22 @@ addPart(
         bodyX += side * Math.max(0, floorHalfWidth(z) - Math.abs(bodyX)) * floorActive * lipWeight;
         const underbodyWeight = floorActive * THREE.MathUtils.smootherstep(-s, 0.35, 0.8);
         const lipFraction = THREE.MathUtils.smoothstep(s, -1, -0.58);
+        const rearExpansion = THREE.MathUtils.smootherstep(z, 1.0, 2.25);
         const channel =
           0.028 *
             Math.exp(-Math.pow((Math.abs(bodyX) - 0.35) / 0.15, 2)) *
             Math.exp(-Math.pow((z - 0.25) / 0.7, 2)) +
-          0.022 *
-            Math.exp(-Math.pow((Math.abs(bodyX) - 0.29) / 0.19, 2)) *
-            THREE.MathUtils.smootherstep(z, 0.9, 2.1);
+          0.05 * Math.exp(-Math.pow((Math.abs(bodyX) - 0.32) / 0.19, 2)) * rearExpansion;
+        const centerSpine = 0.014 * Math.exp(-Math.pow(bodyX / 0.22, 2)) * rearExpansion;
+        const outerRidge =
+          0.012 * Math.exp(-Math.pow((Math.abs(bodyX) - 0.55) / 0.08, 2)) * rearExpansion;
         const diffuserRise = 0.16 * THREE.MathUtils.smootherstep(z, 0.95, 2.3);
-        const underbodyY = 0.075 + 0.085 * lipFraction + diffuserRise - channel;
+        const underbodyY =
+          0.075 + 0.085 * lipFraction + diffuserRise - channel + centerSpine + outerRidge;
         bodyY = THREE.MathUtils.lerp(bodyY, underbodyY, underbodyWeight);
         const exitBlend = THREE.MathUtils.smootherstep(z, 1.98, 2.3);
         bodyY += 0.018 * exitBlend * s;
-        const roundedExitZ = z - 0.035 * exitBlend * (1 - THREE.MathUtils.smoothstep(-s, 0, 0.65));
+        const roundedExitZ = z - 0.022 * exitBlend * (1 - THREE.MathUtils.smoothstep(-s, 0, 0.65));
 
         // The airbox spine and halo-foot fairings deform this shell instead of sitting on pads.
         const topWeight = Math.max(0, s) ** 5;
@@ -608,13 +643,10 @@ for (const side of [-1, 1]) {
   }
 }
 
-// The accepted halo tubes enter the analytically fairied body shell at their locked mount points.
-for (const side of [-1, 1])
-  addPart('mechanical', taperedHaloJoint([side * 0.26, 0.66, 0.12], [side * 0.3, 0.82, -0.12]));
-addPart('mechanical', taperedHaloJoint([0, 0.65, -0.65], [0, 0.94, -0.5]));
+// Radius transitions are built into the halo tubes themselves, not overlaid collars.
 addPart(
   'mechanical',
-  curveTube(
+  variableHaloTube(
     [
       [-0.26, 0.66, 0.12],
       [-0.3, 0.82, -0.12],
@@ -624,12 +656,28 @@ addPart(
       [0.3, 0.82, -0.12],
       [0.26, 0.66, 0.12],
     ],
-    0.022,
+    (t) =>
+      0.022 +
+      0.025 *
+        (1 - THREE.MathUtils.smootherstep(t, 0, 0.1) + THREE.MathUtils.smootherstep(t, 0.9, 1)),
     96,
     14,
   ),
 );
-addPart('mechanical', rod([0, 0.65, -0.65], [0, 0.94, -0.5], 0.022, 10));
+addPart(
+  'mechanical',
+  variableHaloTube(
+    [
+      [0, 0.65, -0.65],
+      [0, 0.74, -0.625],
+      [0, 0.87, -0.55],
+      [0, 0.94, -0.5],
+    ],
+    (t) => 0.022 + 0.025 * (1 - THREE.MathUtils.smootherstep(t, 0, 0.42)),
+    40,
+    14,
+  ),
+);
 
 for (const [category, geometries] of parts) {
   if (!geometries.length) continue;
@@ -641,7 +689,7 @@ for (const [category, geometries] of parts) {
   merged.computeBoundingSphere();
   const mesh = new THREE.Mesh(merged, materials[category]);
   mesh.name = `EDS_G03_${category.toUpperCase()}`;
-  mesh.userData = { assembly: category, gate: 'R3.2 Revision 2', originalGeometry: true };
+  mesh.userData = { assembly: category, gate: 'R3.2 Revision 3', originalGeometry: true };
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);

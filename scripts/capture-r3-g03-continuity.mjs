@@ -4,8 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 
-const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || 'a4a36a0';
-const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 2';
+const baselineCommit = process.env.R3_G03_BASELINE_COMMIT || '14b99b6';
+const revisionLabel = process.env.R3_G03_REVISION_LABEL || 'Revision 3';
 const modelPath = 'public/models/eds-g03-preview.glb';
 const baselineBytes = execFileSync('git', ['show', `${baselineCommit}:${modelPath}`], {
   maxBuffer: 8 * 1024 * 1024,
@@ -15,7 +15,7 @@ const sha256 = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex'
 const base = process.env.R3_G03_URL || 'http://127.0.0.1:4173';
 const output = path.resolve(
   process.env.R3_G03_CONTINUITY_OUTPUT ||
-    'docs/commercialization/r3/evidence/r3-2-revision-2-surface-refinement',
+    'docs/commercialization/r3/evidence/r3-2-revision-3-surface-refinement',
 );
 const executablePath =
   process.env.R3_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -29,6 +29,14 @@ const reviews = [
   ['full-front-three-quarter', 'front-three-quarter'],
   ['full-rear', 'rear'],
   ['full-rear-three-quarter', 'rear-three-quarter'],
+  ['diffuser-low-rear', 'diffuser-low-rear-closeup'],
+  ['diffuser-underside', 'diffuser-underside-closeup'],
+  ['halo-rear-mount', 'halo-rear-mount-closeup'],
+];
+const wireframes = [
+  ['sidepod', 'sidepod-topology-closeup'],
+  ['diffuser-low-rear', 'diffuser-topology-closeup'],
+  ['halo-rear-mount', 'halo-topology-closeup'],
 ];
 const errors = { page: [], console: [], localRequests: [] };
 
@@ -115,6 +123,20 @@ async function renderSheet(label, view, captures) {
   await sheet.close();
 }
 
+async function renderWireframe(label, view, beforeBytes, afterBytes) {
+  const sheet = await browser.newPage({ viewport: { width: 1600, height: 660 } });
+  await sheet.setContent(`<!doctype html><html><head><style>
+    body { margin:0; padding:20px; background:#05070a; color:white; font:16px Arial; }
+    main { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    img { width:100%; height:550px; object-fit:contain; border:1px solid #36404a; }
+  </style></head><body><h2>GATE 2 ${revisionLabel.toUpperCase()} / ${label} / ${view} / MATCHED WIREFRAME</h2><main>
+    <div>BEFORE<img src="data:image/png;base64,${beforeBytes.toString('base64')}"></div>
+    <div>AFTER<img src="data:image/png;base64,${afterBytes.toString('base64')}"></div>
+  </main></body></html>`);
+  await sheet.screenshot({ path: path.join(output, `wireframe-${label}.png`) });
+  await sheet.close();
+}
+
 let before;
 let after;
 try {
@@ -132,6 +154,14 @@ try {
       },
     };
     await renderSheet(label, view, captures);
+  }
+  for (const [label, view] of wireframes) {
+    await renderWireframe(
+      label,
+      view,
+      await capture(before, view, 'wireframe'),
+      await capture(after, view, 'wireframe'),
+    );
   }
   for (const page of [before, after]) {
     await page.evaluate(() => {
@@ -157,6 +187,7 @@ try {
     method:
       'Two fresh DEV viewer pages use the same code, viewport, preset, lighting, FOV, model transform and zoom. The before page receives the committed baseline GLB through a local Playwright response override; the after page loads the revised GLB.',
     reviews: reviews.map(([label, view]) => ({ label, view, modes: ['diffuse', 'reflective'] })),
+    wireframes: wireframes.map(([label, view]) => ({ label, view })),
     runtime,
     errors,
     physicalDevice: 'NOT TESTED',

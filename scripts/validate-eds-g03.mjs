@@ -270,7 +270,8 @@ const report = {
     errors,
     warnings,
   },
-  khronosValidator: 'NOT TESTED — Khronos glTF Validator CLI is not installed locally',
+  khronosValidator:
+    'NOT RUN by this internal checker; independent result is recorded in the Revision 3 QA report',
 };
 
 await fs.mkdir(path.dirname(reportFile), { recursive: true });
