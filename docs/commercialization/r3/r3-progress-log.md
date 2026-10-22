@@ -187,6 +187,7 @@
 - Unrelated Cloudflare/CI/master-plan/reference changes preserved. No push,
   merge, deploy, Revision 5 or R3.3. **OWNER DESIGN GATE — DECISION REQUIRED;
   HOLD / REVISE.**
+
 ## 2026-10-21 — R3.2 Revision 5, hybrid local topology
 
 - Branch/baseline: `Per-PEDS` at `47fcfca54cc5a2208216af19c36806806ba8d415`.
@@ -244,7 +245,7 @@
   pre-flight: `Per-PEDS` / `48ddf12818fc978b9b4d7d6ef649897f3e83ea10`.
   Phase A and unrelated Cloudflare/CI/reference changes were preserved.
 - Trial source: `EDS_G03_REV7_EXPERIMENT=1 node scripts/generate-eds-g03.mjs
-  docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb`.
+docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb`.
   Two candidate exports matched SHA-256
   `414330bb130614f720927dedac0536f96e8d9256e64dc0a066e16453f72e78ac`.
   Unflagged output still reproduces the Revision 6 GLB hash
@@ -323,3 +324,33 @@
   coherent nose, halo and shoulder relationship. N20 leaves only 0.160 m and
   reads as a packaging-stressed extreme study.
 - **HOLD — AWAITING OWNER COCKPIT & NOSE DESIGN APPROVAL.**
+
+## 2026-10-22 — C42-referenced full reconstruction D1
+
+- Branch/baseline: `Per-PEDS` at `a3be318`; pre-existing Cloudflare document,
+  CI draft, master-plan file and `references/` preserved. Owner subsequently
+  authorized a focused D1 commit/push; no merge, production deployment or
+  production model replacement is authorized.
+- Reference: no owner C42 `.blend` found under `E:\Formula 1`; imported
+  `public/models/c42.v2.glb` into a DEV-only collection. Directly measured
+  204,593 vertices / 237,426 triangles on its primary mesh; source scale is
+  non-metric and normalized only for matched visual review.
+- Source: new `eds_g03_c42_reconstruction_d1.py`; no G01/G02/G03 mesh imported
+  as EDS geometry. Editable `.blend` retains 220 semantic EDS objects.
+- GLB: 5,522,424 bytes; 141,768 triangles; 11 material primitives/draw calls;
+  zero textures. Two clean exports matched SHA-256
+  `b14bae143e5e64ea52fa3564e05bba857a1a46ee8e20d58e6d2edcd4493fde1f`.
+- Dimensions: 5.050 × 2.000 × 1.177853 m; wheelbase 3.600 m; locked axle,
+  track, tyre and diffuser registry retained.
+- Evidence: 42 direct Blender renders and 12 C42-left/EDS-right sheets under
+  `blender-authoring/c42-reconstruction-d1/evidence/`.
+- QA: Blender mesh/Three.js/determinism/headless WebGL, ESLint, 39 files / 281
+  tests, production build and commercial isolation PASS in stated scopes.
+  Khronos, exhaustive collision, physical devices, LOD, sustained GPU/memory
+  and commercial-rights review NOT RUN.
+- Visual result: cockpit, floor/diffuser and wheel/brake construction are
+  complete for D1 review. Sidepod joints, front/rear aero articulation,
+  engine-cover transitions and suspension attachment detail remain NEEDS
+  REWORK. See `component-comparison.md`.
+- Status: **HOLD — OWNER GATE: C42-REFERENCED EDS RECONSTRUCTION REVIEW**.
+  No PBR, LOD integration, production swap or release.

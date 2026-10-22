@@ -6,11 +6,18 @@ const base = process.env.R3_GDR_URL || 'http://127.0.0.1:4173';
 const chrome =
   process.env.R3_REVIEW_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const model = await fs.readFile(
-  path.resolve('docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb'),
+  path.resolve(
+    process.env.R3_GLB_PATH ??
+      'docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb',
+  ),
 );
-const output = path.resolve('docs/commercialization/r3/blender-authoring/browser-performance.json');
+const output = path.resolve(
+  process.env.R3_BENCHMARK_OUTPUT ??
+    'docs/commercialization/r3/blender-authoring/browser-performance.json',
+);
 const evidenceRoot = path.resolve(
-  'docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser',
+  process.env.R3_BENCHMARK_EVIDENCE ??
+    'docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser',
 );
 const viewports = [
   { id: 'desktop', width: 1440, height: 900 },

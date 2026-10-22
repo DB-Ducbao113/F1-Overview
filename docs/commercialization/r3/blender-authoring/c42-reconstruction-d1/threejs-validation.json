@@ -1,0 +1,33 @@
+{
+  "source": "docs/commercialization/r3/blender-authoring/c42-reconstruction-d1/eds-g03-c42-reconstruction-d1.glb",
+  "bytes": 5522424,
+  "meshes": 11,
+  "primitives": 11,
+  "triangles": 141768,
+  "materials": 11,
+  "textures": 0,
+  "nonFinitePositionValues": 0,
+  "bounds": {
+    "min": [
+      -1,
+      0,
+      -2.5999999046325684
+    ],
+    "max": [
+      1,
+      1.1778528690338135,
+      2.450000047683716
+    ],
+    "size": [
+      2,
+      1.1778528690338135,
+      5.049999952316284
+    ]
+  },
+  "dimensionalChecks": {
+    "width": true,
+    "heightCeiling": true,
+    "length": true
+  },
+  "pass": true
+}

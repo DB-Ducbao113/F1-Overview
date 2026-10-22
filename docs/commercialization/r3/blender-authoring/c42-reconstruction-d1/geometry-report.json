@@ -1,0 +1,92 @@
+{
+  "revision": "EDS-G03-C42-Referenced-Reconstruction-D1",
+  "locks": {
+    "length": 5.05,
+    "width": 2.0,
+    "height": 1.18,
+    "wheelbase": 3.6,
+    "frontAxleZ": -1.75,
+    "rearAxleZ": 1.85,
+    "frontTrack": 1.78,
+    "rearTrack": 1.72,
+    "frontWheelRadius": 0.36,
+    "rearWheelRadius": 0.38,
+    "frontTyreWidth": 0.22,
+    "rearTyreWidth": 0.28,
+    "diffuserExitWidth": 1.16,
+    "bounds": {
+      "min": [
+        -1.0,
+        0.0,
+        -2.6
+      ],
+      "max": [
+        1.0,
+        1.18,
+        2.45
+      ]
+    }
+  },
+  "measured": {
+    "objects": 220,
+    "vertices": 71810,
+    "polygons": 68370,
+    "triangles": 141768,
+    "bounds": {
+      "min": [
+        -1.0,
+        0.0,
+        -2.5999999046325684
+      ],
+      "max": [
+        1.0,
+        1.1778528690338135,
+        2.450000047683716
+      ],
+      "size": [
+        2.0,
+        1.1778528690338135,
+        5.049999952316284
+      ]
+    }
+  },
+  "c42": {
+    "asset": "public\\models\\c42.v2.glb",
+    "blendSourceFound": false,
+    "sourceMeshes": 1,
+    "sourceVertices": 204593,
+    "sourcePolygons": 237426,
+    "sourceTriangles": 237426,
+    "sourceBounds": {
+      "min": [
+        -8.302175521850586,
+        -23.106651306152344,
+        0.008071649819612503
+      ],
+      "max": [
+        8.311042785644531,
+        23.210481643676758,
+        9.116860389709473
+      ],
+      "size": [
+        16.613218307495117,
+        46.31713104248047,
+        9.10878849029541
+      ]
+    },
+    "normalizationScale": 0.10903093275290118,
+    "measurementClassification": "directly measured from imported GLB; normalized only for visual comparison",
+    "notes": "C42 geometry remains in a DEV-only reference collection and is excluded from EDS export"
+  },
+  "glb": {
+    "path": "docs\\commercialization\\r3\\blender-authoring\\c42-reconstruction-d1\\eds-g03-c42-reconstruction-d1.glb",
+    "bytes": 5522424,
+    "sha256": "b14bae143e5e64ea52fa3564e05bba857a1a46ee8e20d58e6d2edcd4493fde1f"
+  },
+  "authoring": {
+    "blender": "5.2.2 LTS",
+    "source": "scripts\\blender\\eds_g03_c42_reconstruction_d1.py",
+    "blend": "docs\\commercialization\\r3\\blender-authoring\\c42-reconstruction-d1\\EDS-G03-C42-Referenced-Reconstruction-D1.blend"
+  },
+  "status": "OWNER GATE - C42-REFERENCED EDS RECONSTRUCTION REVIEW"
+}

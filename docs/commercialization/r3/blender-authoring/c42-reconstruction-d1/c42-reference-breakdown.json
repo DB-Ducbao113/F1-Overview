@@ -1,0 +1,28 @@
+{
+  "asset": "public\\models\\c42.v2.glb",
+  "blendSourceFound": false,
+  "sourceMeshes": 1,
+  "sourceVertices": 204593,
+  "sourcePolygons": 237426,
+  "sourceTriangles": 237426,
+  "sourceBounds": {
+    "min": [
+      -8.302175521850586,
+      -23.106651306152344,
+      0.008071649819612503
+    ],
+    "max": [
+      8.311042785644531,
+      23.210481643676758,
+      9.116860389709473
+    ],
+    "size": [
+      16.613218307495117,
+      46.31713104248047,
+      9.10878849029541
+    ]
+  },
+  "normalizationScale": 0.10903093275290118,
+  "measurementClassification": "directly measured from imported GLB; normalized only for visual comparison",
+  "notes": "C42 geometry remains in a DEV-only reference collection and is excluded from EDS export"
+}
