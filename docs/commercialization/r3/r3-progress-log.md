@@ -369,3 +369,27 @@ docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb`.
 - Protected assets verified: `public/models/c42.v2.glb`, active D1 `.blend`/`.glb`, automated F1 data pipelines, Results Engine, and website runtime assets intact.
 - Git status: Local working tree cleanup only; no stage, commit, push, merge, or deployment.
 - Status: **AWAITING OWNER REPOSITORY CLEANUP REVIEW**.
+
+## 2026-10-22 — C42 high-fidelity reconstruction D2
+
+- Branch/baseline: `Per-PEDS` at `7f31e7b`; owner authorized a focused D2
+  commit/push. Unrelated Cloudflare, CI draft, master-plan and `references/`
+  work remains outside the commit. No merge, deployment or production model
+  replacement is authorized.
+- Source: reproducible Blender 5.2.2 authoring pipeline with 174 editable
+  semantic EDS objects. The C42 GLB remains a DEV-only normalized reference
+  and is excluded from the EDS export.
+- GLB: 2,131,064 bytes; 47,792 triangles; 12 material primitives/draw calls;
+  zero textures. Two observed clean exports matched SHA-256
+  `cd56155f005f3abd89a2e4addd85675bbd77b88cbc087ba34139fa14b64f8242`.
+- Dimensions: 5.046 × 1.990 × 1.089 m; 3.600 m wheelbase; locked axle,
+  track, tyre and 1.160 m diffuser-exit registry retained.
+- Evidence: 36 D2/C42 renders, six regenerated topology-wireframe renders,
+  12 matched C42/D1/D2 sheets and four diagnostic comparisons under
+  `blender-authoring/c42-fidelity-d2/evidence/`.
+- QA: Blender mesh validation, Node Three.js parsing, determinism, ESLint,
+  39 files / 281 tests, TypeScript/build and commercial isolation PASS in
+  their stated scopes. Browser integration, Khronos validation, physical
+  devices, LOD, sustained FPS/GPU memory and commercial-rights review were
+  NOT RUN.
+- Status: **HOLD — OWNER D2 SHAPE & C42 FIDELITY REVIEW**.

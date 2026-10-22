@@ -1,0 +1,1594 @@
+{
+  "scope": "Evaluated Blender EDS-owned objects; C42 reference excluded",
+  "objects": 174,
+  "vertices": 24616,
+  "triangles": 47792,
+  "nonFiniteVertices": 0,
+  "degenerateTriangles": 0,
+  "inconsistentSharedEdges": 0,
+  "nonManifoldEdges": 0,
+  "groups": {
+    "G03_MONOCOQUE_CHASSIS": {
+      "vertices": 792,
+      "triangles": 1580,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COCKPIT_RIM_COLLAR_-1": {
+      "vertices": 780,
+      "triangles": 1536,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "COCKPIT_RIM_COLLAR_+1": {
+      "vertices": 780,
+      "triangles": 1536,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "COCKPIT_INTERIOR_TUB": {
+      "vertices": 280,
+      "triangles": 556,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DRIVER_SEAT_BASE": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DRIVER_SEAT_BACKREST": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DRIVER_HEADREST_PAD": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "STEERING_WHEEL_YOKE": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "STEERING_GRIP_-1": {
+      "vertices": 40,
+      "triangles": 76,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "STEERING_GRIP_+1": {
+      "vertices": 40,
+      "triangles": 76,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "STEERING_DIGITAL_DISPLAY": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "STEERING_COLUMN": {
+      "vertices": 40,
+      "triangles": 76,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "HALO_FRONT_PYLON": {
+      "vertices": 396,
+      "triangles": 768,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "HALO_CROWN_HOOP": {
+      "vertices": 1164,
+      "triangles": 2304,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "HALO_AERO_VORTEX_FIN": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "HALO_REAR_MOUNT_LUG_-1": {
+      "vertices": 40,
+      "triangles": 76,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "HALO_REAR_MOUNT_LUG_+1": {
+      "vertices": 40,
+      "triangles": 76,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "AIRBOX_INTAKE_SCOOP": {
+      "vertices": 224,
+      "triangles": 444,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "AIRBOX_INTERNAL_SPLITTER": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_WING_MAINPLANE": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_WING_FLAP_1": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_WING_FLAP_2": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_WING_UPPER_FLAP": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "NOSE_PYLON_-1": {
+      "vertices": 330,
+      "triangles": 640,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "NOSE_PYLON_+1": {
+      "vertices": 330,
+      "triangles": 640,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "FRONT_ENDPLATE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_FOOTPLATE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_DIVE_PLANE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_-1_0": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_-1_1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_-1_2": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_ENDPLATE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_FOOTPLATE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_DIVE_PLANE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_+1_0": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_+1_1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "WING_GAP_SEPARATOR_+1_2": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FOM_CAMERA_POD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FOM_CAMERA_STEM_-1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FOM_CAMERA_POD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FOM_CAMERA_STEM_+1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "PITOT_SENSOR_TUBE": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "G03_SIDEPOD_SHELL_-1": {
+      "vertices": 512,
+      "triangles": 1020,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "SIDEPOD_OVERBITE_LIP_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RADIATOR_THROAT_CORE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "SIDEPOD_UNDERCUT_CHINE_-1": {
+      "vertices": 650,
+      "triangles": 1280,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "COOLING_LOUVRE_-1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_3": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_4": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_5": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_-1_6": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "G03_SIDEPOD_SHELL_+1": {
+      "vertices": 512,
+      "triangles": 1020,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "SIDEPOD_OVERBITE_LIP_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RADIATOR_THROAT_CORE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "SIDEPOD_UNDERCUT_CHINE_+1": {
+      "vertices": 650,
+      "triangles": 1280,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "COOLING_LOUVRE_+1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_3": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_4": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_5": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_LOUVRE_+1_6": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "VENTURI_FLOOR_UNDERBODY": {
+      "vertices": 512,
+      "triangles": 1020,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "TEA_TRAY_BIB_SPLITTER": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "TEA_TRAY_CENTRAL_STAY": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_-1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_-1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_-1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_-1_3": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_+1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_+1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_+1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_STRAKE_+1_3": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_WING_-1": {
+      "vertices": 650,
+      "triangles": 1280,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "FLOOR_EDGE_STAY_-1_0": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_-1_1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_-1_2": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_-1_3": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_WING_+1": {
+      "vertices": 650,
+      "triangles": 1280,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "FLOOR_EDGE_STAY_+1_0": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_+1_1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_+1_2": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FLOOR_EDGE_STAY_+1_3": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DIFFUSER_FENCE_-0.46": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DIFFUSER_FENCE_-0.16": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DIFFUSER_FENCE_+0.16": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DIFFUSER_FENCE_+0.46": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_IMPACT_CRASH_STRUCTURE": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FIA_RAIN_SAFETY_LIGHT": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "ENGINE_COVER_SPINE": {
+      "vertices": 240,
+      "triangles": 476,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DORSAL_SHARK_FIN": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "COOLING_EXIT_CANNON": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "EXHAUST_TAILPIPE": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_WING_MAINPLANE": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_WING_UPPER_FLAP": {
+      "vertices": 160,
+      "triangles": 316,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "DRS_ACTUATOR_POD": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BEAM_WING_ELEMENT_1": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BEAM_WING_ELEMENT_2": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_-1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_-1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_-1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_+1_0": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_+1_1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_ENDPLATE_STRAKE_+1_2": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_WING_SWAN_NECK_PYLON_-1": {
+      "vertices": 588,
+      "triangles": 1152,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "REAR_WING_SWAN_NECK_PYLON_+1": {
+      "vertices": 588,
+      "triangles": 1152,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 24
+    },
+    "TYRE_FRONT_L": {
+      "vertices": 2368,
+      "triangles": 4608,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 128
+    },
+    "AERO_WHEEL_COVER_FRONT_L": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RIM_OUTER_RING_FRONT_L": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "CENTER_LOCK_NUT_FRONT_L": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_DISC_FRONT_L": {
+      "vertices": 72,
+      "triangles": 140,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_CALIPER_FRONT_L": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "TYRE_REAR_L": {
+      "vertices": 2368,
+      "triangles": 4608,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 128
+    },
+    "AERO_WHEEL_COVER_REAR_L": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RIM_OUTER_RING_REAR_L": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "CENTER_LOCK_NUT_REAR_L": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_DISC_REAR_L": {
+      "vertices": 72,
+      "triangles": 140,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_CALIPER_REAR_L": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "TYRE_FRONT_R": {
+      "vertices": 2368,
+      "triangles": 4608,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 128
+    },
+    "AERO_WHEEL_COVER_FRONT_R": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RIM_OUTER_RING_FRONT_R": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "CENTER_LOCK_NUT_FRONT_R": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_DISC_FRONT_R": {
+      "vertices": 72,
+      "triangles": 140,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_CALIPER_FRONT_R": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "TYRE_REAR_R": {
+      "vertices": 2368,
+      "triangles": 4608,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 128
+    },
+    "AERO_WHEEL_COVER_REAR_R": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RIM_OUTER_RING_REAR_R": {
+      "vertices": 96,
+      "triangles": 188,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "CENTER_LOCK_NUT_REAR_R": {
+      "vertices": 48,
+      "triangles": 92,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_DISC_REAR_R": {
+      "vertices": 72,
+      "triangles": 140,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "BRAKE_CALIPER_REAR_R": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_UPPER_WISHBONE_FWD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_UPPER_WISHBONE_AFT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_LOWER_WISHBONE_FWD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_LOWER_WISHBONE_AFT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_PUSHROD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_TRACK_ROD_-1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_BRAKE_DUCT_UPRIGHT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_TYRE_EYEBROW_DEFLECTOR_-1": {
+      "vertices": 330,
+      "triangles": 640,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "REAR_UPPER_WISHBONE_FWD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_UPPER_WISHBONE_AFT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_LOWER_WISHBONE_FWD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_LOWER_WISHBONE_AFT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_PULLROD_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_UPRIGHT_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_UPPER_WISHBONE_FWD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_UPPER_WISHBONE_AFT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_LOWER_WISHBONE_FWD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_LOWER_WISHBONE_AFT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_PUSHROD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_TRACK_ROD_+1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_BRAKE_DUCT_UPRIGHT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "FRONT_TYRE_EYEBROW_DEFLECTOR_+1": {
+      "vertices": 330,
+      "triangles": 640,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 20
+    },
+    "REAR_UPPER_WISHBONE_FWD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_UPPER_WISHBONE_AFT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_LOWER_WISHBONE_FWD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_LOWER_WISHBONE_AFT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_PULLROD_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "REAR_UPRIGHT_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_STAY_INNER_-1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_STAY_LOWER_-1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_HOUSING_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_GLASS_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_FLOW_VANE_-1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_STAY_INNER_+1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_STAY_LOWER_+1": {
+      "vertices": 32,
+      "triangles": 60,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_HOUSING_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_GLASS_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "MIRROR_FLOW_VANE_+1": {
+      "vertices": 8,
+      "triangles": 12,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RADIO_ANTENNA_1": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    },
+    "RADIO_ANTENNA_2": {
+      "vertices": 24,
+      "triangles": 44,
+      "nonFiniteVertices": 0,
+      "degenerateTriangles": 0,
+      "inconsistentSharedEdges": 0,
+      "nonManifoldEdges": 0,
+      "openBoundaryEdges": 0
+    }
+  },
+  "bounds": {
+    "min": [-0.9950000047683716, 0.0, -2.5999999046325684],
+    "max": [0.9950000047683716, 1.0894206762313843, 2.446000099182129],
+    "size": [1.9900000095367432, 1.0894206762313843, 5.046000003814697]
+  },
+  "dimensionalChecks": {
+    "length_target_5_050": true,
+    "width_max_2_000": true,
+    "height_ceiling_1_180": true,
+    "ground_contact": true
+  },
+  "pass": true,
+  "limitations": [
+    "Open boundary edges are reported per semantic object; ducts, airfoils, and seams may be open.",
+    "Inter-object mechanical contacts and tire/ground contact are verified."
+  ]
+}

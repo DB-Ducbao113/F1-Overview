@@ -1,0 +1,462 @@
+{
+  "metadata": {
+    "source_asset": "public/models/c42.v2.glb",
+    "source_mesh_name": "Bits_Dup_2.001_Mesh.022",
+    "blender_version": "5.2.2 LTS",
+    "date": "2026-10-22",
+    "analysis_scope": "Full C42 reference geometry breakdown for EDS D2 reconstruction"
+  },
+  "model_normalization_transforms": {
+    "raw_bounds_min": [-8.302175521850586, -23.106651306152344, 0.008071649819612503],
+    "raw_bounds_max": [8.311042785644531, 23.210481643676758, 9.116860389709473],
+    "raw_size": [16.613218307495117, 46.31713104248047, 9.10878849029541],
+    "normalization_scale": 0.10903093275290118,
+    "ground_plane_raw_z": 0.008071649819612503,
+    "symmetry_center_raw_x": 0.004433631896972656,
+    "coordinate_system": {
+      "source": "Blender glTF: +X lateral, +Y longitudinal front, +Z vertical up",
+      "eds_convention": "+X lateral, +Y vertical up, +Z longitudinal rear",
+      "mapping_rules": "proj_X = blender_X, proj_Y = blender_Z, proj_Z = -blender_Y"
+    },
+    "classification": "measured"
+  },
+  "full_vehicle_bounds": {
+    "raw": {
+      "length": 46.3171,
+      "width": 16.6132,
+      "height": 9.1088
+    },
+    "normalized_meters": {
+      "length": 5.05,
+      "width": 1.8114,
+      "height": 0.9931
+    },
+    "project_registry_target": {
+      "length": 5.05,
+      "width": 2.0,
+      "height": 1.18
+    },
+    "classification": "measured"
+  },
+  "axle_and_wheel_centers": {
+    "front_axle_y_raw": 12.3394,
+    "front_axle_y_norm_m": 1.3454,
+    "rear_axle_y_raw": -17.0338,
+    "rear_axle_y_norm_m": -1.8572,
+    "wheelbase_raw": 29.3731,
+    "wheelbase_norm_m": 3.2026,
+    "front_track_raw": 14.2229,
+    "front_track_norm_m": 1.5507,
+    "rear_track_raw": 15.2506,
+    "rear_track_norm_m": 1.6628,
+    "tyres": [
+      {
+        "center_raw": [7.629720211029053, -17.036598205566406, 2.876124858856201],
+        "center_norm_m": [0.8318755112521596, -1.8575161932893078, 0.31358657607489787],
+        "radius_raw": 1.7395248413085938,
+        "radius_norm_m": 0.18966201599471838,
+        "width_raw": 1.0233964920043945,
+        "width_norm_m": 0.11158187409928612,
+        "faces": 4552
+      },
+      {
+        "center_raw": [-7.620851516723633, -17.03094482421875, 2.876126766204834],
+        "center_norm_m": [-0.8309085492397394, -1.856899799847765, 0.31358678403489837],
+        "radius_raw": 1.7409379482269287,
+        "radius_norm_m": 0.18981608836010402,
+        "width_raw": 1.02339506149292,
+        "width_norm_m": 0.11158171812928572,
+        "faces": 4551
+      },
+      {
+        "center_raw": [-7.06533670425415, 12.339374542236328, 2.972245693206787],
+        "center_norm_m": [-0.7703402510781387, 1.3453735159274298, 0.3240667203011294],
+        "radius_raw": 1.7381114959716797,
+        "radius_norm_m": 0.1895079176343327,
+        "width_raw": 1.0884180068969727,
+        "width_norm_m": 0.11867123051703056,
+        "faces": 4551
+      },
+      {
+        "center_raw": [7.157598972320557, 12.339376449584961, 2.9722440242767334],
+        "center_norm_m": [0.7803996922233172, 1.3453737238874304, 0.3240665383361289],
+        "radius_raw": 1.7381116151809692,
+        "radius_norm_m": 0.18950793063183272,
+        "width_raw": 1.0912446975708008,
+        "width_norm_m": 0.11897942723780197,
+        "faces": 4550
+      }
+    ],
+    "classification": "measured"
+  },
+  "cockpit_and_halo_landmarks": {
+    "cockpit_opening": {
+      "front_y_norm_m": 0.449,
+      "rear_y_norm_m": 0.114,
+      "length_norm_m": 0.335,
+      "width_norm_m": 0.238,
+      "rim_height_norm_m": 0.582,
+      "seat_center_norm_m": [0.0, 0.082, 0.22],
+      "steering_wheel_pos_norm_m": [0.0, 0.363, 0.499],
+      "classification": "measured"
+    },
+    "halo": {
+      "front_blade_mount_norm_m": [0.0, 0.468, 0.585],
+      "crown_apex_norm_m": [0.0, 0.022, 0.825],
+      "crown_width_norm_m": 0.342,
+      "rear_mount_left_norm_m": [-0.185, -0.218, 0.672],
+      "rear_mount_right_norm_m": [0.185, -0.218, 0.672],
+      "aerodynamic_fairing": "sculpted aerofoil profile with integrated top tri-fin",
+      "classification": "measured"
+    },
+    "airbox_and_rollover_hoop": {
+      "intake_lip_y_norm_m": -0.196,
+      "intake_lip_z_norm_m": 0.685,
+      "rollover_apex_z_norm_m": 0.925,
+      "intake_width_norm_m": 0.224,
+      "intake_height_norm_m": 0.165,
+      "internal_splitter": "vertical aerodynamic divider present",
+      "classification": "measured"
+    }
+  },
+  "nose_and_front_wing_profile": {
+    "nose": {
+      "tip_y_norm_m": 2.5307,
+      "tip_z_norm_m": 0.165,
+      "front_bulkhead_y_norm_m": 0.872,
+      "length_norm_m": 1.6584,
+      "tip_width_norm_m": 0.16,
+      "bulkhead_width_norm_m": 0.358,
+      "bulkhead_height_norm_m": 0.565,
+      "fom_camera_pods": "dual aerodynamic pods at y=1.85m, x=\u00b10.15m",
+      "classification": "measured"
+    },
+    "front_wing": {
+      "main_plane_span_norm_m": 1.8,
+      "flap_count": 3,
+      "total_chord_norm_m": 0.385,
+      "endplate_outer_x_norm_m": 0.905,
+      "endplate_height_norm_m": 0.285,
+      "endplate_length_norm_m": 0.44,
+      "dive_plane": "integrated curved outer canard",
+      "footplate": "sculpted curved sealing lip",
+      "classification": "measured"
+    }
+  },
+  "sidepod_envelope": {
+    "inlet_leading_lip_y_norm_m": 0.612,
+    "inlet_width_norm_m": 0.32,
+    "inlet_height_norm_m": 0.185,
+    "undercut_depth_norm_m": 0.145,
+    "max_width_norm_m": 1.417,
+    "max_width_station_y_norm_m": 0.0,
+    "coke_bottle_waist_width_norm_m": 0.72,
+    "coke_bottle_station_y_norm_m": -1.7,
+    "upper_deck_downwash": "steep continuous downward slope to rear beam wing with cooling louvres",
+    "classification": "measured"
+  },
+  "rear_profile_and_wing": {
+    "rear_wing": {
+      "mainplane_span_norm_m": 1.08,
+      "mainplane_chord_norm_m": 0.38,
+      "upper_flap_span_norm_m": 1.04,
+      "upper_flap_chord_norm_m": 0.24,
+      "beam_wing_span_norm_m": 0.76,
+      "beam_wing_chord_norm_m": 0.2,
+      "endplate_x_norm_m": 0.54,
+      "endplate_height_norm_m": 0.52,
+      "drs_actuator_pod": "central streamlined bullet actuator housing",
+      "central_support": "swan-neck aerodynamic pylon",
+      "classification": "measured"
+    },
+    "engine_cover": {
+      "dorsal_shark_fin_extent_y_norm_m": [-0.2, -1.85],
+      "dorsal_fin_max_z_norm_m": 0.895,
+      "cooling_exit_cannon": "rear centerline hot-air exit at y=-1.85m",
+      "exhaust_tailpipe_norm_m": [0.0, -1.95, 0.42],
+      "classification": "measured"
+    }
+  },
+  "floor_and_diffuser_sections": {
+    "leading_edge_y_norm_m": 1.14,
+    "max_width_norm_m": 1.68,
+    "venturi_tunnels": "twin shaped underfloor channels with 4 leading edge fences per side",
+    "diffuser_kickup_start_y_norm_m": -1.25,
+    "diffuser_exit_y_norm_m": -2.25,
+    "diffuser_exit_width_norm_m": 1.08,
+    "diffuser_exit_height_norm_m": 0.285,
+    "diffuser_strakes": "4 vertical flow-conditioning fences",
+    "fia_rain_light": "integrated rear lower safety LED unit",
+    "classification": "measured"
+  },
+  "suspension_linkages": {
+    "front": "pushrod-operated multi-link carbon aero fairings with upright brake ducts and tyre-wake eyebrow deflectors",
+    "rear": "pullrod/pushrod multi-link carbon aero fairings with upright deflectors",
+    "classification": "measured"
+  },
+  "component_geometry_density": {
+    "total_vertices": 204593,
+    "total_polygons": 237426,
+    "total_triangles": 237426,
+    "subsystems": {
+      "tyres": {
+        "islands": 4,
+        "faces": 18204
+      },
+      "front_wing_elements": {
+        "islands": 2114,
+        "faces": 14731
+      },
+      "rear_wing_elements": {
+        "islands": 1437,
+        "faces": 12636
+      },
+      "floor_and_diffuser": {
+        "islands": 1,
+        "faces": 3472
+      },
+      "cockpit_halo_interior": {
+        "islands": 1262,
+        "faces": 37362
+      },
+      "suspension_and_uprights": {
+        "islands": 2214,
+        "faces": 35551
+      },
+      "body_sidepods_monocoque": {
+        "islands": 7000,
+        "faces": 115470
+      }
+    },
+    "classification": "measured"
+  },
+  "cross_sections": [
+    {
+      "y_raw": 22.5,
+      "y_norm_m": 2.4532,
+      "width_raw": 4.112,
+      "width_norm_m": 0.4483,
+      "height_raw": 0.283,
+      "height_norm_m": 0.0309,
+      "z_min_norm_m": 0.1211,
+      "z_max_norm_m": 0.1519,
+      "edge_count": 36
+    },
+    {
+      "y_raw": 21.0,
+      "y_norm_m": 2.2896,
+      "width_raw": 11.881,
+      "width_norm_m": 1.2954,
+      "height_raw": 1.156,
+      "height_norm_m": 0.1261,
+      "z_min_norm_m": 0.1254,
+      "z_max_norm_m": 0.2515,
+      "edge_count": 215
+    },
+    {
+      "y_raw": 19.0,
+      "y_norm_m": 2.0716,
+      "width_raw": 16.292,
+      "width_norm_m": 1.7763,
+      "height_raw": 2.162,
+      "height_norm_m": 0.2358,
+      "z_min_norm_m": 0.1162,
+      "z_max_norm_m": 0.352,
+      "edge_count": 533
+    },
+    {
+      "y_raw": 16.0,
+      "y_norm_m": 1.7445,
+      "width_raw": 2.362,
+      "width_norm_m": 0.2575,
+      "height_raw": 1.606,
+      "height_norm_m": 0.1751,
+      "z_min_norm_m": 0.2611,
+      "z_max_norm_m": 0.4361,
+      "edge_count": 77
+    },
+    {
+      "y_raw": 12.34,
+      "y_norm_m": 1.3454,
+      "width_raw": 15.805,
+      "width_norm_m": 1.7232,
+      "height_raw": 6.11,
+      "height_norm_m": 0.6662,
+      "z_min_norm_m": 0.003,
+      "z_max_norm_m": 0.6693,
+      "edge_count": 1345
+    },
+    {
+      "y_raw": 8.0,
+      "y_norm_m": 0.8722,
+      "width_raw": 3.282,
+      "width_norm_m": 0.3578,
+      "height_raw": 5.185,
+      "height_norm_m": 0.5653,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.5837,
+      "edge_count": 220
+    },
+    {
+      "y_raw": 5.0,
+      "y_norm_m": 0.5452,
+      "width_raw": 10.407,
+      "width_norm_m": 1.1347,
+      "height_raw": 5.961,
+      "height_norm_m": 0.6499,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.6684,
+      "edge_count": 930
+    },
+    {
+      "y_raw": 3.0,
+      "y_norm_m": 0.3271,
+      "width_raw": 11.512,
+      "width_norm_m": 1.2552,
+      "height_raw": 6.964,
+      "height_norm_m": 0.7593,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.7777,
+      "edge_count": 1487
+    },
+    {
+      "y_raw": 1.0,
+      "y_norm_m": 0.109,
+      "width_raw": 13.006,
+      "width_norm_m": 1.418,
+      "height_raw": 6.612,
+      "height_norm_m": 0.7209,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.7394,
+      "edge_count": 1150
+    },
+    {
+      "y_raw": -1.0,
+      "y_norm_m": -0.109,
+      "width_raw": 12.994,
+      "width_norm_m": 1.4168,
+      "height_raw": 6.28,
+      "height_norm_m": 0.6847,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.7031,
+      "edge_count": 1100
+    },
+    {
+      "y_raw": -3.0,
+      "y_norm_m": -0.3271,
+      "width_raw": 12.91,
+      "width_norm_m": 1.4076,
+      "height_raw": 8.046,
+      "height_norm_m": 0.8772,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.8957,
+      "edge_count": 834
+    },
+    {
+      "y_raw": -6.0,
+      "y_norm_m": -0.6542,
+      "width_raw": 11.979,
+      "width_norm_m": 1.3061,
+      "height_raw": 7.896,
+      "height_norm_m": 0.8609,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.8794,
+      "edge_count": 730
+    },
+    {
+      "y_raw": -10.0,
+      "y_norm_m": -1.0903,
+      "width_raw": 10.958,
+      "width_norm_m": 1.1948,
+      "height_raw": 7.305,
+      "height_norm_m": 0.7965,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.8149,
+      "edge_count": 456
+    },
+    {
+      "y_raw": -14.0,
+      "y_norm_m": -1.5264,
+      "width_raw": 10.666,
+      "width_norm_m": 1.1629,
+      "height_raw": 6.313,
+      "height_norm_m": 0.6883,
+      "z_min_norm_m": 0.0184,
+      "z_max_norm_m": 0.7068,
+      "edge_count": 650
+    },
+    {
+      "y_raw": -17.03,
+      "y_norm_m": -1.8568,
+      "width_raw": 16.613,
+      "width_norm_m": 1.8114,
+      "height_raw": 5.761,
+      "height_norm_m": 0.6281,
+      "z_min_norm_m": 0.0009,
+      "z_max_norm_m": 0.629,
+      "edge_count": 1675
+    },
+    {
+      "y_raw": -19.5,
+      "y_norm_m": -2.1261,
+      "width_raw": 16.488,
+      "width_norm_m": 1.7978,
+      "height_raw": 7.591,
+      "height_norm_m": 0.8277,
+      "z_min_norm_m": 0.0191,
+      "z_max_norm_m": 0.8468,
+      "edge_count": 1011
+    },
+    {
+      "y_raw": -21.0,
+      "y_norm_m": -2.2896,
+      "width_raw": 9.86,
+      "width_norm_m": 1.0751,
+      "height_raw": 5.653,
+      "height_norm_m": 0.6163,
+      "z_min_norm_m": 0.2055,
+      "z_max_norm_m": 0.8218,
+      "edge_count": 635
+    },
+    {
+      "y_raw": -22.5,
+      "y_norm_m": -2.4532,
+      "width_raw": 9.935,
+      "width_norm_m": 1.0832,
+      "height_raw": 4.659,
+      "height_norm_m": 0.508,
+      "z_min_norm_m": 0.1966,
+      "z_max_norm_m": 0.7046,
+      "edge_count": 144
+    }
+  ],
+  "locked_registry_conflicts_and_adjustments": [
+    {
+      "parameter": "wheelbase / length ratio",
+      "c42_reference_measured": 0.6342,
+      "eds_locked_target": 0.7129,
+      "conflict_description": "C42 wheelbase is proportionally shorter (3.203m if scaled to 5.050m length, ratio 0.634) than the EDS locked 3.600m wheelbase (ratio 0.713).",
+      "geometry_adjustment": "EDS D2 fixes axles at exactly frontAxleZ = -1.750m and rearAxleZ = +1.850m (Blender Y = +1.750m and -1.850m). Monocoque cockpit and sidepod bays are longitudinally dimensioned to match the 3.600m wheelbase while faithfully retaining C42 sectional curvatures, undercut sculpting, and wing aerodynamics."
+    },
+    {
+      "parameter": "front and rear track widths",
+      "c42_reference_measured": {
+        "front_track_norm_m": 1.5507,
+        "rear_track_norm_m": 1.6628
+      },
+      "eds_locked_target": {
+        "front_track_m": 1.78,
+        "rear_track_m": 1.72
+      },
+      "conflict_description": "Normalized C42 track is 1.551m front / 1.663m rear, whereas EDS registry specifies 1.780m front / 1.720m rear.",
+      "geometry_adjustment": "EDS D2 mounts wheel hubs and suspension wishbones to achieve exactly the locked 1.780m front and 1.720m rear tracks and 2.000m overall car width."
+    },
+    {
+      "parameter": "diffuser exit width",
+      "c42_reference_measured": 1.08,
+      "eds_locked_target": 1.16,
+      "conflict_description": "Normalized C42 diffuser exit width is 1.080m vs EDS locked target 1.160m.",
+      "geometry_adjustment": "EDS D2 expands the outer diffuser walls to precisely 1.160m at the exit plane."
+    }
+  ]
+}
