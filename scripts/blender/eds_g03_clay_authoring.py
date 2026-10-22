@@ -25,7 +25,7 @@ from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "docs" / "commercialization" / "r3" / "blender-authoring"
-EVIDENCE = OUT / "evidence" / "clay-gate"
+EVIDENCE = OUT / "evidence" / "refinement-revision-2" / "blender"
 BLEND_PATH = OUT / "eds-g03-clay-design.blend"
 GLB_PATH = OUT / "eds-g03-clay-review.glb"
 
@@ -247,6 +247,73 @@ def cylinder_between(name, a, b, radius, target, mat, vertices=20):
     return finish_mesh(obj, mat, bevel=radius * 0.14, bevel_segments=2)
 
 
+def sidepod_floor_transition(name, side, target, mat):
+    """Thin ruled shell joining the sidepod undercut to the floor edge."""
+    stations = [
+        (-0.46, 0.37, 0.62, 0.225),
+        (-0.10, 0.39, 0.66, 0.215),
+        (0.30, 0.38, 0.675, 0.205),
+        (0.70, 0.35, 0.66, 0.195),
+        (1.08, 0.30, 0.635, 0.190),
+        (1.34, 0.25, 0.610, 0.185),
+    ]
+    across = [0.0, 0.18, 0.40, 0.64, 0.84, 1.0]
+    vertices, upper, lower = [], [], []
+    for z, root_x, edge_x, root_y in stations:
+        row_u, row_l = [], []
+        for t in across:
+            x = side * (root_x + (edge_x - root_x) * t)
+            blend = (1.0 - t) ** 1.55
+            edge_y = 0.118 + 0.010 * max(0.0, (z - 0.75) / 0.59)
+            y = edge_y + (root_y - edge_y) * blend - 0.018 * math.sin(math.pi * t)
+            thickness = 0.026 - 0.008 * t
+            row_u.append(len(vertices)); vertices.append((x, y, z))
+            row_l.append(len(vertices)); vertices.append((x, y - thickness, z))
+        upper.append(row_u); lower.append(row_l)
+    faces = []
+    for rows, reverse in ((upper, False), (lower, True)):
+        for zi in range(len(stations) - 1):
+            for xi in range(len(across) - 1):
+                quad = (rows[zi][xi], rows[zi][xi+1], rows[zi+1][xi+1], rows[zi+1][xi])
+                faces.append(tuple(reversed(quad)) if reverse else quad)
+    for zi in range(len(stations) - 1):
+        faces.append((upper[zi][0], upper[zi+1][0], lower[zi+1][0], lower[zi][0]))
+        faces.append((upper[zi][-1], lower[zi][-1], lower[zi+1][-1], upper[zi+1][-1]))
+    for xi in range(len(across) - 1):
+        faces.append((upper[0][xi], lower[0][xi], lower[0][xi+1], upper[0][xi+1]))
+        faces.append((upper[-1][xi], upper[-1][xi+1], lower[-1][xi+1], lower[-1][xi]))
+    return create_mesh(name, vertices, faces, target, mat)
+
+
+def sidepod_inlet_lip(name, side, target, mat, duct_mat):
+    """Integrated rounded-D annulus with a short converging inner throat."""
+    radial = 48
+    rings = []
+    vertices = []
+    for z, rx, ry in ((-0.594,0.180,0.150),(-0.548,0.180,0.150),
+                      (-0.594,0.142,0.112),(-0.500,0.120,0.098)):
+        ring = []
+        for index in range(radial):
+            angle = 2 * math.pi * index / radial
+            dx, dy = superellipse_xy(angle, rx, ry, 3.2)
+            ring.append(len(vertices))
+            vertices.append((side * (0.47 + dx), 0.47 + dy, z))
+        rings.append(ring)
+    outer_front, outer_rear, inner_front, inner_rear = rings
+    faces = []
+    for index in range(radial):
+        nxt = (index + 1) % radial
+        faces.append((outer_front[index], outer_front[nxt], outer_rear[nxt], outer_rear[index]))
+        faces.append((outer_front[index], inner_front[index], inner_front[nxt], outer_front[nxt]))
+        faces.append((inner_front[index], inner_rear[index], inner_rear[nxt], inner_front[nxt]))
+    obj = create_mesh(name, vertices, faces, target, mat)
+    obj.data.materials.append(duct_mat)
+    for index, polygon in enumerate(obj.data.polygons):
+        if index % 3 == 2:
+            polygon.material_index = 1
+    return obj
+
+
 def wheel(name, x, z, radius, width, target_wheel, target_mech, mats, rear=False):
     center = (x, radius, z)
     tire_section = 0.095 if rear else 0.082
@@ -265,20 +332,35 @@ def wheel(name, x, z, radius, width, target_wheel, target_mech, mats, rear=False
     move_to_collection(tire, target_wheel)
     finish_mesh(tire, mats["rubber"])
 
-    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=radius * 0.56, depth=width * 0.72,
-                                        location=p2b(center), rotation=(0, math.pi / 2, 0))
+    # Open barrel/rim assembly keeps the brake package visible. The previous
+    # solid cylinder read as a flat disc and hid otherwise authored mechanics.
+    bpy.ops.mesh.primitive_torus_add(
+        align="WORLD", major_segments=64, minor_segments=14,
+        location=p2b(center), major_radius=radius * 0.49,
+        minor_radius=radius * 0.065, rotation=(0, math.pi / 2, 0),
+    )
     rim = bpy.context.object
     rim.name = f"{name}_RIM"
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+    rim.dimensions.x = width * 0.72
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     move_to_collection(rim, target_wheel)
-    finish_mesh(rim, mats["metal"], bevel=0.008)
+    finish_mesh(rim, mats["metal"])
+
+    bpy.ops.mesh.primitive_cylinder_add(vertices=40, radius=radius * 0.115, depth=width * 0.76,
+                                        location=p2b(center), rotation=(0, math.pi / 2, 0))
+    hub_obj = bpy.context.object
+    hub_obj.name = f"{name}_CENTRE_HUB"
+    move_to_collection(hub_obj, target_wheel)
+    finish_mesh(hub_obj, mats["metal"], bevel=0.006)
 
     for outboard in (-1, 1):
         face_x = x + outboard * width * 0.34
         for spoke in range(10):
             angle = 2 * math.pi * spoke / 10 + (0.08 if rear else 0)
             hub = (face_x, radius, z)
-            edge = (face_x, radius + math.sin(angle) * radius * 0.43,
-                    z + math.cos(angle) * radius * 0.43)
+            edge = (face_x, radius + math.sin(angle) * radius * 0.47,
+                    z + math.cos(angle) * radius * 0.47)
             cylinder_between(f"{name}_SPOKE_{outboard}_{spoke:02d}", hub, edge,
                              0.010, target_wheel, mats["rim"], 12)
 
@@ -295,22 +377,32 @@ def wheel(name, x, z, radius, width, target_wheel, target_mech, mats, rear=False
 
 
 def floor_diffuser(target, mats):
-    z_rows = [-1.08, -0.72, -0.25, 0.35, 0.9, 1.35, 1.75, 2.05, 2.30]
-    x_cols = [-1.0, -0.82, -0.64, -0.46, -0.25, 0.0, 0.25, 0.46, 0.64, 0.82, 1.0]
+    # Variable-width floor and densely sampled diffuser roof. The thin forward
+    # edge is supported by the sidepod transition shells rather than reading as
+    # a uniform slab. Twenty-five lateral samples remove the old faceted gable.
+    z_rows = [-1.08, -0.82, -0.48, -0.12, 0.26, 0.62, 0.96, 1.22, 1.48, 1.72, 1.94, 2.12, 2.30]
+    x_cols = [(-1.0 + 2.0 * index / 24) for index in range(25)]
     vertices = []
     upper = []
     lower = []
     for z in z_rows:
-        rear = max(0.0, min(1.0, (z - 0.95) / 1.35))
-        half = 0.68 - rear * 0.10
+        rear = max(0.0, min(1.0, (z - 0.88) / 1.42))
+        if z < -0.48:
+            half = 0.52 + (z + 1.08) / 0.60 * 0.13
+        elif z < 0.78:
+            half = 0.65 + 0.025 * math.sin((z + 0.48) / 1.26 * math.pi)
+        else:
+            half = 0.67 + (z - 0.78) / 1.52 * (0.58 - 0.67)
         row_u, row_l = [], []
         for x_fraction in x_cols:
             clipped = x_fraction * half
             lateral = abs(clipped) / max(half, 1e-6)
-            top_y = 0.145 + rear * (0.22 - 0.10 * lateral)
-            channel = math.exp(-((abs(clipped) - 0.29) / 0.17) ** 2)
-            center_keel = math.exp(-(clipped / 0.13) ** 2)
-            bottom_y = 0.055 + rear * (0.12 + 0.12 * channel - 0.025 * center_keel)
+            channel = math.exp(-((abs(clipped) - 0.30) / 0.155) ** 2)
+            centre_valley = math.exp(-(clipped / 0.115) ** 2)
+            edge_relief = lateral ** 3
+            bottom_y = 0.070 + rear * (0.115 + 0.105 * channel - 0.004 * centre_valley + 0.012 * edge_relief)
+            thickness = 0.045 + rear * (0.014 - 0.006 * channel)
+            top_y = bottom_y + thickness
             row_u.append(len(vertices)); vertices.append((clipped, top_y, z))
             row_l.append(len(vertices)); vertices.append((clipped, bottom_y, z))
         upper.append(row_u); lower.append(row_l)
@@ -331,25 +423,22 @@ def floor_diffuser(target, mats):
     bevel.width = 0.008
     bevel.segments = 2
 
-    # True separator fences make the two outlets legible without a covering shelf.
-    for side in (-1, 1):
-        x = side * 0.02
-        verts = [(x, 0.06, 1.02), (x, 0.08, 1.02), (x, 0.31, 2.30), (x, 0.18, 2.30),
-                 (x + side*0.018, 0.06, 1.02), (x + side*0.018, 0.08, 1.02),
-                 (x + side*0.018, 0.31, 2.30), (x + side*0.018, 0.18, 2.30)]
-        faces = [(0,1,2,3),(4,7,6,5),(0,4,5,1),(3,2,6,7),(1,5,6,2),(0,3,7,4)]
-        create_mesh(f"DIFFUSER_CENTER_FENCE_{side:+d}", verts, faces, target, mats["carbon"])
+    # One low, tapered central splitter replaces the two tall fences that made
+    # the exit look like a pointed gable. Twin roof maxima remain geometric.
+    verts = [(-0.009,0.075,1.12),(-0.009,0.095,1.12),(-0.009,0.180,2.30),(-0.009,0.140,2.30),
+             (0.009,0.075,1.12),(0.009,0.095,1.12),(0.009,0.180,2.30),(0.009,0.140,2.30)]
+    faces = [(0,1,2,3),(4,7,6,5),(0,4,5,1),(3,2,6,7),(1,5,6,2),(0,3,7,4)]
+    create_mesh("DIFFUSER_CENTRAL_SPLITTER", verts, faces, target, mats["carbon"])
     for side in (-1, 1):
         x = side * 0.58
         cylinder_between(f"DIFFUSER_EXIT_EDGE_{side:+d}", (x,0.15,2.28), (x,0.30,2.30),
                          0.012, target, mats["carbon"], 12)
-    # Four longitudinal boundaries define two open channels while leaving the
-    # underside unobstructed for inspection.
-    for index, x in enumerate((-0.52, -0.07, 0.07, 0.52)):
+    # Slim outer strakes visually frame each outlet without masking the roof.
+    for index, x in enumerate((-0.525, 0.525)):
         side = -1 if x < 0 else 1
-        verts = [(x,0.065,1.10),(x,0.105,1.10),(x,0.315,2.30),(x,0.18,2.30),
-                 (x+side*0.014,0.065,1.10),(x+side*0.014,0.105,1.10),
-                 (x+side*0.014,0.315,2.30),(x+side*0.014,0.18,2.30)]
+        verts = [(x,0.075,1.10),(x,0.105,1.10),(x,0.238,2.30),(x,0.174,2.30),
+                 (x+side*0.012,0.075,1.10),(x+side*0.012,0.105,1.10),
+                 (x+side*0.012,0.238,2.30),(x+side*0.012,0.174,2.30)]
         faces = [(0,1,2,3),(4,7,6,5),(0,4,5,1),(3,2,6,7),(1,5,6,2),(0,3,7,4)]
         create_mesh(f"DIFFUSER_CHANNEL_WALL_{index+1}", verts, faces, target, mats["carbon"])
 
@@ -424,30 +513,33 @@ def build_scene():
     sidepods = collections["03_SIDEPODS_ENGINE_COVER"]
     for side in (-1,1):
         loft(f"SIDEPOD_PRIMARY_{side:+d}", [
-            (-0.58,side*0.39,0.43,0.06,0.10,2.2),(-0.48,side*0.47,0.47,0.14,0.17,2.5),
+            (-0.58,side*0.47,0.47,0.18,0.15,3.2),(-0.46,side*0.49,0.47,0.18,0.17,3.0),
             (-0.25,side*0.51,0.45,0.18,0.18,2.8),(0.08,side*0.53,0.43,0.17,0.18,3.1),
             (0.42,side*0.50,0.40,0.16,0.17,3.1),(0.78,side*0.43,0.37,0.15,0.15,2.9),
             (1.10,side*0.34,0.38,0.12,0.13,2.7),(1.36,side*0.25,0.41,0.07,0.10,2.4)],
             sidepods, mats["clay"], radial=48, caps=False)
-        # Crescent lip plus recessed duct depth.
-        lip = [(side*(0.34+0.13*math.cos(a)),0.47+0.14*math.sin(a),-0.50)
-               for a in [2*math.pi*i/24 for i in range(24)]]
-        curve_tube(f"SIDEPOD_INLET_LIP_{side:+d}", lip, 0.018, sidepods, mats["clay_dark"], cyclic=True, resolution=4)
-        loft(f"SIDEPOD_INTERNAL_DUCT_{side:+d}", [(-0.51,side*0.43,0.47,0.11,0.12,2.2),
-             (-0.35,side*0.44,0.46,0.085,0.095,2.2),(-0.14,side*0.42,0.44,0.045,0.065,2.0)],
+        # Shared rounded-D section aligns lip, shoulder and recessed duct.
+        sidepod_inlet_lip(f"SIDEPOD_INLET_LIP_{side:+d}", side, sidepods, mats["clay"], mats["duct"])
+        loft(f"SIDEPOD_INTERNAL_DUCT_{side:+d}", [(-0.590,side*0.47,0.47,0.145,0.115,3.0),
+             (-0.46,side*0.465,0.455,0.12,0.10,2.8),(-0.28,side*0.44,0.44,0.075,0.075,2.5),
+             (-0.12,side*0.42,0.435,0.035,0.048,2.2)],
              sidepods, mats["duct"], radial=36, caps=False)
         curve_tube(f"SIDEPOD_UNDERCUT_EDGE_{side:+d}", [(side*0.60,0.28,-0.33),(side*0.63,0.23,0.08),
                    (side*0.57,0.20,0.52),(side*0.45,0.21,0.94),(side*0.31,0.27,1.27)],
                    0.016, sidepods, mats["clay_dark"], resolution=4)
-        loft(f"SIDEPOD_FLOOR_BLEND_{side:+d}", [
-            (-0.44,side*0.43,0.29,0.15,0.075,2.8),(-0.05,side*0.48,0.255,0.17,0.07,3.0),
-            (0.40,side*0.47,0.235,0.16,0.065,3.1),(0.84,side*0.40,0.225,0.14,0.06,3.0),
-            (1.20,side*0.31,0.25,0.095,0.055,2.7)],
-            sidepods, mats["clay"], radial=40)
+        sidepod_floor_transition(f"SIDEPOD_FLOOR_TRANSITION_{side:+d}", side, sidepods, mats["clay"])
+        curve_tube(f"SIDEPOD_SHOULDER_PANEL_{side:+d}", [
+            (side*0.56,0.55,-0.38),(side*0.61,0.54,-0.05),(side*0.59,0.50,0.32),
+            (side*0.50,0.45,0.70),(side*0.38,0.43,1.04)],
+            0.0055, sidepods, mats["clay_dark"], resolution=2)
     loft("ENGINE_COVER_TAPER", [(0.22,0,0.59,0.26,0.25,2.5),(0.48,0,0.66,0.25,0.34,2.4),
          (0.75,0,0.62,0.22,0.30,2.5),(1.05,0,0.55,0.18,0.24,2.5),(1.34,0,0.48,0.13,0.17,2.3),
          (1.62,0,0.43,0.08,0.11,2.1),(1.88,0,0.40,0.045,0.07,2.0)],
          sidepods, mats["clay"], radial=56)
+    for side in (-1, 1):
+        curve_tube(f"ENGINE_COVER_PANEL_{side:+d}", [(side*0.17,0.73,0.44),(side*0.18,0.72,0.72),
+                   (side*0.15,0.63,1.06),(side*0.10,0.51,1.42)],
+                   0.005, sidepods, mats["clay_dark"], resolution=2)
     loft("AIRBOX_INTAKE", [(0.34,0,0.79,0.09,0.12,2.2),(0.49,0,0.91,0.12,0.14,2.3),
                            (0.60,0,0.95,0.105,0.12,2.2),(0.71,0,0.88,0.075,0.085,2.0)],
          sidepods, mats["duct"], radial=40)
@@ -581,6 +673,7 @@ CAMERAS = {
     "rear-three-quarter": ((-4.8,1.78,4.8),(0,0.40,0.35)),
     "cockpit-close-up": ((1.45,1.25,-1.34),(0,0.66,-0.10)),
     "sidepod-close-up": ((1.72,0.86,-1.00),(0.47,0.43,-0.32)),
+    "floor-edge-undercut": ((1.82,0.48,0.18),(0.53,0.19,0.30)),
     "diffuser-underside": ((1.0,0.12,3.35),(0,0.20,1.72)),
     "wheel-suspension-close-up": ((1.76,0.86,-2.18),(0.67,0.37,-1.72)),
 }

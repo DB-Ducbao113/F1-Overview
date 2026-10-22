@@ -18,8 +18,8 @@
   },
   "wheelbase": 3.6,
   "diffuserExitWidth": 1.16,
-  "meshObjects": 148,
-  "evaluatedTriangles": 55682,
+  "meshObjects": 151,
+  "evaluatedTriangles": 61344,
   "locks": {
     "length": 5.05,
     "width": 2.0,

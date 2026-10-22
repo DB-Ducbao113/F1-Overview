@@ -1,98 +1,106 @@
-# EDS QA RELEASE REPORT
+# EDS QA RELEASE REPORT - Blender refinement Revision 2
 
-Implementation commit SHA: `43324dbdc89efe9ed18ac1e431418488ecc633f9`
+Source baseline SHA: `8fda531d222acda2fd68b33ab8cf8b980b9ac6d8`
+
+Delivery commit SHA: recorded in the `Per-PEDS` branch log after commit
+
 Target branch: `Per-PEDS`
-Target environment: DEV-only owner clay-design review
-Change summary: new Blender-authored EDS-G03 clay study, reproducible exporter,
-review GLB, 40 Blender renders/comparison sheets and QA reports
-Risk level: HIGH — new 3D authoring path and WebGL review asset
+
+Target environment: DEV-only owner design review
+
+Change summary: focused inlet, floor, diffuser and mechanical-detail re-authoring
+
+Risk level: HIGH - 3D geometry, deterministic export and WebGL review
 
 ## STATIC CHECKS
 
-- ESLint: **PASS** — `npm.cmd run lint`, exit 0.
-- TypeScript: **PASS** — `npx.cmd tsc --noEmit`, exit 0.
-- Unit tests: **PASS** — 39 files, 281 tests, exit 0.
-- Integration tests: **PASS (limited)** — Three.js comparison harness loaded
-  60 model/view/mode combinations without recorded page, console or request errors.
-- Build: **PASS** — production Vite/SEO/prerender build, exit 0.
+- ESLint: **PASS** - `npm.cmd run lint`, exit 0.
+- TypeScript: **PASS** - `npx.cmd tsc --noEmit`, exit 0.
+- Unit tests: **PASS** - 39 files, 281 tests, exit 0.
+- Integration tests: **PASS (limited)** - 66 model/view/mode browser loads across
+  22 comparison sheets completed with zero recorded page, console or request errors.
+- Build: **PASS** - `npm.cmd run build`, exit 0.
+- Commercial isolation: **PASS** - guard scanned 28 Showroom source modules and
+  108 artifact files after pruning 14 legacy and 2 review-only targets.
 
 ## FUNCTIONAL CHECKS
 
-- Core functionality: **PASS for DEV review** — GLB loads and all ten requested
-  cameras render in diffuse/reflective modes.
-- Regression: **PASS (automated)** — existing 281 tests pass; commercial G01 and
-  current public G03 files are unmodified.
-- Browser: **PASS (headless Chrome)** — 20 matched sheets, zero harness errors.
-- Mobile: **PASS only as 375×812 browser emulation**; physical device **NOT RUN**.
-- Accessibility: **NOT APPLICABLE** — screenshot-only DEV page.
-- SEO: **NOT APPLICABLE** — DEV-only page; production SEO generation still passed.
+- Core DEV renderer: **PASS** - candidate loads in Three.js and Blender.
+- Geometry locks: **PASS** - measured `5.050000 x 2.000000 x 1.180000 m`,
+  wheelbase `3.600 m`, diffuser exit `1.160 m`, ground `0.000000 m`.
+- Hardpoints: **PASS** - locked axle, track, wheel and halo registry values are
+  unchanged in source and generated report.
+- Browser: **PASS (headless Chrome)** - 22 matched sheets and 12 focused sheets.
+- Mobile: **PASS as 375x812 emulation only**; physical device **NOT RUN**.
+- Accessibility/SEO: **NOT APPLICABLE** to screenshot-only DEV route; production
+  SEO/prerender build still completed.
 
 ## SPECIALIZED CHECKS
 
-- 3D Showroom: **HOLD visually** — geometry renders, but four P2 visual issues
-  remain in `issues.md`.
-- Dimensions: **PASS** — measured `5.050000 × 2.000000 × 1.180000 m`, ground
-  `0.000000 m`, wheelbase `3.600 m`, diffuser exit `1.160 m`.
-- Determinism: **PASS** — two clean exports both SHA-256
-  `2f320533f34c888c706d58c690b56c6defec7c0359741de1dcbd9675dbdc0ce7`.
-- Khronos: **PASS** — validator 2.0.0-dev.3.10, 0 errors, 0 warnings,
-  131 informational unused-UV notices.
-- Independent topology: **PARTIAL PASS** — 157 geometries, 77,426 triangles,
-  finite positions/normals, zero degenerates, consistent winding. Open boundary
-  edges require review; strict self-intersections and classified inter-mesh
-  collisions **NOT TESTED**.
-- Performance: **PASS as limited lab evidence** — 1,715,424-byte GLB, 157 draw
-  calls, 77,426 triangles, no textures. Median ready time: 205.41 ms desktop and
-  188.01 ms mobile emulation across three warm local runs. Median RAF interval
-  was 16.7 ms; this is **not GPU render time**.
-- Security: **PASS scoped inspection** — no secrets, external runtime URL,
-  executable download or third-party texture embedded in repository artifacts.
-- Automated data source 1: **NOT RUN / NOT APPLICABLE to owner clay gate**.
-- Automated data source 2: **NOT RUN / NOT APPLICABLE to owner clay gate**.
+- GLB deterministic export: **PASS** - two clean exports matched SHA-256
+  `0f232ec60f645ecabcad2156295867e51e1c4b48e9236396dc4ff1dee249abcf`.
+- Khronos Validator 2.0.0-dev.3.10: **PASS** - 0 errors, 0 warnings, 137
+  informational unused-UV notices.
+- Independent topology: **PARTIAL PASS** - 164 geometries, 71,952 triangles,
+  finite positions/normals, zero degenerate triangles and consistent winding.
+  Floor, diffuser and the two new transition shells are watertight.
+- Open boundaries: **REVIEW REQUIRED** - 11,348 exported primitive boundary
+  edges include intentionally open inlet/duct/airfoil/curve apertures.
+- Strict self-intersection: **NOT TESTED**.
+- Classified inter-mesh collision: **NOT TESTED**.
+- Performance: **PASS as limited local evidence** - 1,594,552 bytes, 164 draw
+  calls, 71,952 triangles, 0 textures. Three-run median ready time was 190.83 ms
+  desktop and 182.33 ms mobile emulation. Median RAF interval was 16.7 ms; RAF
+  is not GPU frame time. Versus the prior report, bytes fell 120,872 and
+  triangles fell 5,474 while draw calls rose 7.
+- Security/provenance: **PASS scoped inspection** - no credentials, external
+  runtime assets, logos, tire lettering or third-party geometry added.
+- FIA compliance: **NOT CLAIMED**; registry conflicts remain documented in
+  `fia-2026-registry-review.md`.
+- Physical GPU, sustained thermal/memory and context-loss tests: **NOT RUN**.
 
 ## CI/CD
 
-- Required GitHub Actions: **PENDING after push**.
-- Preview deployment: **PENDING after authorized Per-PEDS push**.
-- Production deployment: **NOT RUN; prohibited**.
-- Production smoke tests: **NOT RUN; prohibited**.
+- GitHub Actions: **PENDING** until the authorized `Per-PEDS` push completes.
+- Preview deployment: **PENDING** after push; production remains prohibited.
+- Production deployment/smoke: **NOT RUN; prohibited**.
+- Stage/commit/push: **AUTHORIZED BY OWNER** for `Per-PEDS` only.
 
 ## DEFECTS
 
-- P0: none observed.
-- P1: none observed.
-- P2: EDS-BLEND-001 through EDS-BLEND-004 — visual design/fidelity gaps.
-- P3/P4: EDS-BLEND-005 — 157 draw calls before optimization.
+- P0/P1: none observed.
+- P2: EDS-BLEND-001/002/003 await owner visual decision;
+  EDS-BLEND-004 fidelity gap remains open.
+- P3: EDS-BLEND-005 semantic draw-call density remains open.
 
 ## EVIDENCE
 
-- Commands and exit codes: recorded above; all executed commands exited 0.
-- Model/hash: `eds-g03-clay-review.glb`, `eds-g03-clay-review.sha256`.
+- Model/source: `eds-g03-clay-design.blend`, `eds-g03-clay-review.glb`,
+  `scripts/blender/eds_g03_clay_authoring.py`.
 - Validation: `geometry-report.json`, `topology-report.json`,
-  `khronos-validation.json`.
-- Screenshots: `evidence/clay-gate/` and `evidence/matched-comparison/`.
-- Browser/benchmark: matched comparison `browser-report.json` and
-  `browser-performance.json`.
+  `khronos-validation.json`, `eds-g03-clay-review.sha256`.
+- Visual index: `evidence/refinement-revision-2/README.md`.
+- Browser/performance: `browser-performance.json` and capture JSON logs.
 
 ## UNVERIFIED ITEMS
 
-- Physical mobile/desktop GPU and sustained thermal/memory behavior.
-- True GPU frame time and WebGL context-loss recovery.
-- Whole-scene self-intersection and classified inter-mesh collisions.
-- FIA compliance beyond the explicit conflicts in `fia-2026-registry-review.md`.
-- Final PBR, UV, LOD and production integration, intentionally not started.
+- Owner visual acceptance.
+- Physical desktop/mobile GPU behavior and sustained resource lifetime.
+- True GPU frame time.
+- Strict whole-scene self-intersection and classified inter-mesh collision.
+- PBR, UV, LOD and commercial integration, intentionally outside this gate.
 
 ## RESIDUAL RISKS
 
-Open visual P2 defects prevent owner geometry approval. The study also has high
-semantic draw-call count and intentional open apertures requiring further
-topology review.
+The revised local surfaces are technically valid and visibly different, but the
+candidate still trails the Detailed + EDS reference in component density. Open
+apertures inflate primitive boundary counts, and no independent collision
+classifier was available.
 
 **FINAL DECISION: HOLD**
 
-**REASON:** Technical export gates pass, but visual sophistication does not yet
-match the Detailed + EDS target and independent collision coverage is incomplete.
+**REASON:** mandatory automated checks passed, but owner visual approval and two
+independent geometry checks remain outstanding.
 
-**NEXT REQUIRED ACTION:** Owner reviews the matched clay sheets and either
-rejects this direction or authorizes focused Blender re-authoring of the inlet,
-floor edge and diffuser. Do not begin PBR, LOD, R3.3 or commercial integration.
+**NEXT REQUIRED ACTION:** owner reviews the Revision 2 evidence and issues GO or
+REVISE. Do not begin PBR, LOD, R3.3 or commercial integration.

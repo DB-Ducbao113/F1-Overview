@@ -9,6 +9,9 @@ const model = await fs.readFile(
   path.resolve('docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb'),
 );
 const output = path.resolve('docs/commercialization/r3/blender-authoring/browser-performance.json');
+const evidenceRoot = path.resolve(
+  'docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser',
+);
 const viewports = [
   { id: 'desktop', width: 1440, height: 900 },
   { id: 'mobile-emulation', width: 375, height: 812 },
@@ -22,6 +25,7 @@ const report = {
   errors: [],
 };
 const browser = await chromium.launch({ executablePath: chrome, headless: true });
+await fs.mkdir(evidenceRoot, { recursive: true });
 
 try {
   for (const viewport of viewports) {
@@ -60,12 +64,22 @@ try {
           rafP95Ms: intervals[Math.floor(intervals.length * 0.95)],
         };
       });
+      if (run === 0) {
+        await page.screenshot({
+          path: path.join(evidenceRoot, `${viewport.id}-front-three-quarter.png`),
+          fullPage: true,
+        });
+      }
       runs.push({ readyMs, ...data });
       await page.close();
     }
     report.viewports[viewport.id] = { viewport: [viewport.width, viewport.height], runs };
   }
   await fs.writeFile(output, `${JSON.stringify(report, null, 2)}\n`);
+  await fs.writeFile(
+    path.join(evidenceRoot, 'browser-errors.json'),
+    `${JSON.stringify({ errors: report.errors }, null, 2)}\n`,
+  );
   console.log(JSON.stringify(report, null, 2));
   if (report.errors.length) process.exitCode = 1;
 } finally {

@@ -1,6 +1,8 @@
 # FIA 2026 registry review
 
 Source reviewed: [FIA 2026 Formula 1 Regulations, Section C, Issue 21, published 19 October 2026](https://api.fia.com/system/files/documents/fia_2026_f1_regulations_-_section_c_technical_-_iss_21_-_2026-10-19.pdf).
+The FIA Formula One World Championship regulations index was rechecked on
+2026-10-22 and still listed Issue 21 as the latest 2026 Section C publication.
 
 This is a design-registry comparison, not a homologation or compliance claim.
 The FIA document defines many reference volumes and setup-dependent checks that

@@ -1,6 +1,6 @@
 {
   "method": "Headless Chrome WebGL load timing and requestAnimationFrame interval; RAF is not GPU render time.",
-  "modelBytes": 1715424,
+  "modelBytes": 1594552,
   "runsPerViewport": 3,
   "viewports": {
     "desktop": {
@@ -10,37 +10,37 @@
       ],
       "runs": [
         {
-          "readyMs": 319.068,
+          "readyMs": 290.69540000000006,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
           "rafP95Ms": 17.30000001192093
         },
         {
-          "readyMs": 205.4092999999998,
+          "readyMs": 190.83420000000024,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
-          "rafP95Ms": 17.600000023841858
+          "rafP95Ms": 18
         },
         {
-          "readyMs": 198.76689999999962,
+          "readyMs": 175.21169999999984,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
-          "rafP95Ms": 17.599999964237213
+          "rafP95Ms": 16.900000035762787
         }
       ]
     },
@@ -51,37 +51,37 @@
       ],
       "runs": [
         {
-          "readyMs": 192.3837999999996,
+          "readyMs": 182.32819999999992,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
-          "rafP95Ms": 17.69999998807907
+          "rafP95Ms": 16.900000035762787
         },
         {
-          "readyMs": 188.00820000000022,
+          "readyMs": 201.33359999999993,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
-          "rafP95Ms": 17.799999952316284
+          "rafP95Ms": 17.80000001192093
         },
         {
-          "readyMs": 179.7497000000003,
+          "readyMs": 178.10190000000148,
           "stats": {
-            "calls": 157,
-            "triangles": 77426,
-            "geometries": 157,
+            "calls": 164,
+            "triangles": 71952,
+            "geometries": 164,
             "textures": 0
           },
           "rafMedianMs": 16.69999998807907,
-          "rafP95Ms": 17.700000047683716
+          "rafP95Ms": 17.899999976158142
         }
       ]
     }

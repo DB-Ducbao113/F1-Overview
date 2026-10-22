@@ -12,6 +12,10 @@
   sponsor art or team branding are included.
 - Export: Blender 5.2.2 LTS bundled glTF exporter; float canonicalization is an
   original deterministic post-export step and does not copy external geometry.
+- Revision 2 local authorship: rounded-D sidepod lip/throat, ruled undercut
+  transition shells, dense twin-channel diffuser profiles, open rim/hub/spoke
+  assemblies and panel boundaries are mathematically authored in the same
+  source script from project coordinates; no external mesh is sampled.
 - Commercial status: review-only. The asset is under
   `docs/commercialization/r3/blender-authoring/`, not `public/models`, and is
   removed from the commercial dependency graph by existing build isolation.

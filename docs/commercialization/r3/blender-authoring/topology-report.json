@@ -1,7 +1,7 @@
 {
   "source": "docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb",
   "scope": "Independent trimesh/numpy inspection of exported semantic meshes",
-  "geometryCount": 157,
+  "geometryCount": 164,
   "bounds": {
     "min": [
       -1.000000024214387,
@@ -15,9 +15,9 @@
     ]
   },
   "totals": {
-    "triangles": 77426,
+    "triangles": 71952,
     "degenerateTriangles": 0,
-    "openBoundaryEdges": 12164
+    "openBoundaryEdges": 11348
   },
   "allFinite": true,
   "allWindingConsistent": true,
@@ -64,16 +64,7 @@
       "watertight": false,
       "openBoundaryEdges": 96
     },
-    "DIFFUSER_CENTER_FENCE_+1_MESH": {
-      "triangles": 12,
-      "finiteVertices": true,
-      "finiteNormals": true,
-      "degenerateTriangles": 0,
-      "windingConsistent": true,
-      "watertight": true,
-      "openBoundaryEdges": 0
-    },
-    "DIFFUSER_CENTER_FENCE_-1_MESH": {
+    "DIFFUSER_CENTRAL_SPLITTER_MESH": {
       "triangles": 12,
       "finiteVertices": true,
       "finiteNormals": true,
@@ -100,24 +91,6 @@
       "watertight": true,
       "openBoundaryEdges": 0
     },
-    "DIFFUSER_CHANNEL_WALL_3_MESH": {
-      "triangles": 12,
-      "finiteVertices": true,
-      "finiteNormals": true,
-      "degenerateTriangles": 0,
-      "windingConsistent": true,
-      "watertight": true,
-      "openBoundaryEdges": 0
-    },
-    "DIFFUSER_CHANNEL_WALL_4_MESH": {
-      "triangles": 12,
-      "finiteVertices": true,
-      "finiteNormals": true,
-      "degenerateTriangles": 0,
-      "windingConsistent": true,
-      "watertight": true,
-      "openBoundaryEdges": 0
-    },
     "Cylinder.005": {
       "triangles": 204,
       "finiteVertices": true,
@@ -136,6 +109,24 @@
       "watertight": false,
       "openBoundaryEdges": 86
     },
+    "ENGINE_COVER_PANEL_+1_CURVE": {
+      "triangles": 576,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 88
+    },
+    "ENGINE_COVER_PANEL_-1_CURVE": {
+      "triangles": 576,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 88
+    },
     "ENGINE_COVER_TAPER_MESH": {
       "triangles": 780,
       "finiteVertices": true,
@@ -146,7 +137,7 @@
       "openBoundaryEdges": 0
     },
     "FLOOR_VENTURI_CONTINUOUS_MESH": {
-      "triangles": 798,
+      "triangles": 1936,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
@@ -199,6 +190,15 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
+    "Cylinder.006": {
+      "triangles": 636,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 166
+    },
     "Cylinder.052": {
       "triangles": 188,
       "finiteVertices": true,
@@ -208,14 +208,14 @@
       "watertight": false,
       "openBoundaryEdges": 70
     },
-    "Cylinder.006": {
-      "triangles": 1020,
+    "Torus.001": {
+      "triangles": 1792,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 262
+      "openBoundaryEdges": 156
     },
     "Cylinder.017": {
       "triangles": 140,
@@ -227,13 +227,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.018": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.019": {
       "triangles": 140,
@@ -254,13 +254,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.021": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.022": {
       "triangles": 140,
@@ -281,22 +281,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.024": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.025": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.026": {
       "triangles": 140,
@@ -317,13 +317,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.008": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.009": {
       "triangles": 140,
@@ -344,13 +344,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.011": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.012": {
       "triangles": 140,
@@ -371,22 +371,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.014": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.015": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.016": {
       "triangles": 140,
@@ -442,6 +442,15 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
+    "Cylinder.056": {
+      "triangles": 636,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 166
+    },
     "Cylinder.102": {
       "triangles": 188,
       "finiteVertices": true,
@@ -451,14 +460,14 @@
       "watertight": false,
       "openBoundaryEdges": 70
     },
-    "Cylinder.056": {
-      "triangles": 1020,
+    "Torus.005": {
+      "triangles": 1792,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 262
+      "openBoundaryEdges": 156
     },
     "Cylinder.067": {
       "triangles": 140,
@@ -470,13 +479,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.068": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.069": {
       "triangles": 140,
@@ -497,13 +506,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.071": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.072": {
       "triangles": 140,
@@ -524,22 +533,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.074": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.075": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.076": {
       "triangles": 140,
@@ -560,13 +569,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.058": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.059": {
       "triangles": 140,
@@ -587,13 +596,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.061": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.062": {
       "triangles": 140,
@@ -614,22 +623,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.064": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.065": {
-      "triangles": 268,
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 118
+      "openBoundaryEdges": 54
     },
     "Cylinder.066": {
       "triangles": 140,
@@ -640,7 +649,7 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
-    "Torus.002": {
+    "Torus.004": {
       "triangles": 2304,
       "finiteVertices": true,
       "finiteNormals": true,
@@ -829,6 +838,15 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
+    "Cylinder.028": {
+      "triangles": 636,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 166
+    },
     "Cylinder.055": {
       "triangles": 188,
       "finiteVertices": true,
@@ -838,14 +856,14 @@
       "watertight": false,
       "openBoundaryEdges": 70
     },
-    "Cylinder.028": {
-      "triangles": 1020,
+    "Torus.003": {
+      "triangles": 1792,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 262
+      "openBoundaryEdges": 156
     },
     "Cylinder.039": {
       "triangles": 140,
@@ -866,22 +884,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.041": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.042": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.043": {
       "triangles": 140,
@@ -920,13 +938,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.047": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.048": {
       "triangles": 140,
@@ -956,22 +974,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.031": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.032": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.033": {
       "triangles": 140,
@@ -1010,13 +1028,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.037": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.038": {
       "triangles": 140,
@@ -1027,7 +1045,7 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
-    "Torus.001": {
+    "Torus.002": {
       "triangles": 2304,
       "finiteVertices": true,
       "finiteNormals": true,
@@ -1072,6 +1090,15 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
+    "Cylinder.078": {
+      "triangles": 636,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 166
+    },
     "Cylinder.105": {
       "triangles": 188,
       "finiteVertices": true,
@@ -1081,14 +1108,14 @@
       "watertight": false,
       "openBoundaryEdges": 70
     },
-    "Cylinder.078": {
-      "triangles": 1020,
+    "Torus.007": {
+      "triangles": 1792,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 262
+      "openBoundaryEdges": 156
     },
     "Cylinder.089": {
       "triangles": 140,
@@ -1109,22 +1136,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.091": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.092": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.093": {
       "triangles": 140,
@@ -1163,13 +1190,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.097": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.098": {
       "triangles": 140,
@@ -1199,22 +1226,22 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.081": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.082": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.083": {
       "triangles": 140,
@@ -1253,13 +1280,13 @@
       "openBoundaryEdges": 54
     },
     "Cylinder.087": {
-      "triangles": 140,
+      "triangles": 204,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 54
+      "openBoundaryEdges": 86
     },
     "Cylinder.088": {
       "triangles": 140,
@@ -1270,7 +1297,7 @@
       "watertight": false,
       "openBoundaryEdges": 54
     },
-    "Torus.003": {
+    "Torus.006": {
       "triangles": 2304,
       "finiteVertices": true,
       "finiteNormals": true,
@@ -1342,8 +1369,8 @@
       "watertight": true,
       "openBoundaryEdges": 0
     },
-    "SIDEPOD_FLOOR_BLEND_+1_MESH": {
-      "triangles": 396,
+    "SIDEPOD_FLOOR_TRANSITION_+1_MESH": {
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
@@ -1351,8 +1378,8 @@
       "watertight": true,
       "openBoundaryEdges": 0
     },
-    "SIDEPOD_FLOOR_BLEND_-1_MESH": {
-      "triangles": 396,
+    "SIDEPOD_FLOOR_TRANSITION_-1_MESH": {
+      "triangles": 140,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
@@ -1360,26 +1387,44 @@
       "watertight": true,
       "openBoundaryEdges": 0
     },
-    "SIDEPOD_INLET_LIP_+1_CURVE": {
-      "triangles": 6912,
+    "SIDEPOD_INLET_LIP_+1_MESH": {
+      "triangles": 192,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 600
+      "openBoundaryEdges": 96
     },
-    "SIDEPOD_INLET_LIP_-1_CURVE": {
-      "triangles": 6912,
+    "SIDEPOD_INLET_LIP_+1_MESH_1": {
+      "triangles": 96,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
       "windingConsistent": true,
       "watertight": false,
-      "openBoundaryEdges": 600
+      "openBoundaryEdges": 96
+    },
+    "SIDEPOD_INLET_LIP_-1_MESH": {
+      "triangles": 192,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 96
+    },
+    "SIDEPOD_INLET_LIP_-1_MESH_1": {
+      "triangles": 96,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 96
     },
     "SIDEPOD_INTERNAL_DUCT_+1_MESH": {
-      "triangles": 144,
+      "triangles": 216,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
@@ -1388,7 +1433,7 @@
       "openBoundaryEdges": 72
     },
     "SIDEPOD_INTERNAL_DUCT_-1_MESH": {
-      "triangles": 144,
+      "triangles": 216,
       "finiteVertices": true,
       "finiteNormals": true,
       "degenerateTriangles": 0,
@@ -1413,6 +1458,24 @@
       "windingConsistent": true,
       "watertight": false,
       "openBoundaryEdges": 96
+    },
+    "SIDEPOD_SHOULDER_PANEL_+1_CURVE": {
+      "triangles": 768,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 112
+    },
+    "SIDEPOD_SHOULDER_PANEL_-1_CURVE": {
+      "triangles": 768,
+      "finiteVertices": true,
+      "finiteNormals": true,
+      "degenerateTriangles": 0,
+      "windingConsistent": true,
+      "watertight": false,
+      "openBoundaryEdges": 112
     },
     "SIDEPOD_UNDERCUT_EDGE_+1_CURVE": {
       "triangles": 1152,

@@ -1,54 +1,67 @@
-# Clay gate issue log
+# Blender refinement Revision 2 issue log
 
-## EDS-BLEND-001 — P2 — sidepod inlet composition — OPEN
+Baseline: `8fda531d222acda2fd68b33ab8cf8b980b9ac6d8`
 
-- Reproduce: review `evidence/clay-gate/sidepod-close-up-clay.png` and the
-  matched sidepod sheet.
-- Expected: a layered, smoothly blended intake whose lip, shoulder, undercut and
-  duct read as one intentional aerodynamic composition.
-- Actual: the duct is a real open/recessed volume, but its circular termination
-  and surrounding shoulder still read too much like an attached tube.
-- Suspected root cause: the inlet lip and primary sidepod loft have independent
-  section networks without a shared transition patch.
-- Retest: **FAIL visually**; geometry loads and contains no degenerate triangles.
+Evidence: `evidence/refinement-revision-2/`
 
-## EDS-BLEND-002 — P2 — floor/sidepod relationship — OPEN
+Gate: **OWNER DESIGN GATE - AWAITING VISUAL APPROVAL**
 
-- Reproduce: side and front-three-quarter clay sheets.
-- Expected: a continuous undercut feeding a thin, supported floor edge.
-- Actual: the new blend volume reduces the gap, but the outer floor still reads
-  as a broad horizontal plate in side silhouette.
-- Suspected root cause: floor plan/vertical thickness remains too uniform ahead
-  of the diffuser.
-- Retest: **REVISE visually**.
+## EDS-BLEND-001 - P2 - sidepod inlet composition - OWNER REVIEW
 
-## EDS-BLEND-003 — P2 — diffuser exit design — OPEN
+- Previous defect: independent circular lip and duct sections read as an
+  attached tube.
+- Revision 2: one rounded-D outer section now drives the sidepod shoulder; an
+  authored annular lip converges into a recessed dark throat and duct.
+- Evidence: `focused-before-after/sidepod-inlet-{diffuse,reflective}.png`.
+- Technical retest: finite geometry, consistent winding, no degenerate
+  triangles. Aperture boundaries are intentional.
+- Visual retest: clear improvement observed; final shape quality is **not
+  self-approved** and remains for owner review.
 
-- Reproduce: `diffuser-underside-{clay,reflective}.png` and matched sheets.
-- Expected: two deep, legible outlets with controlled roof/wall continuity.
-- Actual: twin channels and four wall boundaries exist, but the rear cross
-  section remains angular and the centre gable dominates the silhouette.
-- Retest: **FAIL visual quality**; width and geometry validity pass.
+## EDS-BLEND-002 - P2 - floor/sidepod relationship - OWNER REVIEW
 
-## EDS-BLEND-004 — P2 — reference-level detail gap — OPEN
+- Previous defect: uniform broad plate and weak undercut support.
+- Revision 2: variable-width floor plan, approximately 45 mm forward shell
+  thickness and watertight ruled sidepod-to-floor transition shells.
+- Evidence: `focused-before-after/floor-undercut-{diffuse,reflective}.png` and
+  side silhouette sheets.
+- Technical retest: floor and both transition shells are watertight with zero
+  open boundary edges; dimensions and ground clearance remain locked.
+- Residual visual risk: the outer edge remains deliberately horizontal and may
+  still read too planar from a pure side camera. Owner decision required.
 
-- Reproduce: all six full-car matched comparison sheets.
-- Actual: wheel/brake/suspension assemblies are richer than Revision 6, but the
-  model remains materially less sophisticated than Detailed + EDS in panel,
-  duct, aero-edge and mechanical definition.
-- Retest: **FAIL target fidelity**.
+## EDS-BLEND-003 - P2 - diffuser exit design - OWNER REVIEW
 
-## EDS-BLEND-005 — P3 — runtime draw-call density — OPEN
+- Previous defect: sparse cross-section sampling and two tall centre fences
+  created an angular M-profile/central gable.
+- Revision 2: 25 lateral samples, 13 longitudinal stations, lower-amplitude
+  twin roof lobes, one low tapered splitter and two slim outer strakes.
+- Evidence: `focused-before-after/diffuser-exit-{diffuse,reflective}.png` and
+  Blender rear/underside views.
+- Technical retest: floor/diffuser and all three strakes are watertight; exit
+  width remains 1.160 m; zero degenerates and consistent winding.
+- Residual visual risk: outlets are smoother and distinct but remain broad clay
+  volumes rather than final detailed tunnels. Owner decision required.
 
-- Evidence: `browser-performance.json` records 157 geometries/draw calls and
-  77,426 triangles.
-- Impact: acceptable for a DEV clay review on the measured desktop run, but too
-  fragmented for a future commercial LOD0 without semantic batching.
-- Status: optimization intentionally deferred until geometry approval.
+## EDS-BLEND-004 - P2 - Detailed + EDS fidelity gap - OPEN
+
+- Revision 2 adds open rims, hubs, visible brake discs/calipers, controlled
+  panel boundaries and more coherent inlet/floor/diffuser definition.
+- The candidate remains less dense than the Detailed + EDS reference in local
+  aero edges, panel segmentation and mechanical assemblies.
+- This gate intentionally excludes PBR, UV, LOD and production detailing.
+
+## EDS-BLEND-005 - P3 - runtime draw-call density - OPEN
+
+- Previous: 157 calls/geometries, 77,426 triangles, 1,715,424 bytes.
+- Revision 2: 164 calls/geometries, 71,952 triangles, 1,594,552 bytes.
+- Assessment: triangles and bytes decreased; seven additional semantic draw
+  calls are a known DEV-review cost. Batching remains deferred until approval.
 
 ## Unverified geometry risks
 
-Strict whole-scene self-intersection and classified inter-mesh collision checks
-are **NOT TESTED**. Independent validation confirms finite data, zero degenerate
-triangles and consistent winding, but intentional open ducts and mechanically
-contacting semantic objects require a more capable collision classifier.
+- Strict whole-scene self-intersection: **NOT TESTED**.
+- Classified inter-mesh collision: **NOT TESTED**.
+- Reason: the available independent checker cannot reliably distinguish
+  intended mechanical contact and designed open apertures across 164 semantic
+  geometries. This limitation is not treated as PASS.

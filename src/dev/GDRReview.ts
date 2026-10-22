@@ -53,6 +53,7 @@ const revision7Views: Record<
   'sidepod-regression': { position: [1.18, 0.86, -1.08], target: [0.45, 0.45, -0.18] },
   'blender-cockpit-close-up': { position: [1.45, 1.25, -1.34], target: [0, 0.66, -0.1] },
   'blender-sidepod-close-up': { position: [1.72, 0.86, -1.0], target: [0.47, 0.43, -0.32] },
+  'blender-floor-edge-undercut': { position: [1.82, 0.48, 0.18], target: [0.53, 0.19, 0.30] },
   'blender-diffuser-underside': { position: [1.0, 0.12, 3.35], target: [0, 0.2, 1.72] },
   'blender-wheel-suspension-close-up': {
     position: [1.76, 0.86, -2.18],

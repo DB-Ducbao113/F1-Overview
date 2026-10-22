@@ -1,0 +1,488 @@
+{
+  "baselineCommit": "8fda531d222acda2fd68b33ab8cf8b980b9ac6d8",
+  "viewport": [
+    900,
+    650
+  ],
+  "fov": 38,
+  "methodology": "Same Three.js renderer, camera, light, viewport and mode per comparison sheet; only documented DEV-reference scale differs.",
+  "sources": {
+    "detailed-eds-dev-reference": {
+      "file": "public/models/c42.v2.glb",
+      "scale": 0.105
+    },
+    "previous-clay-revision": {
+      "file": "8fda531d222acda2fd68b33ab8cf8b980b9ac6d8:docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb",
+      "scale": 1
+    },
+    "refinement-revision-2": {
+      "file": "docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb",
+      "scale": 1
+    }
+  },
+  "captures": {
+    "front": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "rear": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "side": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "top": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "front-three-quarter": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "rear-three-quarter": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 157,
+          "triangles": 77426,
+          "geometries": 157,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 164,
+          "triangles": 71952,
+          "geometries": 164,
+          "textures": 0
+        }
+      }
+    },
+    "cockpit-close-up": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 63,
+          "triangles": 42322,
+          "geometries": 63,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 67,
+          "triangles": 34288,
+          "geometries": 67,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 63,
+          "triangles": 42322,
+          "geometries": 63,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 67,
+          "triangles": 34288,
+          "geometries": 67,
+          "textures": 0
+        }
+      }
+    },
+    "sidepod-close-up": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 62,
+          "triangles": 42110,
+          "geometries": 62,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 66,
+          "triangles": 34076,
+          "geometries": 66,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 62,
+          "triangles": 42110,
+          "geometries": 62,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 66,
+          "triangles": 34076,
+          "geometries": 66,
+          "textures": 0
+        }
+      }
+    },
+    "floor-edge-undercut": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 9,
+          "triangles": 216428,
+          "geometries": 9,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 43,
+          "triangles": 33410,
+          "geometries": 43,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 45,
+          "triangles": 24896,
+          "geometries": 45,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 9,
+          "triangles": 216428,
+          "geometries": 9,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 43,
+          "triangles": 33410,
+          "geometries": 43,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 45,
+          "triangles": 24896,
+          "geometries": 45,
+          "textures": 0
+        }
+      }
+    },
+    "diffuser-underside": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 121,
+          "triangles": 69794,
+          "geometries": 121,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 127,
+          "triangles": 63744,
+          "geometries": 127,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 11,
+          "triangles": 237482,
+          "geometries": 11,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 121,
+          "triangles": 69794,
+          "geometries": 121,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 127,
+          "triangles": 63744,
+          "geometries": 127,
+          "textures": 0
+        }
+      }
+    },
+    "wheel-suspension-close-up": {
+      "diffuse": {
+        "detailed-eds-dev-reference": {
+          "calls": 10,
+          "triangles": 216428,
+          "geometries": 10,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 83,
+          "triangles": 54026,
+          "geometries": 83,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 88,
+          "triangles": 43084,
+          "geometries": 88,
+          "textures": 0
+        }
+      },
+      "reflective": {
+        "detailed-eds-dev-reference": {
+          "calls": 10,
+          "triangles": 216428,
+          "geometries": 10,
+          "textures": 0
+        },
+        "previous-clay-revision": {
+          "calls": 83,
+          "triangles": 54026,
+          "geometries": 83,
+          "textures": 0
+        },
+        "refinement-revision-2": {
+          "calls": 88,
+          "triangles": 43084,
+          "geometries": 88,
+          "textures": 0
+        }
+      }
+    }
+  },
+  "errors": []
+}
