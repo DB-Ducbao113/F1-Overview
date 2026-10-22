@@ -1,6 +1,6 @@
 # EDS QA RELEASE REPORT
 
-Commit SHA: pending scoped commit
+Implementation commit SHA: `43324dbdc89efe9ed18ac1e431418488ecc633f9`
 Target branch: `Per-PEDS`
 Target environment: DEV-only owner clay-design review
 Change summary: new Blender-authored EDS-G03 clay study, reproducible exporter,
