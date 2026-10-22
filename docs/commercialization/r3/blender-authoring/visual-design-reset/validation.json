@@ -1,0 +1,63 @@
+{
+  "scope": "Independent Node GLB structure and registry validation",
+  "concepts": {
+    "aero-predator": {
+      "file": "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-aero-predator.glb",
+      "bytes": 1315264,
+      "sha256": "b3d85ceb85a58df8bda9fa0bd4244d6716a443ed6fc888b6ccaaa4dd4ff4a75a",
+      "assetVersion": "2.0",
+      "scenes": 1,
+      "nodes": 152,
+      "meshes": 152,
+      "materials": 8,
+      "textures": 0,
+      "indexedTriangles": 58344,
+      "measuredDimensions": {
+        "width": 2,
+        "height": 1.1799999475479126,
+        "length": 5.049999952316284
+      },
+      "wheelbase": 3.6,
+      "errors": []
+    },
+    "eds-hyper-aero": {
+      "file": "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-eds-hyper-aero.glb",
+      "bytes": 1398568,
+      "sha256": "a09f1fdf832424fe4ce46213d2f5557efc415a7e74214e293e0b66e55855a73e",
+      "assetVersion": "2.0",
+      "scenes": 1,
+      "nodes": 156,
+      "meshes": 156,
+      "materials": 9,
+      "textures": 0,
+      "indexedTriangles": 62180,
+      "measuredDimensions": {
+        "width": 2,
+        "height": 1.1800000667572021,
+        "length": 5.049999952316284
+      },
+      "wheelbase": 3.6,
+      "errors": []
+    },
+    "precision-machine": {
+      "file": "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-precision-machine.glb",
+      "bytes": 1268676,
+      "sha256": "ff15538e2aeea6268872ad42fdf0c6cb99065d258bc153e98a251f311901f2a6",
+      "assetVersion": "2.0",
+      "scenes": 1,
+      "nodes": 151,
+      "meshes": 151,
+      "materials": 9,
+      "textures": 0,
+      "indexedTriangles": 55820,
+      "measuredDimensions": {
+        "width": 2,
+        "height": 1.1799999475479126,
+        "length": 5.049999952316284
+      },
+      "wheelbase": 3.6,
+      "errors": []
+    }
+  },
+  "errors": []
+}

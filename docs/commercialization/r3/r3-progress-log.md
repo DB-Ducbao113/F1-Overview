@@ -265,3 +265,34 @@
 - The experimental GLB was not promoted to `public/models`; G01/commercial
   Showroom, Results Engine, main, production and unrelated work untouched.
   **OWNER GATE 2 HOLD / REVISE.** No R3.3.
+
+## 2026-10-22 — R3 full visual design reset, silhouette concepts A/B/C
+
+- Branch/baseline: `Per-PEDS` at `4491808`; Revision 2 failed owner visual
+  approval. Existing Cloudflare/CI/reference changes and all prior G03 assets
+  were preserved. No stage, commit, push, merge or deployment.
+- Source: new reproducible Blender 5.2.2 authoring script created three original
+  whole-car clay concepts: `EDS-G03-SR-A-r1` Aero Predator,
+  `EDS-G03-SR-B-r1` EDS Hyper Aero and `EDS-G03-SR-C-r1` Precision Machine.
+- Locked dimensions: every concept measured 5.050 x 2.000 x 1.180 m with
+  3.600 m wheelbase, front/rear axle Z -1.75/+1.85 m and unchanged wheel/track
+  registry. No FIA-compliance claim.
+- Reproducibility: three second clean exports matched SHA-256. GLB sizes are
+  1,315,264 / 1,398,568 / 1,268,676 bytes; evaluated Blender triangle counts
+  are 57,192 / 57,188 / 54,668 for A/B/C respectively.
+- Evidence: 36 actual Blender PNGs, 12 matched A/B/C contact sheets and 12
+  dedicated previous-Revision-2 comparison sheets under
+  `blender-authoring/evidence/visual-design-reset/`. Exact model revisions and
+  direct image paths are indexed in that directory's `README.md`.
+- QA: Blender generation, independent GLB structure/hash/registry validation,
+  contact-sheet capture, ESLint, 39 files / 281 tests, TypeScript/build and
+  commercial isolation PASS. Full repository Prettier check remains FAIL on
+  124 pre-existing/unrelated files; all reset files pass scoped Prettier.
+  Khronos validation, strict topology/intersection checks, browser integration,
+  physical-device and sustained GPU tests were NOT RUN.
+- Open visual issues: rear wing/endplates remain silhouette-grade; A/B
+  engine-cover peaks may be too abrupt; front endplates await selected-concept
+  surfacing. See `blender-authoring/visual-design-reset/qa-report.md`.
+- Next action: owner selects A, B or C, or requests a precise hybrid/revision.
+  Do not begin high-detail modeling, PBR, LOD or integration.
+  **FINAL STATUS: AWAITING OWNER SILHOUETTE APPROVAL.**

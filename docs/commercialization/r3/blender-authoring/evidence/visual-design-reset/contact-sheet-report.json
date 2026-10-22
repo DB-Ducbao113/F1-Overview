@@ -1,0 +1,32 @@
+{
+  "viewportPerPanel": [960, 640],
+  "views": ["front", "side", "top", "front-three-quarter", "rear-three-quarter", "rear"],
+  "modes": ["clay", "reflective"],
+  "sheets": [
+    "contact-sheets\\front-clay.png",
+    "previous-r2-comparison\\front-clay.png",
+    "contact-sheets\\front-reflective.png",
+    "previous-r2-comparison\\front-reflective.png",
+    "contact-sheets\\side-clay.png",
+    "previous-r2-comparison\\side-clay.png",
+    "contact-sheets\\side-reflective.png",
+    "previous-r2-comparison\\side-reflective.png",
+    "contact-sheets\\top-clay.png",
+    "previous-r2-comparison\\top-clay.png",
+    "contact-sheets\\top-reflective.png",
+    "previous-r2-comparison\\top-reflective.png",
+    "contact-sheets\\front-three-quarter-clay.png",
+    "previous-r2-comparison\\front-three-quarter-clay.png",
+    "contact-sheets\\front-three-quarter-reflective.png",
+    "previous-r2-comparison\\front-three-quarter-reflective.png",
+    "contact-sheets\\rear-three-quarter-clay.png",
+    "previous-r2-comparison\\rear-three-quarter-clay.png",
+    "contact-sheets\\rear-three-quarter-reflective.png",
+    "previous-r2-comparison\\rear-three-quarter-reflective.png",
+    "contact-sheets\\rear-clay.png",
+    "previous-r2-comparison\\rear-clay.png",
+    "contact-sheets\\rear-reflective.png",
+    "previous-r2-comparison\\rear-reflective.png"
+  ],
+  "errors": []
+}
