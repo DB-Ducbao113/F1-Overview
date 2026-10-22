@@ -296,3 +296,30 @@
 - Next action: owner selects A, B or C, or requests a precise hybrid/revision.
   Do not begin high-detail modeling, PBR, LOD or integration.
   **FINAL STATUS: AWAITING OWNER SILHOUETTE APPROVAL.**
+
+## 2026-10-22 — R3 cockpit, halo and long-nose design gate
+
+- Branch/baseline: `Per-PEDS` at `6aa2e12`; unrelated Cloudflare/CI/reference
+  work and all A/B/C silhouette concepts were preserved. No stage, commit,
+  push, merge, deployment or production-asset replacement.
+- Precision Machine was used as the comparison baseline. Original Blender
+  geometry produced `EDS-G03-CNR-N30-r1` and `EDS-G03-CNR-N20-r1`; the supplied
+  C42 image informed only general packaging and surface-transition principles.
+- Both studies retain locked 5.050 × 2.000 × 1.180 m dimensions, 3.600 m
+  wheelbase and existing hardpoints. N30 measures exact A:B 30:70; N20 20:80.
+  The baseline measures 38.4:61.6 under the same definition, so the requested
+  ratios move the cockpit forward rather than increasing measured A.
+- Evidence: 48 direct Blender PNGs, 16 matched three-way contact sheets, nine
+  focused before/after comparisons and one ratio diagram under
+  `blender-authoring/evidence/cockpit-nose-redesign/`.
+- Blender mesh diagnostics and independent GLB/registry validation PASS.
+  ESLint, 39 files / 281 tests, TypeScript/build and commercial isolation PASS.
+  Inter-assembly collision, ergonomics, FIA legality, browser integration and
+  physical-device performance were NOT RUN.
+- Deterministic export FAIL: three clean exports kept stable byte size and
+  geometry but produced different SHA-256 hashes. This must be resolved before
+  a production asset pipeline.
+- Visual recommendation: N30. Its 0.665 m axle-to-opening clearance keeps a
+  coherent nose, halo and shoulder relationship. N20 leaves only 0.160 m and
+  reads as a packaging-stressed extreme study.
+- **HOLD — AWAITING OWNER COCKPIT & NOSE DESIGN APPROVAL.**

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="720" viewBox="0 0 1800 720">
+  <rect width="1800" height="720" fill="#071018"/>
+  <style>.h{font:700 34px Arial;fill:#f2f7fa}.t{font:700 24px Arial;fill:#f2f7fa}.s{font:20px Arial;fill:#b9c9d2}.a{fill:#de3d52}.b{fill:#3e7698}.m{stroke:#f2f7fa;stroke-width:3}.d{stroke:#849aa7;stroke-width:2;stroke-dasharray:8 8}</style>
+  <text x="70" y="65" class="h">EDS-G03 COCKPIT POSITION — LOCKED 5.05 m VEHICLE LENGTH</text>
+  <text x="70" y="104" class="s">A = frontmost point to forward cockpit opening edge · B = opening edge to rearmost point</text>
+  <g transform="translate(70 165)">
+    <text x="0" y="0" class="t">Baseline Precision Machine — measured 38.4 : 61.6</text>
+    <rect x="0" y="35" width="637" height="72" class="a"/><rect x="637" y="35" width="1023" height="72" class="b"/>
+    <line x1="637" y1="18" x2="637" y2="127" class="m"/><text x="20" y="82" class="t">A 1.94 m</text><text x="680" y="82" class="t">B 3.11 m</text>
+  </g>
+  <g transform="translate(70 355)">
+    <text x="0" y="0" class="t">N30 — exact 30 : 70</text>
+    <rect x="0" y="35" width="498" height="72" class="a"/><rect x="498" y="35" width="1162" height="72" class="b"/>
+    <line x1="498" y1="18" x2="498" y2="127" class="m"/><text x="20" y="82" class="t">A 1.515 m</text><text x="540" y="82" class="t">B 3.535 m</text>
+    <line x1="280" y1="20" x2="280" y2="125" class="d"/><text x="190" y="148" class="s">front axle</text>
+  </g>
+  <g transform="translate(70 545)">
+    <text x="0" y="0" class="t">N20 — exact 20 : 80</text>
+    <rect x="0" y="35" width="332" height="72" class="a"/><rect x="332" y="35" width="1328" height="72" class="b"/>
+    <line x1="332" y1="18" x2="332" y2="127" class="m"/><text x="20" y="82" class="t">A 1.010 m</text><text x="375" y="82" class="t">B 4.040 m</text>
+    <line x1="280" y1="20" x2="280" y2="125" class="d"/><text x="182" y="148" class="s">0.16 m axle clearance</text>
+  </g>
+</svg>

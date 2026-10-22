@@ -1,0 +1,19 @@
+{
+  "scope": "Three independent Blender GLB exports from the same authoring script and revision",
+  "result": "FAIL",
+  "constantByteLength": true,
+  "geometryRegistryStable": true,
+  "runs": {
+    "n30": [
+      "c095406e18358bd8d294fe81cab609d31504efc107d71704dd2933f440ff662c",
+      "583de37950b743baac78f5b0c8b786fdd57938899f1bd6efabe31fd795ca456a",
+      "f3317492a94df6fe7a795b0664a38bd9f49bfc507e950af5b150f3d255648c05"
+    ],
+    "n20": [
+      "79267670d315d9117d4c70fa1bf623d15836bcabfeb5e00bfc7d2cfe30f045ca",
+      "32e4d6239bc8f8c3781856cd15b0cf96bcaced3b13cce081df8f570c915c9c04",
+      "737dc794fca4bc67010bd883741dd3dc006059e0f8a0ee46bdb83b3d62222848"
+    ]
+  },
+  "disposition": "The Blender/glTF export is not byte-deterministic. This blocks a deterministic-export PASS but does not invalidate the measured geometry or PNG review evidence. Resolve before any production asset pipeline work."
+}
