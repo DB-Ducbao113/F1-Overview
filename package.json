@@ -34,6 +34,8 @@
     "asset:eds-g02:validate": "node scripts/validate-eds-g02.mjs",
     "asset:eds-g03": "node scripts/generate-eds-g03.mjs",
     "asset:eds-g03:validate": "node scripts/validate-eds-g03.mjs",
+    "asset:eds-g03-d1:validate": "node scripts/validate-eds-g03-c42-d1.mjs",
+    "asset:eds-g03-d1:sheets": "node scripts/create-eds-g03-c42-d1-sheets.mjs",
     "qa:r2:model-review": "node scripts/capture-r2-model-review.mjs",
     "qa:r2:legacy-skins": "node scripts/capture-r2-legacy-skin-review.mjs",
     "qa:r3:blockout": "node scripts/capture-r3-g03-blockout.mjs",

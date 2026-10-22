@@ -354,3 +354,18 @@ docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb`.
   REWORK. See `component-comparison.md`.
 - Status: **HOLD — OWNER GATE: C42-REFERENCED EDS RECONSTRUCTION REVIEW**.
   No PBR, LOD integration, production swap or release.
+
+## 2026-10-22 — Repository Cleanup & D1 Asset Consolidation
+
+- Objective: Audit repository, delete obsolete development artifacts, enforce English naming standards, and establish C42-referenced reconstruction D1 as the single active 3D authoring direction.
+- Non-negotiable policy: `public/models/c42.v2.glb` preserved as DEV-only reference; `docs/commercialization/r3/blender-authoring/c42-reconstruction-d1/` preserved as single active reconstruction; earlier experimental EDS models rejected as reconstruction baselines.
+- Curated Vehicle Evolution: Created `docs/commercialization/vehicle-evolution/` with 18 selected real screenshots covering 6 milestones (Blockout, Aerodynamic Revisions, Clay Refinement, Rejected Concepts, Cockpit/Nose Experiments, C42-Referenced D1) and `vehicle-evolution-manifest.json`.
+- English naming: Purged 12 corrupted Blender thumbnail directories with non-ASCII names from root; zero non-ASCII filenames remaining in repository.
+- Deleted obsolete artifacts: 329 tracked files (174.63 MB) deleted, cataloged in `docs/maintenance/deletion-manifest.json`:
+  - 32 rejected/prototype `.blend` and `.glb` files removed (visual design reset, cockpit/nose, clay gate, R3.2 Gate 2 prototypes, GDR prototypes).
+  - 241 obsolete review screenshots and contact sheets removed from `blender-authoring/evidence/`.
+  - 34 superseded authoring, inspection, plotting, and capture utility scripts removed from `scripts/`.
+- Consolidated active authoring: `docs/commercialization/r3/blender-authoring/` consolidated around `c42-reconstruction-d1/` and updated `README.md`.
+- Protected assets verified: `public/models/c42.v2.glb`, active D1 `.blend`/`.glb`, automated F1 data pipelines, Results Engine, and website runtime assets intact.
+- Git status: Local working tree cleanup only; no stage, commit, push, merge, or deployment.
+- Status: **AWAITING OWNER REPOSITORY CLEANUP REVIEW**.

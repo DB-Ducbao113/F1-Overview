@@ -8,16 +8,16 @@ const chrome =
 const model = await fs.readFile(
   path.resolve(
     process.env.R3_GLB_PATH ??
-      'docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb',
+      'docs/commercialization/r3/blender-authoring/c42-reconstruction-d1/eds-g03-c42-reconstruction-d1.glb',
   ),
 );
 const output = path.resolve(
   process.env.R3_BENCHMARK_OUTPUT ??
-    'docs/commercialization/r3/blender-authoring/browser-performance.json',
+    'docs/commercialization/r3/blender-authoring/c42-reconstruction-d1/browser-performance.json',
 );
 const evidenceRoot = path.resolve(
   process.env.R3_BENCHMARK_EVIDENCE ??
-    'docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser',
+    'docs/commercialization/r3/blender-authoring/c42-reconstruction-d1/evidence/browser',
 );
 const viewports = [
   { id: 'desktop', width: 1440, height: 900 },

@@ -1,0 +1,2312 @@
+{
+    "version":  "1.0",
+    "generatedAt":  "2026-10-22T15:04:38.8490682+07:00",
+    "totalFiles":  329,
+    "totalSizeBytes":  183113713,
+    "totalSizeMB":  174.63,
+    "files":  [
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/aero-predator-geometry.json",
+                      "sizeBytes":  1464,
+                      "sha256":  "729F444EAEB3B9D61F4D585F3BA78B9DC26D52D152AF3D993B1CC316AFB976B9",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-aero-predator.blend",
+                      "sizeBytes":  357034,
+                      "sha256":  "694E6AE8D652FDAF9F1476CC40ACC2D211F13E05223FEC8228C526110080BE78",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-aero-predator.glb",
+                      "sizeBytes":  1315264,
+                      "sha256":  "B3D85CEB85A58DF8BDA9FA0BD4244D6716A443ED6FC888B6CCAAA4DD4FF4A75A",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-eds-hyper-aero.blend",
+                      "sizeBytes":  375222,
+                      "sha256":  "8B3E4BD168929A31D99266608CF80B5480A1AAC00852C203A648141CE49A223A",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-eds-hyper-aero.glb",
+                      "sizeBytes":  1398568,
+                      "sha256":  "A09F1FDF832424FE4CE46213D2F5557EFC415A7E74214E293E0B66E55855A73E",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-precision-machine.blend",
+                      "sizeBytes":  360599,
+                      "sha256":  "EBFA97B917672ABFA4973C183A3D690EF1CDCAB359F83E3416DAC8E9EC41E2C9",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-g03-precision-machine.glb",
+                      "sizeBytes":  1268676,
+                      "sha256":  "FF15538E2AEEA6268872AD42FDF0C6CB99065D258BC153E98A251F311901F2A6",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/eds-hyper-aero-geometry.json",
+                      "sizeBytes":  1471,
+                      "sha256":  "3FA2A03E915DC907880FCF9C0F23FEBF915BF3A0DAB22852673988197ED652C8",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/manifest.json",
+                      "sizeBytes":  5856,
+                      "sha256":  "BAB79B1ED0FF50EC08EA19A79A0CCF8DDA48E9CCA45DC7C29CDE3D0E8D4E1B03",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/precision-machine-geometry.json",
+                      "sizeBytes":  1476,
+                      "sha256":  "FB6B3DD017AFD4B5DD1E9238EB3D594154D91237CA7016012CDCCCE27979991B",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/qa-report.md",
+                      "sizeBytes":  4707,
+                      "sha256":  "F92D6C773BABF168328FD10CE8BF686BDF8E835A16D5830AB26616DB544AFB21",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/visual-design-reset/validation.json",
+                      "sizeBytes":  1876,
+                      "sha256":  "C8EBA6B31BE0CFA8D2D66E9D24B503A533C0AFD7B5B3258E0E98E2A6D5A640AA",
+                      "category":  "rejected-3d-concept",
+                      "reason":  "Obsolete experimental visual design reset artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/deterministic-export.json",
+                      "sizeBytes":  913,
+                      "sha256":  "6F5218E220C8E3B583D35AFC045B29BE412B7AE1D50C3DC13A792B27277EC75B",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/eds-g03-cockpit-nose-n20.blend",
+                      "sizeBytes":  376221,
+                      "sha256":  "5436D30F24C7C5521FD7E609B97925B1FF979E0EF4F514A01C4D84DDBAFE7B3B",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/eds-g03-cockpit-nose-n20.glb",
+                      "sizeBytes":  1527940,
+                      "sha256":  "737DC794FCA4BC67010BD883741DD3DC006059E0F8A0EE46BDB83B3D62222848",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/eds-g03-cockpit-nose-n30.blend",
+                      "sizeBytes":  376177,
+                      "sha256":  "C8059A94434E5400FD96525D1B46904834E92AAD8283C2E32B779C57B6DB42F0",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/eds-g03-cockpit-nose-n30.glb",
+                      "sizeBytes":  1527932,
+                      "sha256":  "F3317492A94DF6FE7A795B0664A38BD9F49BFC507E950AF5B150F3D255648C05",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/geometry-validation.json",
+                      "sizeBytes":  951,
+                      "sha256":  "931DD9A3AB5C6C1FE8BEDA823070AF3FC964B852EA0F19B2B659723EB211F18C",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/manifest.json",
+                      "sizeBytes":  5027,
+                      "sha256":  "C6FC64782D559CAC730FEF48C8E3923E898BD8579EA575ABF40CD20825565314",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/n20-geometry.json",
+                      "sizeBytes":  2006,
+                      "sha256":  "E8662A169356B420D12B2E66E46423F4C8F52672CCAB5B3C6B0F802FAAAF46EA",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/n30-geometry.json",
+                      "sizeBytes":  2008,
+                      "sha256":  "84C22392340599D91209DFB6631E5B3E71A4AF7C1729F0A60FC6FF39EF84313E",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/qa-report.md",
+                      "sizeBytes":  5313,
+                      "sha256":  "07A5F130C5959217A78AF221E56A46C333D99527C22F17F8D30B01DB24CBBFB7",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/cockpit-nose-redesign/validation.json",
+                      "sizeBytes":  1472,
+                      "sha256":  "2B292D558AFB95822A485CC5CBFB41F6A862D040CC2071F48B1D600A7E9D29B0",
+                      "category":  "rejected-3d-study",
+                      "reason":  "Obsolete experimental cockpit and nose study artifact superseded by C42-referenced D1 reconstruction"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/eds-g03-clay-design.blend",
+                      "sizeBytes":  479796,
+                      "sha256":  "B1D7995919112C0E399FE58F2DBBADB2D1CB1500C22ABE35BF1B5B0E0FED6E69",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/eds-g03-clay-review.glb",
+                      "sizeBytes":  1594552,
+                      "sha256":  "0F232EC60F645ECABCAD2156295867E51E1C4B48E9236396DC4FF1DEE249ABCF",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/eds-g03-clay-review.sha256",
+                      "sizeBytes":  91,
+                      "sha256":  "86CF624CC39D503A594FBA333B1EBA56E8666674F73E7F9FD36FD4E42BCB92EC",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/browser-performance.json",
+                      "sizeBytes":  2172,
+                      "sha256":  "D1DBB4F66C0608E6A3E3CF955E3670BC3C96809DF2DD14D64367A7C51818EBC3",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/environment-and-architecture.md",
+                      "sizeBytes":  2861,
+                      "sha256":  "18BF261B455AFDFBF56D32469079AF21B7FCC945AEF6FFEF2F8DD639E085B146",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/fia-2026-registry-review.md",
+                      "sizeBytes":  2167,
+                      "sha256":  "DF8F79A35AB521DCBDFCAD3DA93A3E1B628D51199E0F22BC8315B1F2E59563FF",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/geometry-report.json",
+                      "sizeBytes":  1469,
+                      "sha256":  "9176BDCE961DECEC3E1E2DB82840643B64E82CFCAD6C2D0997AC4516BE2DFCCA",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/issues.md",
+                      "sizeBytes":  3357,
+                      "sha256":  "D065EB5D7C69CBD93BF5CE0F7A665BF9E428FE8FEF9A9950AD5F339F85C2A2D2",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/khronos-validation.json",
+                      "sizeBytes":  26311,
+                      "sha256":  "FDB426AA204E94A9C0574D78A2679373E2FB0779ECF083AADF26F289B518E575",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/provenance.md",
+                      "sizeBytes":  1550,
+                      "sha256":  "BE4F2469AA476839C46ECB82E6774709AC768544FA5C6E87FE98798FAEEB0C93",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/qa-report.md",
+                      "sizeBytes":  4793,
+                      "sha256":  "993FC12C37264316A58DD800D8139605AC9D4676DCB7CF4F026208C5AF51CEEA",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/topology-report.json",
+                      "sizeBytes":  41251,
+                      "sha256":  "310E03305DE2C8B686AC0B435A55BB42BE364B23AFF1613E7C35659A94AFB1C8",
+                      "category":  "obsolete-clay-gate",
+                      "reason":  "Superseded pre-D1 Blender clay gate artifact"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/cockpit-close-up-clay.png",
+                      "sizeBytes":  653919,
+                      "sha256":  "D48DF8A702F701028A8AB9345DA10B24B3D2ED427E1692BAA4AEAA07E9C36FBA",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/cockpit-close-up-reflective.png",
+                      "sizeBytes":  713756,
+                      "sha256":  "ACD8ECE403ABA0669EB68928D88A7B89BB1F972FBE2490BBE0A44CE3C899A264",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/diffuser-underside-clay.png",
+                      "sizeBytes":  835317,
+                      "sha256":  "6D1B06CF0D567C9233DF72499E55E8B575DA2BB54147C759C4BC5E9E60AFBE87",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/diffuser-underside-reflective.png",
+                      "sizeBytes":  825743,
+                      "sha256":  "931020FB6CC27EDE411F909F98046BCBBF8E29D3B04805ED50510CC79A423017",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/front-clay.png",
+                      "sizeBytes":  666349,
+                      "sha256":  "A811E4420CCA632AF012A624CAA688E2AE0A35CA2B9E46CA88ABBB3AA8D7FF42",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/front-reflective.png",
+                      "sizeBytes":  662157,
+                      "sha256":  "6E045D1C302B951CD72B3957C7000FE1CDA0C348385559C0859EF7C77889DBD4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/front-three-quarter-clay.png",
+                      "sizeBytes":  720194,
+                      "sha256":  "6613C70400D3AB92071A7747478BAC495D44EF2821397CDD661CB87B0EE59F31",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/front-three-quarter-reflective.png",
+                      "sizeBytes":  723743,
+                      "sha256":  "69E3B6691AD44FEFA9EB969A1138EEC4B80A5E9E631D41D6A6F4BAC7E01EB454",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/rear-clay.png",
+                      "sizeBytes":  680714,
+                      "sha256":  "C522DF1E5F06ECB611265483658556CF5EB1919B8CD9F4E22AF8707C435BA242",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/rear-reflective.png",
+                      "sizeBytes":  681595,
+                      "sha256":  "8C99DCAB30F10627130D21954259BD8FDDF27E4E337129B711254D1E2482BBE4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/rear-three-quarter-clay.png",
+                      "sizeBytes":  731352,
+                      "sha256":  "9A81D86AE202F25A1D0A77801D6D32753DFD3912396503D4176B042155E77673",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/rear-three-quarter-reflective.png",
+                      "sizeBytes":  735731,
+                      "sha256":  "1A48C699C18E8060FFCEBF01DCCA13E909F2033A5ABEC8EB3379138A4F581C02",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/side-clay.png",
+                      "sizeBytes":  641489,
+                      "sha256":  "BAC0C9FE8AEB0CF2713743D41E63A2B1CAA6D1E2FB01D4D34818C8A489533F48",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/side-reflective.png",
+                      "sizeBytes":  629875,
+                      "sha256":  "B3374A292521A5A2520DA2CC674C5BBA2D65E35263D20CA616AC7AF15046ABEF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/sidepod-close-up-clay.png",
+                      "sizeBytes":  716106,
+                      "sha256":  "62517B9A5AA08081B7E94B30B780486B59E49870BA39B87AB2E2E91B2D25C25A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/sidepod-close-up-reflective.png",
+                      "sizeBytes":  742405,
+                      "sha256":  "5EA0A31C0FCC23A3C607A31ED50089561ACDBEB77635AC40D0F125BA268C21F3",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/top-clay.png",
+                      "sizeBytes":  780043,
+                      "sha256":  "289D5FCD2E6693CF88C64D7B2F8ED945B3A95CCA2BBE3741548D8ABA39859107",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/top-reflective.png",
+                      "sizeBytes":  794511,
+                      "sha256":  "0AA95173044D3FB90E449AF5F18C77064ADC5D42ECD05CEE540C0250DCE3DB1A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/wheel-suspension-close-up-clay.png",
+                      "sizeBytes":  745235,
+                      "sha256":  "A9C320944210DB55AC16FD8149EAC0F83AD93A4AF608091E8652C1AED9889E63",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/clay-gate/wheel-suspension-close-up-reflective.png",
+                      "sizeBytes":  770990,
+                      "sha256":  "510FEB09EAE4EFC65DB06B47413BCCEC8FB03EDDCB8971BF86772848188D1BCD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheet-report.json",
+                      "sizeBytes":  1799,
+                      "sha256":  "FA0D097DB762A721049B06CABEBA752AC4BBF56CE0B255EBCBC7714FA03850BF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/README.md",
+                      "sizeBytes":  8307,
+                      "sha256":  "56E8C2E51E7F36EDF35082BE67C0EA43C4F8699BA8B3AF6CA9AA3E46A22E1EB9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  678789,
+                      "sha256":  "A66738189B2F55E8F6F11A0A3C84FBADC94D0C537DD1529C44972FC7DE4A2A80",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/cockpit-halo-close-up-reflective.png",
+                      "sizeBytes":  730292,
+                      "sha256":  "19BD2EE35D5F6DB2D4E6DE6906FCC1AAD51652222E4646BBAD662D2B555F021B",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/cockpit-sidepod-shoulder-clay.png",
+                      "sizeBytes":  633651,
+                      "sha256":  "4D090C2476EB381A8A74ABCA8C3AA5172F50C566008512B731F61611472BE71D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/cockpit-sidepod-shoulder-reflective.png",
+                      "sizeBytes":  680464,
+                      "sha256":  "61477118D29C19809CC2951CD98E61303C67222ABA843547E779A719C6A03571",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/front-suspension-nose-clay.png",
+                      "sizeBytes":  801201,
+                      "sha256":  "45E7F7426DC8CBD8E87D283D4224B1115D6424BF85A52A00A9A3B7B3846EE638",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/front-suspension-nose-reflective.png",
+                      "sizeBytes":  815286,
+                      "sha256":  "E0328980A563696781B0AD3449E3969F55745644D430CC20561A9F75CCEADE18",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/front-three-quarter-clay.png",
+                      "sizeBytes":  714431,
+                      "sha256":  "D6EF687EF8B58750593B131D3AE3B4DB88183BEC7C6260FB15D46915B7616EFC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/front-three-quarter-reflective.png",
+                      "sizeBytes":  701010,
+                      "sha256":  "C407D67ABA1EC4832538BE3304AF5123AE76C47A66024DC4A51E873A4C252518",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/nose-monocoque-close-up-clay.png",
+                      "sizeBytes":  692938,
+                      "sha256":  "883C96F9CD2E031389ACA5EFE7866AD47678CEE8A6DA1409D2686A4D23F139F8",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/nose-monocoque-close-up-reflective.png",
+                      "sizeBytes":  739732,
+                      "sha256":  "BC2E0EE18784ADEF031CEA5AC811F2E8E2BA3597FD3D08FC11692DA82F09C5BF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/rear-three-quarter-clay.png",
+                      "sizeBytes":  724237,
+                      "sha256":  "6E821FD2DA3BD2F3BB736EB09A67A259977004A2B10AEF3316A6C2689A0C6C4D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/rear-three-quarter-reflective.png",
+                      "sizeBytes":  718400,
+                      "sha256":  "A6DE9A19AD7D070498795EF5527E5CFB99EDC1A1128B38C604ACC81CAEC38F88",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/side-orthographic-clay.png",
+                      "sizeBytes":  586367,
+                      "sha256":  "5844CF6260487F155CB642D123CA9C748C63023D300EEFF342B66A64D61F0149",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/side-orthographic-reflective.png",
+                      "sizeBytes":  586370,
+                      "sha256":  "15F8B35A7BB7ED93F4E25740E64114E0503D8DA83EFD9F1E3D6C15A2E66472CF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/top-orthographic-clay.png",
+                      "sizeBytes":  769266,
+                      "sha256":  "EE62958CC53325C71B588DEF012C83AFEE09F77802AD9F617565981E10D0EC53",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/baseline-precision-machine/top-orthographic-reflective.png",
+                      "sizeBytes":  783068,
+                      "sha256":  "4A2348C2EED0CA89FD2CFED10326D090AA0FC47F25FF8D799238241F3405927C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n20-cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  943958,
+                      "sha256":  "2F914151467C7F8BFC9E4731214988C4B5A71759EBF8E1F0E120A225C143A20D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n20-side-orthographic-clay.png",
+                      "sizeBytes":  624712,
+                      "sha256":  "6EEB63167E24DC838BC1D0D5FB74D0B4E4EC42CB17C9C8F24D1F5D76A271D76A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n20-top-orthographic-clay.png",
+                      "sizeBytes":  1009918,
+                      "sha256":  "A3E8C3031880BCF8220F9388D8556172FE0714356BFB31EE82A70971D420C26C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n30-cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  941611,
+                      "sha256":  "1581496DA7E222CA7B3EB875B8C67902DBCAC0F161DEF78E9BB76621F05C437C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n30-side-orthographic-clay.png",
+                      "sizeBytes":  617809,
+                      "sha256":  "6C5A2DC6A9520C6EF6CFD49781492012F7B8C09C74D3CEA8978A58D573F6E6BD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/baseline-vs-n30-top-orthographic-clay.png",
+                      "sizeBytes":  995802,
+                      "sha256":  "53449F4D3773330B7B3E76AB2A449471A0C2D4969F93B9412DB1F1096F1C4E8E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/cockpit-ratio-diagram.png",
+                      "sizeBytes":  53005,
+                      "sha256":  "8AD20D1C8AD6DA61A586F2120B56F42BC73FA9E25A88B7CCDC1C2AF80D5DBA3E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/cockpit-ratio-diagram.svg",
+                      "sizeBytes":  1977,
+                      "sha256":  "B8FB1C0749402C80A275C1B94B62B26ACBFEFEB27962980B3E30BD513E58060A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/n30-vs-n20-cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  846769,
+                      "sha256":  "8C79C0D5B6D37AE85339037DED69B5511746D2EFE5B28E29416057B69C53FF51",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/n30-vs-n20-side-orthographic-clay.png",
+                      "sizeBytes":  553959,
+                      "sha256":  "F7F9440240F96E7E28BE88CADA5EC75802AED55369AEE8434ABEA3670BED9AF1",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/comparisons/n30-vs-n20-top-orthographic-clay.png",
+                      "sizeBytes":  824870,
+                      "sha256":  "2A72D7898110BB502DD10B415D16E1935E07FC9ECA9913F90759A2CCAF7D41B6",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  1269146,
+                      "sha256":  "B514552F7A6ABD8D9FA9224FF5C335F45DEB7B9060490C989EAB9554D11EBBAB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/cockpit-halo-close-up-reflective.png",
+                      "sizeBytes":  1394515,
+                      "sha256":  "37C791E88726274B508E281B0D60FDB69A69D62B399A9C3C9E7BE63CDAAB96F9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/cockpit-sidepod-shoulder-clay.png",
+                      "sizeBytes":  1303021,
+                      "sha256":  "9B63621D2F3C21273B239A65CEED63565852EC1235F922BE26D8E78A0C7EDF32",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/cockpit-sidepod-shoulder-reflective.png",
+                      "sizeBytes":  1413184,
+                      "sha256":  "AC274BC55F93D70720917934FDA3E95048AB13D44676EC83D7F1E428C2E8E7E2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/front-suspension-nose-clay.png",
+                      "sizeBytes":  882769,
+                      "sha256":  "FE2CD1394CB54CED8D7049B85E76F4D64F7835A58E389590FC3E1C997049B324",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/front-suspension-nose-reflective.png",
+                      "sizeBytes":  867620,
+                      "sha256":  "B3703D2645D78C891E3634EA638C5864887B1D65CDBA6380E1E1A3F07363072D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/front-three-quarter-clay.png",
+                      "sizeBytes":  996448,
+                      "sha256":  "CAAC02EA03B91B4F0F78CE0D6BC1891B5BD004CADA6D06EB6EBBF9E82840478F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/front-three-quarter-reflective.png",
+                      "sizeBytes":  977550,
+                      "sha256":  "B499E848244AB8CA5D1BF79A7B3437F9D669EB7802092F3EB7B2DC269D4EFFA9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/nose-monocoque-close-up-clay.png",
+                      "sizeBytes":  864314,
+                      "sha256":  "C3F73D563C1CB1683DF28B8FD0475B0FC086D38826636A7F09FC3AD710564DB7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/nose-monocoque-close-up-reflective.png",
+                      "sizeBytes":  890363,
+                      "sha256":  "80485B4DA60F66BF223C9F7087C23BBC54BBB2E8E63E1BB24A6131938CCF5DD0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/rear-three-quarter-clay.png",
+                      "sizeBytes":  940289,
+                      "sha256":  "3F85E868D8862916ECFE03E73340FA02B2610DFFF99C5A5B689243C05E4A52C6",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/rear-three-quarter-reflective.png",
+                      "sizeBytes":  898806,
+                      "sha256":  "C8EB56BA78C941A8A43D977C23F0483871FB568D428A50861909646559E2F436",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/side-orthographic-clay.png",
+                      "sizeBytes":  732448,
+                      "sha256":  "1F3FBEBD6B26751658D9A4809BCC52B4EBC81D889B9A6AF23906B66F22466AB1",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/side-orthographic-reflective.png",
+                      "sizeBytes":  708473,
+                      "sha256":  "A212F9779AC7DD6871C1B53895FD6CB1B2B8FBDBEBBAF7A70D7063DF48FDBA1B",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/top-orthographic-clay.png",
+                      "sizeBytes":  1245463,
+                      "sha256":  "009848703D6D46D77C4AAD52200436BA82FFC0D8F1FDFC933E52010F3D1B6299",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/contact-sheets/top-orthographic-reflective.png",
+                      "sizeBytes":  1283636,
+                      "sha256":  "4454D337D8B379394DC4ED1AFD3F440F2A39DCEA83D35A0E49FCED49CBBDBA5F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  707380,
+                      "sha256":  "5D7D2F546EEEDBD97D46E3E6B9256D0EC13522DB9B2F60332B944DE2627644B3",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/cockpit-halo-close-up-reflective.png",
+                      "sizeBytes":  765025,
+                      "sha256":  "1BA4CD4A2915B12A991DBC6D11795D4FBD7D30865DD483AFA7FCAB0B99E73CB5",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/cockpit-sidepod-shoulder-clay.png",
+                      "sizeBytes":  634558,
+                      "sha256":  "6573077DBC531315ED9233C84568B94C2D4ED43784146CD4494D7BB0F1A08FE6",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/cockpit-sidepod-shoulder-reflective.png",
+                      "sizeBytes":  694414,
+                      "sha256":  "24BD272FDB06C453D0B59654D83D8E525E10A610641ACCC5F2501109EF476A03",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/front-suspension-nose-clay.png",
+                      "sizeBytes":  809070,
+                      "sha256":  "B1A056C93F0FBFBA1A1F652963277D41FD8AC50EF2940FCB2F64A389886E452E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/front-suspension-nose-reflective.png",
+                      "sizeBytes":  818436,
+                      "sha256":  "7E238FAC548BE71757BE95E8D26DBD6186ED706B4950E03CB6F84435E98BB258",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/front-three-quarter-clay.png",
+                      "sizeBytes":  722279,
+                      "sha256":  "45DA7F6391801D844DB1C75C62D55E8648774B1109BBBBAE2AF0396E2860B870",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/front-three-quarter-reflective.png",
+                      "sizeBytes":  710417,
+                      "sha256":  "8A0AF8E9E64618EDA52DCCF1E025B33FBB23E023A0187E909358221D256474D7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/nose-monocoque-close-up-clay.png",
+                      "sizeBytes":  745633,
+                      "sha256":  "206DBF3AC3AE047B33BB0B94B8E7A363E77BA4B9909624E2C5A893511B28F021",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/nose-monocoque-close-up-reflective.png",
+                      "sizeBytes":  778746,
+                      "sha256":  "880FBB4208F3015A4DF43F239423BCC8D27176C638ACA209260227125180F4BE",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/rear-three-quarter-clay.png",
+                      "sizeBytes":  723819,
+                      "sha256":  "5639A4C9240212F902220CC825F459A13C0C43A17A25239238F43F2C6B5502BD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/rear-three-quarter-reflective.png",
+                      "sizeBytes":  717107,
+                      "sha256":  "D771690B47FE0763520ED7AD666FC7C9141A4DE4CF9B89BF768D8767FAFB7867",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/side-orthographic-clay.png",
+                      "sizeBytes":  589304,
+                      "sha256":  "D4674E237C05EC9DAE36818B64E03FE20BA1BBAAD4F56943EA9EBFDCD5117E65",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/side-orthographic-reflective.png",
+                      "sizeBytes":  587990,
+                      "sha256":  "AE184886967D77FFD37ACD25DC7994E74ADF072A73A0CD62864D6597215EDA94",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/top-orthographic-clay.png",
+                      "sizeBytes":  772467,
+                      "sha256":  "CB718904FC239732BF73A8ABBA3DFE7E744F71542EF2997D58AE0C095BEB2345",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n20/top-orthographic-reflective.png",
+                      "sizeBytes":  787336,
+                      "sha256":  "184473C08B9B1D7047AFEDD23552A459580E49DAC0F67C6EF1E9F18AF9D47FE1",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/cockpit-halo-close-up-clay.png",
+                      "sizeBytes":  703466,
+                      "sha256":  "AF759D89FD168A4DB9C711A40AF3FF9F2C3CC969BCAC6FA0EFACB3A1BA5A56B4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/cockpit-halo-close-up-reflective.png",
+                      "sizeBytes":  762597,
+                      "sha256":  "1AE11F09666B05327CBA677A34C531CBAA96061A26CC6A058E088C7134084C5A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/cockpit-sidepod-shoulder-clay.png",
+                      "sizeBytes":  642068,
+                      "sha256":  "45AF4C8C90D9419AEC9C0B0276B88197F7297CADF0A5C2B957AA8B1A136F9215",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/cockpit-sidepod-shoulder-reflective.png",
+                      "sizeBytes":  696936,
+                      "sha256":  "F10CAE1E8567396E65FBBBD8DE7466D8C6E8D0B8D3F815BDE6CE9E40EBF5E8B2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/front-suspension-nose-clay.png",
+                      "sizeBytes":  807288,
+                      "sha256":  "76FC1EDD5C68C1F1EF2D877168F0DAB94E9814C7A1F5F19B3DDF5870F517CA0A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/front-suspension-nose-reflective.png",
+                      "sizeBytes":  816828,
+                      "sha256":  "4E73FDB98CD01FA88AD401FDA7AD0E3257216F8B7B8D4A3A9E1C2B4CD8CD1E7C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/front-three-quarter-clay.png",
+                      "sizeBytes":  718906,
+                      "sha256":  "4D210A6F63F712D79E8AD8E111811F7521E53B226D20F8EDBB0DB66B8B4CA96C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/front-three-quarter-reflective.png",
+                      "sizeBytes":  705874,
+                      "sha256":  "C718518D77AB19FD46B5AE66B65F37B49573CA97A0BC352BF72700122B4F1D72",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/nose-monocoque-close-up-clay.png",
+                      "sizeBytes":  719000,
+                      "sha256":  "256C7899CF2EF09E25C71AF326B7EB3756A162BAAE5B3CEBDEA58FEAB003CCB6",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/nose-monocoque-close-up-reflective.png",
+                      "sizeBytes":  757545,
+                      "sha256":  "90E40D10985426414DFB187183C662F9BD65DFA9355CF83A3E56432EDB8E0F85",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/rear-three-quarter-clay.png",
+                      "sizeBytes":  724053,
+                      "sha256":  "D587FE836872903340745D189F72942E4F3FAEF636962AC7D9F63728119F6F7F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/rear-three-quarter-reflective.png",
+                      "sizeBytes":  717910,
+                      "sha256":  "694981E8491DEAAA97C750E1D50116AC188EBAD191D0AB9FF2A5EE98AC0C46C0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/side-orthographic-clay.png",
+                      "sizeBytes":  588417,
+                      "sha256":  "98FE2540DA24A7B72720F7F8F8921C6E417502FF10498CD7266CD2012B25935D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/side-orthographic-reflective.png",
+                      "sizeBytes":  588084,
+                      "sha256":  "1979A89B408BA827D11D452716EA528270264787BA95EA627CB227802D7ABC22",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/top-orthographic-clay.png",
+                      "sizeBytes":  770445,
+                      "sha256":  "F69667BC1630C6FFA7A9C3DC7D90CA93044D9DB6AF5FCD55DDF14F3CC6FB4F76",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/cockpit-nose-redesign/n30/top-orthographic-reflective.png",
+                      "sizeBytes":  786723,
+                      "sha256":  "6480752C99D4E1F7E1592D72AF62CDA7CCAE283EA145A8A49AF149D2491A3BE0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/browser-report.json",
+                      "sizeBytes":  10485,
+                      "sha256":  "05708F62D01BB57A72D2F359E720902B51DAA24C3B05016811C48E9A0FB48075",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/cockpit-close-up-diffuse.png",
+                      "sizeBytes":  420727,
+                      "sha256":  "834FE5E2B829DC21DDB33304209D377723A4725F8844FD362CD87134831C4099",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/cockpit-close-up-reflective.png",
+                      "sizeBytes":  456260,
+                      "sha256":  "C2A264BBE98229762D7A714C16C7A24F2A4EE0C5F23F5D1CD0FC1C7BF8008FBC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/diffuser-underside-diffuse.png",
+                      "sizeBytes":  423839,
+                      "sha256":  "5C93EE9510DEBE9D3DF0D347AC8326ACF06504AC20E466395C01C5A553178E9F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/diffuser-underside-reflective.png",
+                      "sizeBytes":  409592,
+                      "sha256":  "BBF8EBEF5D4F361D37D9BB90C71892D34A884A9EF5DDF614EE4A0C657B6ECF03",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/front-diffuse.png",
+                      "sizeBytes":  174231,
+                      "sha256":  "4C81EA8E3DA0A6675EE4DFE9D29F2E19402B631276C3DF3A700C50CD2029B17D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/front-reflective.png",
+                      "sizeBytes":  182909,
+                      "sha256":  "808885804EAE4FC2A84F620674DE16412323B8E1C8DAE984F588B92515B03631",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/front-three-quarter-diffuse.png",
+                      "sizeBytes":  241163,
+                      "sha256":  "7C72AA92945F471AA9DD212B0DB607AEDD836D1FD51DE132A50FF4BC35451557",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/front-three-quarter-reflective.png",
+                      "sizeBytes":  245686,
+                      "sha256":  "B4B675C5B82D976B48E89657B76F82EEE5D173E191813DBE68AE7C3793C84F7B",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/rear-diffuse.png",
+                      "sizeBytes":  161109,
+                      "sha256":  "22CAFE9A005DB16E48717ABA3A95B7D49F09786382823479D4B87A1692F288D0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/rear-reflective.png",
+                      "sizeBytes":  162970,
+                      "sha256":  "70FCBA4499687A0072705C5C3C053CD5BD7861DC267D23D5C84FA8216B2A45B7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/rear-three-quarter-diffuse.png",
+                      "sizeBytes":  229700,
+                      "sha256":  "8C0F16A06B46908920F13A039C3EA1B2647927577383AF450A1033EEF10DD74C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/rear-three-quarter-reflective.png",
+                      "sizeBytes":  231533,
+                      "sha256":  "9D8A0F2D835C589954240A240F2BF6B1325CD818BFF173B1BA905B707B8E6177",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/side-diffuse.png",
+                      "sizeBytes":  182892,
+                      "sha256":  "A39C741162BD635E48380E1C612E1CCA1179F20FEEFA8154F3F5CE5C730A0667",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/side-reflective.png",
+                      "sizeBytes":  185847,
+                      "sha256":  "FD09C5ECCD3218DE679C4A5F741D2F233E480B581EA8E310EB90027EA1296A7F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/sidepod-close-up-diffuse.png",
+                      "sizeBytes":  427075,
+                      "sha256":  "F8DE6A244341748C9450B53E16CF9ACDB2C4EC701C23F20102D77F83DB0AD231",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/sidepod-close-up-reflective.png",
+                      "sizeBytes":  445620,
+                      "sha256":  "509758DD84C265F266EF4D470E8F18FCA8B4D1C63BECBB8ADE73F12263FFBD36",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/top-diffuse.png",
+                      "sizeBytes":  166433,
+                      "sha256":  "EA94BDD7BCC68DEDD098A95E3B02D39D672C5D18A2412F3AA4100B1F70F94D49",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/top-reflective.png",
+                      "sizeBytes":  198379,
+                      "sha256":  "5CF1CA7A7B9560FFC248A9172E3EB89FF41BDFD984335155A1BE727A2998B885",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/wheel-suspension-close-up-diffuse.png",
+                      "sizeBytes":  557864,
+                      "sha256":  "9C662AB28F1F149F084FDDC327EA1CC1BDC982A6F7F03FEE1A20F507C5F1478C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/matched-comparison/wheel-suspension-close-up-reflective.png",
+                      "sizeBytes":  574324,
+                      "sha256":  "E6CDF4455F2FAB123B2F6D8AB0C9AF804241764CFACABEACE8B2633CC7A9604F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/README.md",
+                      "sizeBytes":  6522,
+                      "sha256":  "03FDC8B8CA0E875CEF0BC5F2324385C2125492D661CB7418ADC422A60CEFC892",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/cockpit-close-up-clay.png",
+                      "sizeBytes":  660501,
+                      "sha256":  "28A6B4A669E682BD6492DCDA354F3C40082FAB1A1C7E92E8A104FC989C25877D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/cockpit-close-up-reflective.png",
+                      "sizeBytes":  723463,
+                      "sha256":  "B01731F56DA3940B3135DBB63B08C2CD80A67526C760C44CE2093D260EED04C7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/diffuser-underside-clay.png",
+                      "sizeBytes":  844882,
+                      "sha256":  "9FDAE1B14EFDC164A683D358744BB0D974C50A519E8BA43AE10D78A1104705BF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/diffuser-underside-reflective.png",
+                      "sizeBytes":  840170,
+                      "sha256":  "FABE96FD3217E41D4F519243398B69BF60BDF787044C11A2BE9943593597A671",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/floor-edge-undercut-clay.png",
+                      "sizeBytes":  821050,
+                      "sha256":  "3B942B13605270D2394C364D3EA8C8A11C3429E46E1E6B63665037F7E95E7257",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/floor-edge-undercut-reflective.png",
+                      "sizeBytes":  788181,
+                      "sha256":  "35EE46B9EF22C2A5E2BD2C182F6CB896A3C07FB3680A5DBA6634F8E08B411B49",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/front-clay.png",
+                      "sizeBytes":  671811,
+                      "sha256":  "9A0C4F3C519DAC84371D473A1AEBB21FF33ED4C7D7A894A66D4780200070614A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/front-reflective.png",
+                      "sizeBytes":  664918,
+                      "sha256":  "DCDC87356165A5CCC87311D657DFAA7DC557904E895A3CE0AC8C3CB63BF534A6",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/front-three-quarter-clay.png",
+                      "sizeBytes":  737391,
+                      "sha256":  "A707FA0D44470804BC2743DFEC670F3AFFDCA3B225F23A3F270B0050FB8F256E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/front-three-quarter-reflective.png",
+                      "sizeBytes":  739039,
+                      "sha256":  "D7DC4AC519BBF902D9D39D5B18E6ED08AB09A06AEE0BC8B7AA280BA62B16A8E2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/rear-clay.png",
+                      "sizeBytes":  685380,
+                      "sha256":  "C5AA806CF48E3DEDCFD9FF0F7983DECBF19054325360E0F431E54CE8DAEA5607",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/rear-reflective.png",
+                      "sizeBytes":  686636,
+                      "sha256":  "61C440C3C7C774AB5612E628EA4EB0282EA70E14F3923899DB2CBE7FA9A632A4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/rear-three-quarter-clay.png",
+                      "sizeBytes":  744060,
+                      "sha256":  "2F3F68092C1AF601AD67FB46D22E2CAE71A81D7267C819A89FFC1532D596221D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/rear-three-quarter-reflective.png",
+                      "sizeBytes":  747257,
+                      "sha256":  "FE0F54E11F5705DCED73285BC34F7DBAA19E3B6602F30A3BAB999BD7208EB593",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/side-clay.png",
+                      "sizeBytes":  658588,
+                      "sha256":  "B3FEBA2B29638B2E6BD888EFB3319C92000D8AFF6762F87E49995D963C3E2298",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/side-reflective.png",
+                      "sizeBytes":  644589,
+                      "sha256":  "F681A148A6EB87B246756D988AEFDD1076126A5A3084DC58EFC964BB3D0CFD02",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/sidepod-close-up-clay.png",
+                      "sizeBytes":  752371,
+                      "sha256":  "38E7A5A5207C3491BA49C0FD96CD744F0390EB0C2861C9FA81161A86C986457D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/sidepod-close-up-reflective.png",
+                      "sizeBytes":  774905,
+                      "sha256":  "36B4932DF03C1442955B4ED3BF41558EC6E52C9CD89BEFFF09F675AA476AB6AD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/top-clay.png",
+                      "sizeBytes":  780222,
+                      "sha256":  "7D45D35FD759A49DAAB67D1B71D9FCCA4C24AC7C9DE65996B6961007F8A9EDEF",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/top-reflective.png",
+                      "sizeBytes":  795516,
+                      "sha256":  "DE3A13765754AA2B8E284C7839DAA85315A76BD8726449DF1035B45E58F6AEA0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/wheel-suspension-close-up-clay.png",
+                      "sizeBytes":  814669,
+                      "sha256":  "AA76296101EB03509ED255D0C815D3574DE8E0236BCE6121BCA5ADCC30077DCB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/blender/wheel-suspension-close-up-reflective.png",
+                      "sizeBytes":  842744,
+                      "sha256":  "FCA6F2F79E0975FE17A6F9D1EA1213B037C6F60AABAE7D6B3D7D818D87B726BD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser/browser-errors.json",
+                      "sizeBytes":  19,
+                      "sha256":  "339ACC3B09ADD3C3D0E689ADF17878A1BD264D3A3F00FCCCE7DB538630E20066",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser/desktop-front-three-quarter.png",
+                      "sizeBytes":  91533,
+                      "sha256":  "1A90001F7C13ADBAF6FE54E761036763C26B840B639E2C69A0909335B57321DC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/browser/mobile-emulation-front-three-quarter.png",
+                      "sizeBytes":  86224,
+                      "sha256":  "228FA6BA5B087100F74EE8AA3CDFC87EAD446407A39234B2B5F13047651C983D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/diffuser-exit-diffuse.png",
+                      "sizeBytes":  229074,
+                      "sha256":  "E2D3453E80497EA53006B0C9263FE90318600AEDC640FE629B560E9ADC298C05",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/diffuser-exit-reflective.png",
+                      "sizeBytes":  221943,
+                      "sha256":  "E0304C33C8D52687812C4B0D0D9587BD5EAA166D462F735466DDAA2622DD5BDB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/floor-undercut-diffuse.png",
+                      "sizeBytes":  101558,
+                      "sha256":  "0D2A82D47D947256C32D9491EF9D8A98AC6737E0384A5026487A458D39211F31",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/floor-undercut-reflective.png",
+                      "sizeBytes":  108893,
+                      "sha256":  "A0268C75984BEEE2F9DD3F038CBD8C7A33C35FC7E61C6B931E4E61466326840A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/front-three-quarter-diffuse.png",
+                      "sizeBytes":  121493,
+                      "sha256":  "EE19BE46C4BED2B963B160594B80DCA29462C3CE8E9F0F790DE0D9952AE5E64F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/front-three-quarter-reflective.png",
+                      "sizeBytes":  124799,
+                      "sha256":  "364D12C2CB3D7666F152B81FF7040EB802CA2390A2CDD677B7ADF76A4BE46510",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/rear-three-quarter-diffuse.png",
+                      "sizeBytes":  122053,
+                      "sha256":  "60C54F5780F52DE0E5DFBA090A4510A14FD49E66E224F47041ACD518D6806E89",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/rear-three-quarter-reflective.png",
+                      "sizeBytes":  123150,
+                      "sha256":  "3AC879505FFE82D27019EBF3D8FDBB87420DEFD1D7ECAE75E3B82920EA36D4BC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/side-silhouette-diffuse.png",
+                      "sizeBytes":  94113,
+                      "sha256":  "3E465BF33A28D42BBF29BBE207BBC3EDB2888EB502BD9AB2265692C0CDE93244",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/side-silhouette-reflective.png",
+                      "sizeBytes":  95193,
+                      "sha256":  "917BFD839CA58739A1EFD2C6D03B49D89E684703A7C57E608E9F4E7C0078D0F4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/sidepod-inlet-diffuse.png",
+                      "sizeBytes":  177265,
+                      "sha256":  "D38BFAB1CCE17AB0A584E335E09040CFB6DBAA32F76F83DD38A6FD866D6CD036",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/focused-before-after/sidepod-inlet-reflective.png",
+                      "sizeBytes":  197372,
+                      "sha256":  "906C303741251A6EBBACD68156C62D4144D2BF7B06636446F4FF56E3708BE928",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/browser-report.json",
+                      "sizeBytes":  11867,
+                      "sha256":  "70C884E6DD367B6A23B95A51AD75AC14FC056CF7B3A21BBD6723702B586F5EB3",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/cockpit-close-up-diffuse.png",
+                      "sizeBytes":  351199,
+                      "sha256":  "75A598D8487534643E7B4E7B592C24306B781A330554B8E4EC08F3A2556B0A72",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/cockpit-close-up-reflective.png",
+                      "sizeBytes":  378685,
+                      "sha256":  "E7D5C9FB4FE0B109E0B991CB6C128AE02F49C7D0B69C62B3F95BC43E8CA30B1C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/diffuser-underside-diffuse.png",
+                      "sizeBytes":  381621,
+                      "sha256":  "7A06ACBBF250095FF5CD99DA86AA6E3F02BAA2CF4863C0F9F2CD47A6BDB8A310",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/diffuser-underside-reflective.png",
+                      "sizeBytes":  367020,
+                      "sha256":  "B7676949454C8E01C32F0F41EF75A24A19D5B656EC1FFCC097BA7220277624CB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/floor-edge-undercut-diffuse.png",
+                      "sizeBytes":  224260,
+                      "sha256":  "484EECC4C1F26DB9023E77C4BB29CA400984D9929234E1F8B33CDD2FD0F28E6C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/floor-edge-undercut-reflective.png",
+                      "sizeBytes":  240715,
+                      "sha256":  "1B5887E99DF3E3D2042BEAC3EAF545176ADA52B8A37F01435662492EBEB15CCC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/front-diffuse.png",
+                      "sizeBytes":  136687,
+                      "sha256":  "F8B485D820B59B887FE7861D2F77BC687652D8EF45BEFADD8EF65B5EA5BF389A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/front-reflective.png",
+                      "sizeBytes":  143878,
+                      "sha256":  "0E18E4D59193E465AA0309C678802E75C33D099211949B8F7AAB471BDC1E106E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/front-three-quarter-diffuse.png",
+                      "sizeBytes":  202224,
+                      "sha256":  "D4619421A07F1FA99E03AE5DAB141B5A7EDA09CED51945BE165E416675D093C4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/front-three-quarter-reflective.png",
+                      "sizeBytes":  205362,
+                      "sha256":  "162B946D9FFF887712A3B909AC1CC1110F3762A40F43FD6EECE534A7BF59F34E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/rear-diffuse.png",
+                      "sizeBytes":  129733,
+                      "sha256":  "4BA54867BAB7870BF1CA259738EFFEF3289AFE1EB1D209AE8BF223A8CED647DD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/rear-reflective.png",
+                      "sizeBytes":  130201,
+                      "sha256":  "75E7309D6EFC8D525C7A7EB6129DBC535A032FAE2DB0CAB06A12B51393FBB98F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/rear-three-quarter-diffuse.png",
+                      "sizeBytes":  197832,
+                      "sha256":  "AA9E8AFF709A33CAE29FC2D9B00ACBACB5390C42658CC509E510112272BF09CA",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/rear-three-quarter-reflective.png",
+                      "sizeBytes":  198653,
+                      "sha256":  "CA0C69CE795F0DE8EE0023855B3085B288DE67FBD2DCFC93B7FDA8476D286605",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/side-diffuse.png",
+                      "sizeBytes":  160097,
+                      "sha256":  "EAB99FECDAE3038E81D4D2B7AAE9E9562BDCF2ACCAE9180C402B699431D2A0AB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/side-reflective.png",
+                      "sizeBytes":  162126,
+                      "sha256":  "E901F9135C9FAD74A252B14D95E6BC6210A03E7CA496940831B2727D6FA91CC1",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/sidepod-close-up-diffuse.png",
+                      "sizeBytes":  353725,
+                      "sha256":  "8E64C6AC0D41E5E143D068A3C4D12898DCC878D0B7E4FA9D5BE9352649294FBC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/sidepod-close-up-reflective.png",
+                      "sizeBytes":  376852,
+                      "sha256":  "A2A7BD19F98377771C91CE976EC003C1477483235B943CA2DFAF1C42BCF79F79",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/top-diffuse.png",
+                      "sizeBytes":  129573,
+                      "sha256":  "E7BF59703DFF8EFB3E67C9BE5030D3009AFD916E8F4134419D1B6BF1AEA33886",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/top-reflective.png",
+                      "sizeBytes":  154119,
+                      "sha256":  "A44804ECD86C13078DF5260B9A839E26C74AF636EFBFA6CAEE34D7B72E3DDF5D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/wheel-suspension-close-up-diffuse.png",
+                      "sizeBytes":  507629,
+                      "sha256":  "5F7215CE60080A10F7192E3C23A6E0E5D59092F4BF1D0658127AD6BF3B8126E9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/refinement-revision-2/matched-comparison/wheel-suspension-close-up-reflective.png",
+                      "sizeBytes":  518074,
+                      "sha256":  "89521469C78D4A01CA5D7B507E041D87D5D972C469EB784F9358A1581D448595",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheet-report.json",
+                      "sizeBytes":  1368,
+                      "sha256":  "5C5ACD39258E4887D46D10D3DCF87F8F548C67743F7106E6A91C310907D9E600",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/README.md",
+                      "sizeBytes":  12347,
+                      "sha256":  "2A866D33640F191077F52C70B9B6E39359740E6172595A5BB7D72C65B50A5AF2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/front-clay.png",
+                      "sizeBytes":  656914,
+                      "sha256":  "697D2216A39D4EC5C20ECC876224447736237E0969B16227F599EA9A865E59AC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/front-reflective.png",
+                      "sizeBytes":  643138,
+                      "sha256":  "EEB711402FACDB01F5F4906A3E2BB1CFD00577198887131BF446EE3D224AD158",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/front-three-quarter-clay.png",
+                      "sizeBytes":  718784,
+                      "sha256":  "860C1F4F7B89609814587EF3185A800281013DF33192925149E1E9ED00CE1B1C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/front-three-quarter-reflective.png",
+                      "sizeBytes":  706124,
+                      "sha256":  "950692B1383948C30255C7BF101872253463A6FEA525F77E6FC271E0BB1371FC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/rear-clay.png",
+                      "sizeBytes":  665337,
+                      "sha256":  "A46D39142AD85F1C1BF3DF903DB84E679E6D714B8BBE189572052AA4841154DB",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/rear-reflective.png",
+                      "sizeBytes":  651689,
+                      "sha256":  "34DF78DA23D4AE2424332F9619F2B1537EE050B67E4BA2CD8C8A2A2BE87275F5",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/rear-three-quarter-clay.png",
+                      "sizeBytes":  729251,
+                      "sha256":  "BFCB9703B8081EFAECBF44907E0E394AAC3768123D077BB032ACCF12A847CC01",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/rear-three-quarter-reflective.png",
+                      "sizeBytes":  721554,
+                      "sha256":  "1059F8CDF7139B2D614862DA2F7874B61D0F26D0B58F778F8F2ADF0CD126F7CC",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/side-clay.png",
+                      "sizeBytes":  633655,
+                      "sha256":  "1471AF77AA2F7AD0C8863119574C8E378A8CB817ABB1C466CF951A3179B6E202",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/side-reflective.png",
+                      "sizeBytes":  617142,
+                      "sha256":  "58ED4F64C966167EB9BC4DD61E45DA7BE32873CF8BAA761EB6B7D43CCBA3EA2A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/top-clay.png",
+                      "sizeBytes":  801405,
+                      "sha256":  "6430F41D32F6B43B9D4EB19E88F262AC64D1EC782D175ABBEE8D304FBFCA358E",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/aero-predator/top-reflective.png",
+                      "sizeBytes":  825261,
+                      "sha256":  "CE9755FEF7DEF0A11DADAF10560F4D37F5CA5735A6778B163F07A74FF413404B",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/front-clay.png",
+                      "sizeBytes":  1172738,
+                      "sha256":  "E232E09704D3BBA076FE392E8BAE8D11C2FD4B6A66B6EDB29C8F457C2AAD24C3",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/front-reflective.png",
+                      "sizeBytes":  1099694,
+                      "sha256":  "0166B34889F6B9E9726380F6D67D9151BBB2C8E229C3BF287B858D5621484315",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/front-three-quarter-clay.png",
+                      "sizeBytes":  1271074,
+                      "sha256":  "24B095BFA02B7CDE318670740B06C453FF0975E455A09B6F68801733D5451CF7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/front-three-quarter-reflective.png",
+                      "sizeBytes":  1214587,
+                      "sha256":  "DAEDDAF2A761FD71B5851AFA2DEB9734787D0B561100F7FF2B7DDE2B9AF0B9D7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/rear-clay.png",
+                      "sizeBytes":  1243262,
+                      "sha256":  "7B0D0162D0E2D3F05D5CADA97884ACCBDB44ED88BC9BF5B4CE37BEEEDDEEBE07",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/rear-reflective.png",
+                      "sizeBytes":  1214306,
+                      "sha256":  "709541E8472B2618332E18402282E76A44D206448067CC6C3F7CA222C26DBA20",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/rear-three-quarter-clay.png",
+                      "sizeBytes":  1328257,
+                      "sha256":  "FBBD744ED1C28F8FE7EDEE56A9D6F54E0CCCC5F78668706A9F57626B169EDD3C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/rear-three-quarter-reflective.png",
+                      "sizeBytes":  1272437,
+                      "sha256":  "EB1DE5D16AFEE4EC060E59ADF2A2EDE7DF349CCD23AB40B4FF9F82E9DEA2035D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/side-clay.png",
+                      "sizeBytes":  1165471,
+                      "sha256":  "584AC8E67C9A1A1D71071AABB1B6DA69F5086ED6236297A2FA02D92F45E9BD29",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/side-reflective.png",
+                      "sizeBytes":  1096251,
+                      "sha256":  "264D8DE31FE9C24CD2E6C58B5A956E8ACC51D0BE17A2A8252D1F96CA370C72B0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/top-clay.png",
+                      "sizeBytes":  1692876,
+                      "sha256":  "D74971EA9C79363D454C58C5B551732A42C1F2A98C706D9CD6858B48899C8826",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/contact-sheets/top-reflective.png",
+                      "sizeBytes":  1708686,
+                      "sha256":  "0F8451206FB21E378E252482F910573EF9C3E1CF6292211F26C280103110F8C9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/front-clay.png",
+                      "sizeBytes":  662967,
+                      "sha256":  "8BA67F008FCDCECDF5D102284C452F3BE547158E7BB40A80BEE374615DE545D1",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/front-reflective.png",
+                      "sizeBytes":  648986,
+                      "sha256":  "C587C35F2E5435142238FBE470D2E2DC50D671DDCB0EC0216643BAED3C4F6853",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/front-three-quarter-clay.png",
+                      "sizeBytes":  719042,
+                      "sha256":  "7C75367B39C6C289A4DCF8EDA660637FC662DB3382B1A15468C18AFCB61DEC77",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/front-three-quarter-reflective.png",
+                      "sizeBytes":  705640,
+                      "sha256":  "F09C62BB614DD9F786B2990B3F9103BB1AEF17C8354346B320B76E009010DB2C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/rear-clay.png",
+                      "sizeBytes":  668739,
+                      "sha256":  "7E7F19589D7231002B51BC09D7059D0EC3D1DEA5A96DC47777D3CFF73DDAE534",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/rear-reflective.png",
+                      "sizeBytes":  652662,
+                      "sha256":  "565D272406AC12917984FBCC31C602D5F289C018964D85A56A920A02952A72D9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/rear-three-quarter-clay.png",
+                      "sizeBytes":  724400,
+                      "sha256":  "B1BE6F887E0559EB6ECD716E5FE0C67A3AE7AE829AD30F49F2255C7D1D4F66BD",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/rear-three-quarter-reflective.png",
+                      "sizeBytes":  718337,
+                      "sha256":  "2E57426CBD4C80D550740AC02C29E7F9B87BC2E1A0E16BBD59298C1E15ADE525",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/side-clay.png",
+                      "sizeBytes":  637487,
+                      "sha256":  "8A87DEC4BF9651FFABF1C2D3EBB78CB985F2FCA842F0A15C2A6FE0B5EC272067",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/side-reflective.png",
+                      "sizeBytes":  621807,
+                      "sha256":  "BA8F589AF664886C53E0022EF1E7D25AA803952D87149C6F4E909E4AACEF8013",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/top-clay.png",
+                      "sizeBytes":  797526,
+                      "sha256":  "A4DF8278294F50E05EABCC8814B1827D0C8C09618923DD6CA7E8D10832993808",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/eds-hyper-aero/top-reflective.png",
+                      "sizeBytes":  822859,
+                      "sha256":  "E71DD87E4FDC0D67C184CF50A7390B9250B62B3FC240B09BFBE316E8DB99548F",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/front-clay.png",
+                      "sizeBytes":  648027,
+                      "sha256":  "5D46CE44F2CF0850004BBC2B0EBF6717E95B7FA1AEFA652974B7E9EBA4737F19",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/front-reflective.png",
+                      "sizeBytes":  634479,
+                      "sha256":  "661306A3A65090BF0D51933F81949C664B726ACDA094C0221DC8470B40DDBAFE",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/front-three-quarter-clay.png",
+                      "sizeBytes":  714431,
+                      "sha256":  "D7CF09DA8839DED777CC5637572C7293C3B06A24DC5401527A877B59FD82A581",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/front-three-quarter-reflective.png",
+                      "sizeBytes":  701010,
+                      "sha256":  "50656AA5B3F4DB536C390047490E91AD69DDC46FCBF02A9CC43C84F181D251D3",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/rear-clay.png",
+                      "sizeBytes":  656560,
+                      "sha256":  "1CE3B04B7F4AF276024769C58785B82297887B03FE9303C929AF4F99C37F2C10",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/rear-reflective.png",
+                      "sizeBytes":  644577,
+                      "sha256":  "FC3731E371549C24F15D39C13A377EC1788D830EE3E86A3C5205306E2B4EDA3C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/rear-three-quarter-clay.png",
+                      "sizeBytes":  724237,
+                      "sha256":  "CB1F2076A05CE3E05D66055FE4F878F1DC2C3FB3C11231C36DCC13885CD33CA0",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/rear-three-quarter-reflective.png",
+                      "sizeBytes":  718400,
+                      "sha256":  "1DEBFE1E42102E454DF4905FAB09C13CBDAD8A79C91E40E1C395D5F64A319EB2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/side-clay.png",
+                      "sizeBytes":  631240,
+                      "sha256":  "2BF784FF8580F339DACE64A87BD26733B6C40D697FB9396A2667C08567D44EA2",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/side-reflective.png",
+                      "sizeBytes":  617324,
+                      "sha256":  "4744DA824A2573B95ACD2A519D46F399C7491016EFD4B1F4CB3492762A9B37DA",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/top-clay.png",
+                      "sizeBytes":  791059,
+                      "sha256":  "584029C56140B908F823D4036022B4773B9FB726377FD5388A0659127F424BD4",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/precision-machine/top-reflective.png",
+                      "sizeBytes":  814575,
+                      "sha256":  "7DC302E1A66DD2D40D4AF5CE5E32D03BA6B340F16BBDC3BCD5F2A050578ED249",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/front-clay.png",
+                      "sizeBytes":  1630332,
+                      "sha256":  "5CF58FA7B072B4371FE0633411521D0306DAE1E74536F1B442457E38B7A99209",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/front-reflective.png",
+                      "sizeBytes":  1545916,
+                      "sha256":  "A67772318ACDE79F8CD21CB7290628DDA7FF80DA02D17486E8F504ED8C2D4E81",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/front-three-quarter-clay.png",
+                      "sizeBytes":  1804542,
+                      "sha256":  "D5E611CE76D6767BFEC131448B11D06D33B9A2C005952686FA6C161DAC6078B9",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/front-three-quarter-reflective.png",
+                      "sizeBytes":  1746966,
+                      "sha256":  "45C255A6CBABBB6ABA86B96758E8FF4E856BF3F8E45E9E7AD3F82B03FAD7181A",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/rear-clay.png",
+                      "sizeBytes":  1709405,
+                      "sha256":  "04EBB88630F986BE403357D9A56806B201BC25940275EE5CDA1FA8DA3EB0EF06",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/rear-reflective.png",
+                      "sizeBytes":  1682074,
+                      "sha256":  "EA5468BF1E89263EAE3E65E3E5BA02D8447C02C7ECB5D5F37C7847D2B1B03C7C",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/rear-three-quarter-clay.png",
+                      "sizeBytes":  1870202,
+                      "sha256":  "E0634CDCD075372AF68F012A66C2FC14C8524E9EC2B3D38C85F8F3CD5E0C53C7",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/rear-three-quarter-reflective.png",
+                      "sizeBytes":  1811836,
+                      "sha256":  "406CB09A0553DFF5FFB365E639899A37BB85BEF41F9B42DA9255854674430F58",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/side-clay.png",
+                      "sizeBytes":  1612296,
+                      "sha256":  "9B5067126974800B9FEE78FB7C09EBBF0EABE5D24E569FC38C31B97685824E42",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/side-reflective.png",
+                      "sizeBytes":  1524852,
+                      "sha256":  "073570792511B391D990ABDCDE59331D9003D58528ED7E7B29283A14E882107B",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/top-clay.png",
+                      "sizeBytes":  2269284,
+                      "sha256":  "36C229A46415EA68813081EE92BA620B5E2891F0C8F80E3DCB05A644A7011E16",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/blender-authoring/evidence/visual-design-reset/previous-r2-comparison/top-reflective.png",
+                      "sizeBytes":  2302938,
+                      "sha256":  "C62A099AD0E0C5321696B38694FC8956C2E434EB15E000EC254CB2B53D4B148D",
+                      "category":  "duplicate-evidence-contact-sheet",
+                      "reason":  "Superseded pre-D1 review image/contact sheet; representative images preserved in vehicle-evolution"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-6/diffuser-prototype.glb",
+                      "sizeBytes":  430796,
+                      "sha256":  "179B33FF4107C968FD2AEB8553D0AA12E64B61D53ED4EDC065F18BC879874EFE",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-6/diffuser-rev5-crop.glb",
+                      "sizeBytes":  71004,
+                      "sha256":  "40CCD3992C6B5AB35EAD8477863A6B32C11026C03BE4BD5017FD43F0DBFCE3C7",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-6/halo-prototype.glb",
+                      "sizeBytes":  427080,
+                      "sha256":  "26D00F43EC18F2376FC03D4710D13BBBF06727E5150D0418D1315F07A02956E1",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-6/halo-rev5-crop.glb",
+                      "sizeBytes":  62452,
+                      "sha256":  "2BAFC34AEE8926410AD19E3CEC30F31DDB76EEFE7C83D172CFFDFB33CE1E6FB5",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7/eds-g03-rev7-candidate.glb",
+                      "sizeBytes":  1238308,
+                      "sha256":  "414330BB130614F720927DEDAC0536F96E8D9256E64DC0A066E16453F72E78AC",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/diffuser-A-rounded.glb",
+                      "sizeBytes":  91948,
+                      "sha256":  "06B5A236B7946626523FC9175BB712017C08C5E8E07D18EE28724C8837157C6D",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/diffuser-B-flared.glb",
+                      "sizeBytes":  91948,
+                      "sha256":  "E978711D4F1119A21D16AE0B88847BD2F80699A9888FE36D3AA310F87FC26D99",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/diffuser-baseline.glb",
+                      "sizeBytes":  71680,
+                      "sha256":  "1CE90986CF6D6A7880B16D2DA092085EA728AB2A2A269DFFF8E4A9C4D10441EC",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/halo-A-saddle.glb",
+                      "sizeBytes":  83140,
+                      "sha256":  "BCF325A0CAD7BEC41C770EA26947729AB5CD40BF1664F4D43B5750F208E47BDE",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/halo-B-boattail.glb",
+                      "sizeBytes":  83136,
+                      "sha256":  "3388961324046C2851175613A11324F0F469F56185A5AEBD6B5D065C0036E4B0",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-2-revision-7-prototypes/halo-baseline.glb",
+                      "sizeBytes":  103556,
+                      "sha256":  "0D4CDE8732C62FAA54137D76DAC8A86E89F5FC6D55E4A6B23B88288939F6CCE5",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-design-reset/eds-g03-design-concept-a.glb",
+                      "sizeBytes":  1555668,
+                      "sha256":  "E3CB5E8EE4ADD4BFA3AB1E11C5D2E9B1D8A8E87B2AB9D0DD2B694783F3A7A97D",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/evidence/r3-design-reset/eds-g03-design-concept-b.glb",
+                      "sizeBytes":  1533484,
+                      "sha256":  "1A7DF025D548EF6BE9271D1059213FE21B9BE426359158A836CF343EE86587D8",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/diffuser-A-profile.glb",
+                      "sizeBytes":  100132,
+                      "sha256":  "9A26FB8CE07D93B578AC70D3C8CAE02E91B02D3139A34383F15BC9093457BE87",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/diffuser-B-resection.glb",
+                      "sizeBytes":  395736,
+                      "sha256":  "A280CF9FEF54835222960AF1503AF6D9921D3AFBC9BEA6BAE5EDABF290FACC6A",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/diffuser-rev4.glb",
+                      "sizeBytes":  100132,
+                      "sha256":  "49DD822B1B5BAB9E8381E499B498AE48834F3E790CFE65B93302A9C47DB3D5CF",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/halo-A-fairing.glb",
+                      "sizeBytes":  135456,
+                      "sha256":  "06D4678D54290CCCF333EDCB7779418D31FE19DCE513A3785B7157E49C2937E1",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/halo-B-welded.glb",
+                      "sizeBytes":  29000,
+                      "sha256":  "19D4D714D675EFDDCC6ED5AA82850AD212256A2B822B4E3CBB771EFADCC4778B",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "docs/commercialization/r3/gdr/evidence/halo-rev4.glb",
+                      "sizeBytes":  135456,
+                      "sha256":  "16BE918CE20ABB40F3702373DF849837DFFBC106D11A74BF5C9317C2B8C4201D",
+                      "category":  "rejected-prototype-glb",
+                      "reason":  "Superseded R3.2 / GDR prototype GLB candidate; rejected as reconstruction baseline"
+                  },
+                  {
+                      "path":  "scripts/blender/eds_g03_clay_authoring.py",
+                      "sizeBytes":  37212,
+                      "sha256":  "0B9839775FB8017A4381785544FF3EB52D3545F193CB9857E7A888FDE09A2560",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/blender/eds_g03_cockpit_nose_redesign.py",
+                      "sizeBytes":  14610,
+                      "sha256":  "CF17D709EC5E6E643BF9B3877E295628871F450788E151296B89CD6C551E5BEF",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/blender/eds_g03_visual_design_reset.py",
+                      "sizeBytes":  18809,
+                      "sha256":  "5F50854E9D63F6FAB0B80D2ADF2318021BFBBFB4055373D6C44C8BFC87C6E60B",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/blender/validate_eds_g03_cockpit_nose_geometry.py",
+                      "sizeBytes":  2933,
+                      "sha256":  "2E460E8E2888B084AA1E01CD996E3D6CEEA648790D825287065878F69D91690A",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/create-eds-g03-cockpit-nose-sheets.mjs",
+                      "sizeBytes":  4724,
+                      "sha256":  "08A6A14A42013D64FC96A04BB2F10ECFF74CC5B509917A00E1BB2BF634CFBE1D",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/create-eds-g03-visual-reset-sheets.mjs",
+                      "sizeBytes":  3792,
+                      "sha256":  "E9F720CAC8CDC3D2013F94F62C2C3D2FA40FF74F133EB6F7980B1CFD992FDDA0",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/validate-eds-g03-cockpit-nose.mjs",
+                      "sizeBytes":  3253,
+                      "sha256":  "4ACAB8F4A6B3E4A2CA6451A1D4392BB22ACCEF7088AFB5C7E57DF0F5F0CDAD5B",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/validate-eds-g03-visual-reset.mjs",
+                      "sizeBytes":  3303,
+                      "sha256":  "8BF6F70AD34F238E512BCF2952BD44D6D2FA60078DF490CF97ED1E1E49792A43",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-eds-g03-blender-clay.mjs",
+                      "sizeBytes":  6587,
+                      "sha256":  "12D79D76B607493DF457B3DD6087B595F5520C2298B267AEE30414CCD49D7DA5",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-eds-g03-design-reset.mjs",
+                      "sizeBytes":  4833,
+                      "sha256":  "68BB2F979477898FD254C70CBDAF7A90AC105A590286068C4DD41B2CF140B8A0",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-eds-g03-blender.py",
+                      "sizeBytes":  2852,
+                      "sha256":  "1AE779A6FBFB9ED8809A5E497A7BD5DDF0A38348340032D56275E0CB11944195",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-eds-g03-design-reset.py",
+                      "sizeBytes":  4747,
+                      "sha256":  "612A0216658A716E7A477DFD3FB71CBC12B51619BA8C7C21401EF2E9CE69DEAD",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/generate-eds-g03-design-reset.mjs",
+                      "sizeBytes":  15612,
+                      "sha256":  "04BB54E078FE035BBE44E4D80985501613AC01C9CCDE33B8DBF2AB17D8D3C9C0",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/check-eds-g03-topology.py",
+                      "sizeBytes":  4623,
+                      "sha256":  "37743C1658940DF77F0035A1B32DD5F1A1E860607E9C77599CBB3C9CD448D4B0",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/validate-r3-gdr-glbs.mjs",
+                      "sizeBytes":  1347,
+                      "sha256":  "CF51A28515475C62650E8410B4A286A93ABCA42D10F7CAFA00C954A655533CCC",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/validate-r3-rev5-glb.mjs",
+                      "sizeBytes":  1317,
+                      "sha256":  "A7B05020D069F6C056B823F39E884F2693631A62F8AF9D3F0DB68D48CCD68CDF",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/extract-g03-rev6-baseline.py",
+                      "sizeBytes":  1272,
+                      "sha256":  "8AF5F3DDF3E765E3F7182A639DBC4CB9639F94823166983451733803352ED35A",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/gdr-eds-g03-measure.py",
+                      "sizeBytes":  2513,
+                      "sha256":  "A4DA2A7EDDB07E2DCE6B5CED545FC887F1CE33052B1FF25F1C2E00BD63A9176B",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/gdr-eds-g03-normals.py",
+                      "sizeBytes":  1589,
+                      "sha256":  "47C42C4DB2561C42BF4566D468DA9AA0BAFEECD6F8DE06185A02FB91756A86FB",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/gdr-eds-g03-prototypes.py",
+                      "sizeBytes":  6580,
+                      "sha256":  "AE0867008A68419888F9349249E65E1007CEAC54B1B43A6E6A9741756202E045",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/gdr-eds-g03-sections.py",
+                      "sizeBytes":  2870,
+                      "sha256":  "694D04FCDA8D5AD7724F37BCAA862F5EFE66E508AAA7736D7B6B05C5227F9E92",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/gdr-eds-g03-topology.py",
+                      "sizeBytes":  4684,
+                      "sha256":  "B6D26CE7DB4307E76CA97F24AD6903F291D48DAC22EACA953486168E99B9790A",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-g03-rev5.py",
+                      "sizeBytes":  8353,
+                      "sha256":  "D393A8067FA81A27A1F4ED98E5B7A71BD8B36F723B317C4B8DE676DF77F9AED8",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-g03-rev6.py",
+                      "sizeBytes":  3971,
+                      "sha256":  "5E403B7CFF512DA866BEA19F1B343E06274F2365A305E77BE0667FC1BB008E83",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-r3-rev7-integration.py",
+                      "sizeBytes":  5562,
+                      "sha256":  "E5CE53E8339D023CEBB6EC8D0DCA10A17826287BE980629E2F9F25F4089B8896",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/inspect-r3-rev7-prototypes.py",
+                      "sizeBytes":  3764,
+                      "sha256":  "91693A24C3F99A76EF7EEA15DBBA8C1B812B4F57909AA8A529008A8A070B1CA1",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/plot-r3-rev6-diffuser.mjs",
+                      "sizeBytes":  2743,
+                      "sha256":  "4F1F84E00AF43EAD3C74E61676B6D351828FA2C1AB7B2B8ADE200C9602DFBEAB",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/plot-r3-rev7-integrated.mjs",
+                      "sizeBytes":  2644,
+                      "sha256":  "9A91047C8DB06C36A3DD8C9FD5C45C57BAE99CF7DA982362822B8C61085F1C5D",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/plot-r3-rev7-sections.mjs",
+                      "sizeBytes":  1890,
+                      "sha256":  "7D39DDADAC938DA4D1B2ACD786AEFCB49ACCE22D601CD5A3CAFE83474F4FFEEC",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/prototype-r3-rev7.py",
+                      "sizeBytes":  9227,
+                      "sha256":  "9658FAF0CFA5D0C2C592B914E53C617B1605E1310A659A904DDCF887AA79D6DE",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-r3-gdr.mjs",
+                      "sizeBytes":  3556,
+                      "sha256":  "7FB5B89C5B19414F5BB7F51FB698169322AED0A37BA61D01BC61C9C2BBFE1500",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-r3-rev6-prototypes.mjs",
+                      "sizeBytes":  3372,
+                      "sha256":  "E737FF8C84002A2D77AD06AD2F02DBEEBD3CCB0C1A4B37129E06BDC88629ED97",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-r3-rev7-integrated.mjs",
+                      "sizeBytes":  5149,
+                      "sha256":  "5D8359316E7F67F9178F8A57442FE3F50C4293BD59F119C762E12932431F0892",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  },
+                  {
+                      "path":  "scripts/capture-r3-rev7-prototypes.mjs",
+                      "sizeBytes":  4438,
+                      "sha256":  "DC6CBE4B68266CB6784CEAF4FA93B324E1A4B9ED3F9FDBB15B476100908C4A1A",
+                      "category":  "superseded-utility-script",
+                      "reason":  "Superseded model generation/capture/validation script for obsolete revisions"
+                  }
+              ]
+}
