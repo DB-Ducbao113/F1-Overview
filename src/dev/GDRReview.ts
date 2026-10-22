@@ -32,7 +32,10 @@ rim.position.set(-2.5, 1.7, -2.5);
 scene.add(rim);
 
 const camera = new THREE.PerspectiveCamera(38, 900 / 650, 0.05, 30);
-const revision7Views: Record<string, { position: [number, number, number]; target: [number, number, number] }> = {
+const revision7Views: Record<
+  string,
+  { position: [number, number, number]; target: [number, number, number] }
+> = {
   'design-front-three-quarter': { position: [4.8, 1.95, -4.85], target: [0, 0.42, 0] },
   'design-side': { position: [7.2, 1.35, 0], target: [0, 0.38, 0] },
   'design-top': { position: [0, 9.3, 0], target: [0, 0.25, 0] },
@@ -48,12 +51,19 @@ const revision7Views: Record<string, { position: [number, number, number]; targe
   'halo-rear-right': { position: [0.86, 0.93, 0.58], target: [0.26, 0.66, 0.12] },
   'halo-upper-t': { position: [0.43, 1.13, -0.12], target: [0, 0.895, -0.5] },
   'sidepod-regression': { position: [1.18, 0.86, -1.08], target: [0.45, 0.45, -0.18] },
+  'blender-cockpit-close-up': { position: [1.45, 1.25, -1.34], target: [0, 0.66, -0.1] },
+  'blender-sidepod-close-up': { position: [1.72, 0.86, -1.0], target: [0.47, 0.43, -0.32] },
+  'blender-diffuser-underside': { position: [1.0, 0.12, 3.35], target: [0, 0.2, 1.72] },
+  'blender-wheel-suspension-close-up': {
+    position: [1.76, 0.86, -2.18],
+    target: [0.67, 0.37, -1.72],
+  },
 };
 if (revision7Views[region]) {
   camera.position.set(...revision7Views[region].position);
   camera.lookAt(...revision7Views[region].target);
 } else if (region === 'diffuser-r7-rear') {
-  camera.position.set(0, 0.20, 3.35);
+  camera.position.set(0, 0.2, 3.35);
   camera.lookAt(0, 0.24, 2.04);
 } else if (region === 'diffuser-r7-under') {
   camera.position.set(0.42, 0.08, 2.92);
