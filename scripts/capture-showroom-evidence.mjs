@@ -6,9 +6,7 @@ const chromePath =
   process.env.SHOWROOM_QA_CHROME || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const qaMode = process.env.SHOWROOM_QA_MODE === 'legacy' ? 'legacy' : 'eds';
 const showroomUrl = process.env.SHOWROOM_QA_URL || 'http://127.0.0.1:5173/showroom';
-const outputDirectory = path.resolve(
-  process.env.SHOWROOM_QA_OUTPUT || 'docs/commercialization/m2/evidence',
-);
+const outputDirectory = path.resolve(process.env.SHOWROOM_QA_OUTPUT || 'scratch/showroom-evidence');
 const viewports = [
   { name: 'mobile-375x812', width: 375, height: 812, mobile: true },
   { name: 'tablet-768x1024', width: 768, height: 1024, mobile: false },

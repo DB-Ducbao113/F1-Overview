@@ -5,11 +5,9 @@ import { EDS_G03_DESIGN as D, getEDS_G03TargetRatios } from './eds-g03-design.mj
 
 const filename = path.resolve(process.argv[2] || 'public/models/eds-g03-preview.glb');
 const reportFile = path.resolve(
-  process.argv[3] || 'docs/commercialization/r3/g03-dimensional-validation.json',
+  process.argv[3] || 'scratch/eds-g03/g03-dimensional-validation.json',
 );
-const hardpointFile = path.resolve(
-  process.argv[4] || 'docs/commercialization/r3/g03-hardpoints.json',
-);
+const hardpointFile = path.resolve(process.argv[4] || 'scratch/eds-g03/g03-hardpoints.json');
 const bytes = await fs.readFile(filename);
 const errors = [];
 const warnings = [];

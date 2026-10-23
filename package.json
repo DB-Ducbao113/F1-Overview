@@ -34,19 +34,7 @@
     "asset:eds-g02:validate": "node scripts/validate-eds-g02.mjs",
     "asset:eds-g03": "node scripts/generate-eds-g03.mjs",
     "asset:eds-g03:validate": "node scripts/validate-eds-g03.mjs",
-    "asset:eds-g03-d1:validate": "node scripts/validate-eds-g03-c42-d1.mjs",
-    "asset:eds-g03-d1:sheets": "node scripts/create-eds-g03-c42-d1-sheets.mjs",
-    "qa:r2:model-review": "node scripts/capture-r2-model-review.mjs",
-    "qa:r2:legacy-skins": "node scripts/capture-r2-legacy-skin-review.mjs",
-    "qa:r3:blockout": "node scripts/capture-r3-g03-blockout.mjs",
-    "qa:r3:surfaces": "node scripts/capture-r3-g03-surfaces.mjs",
-    "qa:r3:continuity": "node scripts/capture-r3-g03-continuity.mjs",
-    "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs",
-    "qa:m3:visuals": "node scripts/qa-m3-visual-assets.mjs",
-    "qa:m3:comparison": "node scripts/capture-m3-phase2-comparison.mjs",
-    "qa:m5:seo": "node scripts/qa-m5-seo.mjs",
-    "qa:m5:browser": "node scripts/capture-m5-engineering-evidence.mjs",
-    "qa:m5:accessibility": "node scripts/qa-m5-accessibility.mjs"
+    "qa:showroom:browser": "node scripts/capture-showroom-evidence.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.108.4",

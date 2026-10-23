@@ -39,9 +39,10 @@ npm run format       # định dạng mã bằng Prettier
 npm run format:check # kiểm tra định dạng
 npm run build        # TypeScript và bản build production
 npm run preview      # xem bản build production
+npm run test         # chạy bộ regression test bằng Vitest
 ```
 
-Repo chưa có bộ test tự động. CI chạy lint, kiểm tra format và build trên pull request.
+CI chạy lint, kiểm tra định dạng, test và build theo cấu hình workflow hiện hành.
 
 ## Cấu trúc chính
 

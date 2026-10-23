@@ -49,3 +49,6 @@ scratch/
 
 # Local source assets (not shipped or committed)
 source-assets/
+
+# Owner-supplied 3D model candidates (local review only)
+references/model-candidates/
