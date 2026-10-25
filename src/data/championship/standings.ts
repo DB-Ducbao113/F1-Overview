@@ -157,8 +157,8 @@ export const STANDINGS_DATA: Record<SeasonYear, SeasonStandings> = {
   2026: {
     season: 2026,
     status: 'ongoing',
-    lastUpdated: '2026-10-15',
-    notes: 'Official Live Standings after 17 events · Mercedes & Andrea Kimi Antonelli Leading',
+    lastUpdated: '2026-10-25',
+    notes: 'Official Live Standings after 18 events · Mercedes & Andrea Kimi Antonelli Leading',
     leaderTitle: 'Current Championship Leader: Andrea Kimi Antonelli (340 pts) · Mercedes (578 pts)',
     drivers: DRIVER_STANDINGS_2026,
     constructors: CONSTRUCTOR_STANDINGS_2026,
