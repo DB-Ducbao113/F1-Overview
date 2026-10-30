@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { CAR_TEXTURE_REVISION } from './showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
+import { QualityProfile, DESKTOP_QUALITY_PROFILES } from './showroomQuality';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
@@ -28,6 +29,7 @@ interface F1Car3DModelProps {
   showHotspots?: boolean;
   readinessKey: string;
   onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
+  qualityProfile?: QualityProfile;
 }
 
 // Model scale factor: converts 46.3 unit raw model into ~4.86m real F1 dimensions
@@ -52,7 +54,13 @@ const RealF1CarMesh: React.FC<{
   teamId: TeamId;
   readinessKey: string;
   onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
-}> = ({ teamId, readinessKey, onScenePartReady }) => {
+  qualityProfile?: QualityProfile;
+}> = ({
+  teamId,
+  readinessKey,
+  onScenePartReady,
+  qualityProfile = DESKTOP_QUALITY_PROFILES.high,
+}) => {
   const { scene } = useGLTF('/models/c42.v2.glb');
   const invalidate = useThree((state) => state.invalidate);
   const livery = useMemo(() => getTeam3DLivery(teamId), [teamId]);
@@ -167,31 +175,44 @@ const RealF1CarMesh: React.FC<{
 
     performance.mark('showroom:car:material-application:start');
 
+    // Clamp texture anisotropy according to active quality profile
+    cachedTextures?.forEach((tex) => {
+      if (tex && tex.anisotropy > qualityProfile.maxAnisotropy) {
+        tex.anisotropy = qualityProfile.maxAnisotropy;
+        tex.needsUpdate = true;
+      }
+    });
+
     // Dispose old dynamic materials to prevent WebGL memory leaks
     activeMaterialsRef.current.forEach((m) => m.dispose());
     activeMaterialsRef.current = [];
 
+    const isPhysical = qualityProfile.materialQuality === 'physical';
+
+    // Shared wheel material for BBS rims & Pirelli tires (prims 006, 011, 013)
+    const sharedWheelMat = new THREE.MeshStandardMaterial({
+      map: wheelTex,
+      roughness: 0.45,
+      metalness: 0.55,
+      envMapIntensity: 1.5,
+    });
+    sharedWheelMat.name = 'wheel_standard_material';
+    activeMaterialsRef.current.push(sharedWheelMat);
+
     clonedScene.traverse((child: any) => {
       if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
+        child.castShadow = qualityProfile.shadows;
+        child.receiveShadow = qualityProfile.shadows;
 
         const currentMat = child.material;
         const matName = (currentMat?.name || child.name || '').toLowerCase();
         let newMat: THREE.Material;
 
         // 1. Pirelli Tires & BBS Wheel Rims (006 = Front, 011 = Rear L, 013 = Rear R)
-        // Dynamically synchronized with each constructor team's aero covers & rim accents
         if (matName.includes('006') || matName.includes('011') || matName.includes('013')) {
-          newMat = new THREE.MeshStandardMaterial({
-            map: wheelTex,
-            roughness: 0.45,
-            metalness: 0.55,
-            envMapIntensity: 1.5,
-          });
+          newMat = sharedWheelMat;
         }
         // 2. Cockpit Interior & Steering Wheel (002)
-        // PCU-8D OLED telemetry display, RPM LEDs, colorful cockpit pushbuttons & 6-point racing harness
         else if (matName.includes('002')) {
           newMat = new THREE.MeshStandardMaterial({
             map: cockpitTex,
@@ -199,22 +220,30 @@ const RealF1CarMesh: React.FC<{
             metalness: 0.25,
             envMapIntensity: 1.2,
           });
+          activeMaterialsRef.current.push(newMat);
         }
         // 3. Titanium Halo Safety Cell (008)
-        // Grade 5 titanium structure with aerodynamic upper fairing painted in team livery
         else if (matName.includes('008')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: haloTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.haloRoughness ?? 0.2,
-            metalness: livery.haloMetalness ?? 0.45,
-            clearcoat: (livery.bodyClearcoat ?? 1.0) * 0.7,
-            clearcoatRoughness: 0.1,
-            envMapIntensity: 1.6,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: haloTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.haloRoughness ?? 0.2,
+                metalness: livery.haloMetalness ?? 0.45,
+                clearcoat: (livery.bodyClearcoat ?? 1.0) * 0.7,
+                clearcoatRoughness: 0.1,
+                envMapIntensity: 1.6,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: haloTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.haloRoughness ?? 0.2,
+                metalness: livery.haloMetalness ?? 0.45,
+                envMapIntensity: 1.4,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // 4. Aerodynamic Underfloor & Chassis (001 - Prim 3)
-        // Venturi ground-effect floor with colored edge fences, Jabroc reference plank & golden titanium skids
         else if (matName.includes('001')) {
           newMat = new THREE.MeshStandardMaterial({
             map: floorTex,
@@ -225,95 +254,156 @@ const RealF1CarMesh: React.FC<{
             metalness: 0.25,
             envMapIntensity: 1.6,
           });
+          activeMaterialsRef.current.push(newMat);
         }
         // 5. Suspension Wishbones, Pushrods & Wing Mirrors (003 - Prim 0)
-        // Authentic team livery mirror housings, aero accent pinstripes, reflection glass, titanium rod ends
         else if (matName.includes('003')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: suspensionMirrorsTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: suspensionMirrorsTex,
-            emissiveIntensity: 0.35,
-            color: new THREE.Color('#ffffff'),
-            roughness: 0.38,
-            metalness: 0.35,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 2.2,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: suspensionMirrorsTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: suspensionMirrorsTex,
+                emissiveIntensity: 0.35,
+                color: new THREE.Color('#ffffff'),
+                roughness: 0.38,
+                metalness: 0.35,
+                clearcoat: livery.bodyClearcoat ?? 1.0,
+                clearcoatRoughness: 0.08,
+                envMapIntensity: 2.2,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: suspensionMirrorsTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: suspensionMirrorsTex,
+                emissiveIntensity: 0.35,
+                color: new THREE.Color('#ffffff'),
+                roughness: 0.38,
+                metalness: 0.35,
+                envMapIntensity: 1.8,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // 6. Rear Aero Deflectors & Diffuser (009 - Prim 4)
-        // High-intensity FIA 24-LED Ruby Rain Light, Inconel exhaust heat-bluing, team-colored diffuser strakes
         else if (matName.includes('009')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: diffuserRainLightTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: diffuserRainLightTex,
-            emissiveIntensity: 0.38,
-            color: new THREE.Color('#ffffff'),
-            roughness: 0.45,
-            metalness: 0.3,
-            clearcoat: 0.4,
-            clearcoatRoughness: 0.1,
-            envMapIntensity: 2.0,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: diffuserRainLightTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: diffuserRainLightTex,
+                emissiveIntensity: 0.38,
+                color: new THREE.Color('#ffffff'),
+                roughness: 0.45,
+                metalness: 0.3,
+                clearcoat: 0.4,
+                clearcoatRoughness: 0.1,
+                envMapIntensity: 2.0,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: diffuserRainLightTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: diffuserRainLightTex,
+                emissiveIntensity: 0.38,
+                color: new THREE.Color('#ffffff'),
+                roughness: 0.45,
+                metalness: 0.3,
+                envMapIntensity: 1.6,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // 7. Wings Assembly: Front Wing Flaps & Rear Wing (005 - Prim 10)
         else if (matName.includes('005')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: wingsTex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveMap: wingsTex,
-            emissiveIntensity: 0.32,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.wingRoughness ?? 0.22,
-            metalness: livery.wingMetalness ?? 0.25,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 1.9,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: wingsTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: wingsTex,
+                emissiveIntensity: 0.32,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.wingRoughness ?? 0.22,
+                metalness: livery.wingMetalness ?? 0.25,
+                clearcoat: livery.bodyClearcoat ?? 1.0,
+                clearcoatRoughness: 0.08,
+                envMapIntensity: 1.9,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: wingsTex,
+                emissive: new THREE.Color('#ffffff'),
+                emissiveMap: wingsTex,
+                emissiveIntensity: 0.32,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.wingRoughness ?? 0.22,
+                metalness: livery.wingMetalness ?? 0.25,
+                envMapIntensity: 1.6,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // 8. Main Bodywork: Sidepods, Engine Cover, Shark Fin & Airbox (004 - Prim 1)
         else if (matName.includes('004')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: bodyworkTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.sidepodRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.sidepodMetalness ?? 0.2,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.06,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: bodyworkTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.sidepodRoughness ?? livery.bodyRoughness ?? 0.16,
+                metalness: livery.sidepodMetalness ?? 0.2,
+                clearcoat: livery.bodyClearcoat ?? 1.0,
+                clearcoatRoughness: 0.06,
+                envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: bodyworkTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.sidepodRoughness ?? livery.bodyRoughness ?? 0.16,
+                metalness: livery.sidepodMetalness ?? 0.2,
+                envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.1 : 0.5,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // 9. Forward Monocoque & Nose Cone (007 - Prim 6)
         else if (matName.includes('007')) {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: noseTex,
-            color: new THREE.Color('#ffffff'),
-            roughness: livery.noseRoughness ?? livery.bodyRoughness ?? 0.16,
-            metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.2,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.06,
-            envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: noseTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.noseRoughness ?? livery.bodyRoughness ?? 0.16,
+                metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.2,
+                clearcoat: livery.bodyClearcoat ?? 1.0,
+                clearcoatRoughness: 0.06,
+                envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.25 : 0.5,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: noseTex,
+                color: new THREE.Color('#ffffff'),
+                roughness: livery.noseRoughness ?? livery.bodyRoughness ?? 0.16,
+                metalness: livery.noseMetalness ?? livery.bodyMetalness ?? 0.2,
+                envMapIntensity: (livery.bodyClearcoat ?? 1.0) > 0 ? 1.1 : 0.5,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
         // Fallback for any other body parts
         else {
-          newMat = new THREE.MeshPhysicalMaterial({
-            map: null,
-            color: new THREE.Color(livery.bodyColor),
-            roughness: livery.bodyRoughness,
-            metalness: livery.bodyMetalness,
-            clearcoat: livery.bodyClearcoat ?? 1.0,
-            clearcoatRoughness: 0.08,
-            envMapIntensity: 1.8,
-          });
+          newMat = isPhysical
+            ? new THREE.MeshPhysicalMaterial({
+                map: null,
+                color: new THREE.Color(livery.bodyColor),
+                roughness: livery.bodyRoughness,
+                metalness: livery.bodyMetalness,
+                clearcoat: livery.bodyClearcoat ?? 1.0,
+                clearcoatRoughness: 0.08,
+                envMapIntensity: 1.8,
+              })
+            : new THREE.MeshStandardMaterial({
+                map: null,
+                color: new THREE.Color(livery.bodyColor),
+                roughness: livery.bodyRoughness,
+                metalness: livery.bodyMetalness,
+                envMapIntensity: 1.5,
+              });
+          activeMaterialsRef.current.push(newMat);
         }
 
         newMat.name = matName;
         newMat.needsUpdate = true;
         child.material = newMat;
-        activeMaterialsRef.current.push(newMat);
       }
     });
 
@@ -344,6 +434,9 @@ const RealF1CarMesh: React.FC<{
     haloTex,
     wheelTex,
     invalidate,
+    qualityProfile.materialQuality,
+    qualityProfile.shadows,
+    qualityProfile.maxAnisotropy,
   ]);
 
   // Language changes create a new startup key while the car's textures and
@@ -378,6 +471,7 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
   showHotspots = false,
   readinessKey,
   onScenePartReady,
+  qualityProfile,
 }) => {
   return (
     <group position={[0, 0, 0]}>
@@ -386,6 +480,7 @@ export const F1Car3DModel: React.FC<F1Car3DModelProps> = ({
         teamId={teamId}
         readinessKey={readinessKey}
         onScenePartReady={onScenePartReady}
+        qualityProfile={qualityProfile}
       />
 
       {/* ── 3D Interactive Hotspot Markers (Only when enabled or inspecting) ── */}

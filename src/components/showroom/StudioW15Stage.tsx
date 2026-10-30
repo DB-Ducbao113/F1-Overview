@@ -3,6 +3,7 @@ import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { STUDIO_TEXTURE_REVISION } from './showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
+import { QualityProfile, DESKTOP_QUALITY_PROFILES } from './showroomQuality';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import {
@@ -16,12 +17,15 @@ import {
 // acquireSet useMemo dependency stays referentially equal across renders).
 const STUDIO_SLOTS = ['north', 'south', 'west', 'east'] as const;
 
-const StudioReflectorFloor = React.memo(() => (
+const StudioReflectorFloor = React.memo<{
+  resolution: number;
+  blur: [number, number];
+}>(({ resolution, blur }) => (
   <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
     <planeGeometry args={[24, 24]} />
     <MeshReflectorMaterial
-      blur={[300, 100]}
-      resolution={512}
+      blur={blur}
+      resolution={resolution}
       mirror={0.55}
       mixBlur={0.6}
       mixStrength={2.0}
@@ -35,11 +39,19 @@ const StudioReflectorFloor = React.memo(() => (
   </mesh>
 ));
 
+const StudioStandardFloor = React.memo(() => (
+  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]} receiveShadow>
+    <planeGeometry args={[24, 24]} />
+    <meshStandardMaterial color="#232832" roughness={0.45} metalness={0.35} />
+  </mesh>
+));
+
 interface StudioW15StageProps {
   teamId: TeamId;
   lang?: 'vi' | 'en';
   readinessKey: string;
   onScenePartReady: (sceneKey: string, part: 'car' | 'studio') => void;
+  qualityProfile?: QualityProfile;
 }
 
 /**
@@ -58,6 +70,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
   lang = 'vi',
   readinessKey,
   onScenePartReady,
+  qualityProfile = DESKTOP_QUALITY_PROFILES.high,
 }) => {
   const invalidate = useThree((state) => state.invalidate);
   const team = TEAMS_DATA[teamId] || TEAMS_DATA.ferrari;
@@ -100,6 +113,12 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
 
   useLayoutEffect(() => {
     if (backdropTextures) {
+      backdropTextures.forEach((tex) => {
+        if (tex && tex.anisotropy > qualityProfile.maxAnisotropy) {
+          tex.anisotropy = qualityProfile.maxAnisotropy;
+          tex.needsUpdate = true;
+        }
+      });
       onScenePartReady(readinessKey, 'studio');
       invalidate();
     }
@@ -109,6 +128,7 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
     invalidate,
     northTexture,
     onScenePartReady,
+    qualityProfile.maxAnisotropy,
     readinessKey,
     southTexture,
     westTexture,
@@ -133,9 +153,9 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
         position={[6.0, 9.0, -4.5]}
         intensity={3.2}
         color="#ffffff"
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        castShadow={qualityProfile.shadows}
+        shadow-mapSize-width={qualityProfile.shadowMapSize}
+        shadow-mapSize-height={qualityProfile.shadowMapSize}
         shadow-bias={-0.0001}
       />
 
@@ -143,16 +163,28 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           Reuse the existing light: no extra shadow maps or render passes. */}
       <directionalLight position={[-7.0, 6.0, 3.5]} intensity={2.3} color="#f8fafc" />
 
-      {/* Subtle Ground Bounce Light */}
-      <directionalLight position={[0, -2.5, 0]} intensity={0.9} color="#dfe8f5" />
+      {/* Subtle Ground Bounce Light (Balanced & Cinematic only) */}
+      {qualityProfile.lightingMode !== 'essential' && (
+        <directionalLight position={[0, -2.5, 0]} intensity={0.9} color="#dfe8f5" />
+      )}
 
       {/* ── Rear rim / edge lights: carve black diffuser, beam-wing & suspension
           out of the dark background. Team-tinted + pure white for definition. ── */}
-      <directionalLight position={[-4.5, 3.2, 5.5]} intensity={2.6} color="#ffffff" />
-      <directionalLight position={[4.5, 2.4, 5.8]} intensity={1.8} color={team.primaryColor} />
-      <pointLight position={[0, 1.6, 4.6]} intensity={8} distance={9} color="#ffffff" />
-      {/* Under-glow lifts the floor/diffuser off the mirror so black strakes read */}
-      <pointLight position={[0, 0.25, 0]} intensity={3.2} distance={5} color={team.primaryColor} />
+      {qualityProfile.lightingMode !== 'essential' && (
+        <>
+          <directionalLight position={[-4.5, 3.2, 5.5]} intensity={2.6} color="#ffffff" />
+          {qualityProfile.lightingMode === 'cinematic' && (
+            <directionalLight
+              position={[4.5, 2.4, 5.8]}
+              intensity={1.8}
+              color={team.primaryColor}
+            />
+          )}
+          <pointLight position={[0, 1.6, 4.6]} intensity={8} distance={9} color="#ffffff" />
+        </>
+      )}
+      {/* Under-glow lifts the floor/diffuser off the floor so black strakes read */}
+      <pointLight position={[0, 0.25, 0]} intensity={2.8} distance={5} color={team.primaryColor} />
 
       {/* ══════════════════════════════════════════════════════════════
           1. NORTH WALL (Back: z = +5.8) — Main Premiere Branding Wall
@@ -164,13 +196,14 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <meshStandardMaterial color={studioWallColor} roughness={0.9} metalness={0.12} />
         </mesh>
 
-        {/* Vertical Shadow Joints */}
-        {[-5.5, -2.8, 2.8, 5.5].map((x) => (
-          <mesh key={`n-joint-${x}`} position={[x, 3.9, -0.01]} rotation={[0, Math.PI, 0]}>
-            <planeGeometry args={[0.03, 7.8]} />
-            <meshBasicMaterial color="#161820" />
-          </mesh>
-        ))}
+        {/* Vertical Shadow Joints (Omitted in Performance mode to eliminate 16 draw calls) */}
+        {!qualityProfile.simplifyWallMeshes &&
+          [-5.5, -2.8, 2.8, 5.5].map((x) => (
+            <mesh key={`n-joint-${x}`} position={[x, 3.9, -0.01]} rotation={[0, Math.PI, 0]}>
+              <planeGeometry args={[0.03, 7.8]} />
+              <meshBasicMaterial color="#161820" />
+            </mesh>
+          ))}
 
         {/* Ceiling Cove Light Strip */}
         <mesh position={[0, 7.4, -0.02]} rotation={[0, Math.PI, 0]}>
@@ -204,24 +237,28 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, 0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          {qualityProfile.lightingMode === 'cinematic' && (
+            <pointLight
+              position={[0, 0, 0.35]}
+              intensity={2.2}
+              distance={6.0}
+              color={team.primaryColor}
+            />
+          )}
         </group>
 
-        {/* Overhead Spotlight */}
-        <spotLight
-          position={[0, 6.2, -1.8]}
-          target-position={[0, 2.6, -0.08]}
-          angle={0.75}
-          penumbra={0.65}
-          intensity={3.2}
-          color="#ffffff"
-          shadow-bias={-0.0001}
-        />
+        {/* Overhead Spotlight (Cinematic only) */}
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <spotLight
+            position={[0, 6.2, -1.8]}
+            target-position={[0, 2.6, -0.08]}
+            angle={0.75}
+            penumbra={0.65}
+            intensity={3.2}
+            color="#ffffff"
+            shadow-bias={-0.0001}
+          />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -234,13 +271,14 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <meshStandardMaterial color={studioWallColor} roughness={0.9} metalness={0.12} />
         </mesh>
 
-        {/* Vertical Shadow Joints */}
-        {[-5.5, -2.8, 2.8, 5.5].map((x) => (
-          <mesh key={`s-joint-${x}`} position={[x, 3.9, 0.01]}>
-            <planeGeometry args={[0.03, 7.8]} />
-            <meshBasicMaterial color="#161820" />
-          </mesh>
-        ))}
+        {/* Vertical Shadow Joints (Omitted in Performance mode) */}
+        {!qualityProfile.simplifyWallMeshes &&
+          [-5.5, -2.8, 2.8, 5.5].map((x) => (
+            <mesh key={`s-joint-${x}`} position={[x, 3.9, 0.01]}>
+              <planeGeometry args={[0.03, 7.8]} />
+              <meshBasicMaterial color="#161820" />
+            </mesh>
+          ))}
 
         {/* Ceiling Cove Light Strip */}
         <mesh position={[0, 7.4, 0.02]}>
@@ -269,24 +307,28 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          {qualityProfile.lightingMode === 'cinematic' && (
+            <pointLight
+              position={[0, 0, -0.35]}
+              intensity={2.2}
+              distance={6.0}
+              color={team.primaryColor}
+            />
+          )}
         </group>
 
-        {/* Overhead Spotlight */}
-        <spotLight
-          position={[0, 6.2, 1.8]}
-          target-position={[0, 2.6, 0.08]}
-          angle={0.75}
-          penumbra={0.65}
-          intensity={3.0}
-          color="#ffffff"
-          shadow-bias={-0.0001}
-        />
+        {/* Overhead Spotlight (Cinematic only) */}
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <spotLight
+            position={[0, 6.2, 1.8]}
+            target-position={[0, 2.6, 0.08]}
+            angle={0.75}
+            penumbra={0.65}
+            intensity={3.0}
+            color="#ffffff"
+            shadow-bias={-0.0001}
+          />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -327,24 +369,28 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          {qualityProfile.lightingMode === 'cinematic' && (
+            <pointLight
+              position={[0, 0, -0.35]}
+              intensity={2.2}
+              distance={6.0}
+              color={team.primaryColor}
+            />
+          )}
         </group>
 
-        {/* Overhead Spotlight shining down onto Drivers Board */}
-        <spotLight
-          position={[0, 6.2, 1.8]}
-          target-position={[0, 2.6, 0.08]}
-          angle={0.75}
-          penumbra={0.65}
-          intensity={3.0}
-          color="#ffffff"
-          shadow-bias={-0.0001}
-        />
+        {/* Overhead Spotlight shining down onto Drivers Board (Cinematic only) */}
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <spotLight
+            position={[0, 6.2, 1.8]}
+            target-position={[0, 2.6, 0.08]}
+            angle={0.75}
+            penumbra={0.65}
+            intensity={3.0}
+            color="#ffffff"
+            shadow-bias={-0.0001}
+          />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -385,24 +431,28 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
             </mesh>
           )}
 
-          <pointLight
-            position={[0, 0, -0.35]}
-            intensity={2.2}
-            distance={6.0}
-            color={team.primaryColor}
-          />
+          {qualityProfile.lightingMode === 'cinematic' && (
+            <pointLight
+              position={[0, 0, -0.35]}
+              intensity={2.2}
+              distance={6.0}
+              color={team.primaryColor}
+            />
+          )}
         </group>
 
-        {/* Overhead Spotlight shining down onto Achievements Board */}
-        <spotLight
-          position={[0, 6.2, 1.8]}
-          target-position={[0, 2.6, 0.08]}
-          angle={0.75}
-          penumbra={0.65}
-          intensity={3.0}
-          color="#ffffff"
-          shadow-bias={-0.0001}
-        />
+        {/* Overhead Spotlight shining down onto Achievements Board (Cinematic only) */}
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <spotLight
+            position={[0, 6.2, 1.8]}
+            target-position={[0, 2.6, 0.08]}
+            angle={0.75}
+            penumbra={0.65}
+            intensity={3.0}
+            color="#ffffff"
+            shadow-bias={-0.0001}
+          />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -419,7 +469,9 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <planeGeometry args={[0.08, 7.5]} />
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
-        <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        )}
       </group>
 
       {/* 5B. NORTH-EAST CORNER */}
@@ -432,7 +484,9 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <planeGeometry args={[0.08, 7.5]} />
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
-        <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        )}
       </group>
 
       {/* 5C. SOUTH-WEST CORNER */}
@@ -445,7 +499,9 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <planeGeometry args={[0.08, 7.5]} />
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
-        <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        )}
       </group>
 
       {/* 5D. SOUTH-EAST CORNER */}
@@ -458,7 +514,9 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <planeGeometry args={[0.08, 7.5]} />
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
-        <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <pointLight position={[0, 3.5, 0.35]} intensity={1.2} distance={4.5} color="#ffffff" />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -488,20 +546,29 @@ export const StudioW15Stage: React.FC<StudioW15StageProps> = ({
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
 
-        <spotLight
-          position={[0, 0, 0]}
-          angle={0.85}
-          penumbra={0.75}
-          intensity={2.4}
-          color="#ffffff"
-          shadow-bias={-0.0001}
-        />
+        {qualityProfile.lightingMode === 'cinematic' && (
+          <spotLight
+            position={[0, 0, 0]}
+            angle={0.85}
+            penumbra={0.75}
+            intensity={2.4}
+            color="#ffffff"
+            shadow-bias={-0.0001}
+          />
+        )}
       </group>
 
       {/* ══════════════════════════════════════════════════════════════
-          7. POLISHED LUXURY MIRROR FLOOR (MeshReflectorMaterial)
+          7. POLISHED LUXURY MIRROR FLOOR (MeshReflectorMaterial) / SATIN FLOOR
           ══════════════════════════════════════════════════════════════ */}
-      <StudioReflectorFloor />
+      {qualityProfile.mirrorFloor ? (
+        <StudioReflectorFloor
+          resolution={qualityProfile.mirrorFloorResolution}
+          blur={qualityProfile.mirrorFloorBlur}
+        />
+      ) : (
+        <StudioStandardFloor />
+      )}
 
       {/* ══════════════════════════════════════════════════════════════
           8. FLOOR DISPLAY PERIMETER BOX (cadillac.webp Podium Outline)

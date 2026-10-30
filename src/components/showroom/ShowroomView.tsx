@@ -25,6 +25,14 @@ import { disposeAll, getCacheStats } from './showroomTextureCache';
 import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
+import {
+  GraphicsQualityMode,
+  QualityTier,
+  getSavedQualityMode,
+  saveQualityMode,
+  detectInitialQualityTier,
+  resolveQualityProfile,
+} from './showroomQuality';
 
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
@@ -212,11 +220,37 @@ export const ShowroomView: React.FC = () => {
       if (unsubscribe) unsubscribe();
     };
   }, []);
+
+  // ── Adaptive Graphics Quality System ──
+  const [qualityMode, setQualityModeState] = useState<GraphicsQualityMode>(() =>
+    getSavedQualityMode(),
+  );
+  const [qualityTier, setQualityTier] = useState<QualityTier>(() =>
+    detectInitialQualityTier(isMobileLayout),
+  );
+
+  const handleSelectQualityMode = useCallback((newMode: GraphicsQualityMode) => {
+    setQualityModeState(newMode);
+    saveQualityMode(newMode);
+    if (newMode !== 'auto') {
+      setQualityTier(newMode);
+    }
+  }, []);
+
+  const handleAdaptiveTierChange = useCallback((newTier: QualityTier) => {
+    setQualityTier(newTier);
+  }, []);
+
+  const qualityProfile = useMemo(
+    () => resolveQualityProfile(qualityMode, qualityTier, isMobileLayout),
+    [qualityMode, qualityTier, isMobileLayout],
+  );
+
   const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
   const isSceneUsable = usableSceneKey === startupSceneKey;
   const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
   const isStudioReady = readySceneParts.key === startupSceneKey && readySceneParts.studio;
-  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}`;
+  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}:${qualityMode}:${qualityTier}`;
 
   useEffect(() => {
     if (isSceneUsable) performance.mark('showroom:loader-hidden');
@@ -426,6 +460,9 @@ export const ShowroomView: React.FC = () => {
             onToggleHotspots={handleToggleHotspots}
             onOpenSchematic={() => setIsSchematicOpen(true)}
             isMobileLayout={isMobileLayout}
+            qualityMode={qualityMode}
+            effectiveQuality={qualityTier}
+            onChangeQualityMode={handleSelectQualityMode}
           />
         </div>
 
@@ -464,6 +501,10 @@ export const ShowroomView: React.FC = () => {
               isCarReady={isCarReady}
               isStudioReady={isStudioReady}
               setUsableSceneKey={setUsableSceneKey}
+              qualityMode={qualityMode}
+              qualityTier={qualityTier}
+              qualityProfile={qualityProfile}
+              onTierChange={handleAdaptiveTierChange}
             />
           </Suspense>
         </ErrorBoundary>

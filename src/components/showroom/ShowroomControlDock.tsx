@@ -22,6 +22,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { BOTTOM_SAFE_AREA_CLASS } from './showroomMobileLayout';
+import { GraphicsQualityMode, QualityTier } from './showroomQuality';
 void BOTTOM_SAFE_AREA_CLASS; // referenced via template above
 
 export type StudioLightingMode = 'studio';
@@ -48,6 +49,10 @@ interface ShowroomControlDockProps {
   onOpenSchematic?: () => void;
   /** M3C: mobile bottom-sheet composition flag (coarse pointer, <=1023 px). */
   isMobileLayout?: boolean;
+  // Graphics Quality System
+  qualityMode?: GraphicsQualityMode;
+  effectiveQuality?: QualityTier;
+  onChangeQualityMode?: (mode: GraphicsQualityMode) => void;
 }
 
 // 4 Panoramic Wall Tour Steps
@@ -87,6 +92,9 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
     onToggleHotspots,
     onOpenSchematic,
     isMobileLayout = false,
+    qualityMode = 'auto',
+    effectiveQuality = 'high',
+    onChangeQualityMode,
   }) => {
     // M3C: on mobile the dock starts collapsed so the 3D car is the first
     // thing the visitor sees; desktop keeps the previous expanded default.
@@ -594,6 +602,85 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                       </span>
                     </button>
                   )}
+                </div>
+              </div>
+
+              {/* ── 3. Showroom Advanced Settings: Graphics Quality ── */}
+              <div className="pt-2 border-t border-studio-800/80">
+                <div className="flex items-center justify-between mb-1.5 px-0.5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-studio-400 flex items-center gap-1">
+                    <Settings2 className="w-3 h-3 text-f1red" />
+                    {lang === 'vi' ? 'Cài Đặt Nâng Cao' : 'Advanced Settings'}
+                  </span>
+                  {qualityMode === 'auto' && effectiveQuality && (
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/80 text-emerald-400 font-bold">
+                      {lang === 'vi'
+                        ? `Tự Động: ${effectiveQuality === 'high' ? 'Cao' : effectiveQuality === 'average' ? 'TB' : 'Hiệu Năng'}`
+                        : `Auto: ${effectiveQuality.toUpperCase()}`}
+                    </span>
+                  )}
+                </div>
+
+                <div className="bg-studio-900/90 p-1.5 rounded-xl border border-studio-800 space-y-1">
+                  <div className="flex items-center justify-between text-[10px] font-medium text-studio-300 px-0.5">
+                    <span className="font-bold text-white">
+                      {lang === 'vi' ? 'Chất Lượng Đồ Họa' : 'Graphics Quality'}
+                    </span>
+                    <span className="text-[9px] text-studio-400 uppercase font-mono">
+                      {qualityMode === 'auto'
+                        ? lang === 'vi'
+                          ? 'Thích ứng FPS'
+                          : 'Adaptive'
+                        : qualityMode.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1">
+                    {[
+                      {
+                        id: 'auto',
+                        labelVi: 'Tự Động',
+                        labelEn: 'Auto',
+                        desc: 'Thích ứng 60 FPS theo phần cứng',
+                      },
+                      {
+                        id: 'high',
+                        labelVi: 'Cao',
+                        labelEn: 'High',
+                        desc: 'Chất lượng đồ họa tối đa (DPR cao, gương phản chiếu)',
+                      },
+                      {
+                        id: 'average',
+                        labelVi: 'TB',
+                        labelEn: 'Average',
+                        desc: 'Cân bằng mượt mà và chi tiết',
+                      },
+                      {
+                        id: 'performance',
+                        labelVi: 'Hiệu Năng',
+                        labelEn: 'Perf',
+                        desc: 'Tối ưu FPS cao cho máy yếu / tiết kiệm pin',
+                      },
+                    ].map((mode) => {
+                      const isActive = qualityMode === mode.id;
+                      return (
+                        <button
+                          key={mode.id}
+                          type="button"
+                          onClick={() => onChangeQualityMode?.(mode.id as GraphicsQualityMode)}
+                          className={`py-1 px-1 rounded-lg text-[10px] font-bold transition-all text-center flex flex-col items-center justify-center cursor-pointer border ${
+                            isActive
+                              ? 'bg-f1red border-red-500 text-white shadow-md shadow-f1red/20 font-black'
+                              : 'bg-studio-800/60 border-transparent text-studio-400 hover:text-white hover:bg-studio-800'
+                          }`}
+                          title={lang === 'vi' ? mode.desc : mode.labelEn}
+                        >
+                          <span className="truncate">
+                            {lang === 'vi' ? mode.labelVi : mode.labelEn}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

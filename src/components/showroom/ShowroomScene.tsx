@@ -6,6 +6,13 @@ import { CameraController } from './CameraController';
 import { StudioW15Stage } from './StudioW15Stage';
 import { ShowroomStartupCoordinator } from './ShowroomStartupCoordinator';
 import { ensureSafeCompileAsync } from './safeCompileAsync';
+import {
+  GraphicsQualityMode,
+  QualityTier,
+  QualityProfile,
+  DESKTOP_QUALITY_PROFILES,
+} from './showroomQuality';
+import { ShowroomAdaptiveQualityMonitor } from './ShowroomAdaptiveQualityMonitor';
 
 import type { HotspotItem } from '../../data/showroom/hotspotsData';
 import type { TeamId } from '../../types';
@@ -101,6 +108,10 @@ interface ShowroomSceneProps {
   isCarReady: boolean;
   isStudioReady: boolean;
   setUsableSceneKey: (key: string) => void;
+  qualityMode?: GraphicsQualityMode;
+  qualityTier?: QualityTier;
+  qualityProfile?: QualityProfile;
+  onTierChange?: (newTier: QualityTier) => void;
 }
 
 /**
@@ -134,10 +145,14 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
   isCarReady,
   isStudioReady,
   setUsableSceneKey,
+  qualityMode = 'auto',
+  qualityTier = 'high',
+  qualityProfile = DESKTOP_QUALITY_PROFILES.high,
+  onTierChange = () => {},
 }) => (
   <Canvas
-    shadows
-    dpr={[1, 1.25]}
+    shadows={qualityProfile.shadows}
+    dpr={qualityProfile.dpr}
     frameloop={frameloopMode}
     camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
     gl={{
@@ -160,12 +175,21 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
       onFirstUsableFrame={setUsableSceneKey}
     />
     <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
+    <ShowroomAdaptiveQualityMonitor
+      active={isCanvasActive}
+      mode={qualityMode}
+      currentTier={qualityTier}
+      startupReady={startupReady}
+      onTierChange={onTierChange}
+      sceneRevision={sceneRevision}
+    />
     {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
     <StudioW15Stage
       teamId={selectedTeamId}
       lang={lang}
       readinessKey={startupSceneKey}
       onScenePartReady={handleScenePartReady}
+      qualityProfile={qualityProfile}
     />
 
     {/* F1 3D Car Model with Suspense Loading HUD */}
@@ -178,20 +202,23 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
         showHotspots={showHotspots}
         readinessKey={startupSceneKey}
         onScenePartReady={handleScenePartReady}
+        qualityProfile={qualityProfile}
       />
     </Suspense>
 
     {/* Dynamic Ground Contact Shadows */}
-    <ContactShadows
-      position={[0, 0, 0]}
-      opacity={0.9}
-      scale={10}
-      blur={2.0}
-      far={4.5}
-      frames={1}
-      resolution={256}
-      color="#000000"
-    />
+    {qualityProfile.contactShadows && (
+      <ContactShadows
+        position={[0, 0, 0]}
+        opacity={0.9}
+        scale={10}
+        blur={qualityProfile.contactShadowBlur}
+        far={4.5}
+        frames={1}
+        resolution={qualityProfile.contactShadowResolution}
+        color="#000000"
+      />
+    )}
 
     {/* Smooth Camera Controller & OrbitControls */}
     <CameraController
