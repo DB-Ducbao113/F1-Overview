@@ -23,10 +23,6 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
-import {
-  disposeAll,
-  getCacheStats,
-} from '../../features/showroom/rendering/resources/showroomTextureCache';
 import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';
@@ -48,18 +44,6 @@ interface WebGLFallbackProps {
   primaryColor: string;
   lang: 'vi' | 'en';
 }
-
-type ShowroomDiagnosticsWindow = Window & {
-  __SHOWROOM_CACHE_STATS__?: () => {
-    car: ReturnType<typeof getCacheStats>;
-    studio: ReturnType<typeof getCacheStats>;
-  };
-  __SHOWROOM_RENDERER_STATS__?: () => unknown;
-};
-
-const diagnosticsEnabled = (): boolean =>
-  typeof window !== 'undefined' &&
-  new URLSearchParams(window.location.search).has('showroomDiagnostics');
 
 const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
   teamName,
@@ -174,22 +158,6 @@ export const ShowroomView: React.FC = () => {
     car: boolean;
     studio: boolean;
   }>({ key: '', car: false, studio: false });
-
-  // ── M3B.3: on route unmount, dispose every cached procedural texture. ──
-  // The Showroom is the only consumer; when it unmounts the WebGL context is
-  // torn down and retained GPU textures must be released with it.
-  useEffect(() => {
-    return () => disposeAll();
-  }, []);
-
-  useEffect(() => {
-    if (!diagnosticsEnabled()) return;
-    const diagnosticsWindow = window as ShowroomDiagnosticsWindow;
-    diagnosticsWindow.__SHOWROOM_CACHE_STATS__ = () => ({
-      car: getCacheStats('car'),
-      studio: getCacheStats('studio'),
-    });
-  }, []);
 
   useEffect(() => {
     const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');

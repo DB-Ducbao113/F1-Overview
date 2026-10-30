@@ -13,15 +13,20 @@ import {
   DESKTOP_QUALITY_PROFILES,
 } from '../performance/core';
 import { ShowroomAdaptiveQualityMonitor } from './ShowroomAdaptiveQualityMonitor';
+import { disposeAll, getCacheStats } from './resources/showroomTextureCache';
 
 import type { HotspotItem } from '../../../data/showroom/hotspotsData';
 import type { TeamId } from '../../../types';
 
-interface ShowroomDiagnosticsWindow {
+interface ShowroomDiagnosticsWindow extends Window {
   __SHOWROOM_RENDERER_STATS__?: () => {
     memory: { geometries: number; textures: number };
     render: { calls: number; triangles: number };
     programs?: number;
+  };
+  __SHOWROOM_CACHE_STATS__?: () => {
+    car: ReturnType<typeof getCacheStats>;
+    studio: ReturnType<typeof getCacheStats>;
   };
 }
 
@@ -64,8 +69,13 @@ const ShowroomResourceDiagnostics: React.FC = () => {
       render: { ...gl.info.render },
       programs: gl.info.programs?.length ?? 0,
     });
+    diagnosticsWindow.__SHOWROOM_CACHE_STATS__ = () => ({
+      car: getCacheStats('car'),
+      studio: getCacheStats('studio'),
+    });
     return () => {
       delete diagnosticsWindow.__SHOWROOM_RENDERER_STATS__;
+      delete diagnosticsWindow.__SHOWROOM_CACHE_STATS__;
     };
   }, [gl]);
 
@@ -149,89 +159,97 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
   qualityTier = 'high',
   qualityProfile = DESKTOP_QUALITY_PROFILES.high,
   onTierChange = () => {},
-}) => (
-  <Canvas
-    shadows={qualityProfile.shadows}
-    dpr={qualityProfile.dpr}
-    frameloop={frameloopMode}
-    camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
-    gl={{
-      antialias: false,
-      alpha: true,
-      powerPreference: 'high-performance',
-      toneMappingExposure: 1.2,
-    }}
-    className="w-full h-full cursor-grab active:cursor-grabbing"
-    onCreated={({ gl }) => {
-      ensureSafeCompileAsync(gl);
-    }}
-  >
-    <WebGLContextGuard onContextStateChange={onContextStateChange} />
-    <ShowroomStartupCoordinator
-      sceneKey={startupSceneKey}
-      active={isCanvasActive}
-      carReady={isCarReady}
-      studioReady={isStudioReady}
-      onFirstUsableFrame={setUsableSceneKey}
-    />
-    <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
-    <ShowroomAdaptiveQualityMonitor
-      active={isCanvasActive}
-      mode={qualityMode}
-      currentTier={qualityTier}
-      startupReady={startupReady}
-      onTierChange={onTierChange}
-      sceneRevision={sceneRevision}
-    />
-    {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
-    <StudioW15Stage
-      teamId={selectedTeamId}
-      lang={lang}
-      readinessKey={startupSceneKey}
-      onScenePartReady={handleScenePartReady}
-      qualityProfile={qualityProfile}
-    />
+}) => {
+  useEffect(() => {
+    return () => {
+      disposeAll();
+    };
+  }, []);
 
-    {/* F1 3D Car Model with Suspense Loading HUD */}
-    <Suspense fallback={null}>
-      <F1Car3DModel
+  return (
+    <Canvas
+      shadows={qualityProfile.shadows}
+      dpr={qualityProfile.dpr}
+      frameloop={frameloopMode}
+      camera={{ position: [3.4, 1.25, -2.8], fov: 38 }}
+      gl={{
+        antialias: false,
+        alpha: true,
+        powerPreference: 'high-performance',
+        toneMappingExposure: 1.2,
+      }}
+      className="w-full h-full cursor-grab active:cursor-grabbing"
+      onCreated={({ gl }) => {
+        ensureSafeCompileAsync(gl);
+      }}
+    >
+      <WebGLContextGuard onContextStateChange={onContextStateChange} />
+      <ShowroomStartupCoordinator
+        sceneKey={startupSceneKey}
+        active={isCanvasActive}
+        carReady={isCarReady}
+        studioReady={isStudioReady}
+        onFirstUsableFrame={setUsableSceneKey}
+      />
+      <ShowroomFrameInvalidator active={isCanvasActive} sceneRevision={sceneRevision} />
+      <ShowroomAdaptiveQualityMonitor
+        active={isCanvasActive}
+        mode={qualityMode}
+        currentTier={qualityTier}
+        startupReady={startupReady}
+        onTierChange={onTierChange}
+        sceneRevision={sceneRevision}
+      />
+      {/* ── Authentic Studio W15 Photography Stage (Cyclorama cove, overhead softbox rig, rim lights & mirror floor) ── */}
+      <StudioW15Stage
         teamId={selectedTeamId}
-        activeHotspot={activeHotspot}
-        onSelectHotspot={handleSelectHotspot}
         lang={lang}
-        showHotspots={showHotspots}
         readinessKey={startupSceneKey}
         onScenePartReady={handleScenePartReady}
         qualityProfile={qualityProfile}
       />
-    </Suspense>
 
-    {/* Dynamic Ground Contact Shadows */}
-    {qualityProfile.contactShadows && (
-      <ContactShadows
-        position={[0, 0, 0]}
-        opacity={0.9}
-        scale={10}
-        blur={qualityProfile.contactShadowBlur}
-        far={4.5}
-        frames={1}
-        resolution={qualityProfile.contactShadowResolution}
-        color="#000000"
+      {/* F1 3D Car Model with Suspense Loading HUD */}
+      <Suspense fallback={null}>
+        <F1Car3DModel
+          teamId={selectedTeamId}
+          activeHotspot={activeHotspot}
+          onSelectHotspot={handleSelectHotspot}
+          lang={lang}
+          showHotspots={showHotspots}
+          readinessKey={startupSceneKey}
+          onScenePartReady={handleScenePartReady}
+          qualityProfile={qualityProfile}
+        />
+      </Suspense>
+
+      {/* Dynamic Ground Contact Shadows */}
+      {qualityProfile.contactShadows && (
+        <ContactShadows
+          position={[0, 0, 0]}
+          opacity={0.9}
+          scale={10}
+          blur={qualityProfile.contactShadowBlur}
+          far={4.5}
+          frames={1}
+          resolution={qualityProfile.contactShadowResolution}
+          color="#000000"
+        />
+      )}
+
+      {/* Smooth Camera Controller & OrbitControls */}
+      <CameraController
+        activeHotspot={activeHotspot}
+        cameraPreset={cameraPreset as Parameters<typeof CameraController>[0]['cameraPreset']}
+        presetTrigger={presetTrigger}
+        autoRotate={autoRotate}
+        startupReady={startupReady}
+        reducedMotion={reducedMotion}
+        enableWheelZoom={enableWheelZoom}
+        zoomTrigger={zoomTrigger}
+        zoomDirection={zoomDirection}
       />
-    )}
-
-    {/* Smooth Camera Controller & OrbitControls */}
-    <CameraController
-      activeHotspot={activeHotspot}
-      cameraPreset={cameraPreset as Parameters<typeof CameraController>[0]['cameraPreset']}
-      presetTrigger={presetTrigger}
-      autoRotate={autoRotate}
-      startupReady={startupReady}
-      reducedMotion={reducedMotion}
-      enableWheelZoom={enableWheelZoom}
-      zoomTrigger={zoomTrigger}
-      zoomDirection={zoomDirection}
-    />
-    {diagnosticsEnabled() && <ShowroomResourceDiagnostics />}
-  </Canvas>
-);
+      {diagnosticsEnabled() && <ShowroomResourceDiagnostics />}
+    </Canvas>
+  );
+};
