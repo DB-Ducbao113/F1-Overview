@@ -22,7 +22,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { BOTTOM_SAFE_AREA_CLASS } from './showroomMobileLayout';
-import { GraphicsQualityMode, QualityTier } from './showroomQuality';
+import { GraphicsQualityMode, QualityTier } from '../../features/showroom/performance/core';
 void BOTTOM_SAFE_AREA_CLASS; // referenced via template above
 
 export type StudioLightingMode = 'studio';

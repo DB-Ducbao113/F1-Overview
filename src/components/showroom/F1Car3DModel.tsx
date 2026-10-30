@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
 import { CAR_TEXTURE_REVISION } from './showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
-import { QualityProfile, DESKTOP_QUALITY_PROFILES } from './showroomQuality';
+import { QualityProfile, DESKTOP_QUALITY_PROFILES } from '../../features/showroom/performance/core';
 import { TeamId } from '../../types';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';

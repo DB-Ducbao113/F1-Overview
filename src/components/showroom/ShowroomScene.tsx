@@ -11,7 +11,7 @@ import {
   QualityTier,
   QualityProfile,
   DESKTOP_QUALITY_PROFILES,
-} from './showroomQuality';
+} from '../../features/showroom/performance/core';
 import { ShowroomAdaptiveQualityMonitor } from './ShowroomAdaptiveQualityMonitor';
 
 import type { HotspotItem } from '../../data/showroom/hotspotsData';

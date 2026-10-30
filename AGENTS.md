@@ -68,7 +68,7 @@ graph LR
      ```
    - **Phạm vi cho phép (Ranh giới hợp lệ trong Renderer):** Các tệp nằm trong tầng `rendering/` (như `ShowroomScene.tsx`, `F1Car3DModel.tsx`, `StudioW15Stage.tsx`, `CameraController.tsx`) **hoàn toàn được phép và cần thiết** import Three.js, R3F, Drei để phục vụ việc dựng hình. Quy tắc cấm WebGL ở đây chỉ áp dụng cho Shell UI bên ngoài Canvas.
 2. **Phân biệt giữa Domain Logic và Canvas Components:**
-   - [`showroomQuality.ts`](file:///src/components/showroom/showroomQuality.ts) là Pure TS (Profiles, DPR, thresholds) -> Đặt tại `performance/` hoặc `domain/`. File này an toàn để import ở cả Shell lẫn Scene.
+   - [`showroomQuality.ts`](file:///src/features/showroom/performance/core/showroomQuality.ts) là Pure TS (Profiles, DPR, thresholds) -> Đặt tại `features/showroom/performance/core/`. File này an toàn để import ở cả Shell lẫn Scene.
    - [`ShowroomAdaptiveQualityMonitor.tsx`](file:///src/components/showroom/ShowroomAdaptiveQualityMonitor.tsx) dùng hook `useFrame` của R3F -> Bắt buộc nằm bên trong Canvas (tầng `rendering/` hoặc `performance/components/`). Tuyệt đối không import ra ngoài Shell!
 3. **Kiểm tra tự động bắt buộc:**
    - Sau bất kỳ thay đổi nào liên quan đến Showroom, agent bắt buộc phải chạy:

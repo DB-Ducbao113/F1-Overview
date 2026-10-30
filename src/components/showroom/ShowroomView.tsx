@@ -32,7 +32,7 @@ import {
   saveQualityMode,
   detectInitialQualityTier,
   resolveQualityProfile,
-} from './showroomQuality';
+} from '../../features/showroom/performance/core';
 
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { ErrorBoundary } from '../common/ErrorBoundary';
