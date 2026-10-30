@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { HotspotItem, F1_HOTSPOTS } from '../../data/showroom/hotspotsData';
+import { HotspotItem, F1_HOTSPOTS } from '../../features/showroom/data/hotspotsData';
 import { TeamId } from '../../types';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { getTeamComponentCloseUp } from '../../data/showroom/teamCloseups';
+import { getTeam3DLivery } from '../../features/showroom/data/teamLiveries';
+import { getTeamComponentCloseUp } from '../../features/showroom/data/teamCloseups';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import {
   X,

@@ -30,8 +30,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'Front Wing & Aerodynamics',
     categoryVi: 'Khí Động Học (Aero)',
     categoryEn: 'Aerodynamics',
-    summaryVi: 'Tạo lực nén bánh trước, cân bằng lực nén và điều hướng luồng khí dưới sàn xe (Venturi).',
-    summaryEn: 'Generates front downforce, balances car pitch, and guides clean airflow into the Venturi tunnels.',
+    summaryVi:
+      'Tạo lực nén bánh trước, cân bằng lực nén và điều hướng luồng khí dưới sàn xe (Venturi).',
+    summaryEn:
+      'Generates front downforce, balances car pitch, and guides clean airflow into the Venturi tunnels.',
     descriptionVi:
       'Cánh gió trước là bộ phận khí động học đầu tiên đón nhận luồng không khí va chạm với xe F1. Được chế tạo từ hơn 40 lớp sợi carbon siêu nhẹ, cánh gió không chỉ tạo ra hàng trăm kilogram lực nén ở tốc độ cao mà còn chia tách luồng khí: một phần đưa vào làm mát phanh và động cơ, phần còn lại tạo thành các luồng xoáy Y250 Vortex định hướng quanh lốp trước để triệt tiêu lực cản gió hỗn loạn.',
     descriptionEn:
@@ -41,10 +43,22 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [1.2, 0.9, -3.2],
     cameraTarget: [0, 0.25, -2.2],
     specs: [
-      { labelVi: 'Vật liệu chế tạo', labelEn: 'Construction', value: 'Carbon Fiber Pre-preg T1000' },
+      {
+        labelVi: 'Vật liệu chế tạo',
+        labelEn: 'Construction',
+        value: 'Carbon Fiber Pre-preg T1000',
+      },
       { labelVi: 'Lực nén tối đa', labelEn: 'Peak Downforce', value: '~450 kg @ 250 km/h' },
-      { labelVi: 'Chiều rộng tiêu chuẩn', labelEn: 'Regulation Width', value: '1900 mm (FIA 2026)' },
-      { labelVi: 'Số tầng cánh (Flaps)', labelEn: 'Cascade Elements', value: '4 Adjustable Elements' },
+      {
+        labelVi: 'Chiều rộng tiêu chuẩn',
+        labelEn: 'Regulation Width',
+        value: '1900 mm (FIA 2026)',
+      },
+      {
+        labelVi: 'Số tầng cánh (Flaps)',
+        labelEn: 'Cascade Elements',
+        value: '4 Adjustable Elements',
+      },
     ],
     highlightsVi: [
       'Điều chỉnh góc mở (Angle of Attack) từng chặng đua để tối ưu hóa giữa tốc độ thẳng và ôm cua.',
@@ -64,7 +78,8 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     categoryVi: 'Khí Động Học & Tốc Độ',
     categoryEn: 'Aero & Overtaking',
     summaryVi: 'Hệ thống giảm lực cản DRS mở góc cánh gió sau, tăng thêm 15–25 km/h khi vượt xe.',
-    summaryEn: 'Drag Reduction System hydraulic actuator opens the upper rear flap to gain 15-25 km/h.',
+    summaryEn:
+      'Drag Reduction System hydraulic actuator opens the upper rear flap to gain 15-25 km/h.',
     descriptionVi:
       'Hệ thống DRS (Drag Reduction System) được điều khiển thủy lực với tốc độ phản hồi tính bằng mili-giây. Khi tay đua nằm trong khoảng cách dưới 1 giây sau xe phía trước tại vùng DRS Detection Point, đèn báo trên vô lăng sẽ sáng. Kích hoạt DRS làm nâng cánh phụ phía sau lên tối đa 85 mm, giảm 30% lực cản khí động của toàn xe và mang lại lợi thế vượt trội trên các đoạn thẳng dài.',
     descriptionEn:
@@ -74,10 +89,22 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [-1.4, 1.4, 3.1],
     cameraTarget: [0, 0.85, 2.1],
     specs: [
-      { labelVi: 'Độ mở cánh gió (Slot Gap)', labelEn: 'Flap Opening Gap', value: '85 mm (Max FIA)' },
+      {
+        labelVi: 'Độ mở cánh gió (Slot Gap)',
+        labelEn: 'Flap Opening Gap',
+        value: '85 mm (Max FIA)',
+      },
       { labelVi: 'Tốc độ tăng thêm', labelEn: 'Top Speed Delta', value: '+15 to +25 km/h' },
-      { labelVi: 'Thời gian kích hoạt', labelEn: 'Actuation Response', value: '< 250 milliseconds' },
-      { labelVi: 'Cơ cấu điều khiển', labelEn: 'Actuator Mechanism', value: 'High-pressure Hydraulic' },
+      {
+        labelVi: 'Thời gian kích hoạt',
+        labelEn: 'Actuation Response',
+        value: '< 250 milliseconds',
+      },
+      {
+        labelVi: 'Cơ cấu điều khiển',
+        labelEn: 'Actuator Mechanism',
+        value: 'High-pressure Hydraulic',
+      },
     ],
     highlightsVi: [
       'Tự động đóng lại ngay lập tức khi tay đua chạm nhẹ vào bàn đạp phanh.',
@@ -96,8 +123,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'V6 Turbo Hybrid Power Unit',
     categoryVi: 'Hệ Thống Động Lực (Powertrain)',
     categoryEn: 'Powertrain & ERS',
-    summaryVi: 'Cỗ máy 1000+ mã lực kết hợp động cơ đốt trong V6 Turbo và hệ thống hồi lưu điện năng MGU-K.',
-    summaryEn: '1000+ HP hybrid marvel pairing a 1.6L Turbo V6 with an MGU-K regenerative electric motor.',
+    summaryVi:
+      'Cỗ máy 1000+ mã lực kết hợp động cơ đốt trong V6 Turbo và hệ thống hồi lưu điện năng MGU-K.',
+    summaryEn:
+      '1000+ HP hybrid marvel pairing a 1.6L Turbo V6 with an MGU-K regenerative electric motor.',
     descriptionVi:
       'Power Unit hiện đại của F1 là đỉnh cao hiệu suất nhiệt trên thế giới (vượt ngưỡng 50%). Bao gồm 5 thành phần chính theo luật 2026 (đã bỏ MGU-H): Động cơ đốt trong (ICE) 1.6L vòng tua 15,000 RPM, Bộ tăng áp đơn Turbocharger, Mô-tơ điện thu hồi động năng MGU-K 350 kW (470 HP), Bộ pin lưu trữ năng lượng (Energy Store), và Hộp điều khiển điện tử (Control Electronics).',
     descriptionEn:
@@ -107,11 +136,23 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [1.8, 1.3, 0.5],
     cameraTarget: [0, 0.48, 0.65],
     specs: [
-      { labelVi: 'Dung tích & cấu hình', labelEn: 'Displacement', value: '1.6 L, 90° V6 Single Turbo' },
+      {
+        labelVi: 'Dung tích & cấu hình',
+        labelEn: 'Displacement',
+        value: '1.6 L, 90° V6 Single Turbo',
+      },
       { labelVi: 'Tổng công suất', labelEn: 'Combined Output', value: '1,050+ Horsepower (BHP)' },
       { labelVi: 'Vòng tua tối đa', labelEn: 'RPM Limit', value: '15,000 RPM' },
-      { labelVi: 'Năng lượng pin ERS', labelEn: 'Battery Deployment', value: '8.5 MJ per lap (MGU-K, 2026)' },
-      { labelVi: 'Hiệu suất nhiệt', labelEn: 'Thermal Efficiency', value: '> 52% (Cao nhất thế giới)' },
+      {
+        labelVi: 'Năng lượng pin ERS',
+        labelEn: 'Battery Deployment',
+        value: '8.5 MJ per lap (MGU-K, 2026)',
+      },
+      {
+        labelVi: 'Hiệu suất nhiệt',
+        labelEn: 'Thermal Efficiency',
+        value: '> 52% (Cao nhất thế giới)',
+      },
     ],
     highlightsVi: [
       'Công nghệ đánh lửa tia nén buồng đốt phụ (Pre-Chamber Ignition TJI) đốt cháy kiệt nhiên liệu.',
@@ -130,8 +171,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'Titanium Halo Cockpit Protection',
     categoryVi: 'An Toàn Tay Đua (Safety)',
     categoryEn: 'Driver Safety System',
-    summaryVi: 'Khung vòng Titan Grade 5 chịu lực va chạm 12.3 tấn, bảo vệ vùng đầu tay đua tuyệt đối.',
-    summaryEn: 'Grade 5 Titanium loop rated to withstand 12.3 tonnes of impact force protecting the driver.',
+    summaryVi:
+      'Khung vòng Titan Grade 5 chịu lực va chạm 12.3 tấn, bảo vệ vùng đầu tay đua tuyệt đối.',
+    summaryEn:
+      'Grade 5 Titanium loop rated to withstand 12.3 tonnes of impact force protecting the driver.',
     descriptionVi:
       'Được giới thiệu từ năm 2018 bởi FIA, hệ thống Halo đã cứu sống nhiều tay đua trong các vụ tai nạn kinh hoàng (như Romain Grosjean tại Bahrain 2020 hay Guanyu Zhou tại Silverstone 2022). Khung Halo chỉ nặng 7 kg nhưng có thể chịu được lực ép thẳng đứng 121 kN (tương đương 12 tấn, gấp 2 lần xe buýt 2 tầng Luân Đôn). Lớp vỏ carbon bên ngoài được vát khí động học với các rãnh chia gió vi mô.',
     descriptionEn:
@@ -141,10 +184,22 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [0.9, 1.25, -1.2],
     cameraTarget: [0, 0.65, -0.35],
     specs: [
-      { labelVi: 'Vật liệu chính', labelEn: 'Primary Material', value: 'Grade 5 Titanium (Ti6Al4V)' },
+      {
+        labelVi: 'Vật liệu chính',
+        labelEn: 'Primary Material',
+        value: 'Grade 5 Titanium (Ti6Al4V)',
+      },
       { labelVi: 'Trọng lượng khung', labelEn: 'Weight', value: '7.0 kg (Unfaired)' },
-      { labelVi: 'Tải trọng kiểm định', labelEn: 'Static Test Load', value: '121 kN (12.3 Tonnes)' },
-      { labelVi: 'Góc nhìn tay đua', labelEn: 'Driver Visibility', value: 'Vùng khuất < 0.25 giây não bộ bù trừ' },
+      {
+        labelVi: 'Tải trọng kiểm định',
+        labelEn: 'Static Test Load',
+        value: '121 kN (12.3 Tonnes)',
+      },
+      {
+        labelVi: 'Góc nhìn tay đua',
+        labelEn: 'Driver Visibility',
+        value: 'Vùng khuất < 0.25 giây não bộ bù trừ',
+      },
     ],
     highlightsVi: [
       'Gắn kết trực tiếp vào khung nguyên khối Monocoque Carbon bằng bu lông cường lực cao.',
@@ -163,8 +218,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'Sidepods & Cooling Undercut',
     categoryVi: 'Khí Động Học & Tản Nhiệt',
     categoryEn: 'Aero & Thermal',
-    summaryVi: 'Hốc hút khí làm mát bộ tản nhiệt và tạo đường lượn Undercut dẫn luồng khí về sàn xe.',
-    summaryEn: 'Intakes cooling air for radiators while deep undercuts guide high-velocity air toward the floor.',
+    summaryVi:
+      'Hốc hút khí làm mát bộ tản nhiệt và tạo đường lượn Undercut dẫn luồng khí về sàn xe.',
+    summaryEn:
+      'Intakes cooling air for radiators while deep undercuts guide high-velocity air toward the floor.',
     descriptionVi:
       'Hốc gió Sidepods đóng vai trò kép: vừa giải nhiệt cho khối động cơ hơn 1000 mã lực thông qua dàn tản nhiệt nước và khí nạp (Intercoolers), vừa định hình khí động học quan trọng nhất thân xe. Thiết kế hớt gầm sâu (Extreme Undercut) và bề mặt dốc phía trên (Downwash Ramp) ép luồng không khí áp suất cao đi dọc theo eo thân xe chảy thẳng xuống bề mặt khuếch tán sàn sau.',
     descriptionEn:
@@ -174,10 +231,22 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [2.5, 1.2, -0.2],
     cameraTarget: [0.4, 0.35, 0.05],
     specs: [
-      { labelVi: 'Kiến trúc khí động', labelEn: 'Aero Philosophy', value: 'Deep Undercut Downwash' },
-      { labelVi: 'Nhiệt độ giải tỏa', labelEn: 'Heat Dissipation', value: '> 140 kW nhiệt lượng thải' },
+      {
+        labelVi: 'Kiến trúc khí động',
+        labelEn: 'Aero Philosophy',
+        value: 'Deep Undercut Downwash',
+      },
+      {
+        labelVi: 'Nhiệt độ giải tỏa',
+        labelEn: 'Heat Dissipation',
+        value: '> 140 kW nhiệt lượng thải',
+      },
       { labelVi: 'Thân vỏ', labelEn: 'Bodywork Shell', value: 'Ultra-thin Carbon-Nomex Honeycomb' },
-      { labelVi: 'Hệ thống an toàn', labelEn: 'Crash Structure', value: 'FIA Side Impact Spars (SIS)' },
+      {
+        labelVi: 'Hệ thống an toàn',
+        labelEn: 'Crash Structure',
+        value: 'FIA Side Impact Spars (SIS)',
+      },
     ],
     highlightsVi: [
       'Cấu trúc chống va đập cạnh sườn SIS bảo vệ tay đua khỏi các cú đâm ngang góc.',
@@ -196,8 +265,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'Pirelli 18-inch Tires & Carbon Brakes',
     categoryVi: 'Độ Bám Đường & Phanh',
     categoryEn: 'Grip & Deceleration',
-    summaryVi: 'Lốp rãnh thấp 18-inch kết hợp đĩa phanh carbon Brembo phát sáng trên 1,000°C khi hãm phanh 5G.',
-    summaryEn: 'Low-profile 18-inch Pirelli rubber paired with carbon brake discs glowing at 1,000°C under 5G.',
+    summaryVi:
+      'Lốp rãnh thấp 18-inch kết hợp đĩa phanh carbon Brembo phát sáng trên 1,000°C khi hãm phanh 5G.',
+    summaryEn:
+      'Low-profile 18-inch Pirelli rubber paired with carbon brake discs glowing at 1,000°C under 5G.',
     descriptionVi:
       'Lốp Pirelli 18-inch với thành lốp thấp giúp xe F1 phản hồi lái cực nhạy và giảm hiện tượng nhún không kiểm soát. Ẩn phía sau mâm hợp kim ma-giê BBS là hệ thống phanh carbon-carbon Brembo với hơn 1,000 lỗ thông gió li ti. Khi phanh từ 340 km/h xuống 80 km/h chỉ trong 100 mét, đĩa phanh sản sinh lực hãm trên 5G và bốc cháy đỏ rực ở nhiệt độ trên 1,000°C.',
     descriptionEn:
@@ -207,11 +278,27 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     cameraPos: [1.9, 0.65, -1.8],
     cameraTarget: [0.85, 0.35, -1.45],
     specs: [
-      { labelVi: 'Đường kính mâm', labelEn: 'Wheel Diameter', value: '18 inches (Magnesium Forged)' },
-      { labelVi: 'Hợp chất lốp khô', labelEn: 'Slick Compounds', value: 'C1 to C5 (Hard / Medium / Soft)' },
+      {
+        labelVi: 'Đường kính mâm',
+        labelEn: 'Wheel Diameter',
+        value: '18 inches (Magnesium Forged)',
+      },
+      {
+        labelVi: 'Hợp chất lốp khô',
+        labelEn: 'Slick Compounds',
+        value: 'C1 to C5 (Hard / Medium / Soft)',
+      },
       { labelVi: 'Nhiệt độ hoạt động', labelEn: 'Operating Window', value: '100°C – 130°C' },
-      { labelVi: 'Nhiệt độ đĩa phanh', labelEn: 'Brake Disc Temp', value: 'Up to 1,050°C (Glowing Red)' },
-      { labelVi: 'Lực hãm tối đa', labelEn: 'Peak Deceleration', value: '> 5.5 G Lực trọng trường' },
+      {
+        labelVi: 'Nhiệt độ đĩa phanh',
+        labelEn: 'Brake Disc Temp',
+        value: 'Up to 1,050°C (Glowing Red)',
+      },
+      {
+        labelVi: 'Lực hãm tối đa',
+        labelEn: 'Peak Deceleration',
+        value: '> 5.5 G Lực trọng trường',
+      },
     ],
     highlightsVi: [
       'Đĩa phanh được khoan hơn 1,000 lỗ thông gió vi mô để giải nhiệt tức thời.',
@@ -230,8 +317,10 @@ export const F1_HOTSPOTS: HotspotItem[] = [
     nameEn: 'Venturi Floor & Diffuser',
     categoryVi: 'Hiệu Ứng Mặt Đất (Ground Effect)',
     categoryEn: 'Ground Effect',
-    summaryVi: 'Hầm gió Venturi dưới gầm tạo ~60% lực nén, tấm gỗ Jabroc 10mm và đèn mưa FIA ở đuôi xe.',
-    summaryEn: 'Venturi tunnels generate ~60% of total downforce, with the 10mm Jabroc plank and FIA rain light at the tail.',
+    summaryVi:
+      'Hầm gió Venturi dưới gầm tạo ~60% lực nén, tấm gỗ Jabroc 10mm và đèn mưa FIA ở đuôi xe.',
+    summaryEn:
+      'Venturi tunnels generate ~60% of total downforce, with the 10mm Jabroc plank and FIA rain light at the tail.',
     descriptionVi:
       'Sàn xe hiệu ứng mặt đất là nguồn lực nén lớn nhất của F1 hiện đại. Hai hầm gió Venturi tăng tốc luồng khí dưới gầm, tạo vùng áp suất thấp hút xe xuống mặt đường. Tim gầm là tấm gỗ Jabroc dày 10mm kiểm định độ cao gầm xe, hai bên là các cánh chia gió Strake, phía trên là cánh dầm Beam Wing khuếch đại lực hút của bộ khuếch tán Diffuser. Cụm đèn LED đỏ FIA ở đuôi vừa báo mưa vừa nhấp nháy xanh khi thu hồi năng lượng ERS.',
     descriptionEn:

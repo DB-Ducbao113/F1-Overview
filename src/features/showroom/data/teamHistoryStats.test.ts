@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TEAM_HISTORY_DATA } from './teamHistoryStats';
-import { TEAMS_DATA } from '../teams';
-import { TeamId } from '../../types';
+import { TEAMS_DATA } from '../../../data/teams';
+import { TeamId } from '../../../types';
 
 describe('TEAM_HISTORY_DATA integrity', () => {
   const teamIds = Object.keys(TEAMS_DATA) as TeamId[];

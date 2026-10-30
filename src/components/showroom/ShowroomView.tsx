@@ -16,16 +16,16 @@ import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
 
-import { HotspotItem } from '../../data/showroom/hotspotsData';
+import { HotspotItem } from '../../features/showroom/data/hotspotsData';
 import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+import { getTeam3DLivery } from '../../features/showroom/data/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
 import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
-import { getTeamSponsors } from '../../data/showroom/teamSponsors';
+import { getTeamSponsors } from '../../features/showroom/data/teamSponsors';
 import {
   GraphicsQualityMode,
   QualityTier,

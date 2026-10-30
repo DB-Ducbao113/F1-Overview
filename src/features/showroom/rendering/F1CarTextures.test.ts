@@ -7,7 +7,7 @@ import {
   generateCockpitTexture,
   generateHaloTexture,
 } from './F1CarTextures';
-import { getTeam3DLivery, TEAM_3D_LIVERIES } from '../../../data/showroom/teamLiveries';
+import { getTeam3DLivery, TEAM_3D_LIVERIES } from '../data/teamLiveries';
 import { TeamId } from '../../../types';
 
 describe('F1CarTextures - drawCoolingLouvres', () => {

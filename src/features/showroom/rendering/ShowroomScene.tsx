@@ -15,7 +15,7 @@ import {
 import { ShowroomAdaptiveQualityMonitor } from './ShowroomAdaptiveQualityMonitor';
 import { disposeAll, getCacheStats } from './resources/showroomTextureCache';
 
-import type { HotspotItem } from '../../../data/showroom/hotspotsData';
+import type { HotspotItem } from '../data/hotspotsData';
 import type { TeamId } from '../../../types';
 
 interface ShowroomDiagnosticsWindow extends Window {

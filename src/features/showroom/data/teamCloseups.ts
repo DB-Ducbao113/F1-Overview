@@ -1,4 +1,4 @@
-import { TeamId } from '../../types';
+import { TeamId } from '../../../types';
 
 export interface ComponentCloseUp {
   titleVi: string;
@@ -140,7 +140,11 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         'Interchangeable cooling louvers customized per race weekend temperature.',
       ],
       specs: [
-        { labelVi: 'Kiến trúc khí động', labelEn: 'Aero Architecture', value: 'Sculpted Bathtub Downwash' },
+        {
+          labelVi: 'Kiến trúc khí động',
+          labelEn: 'Aero Architecture',
+          value: 'Sculpted Bathtub Downwash',
+        },
         { labelVi: 'Nhiệt lượng tản', labelEn: 'Thermal Relief', value: '> 145 kW' },
         { labelVi: 'Vật liệu thân vỏ', labelEn: 'Bodywork', value: 'Carbon-Nomex Honeycomb' },
         { labelVi: 'Độ dày thành vỏ', labelEn: 'Shell Thickness', value: '1.2 – 1.8 mm' },
@@ -221,10 +225,18 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         'Shrink-wrapped carbon engine cover minimizing aerodynamic drag profile.',
       ],
       specs: [
-        { labelVi: 'Khối động cơ', labelEn: 'Engine Type', value: 'Mercedes-AMG M15 1.6L V6 Turbo' },
+        {
+          labelVi: 'Khối động cơ',
+          labelEn: 'Engine Type',
+          value: 'Mercedes-AMG M15 1.6L V6 Turbo',
+        },
         { labelVi: 'Tổng công suất', labelEn: 'Total Output', value: '1,050+ HP' },
         { labelVi: 'Hiệu suất nhiệt', labelEn: 'Thermal Efficiency', value: '> 51%' },
-        { labelVi: 'Đối tác động cơ', labelEn: 'Engine Partner', value: 'Mercedes-AMG High Performance' },
+        {
+          labelVi: 'Đối tác động cơ',
+          labelEn: 'Engine Partner',
+          value: 'Mercedes-AMG High Performance',
+        },
       ],
     },
     halo: {
@@ -299,7 +311,11 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
         'Modular cooling gills optimized for track temperature demands.',
       ],
       specs: [
-        { labelVi: 'Triết lý khí động', labelEn: 'Aero Concept', value: 'Extreme Downwash Undercut' },
+        {
+          labelVi: 'Triết lý khí động',
+          labelEn: 'Aero Concept',
+          value: 'Extreme Downwash Undercut',
+        },
         { labelVi: 'Giải nhiệt động cơ', labelEn: 'Cooling Capacity', value: '> 145 kW' },
         { labelVi: 'Vật liệu thân vỏ', labelEn: 'Body Composite', value: 'Carbon-Nomex Honeycomb' },
         { labelVi: 'Màu hoàn thiện', labelEn: 'Finish', value: 'Papaya Orange & Matte Carbon' },
@@ -541,7 +557,11 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
       specs: [
         { labelVi: 'Động cơ', labelEn: 'Engine', value: '1.6L V6 Turbo Hybrid' },
         { labelVi: 'Tổng công suất', labelEn: 'Peak Output', value: '1,050+ HP' },
-        { labelVi: 'Hợp tác kỹ thuật', labelEn: 'Partnership', value: 'Red Bull Powertrains / Honda HRC' },
+        {
+          labelVi: 'Hợp tác kỹ thuật',
+          labelEn: 'Partnership',
+          value: 'Red Bull Powertrains / Honda HRC',
+        },
         { labelVi: 'Danh hiệu', labelEn: 'Titles', value: 'Championship Winning Unit' },
       ],
     },
@@ -652,13 +672,55 @@ export const TEAM_CLOSEUPS: Record<TeamId, HotspotCloseUpMap> = {
   },
 
   // Dedicated builder for remaining teams with 100% authentic team-specific images & liveries
-  astonmartin: createGenericTeamCloseups('astonmartin', 'Aston Martin Aramco', 'AMR25', '#00594f', 'British Racing Metallic Green & Lime'),
-  alpine: createGenericTeamCloseups('alpine', 'BWT Alpine F1', 'A525', '#0090ff', 'Alpine Royal Blue & Bubblegum Pink'),
-  racingbulls: createGenericTeamCloseups('racingbulls', 'Visa Cash App RB', 'VCARB 02', '#1634cb', 'Gloss Royal Racing Blue & White'),
-  haas: createGenericTeamCloseups('haas', 'MoneyGram Haas F1', 'VF-25', '#e5e7eb', 'Storm Pearl White & Haas Red'),
-  williams: createGenericTeamCloseups('williams', 'Williams Racing', 'FW47', '#002447', 'Williams Heritage Navy & Cyan'),
-  audi: createGenericTeamCloseups('audi', 'Audi F1 Team', 'R26', '#c4c8cc', 'Matte Titanium Silver & High-Voltage Red'),
-  cadillac: createGenericTeamCloseups('cadillac', 'Cadillac F1 Team', 'MAC-26', '#141518', 'Stealth Velvet Black & Satin Gold'),
+  astonmartin: createGenericTeamCloseups(
+    'astonmartin',
+    'Aston Martin Aramco',
+    'AMR25',
+    '#00594f',
+    'British Racing Metallic Green & Lime',
+  ),
+  alpine: createGenericTeamCloseups(
+    'alpine',
+    'BWT Alpine F1',
+    'A525',
+    '#0090ff',
+    'Alpine Royal Blue & Bubblegum Pink',
+  ),
+  racingbulls: createGenericTeamCloseups(
+    'racingbulls',
+    'Visa Cash App RB',
+    'VCARB 02',
+    '#1634cb',
+    'Gloss Royal Racing Blue & White',
+  ),
+  haas: createGenericTeamCloseups(
+    'haas',
+    'MoneyGram Haas F1',
+    'VF-25',
+    '#e5e7eb',
+    'Storm Pearl White & Haas Red',
+  ),
+  williams: createGenericTeamCloseups(
+    'williams',
+    'Williams Racing',
+    'FW47',
+    '#002447',
+    'Williams Heritage Navy & Cyan',
+  ),
+  audi: createGenericTeamCloseups(
+    'audi',
+    'Audi F1 Team',
+    'R26',
+    '#c4c8cc',
+    'Matte Titanium Silver & High-Voltage Red',
+  ),
+  cadillac: createGenericTeamCloseups(
+    'cadillac',
+    'Cadillac F1 Team',
+    'MAC-26',
+    '#141518',
+    'Stealth Velvet Black & Satin Gold',
+  ),
 };
 
 function createGenericTeamCloseups(
@@ -666,7 +728,7 @@ function createGenericTeamCloseups(
   teamName: string,
   carModel: string,
   primaryColor: string,
-  liveryNotes: string
+  liveryNotes: string,
 ): HotspotCloseUpMap {
   return {
     wings: {
@@ -816,15 +878,14 @@ function createGenericTeamCloseups(
   };
 }
 
-export const getTeamComponentCloseUp = (
-  teamId: TeamId,
-  hotspotId: string
-): ComponentCloseUp => {
+export const getTeamComponentCloseUp = (teamId: TeamId, hotspotId: string): ComponentCloseUp => {
   const teamMap = TEAM_CLOSEUPS[teamId] || TEAM_CLOSEUPS.ferrari;
   if (hotspotId === 'floor') {
     // Tổng hợp từ entry sidepods: tái dùng ảnh sidepods theo đội, 0 ảnh/texture mới (giữ RAM phẳng).
     const base = teamMap.sidepods;
-    const rawSuffix = base.titleVi.includes('·') ? base.titleVi.split('·').slice(1).join('·').trim() : teamId;
+    const rawSuffix = base.titleVi.includes('·')
+      ? base.titleVi.split('·').slice(1).join('·').trim()
+      : teamId;
     const teamSuffix = rawSuffix.replace(/\s*Cận Cảnh\s*$/, '').trim() || rawSuffix;
     return {
       titleVi: `Sàn Venturi & Diffuser Cận Cảnh · ${teamSuffix}`,

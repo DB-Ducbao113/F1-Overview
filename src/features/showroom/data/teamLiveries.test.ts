@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CARS_2026 } from '../cars/2026';
+import { CARS_2026 } from '../../../data/cars/2026';
 import { getTeam3DLivery } from './teamLiveries';
 
 describe('showroom current car identity', () => {

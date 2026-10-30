@@ -1,7 +1,7 @@
 import React from 'react';
-import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
+import { F1_HOTSPOTS, HotspotItem } from '../../features/showroom/data/hotspotsData';
 import { TeamId } from '../../types';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
+import { getTeam3DLivery } from '../../features/showroom/data/teamLiveries';
 import { Sparkles, Camera } from 'lucide-react';
 
 interface HotspotSelectorBarProps {

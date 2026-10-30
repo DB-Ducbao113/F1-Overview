@@ -1,4 +1,4 @@
-import { TeamId } from '../../types';
+import { TeamId } from '../../../types';
 
 /**
  * High-precision vector SVG logo definitions for all 11 F1 constructors.
@@ -190,15 +190,15 @@ export const TEAM_LOGO_SVG_STRINGS: Record<TeamId, string> = {
  * Matches official paddock & launch branding.
  */
 export const TEAM_BACKDROP_LABEL: Record<TeamId, { headline: string; subtitle: string }> = {
-  cadillac:    { headline: 'CADILLAC',         subtitle: 'FORMULA 1' },
-  mclaren:     { headline: 'McLAREN',          subtitle: 'FORMULA 1' },
-  ferrari:     { headline: 'SCUDERIA FERRARI', subtitle: 'HP' },
-  mercedes:    { headline: 'MERCEDES-AMG',     subtitle: 'PETRONAS FORMULA ONE' },
-  redbull:     { headline: 'ORACLE RED BULL',  subtitle: 'RACING' },
-  astonmartin: { headline: 'ASTON MARTIN',     subtitle: 'ARAMCO FORMULA ONE' },
-  alpine:      { headline: 'BWT ALPINE',       subtitle: 'FORMULA ONE' },
+  cadillac: { headline: 'CADILLAC', subtitle: 'FORMULA 1' },
+  mclaren: { headline: 'McLAREN', subtitle: 'FORMULA 1' },
+  ferrari: { headline: 'SCUDERIA FERRARI', subtitle: 'HP' },
+  mercedes: { headline: 'MERCEDES-AMG', subtitle: 'PETRONAS FORMULA ONE' },
+  redbull: { headline: 'ORACLE RED BULL', subtitle: 'RACING' },
+  astonmartin: { headline: 'ASTON MARTIN', subtitle: 'ARAMCO FORMULA ONE' },
+  alpine: { headline: 'BWT ALPINE', subtitle: 'FORMULA ONE' },
   racingbulls: { headline: 'VISA CASH APP RB', subtitle: 'FORMULA ONE' },
-  haas:        { headline: 'MONEYGRAM HAAS',   subtitle: 'FORMULA 1' },
-  williams:    { headline: 'WILLIAMS',         subtitle: 'RACING' },
-  audi:        { headline: 'AUDI',             subtitle: 'FORMULA 1' },
+  haas: { headline: 'MONEYGRAM HAAS', subtitle: 'FORMULA 1' },
+  williams: { headline: 'WILLIAMS', subtitle: 'RACING' },
+  audi: { headline: 'AUDI', subtitle: 'FORMULA 1' },
 };

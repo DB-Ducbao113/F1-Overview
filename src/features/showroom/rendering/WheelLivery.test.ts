@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TEAM_3D_LIVERIES } from '../../../data/showroom/teamLiveries';
+import { TEAM_3D_LIVERIES } from '../data/teamLiveries';
 import { TeamId } from '../../../types';
 import {
   generateWheelTexture,

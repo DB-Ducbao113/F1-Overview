@@ -1,5 +1,5 @@
-import { CARS_2026 } from '../cars/2026';
-import { TeamId } from '../../types';
+import { CARS_2026 } from '../../../data/cars/2026';
+import { TeamId } from '../../../types';
 
 export interface Team3DLivery {
   teamId: TeamId;
@@ -149,15 +149,15 @@ export const TEAM_3D_LIVERIES: Record<TeamId, Team3DLivery> = {
     noseRoughness: 0.14,
     noseMetalness: 0.82, // High metallic sheen for classic Silver Arrow look
     sidepodRoughness: 0.18,
-    sidepodMetalness: 0.20, // Deep obsidian black - preserves deep contrast without gamma washing
+    sidepodMetalness: 0.2, // Deep obsidian black - preserves deep contrast without gamma washing
     engineCoverRoughness: 0.18,
-    engineCoverMetalness: 0.20, // Deep obsidian black - preserves deep contrast
+    engineCoverMetalness: 0.2, // Deep obsidian black - preserves deep contrast
     wingColor: '#0e1014', // Deep glossy woven carbon fiber black (Identical to W15)
-    wingRoughness: 0.20,
+    wingRoughness: 0.2,
     wingMetalness: 0.25,
     haloColor: '#121418', // Deep carbon titanium black (Identical to W15)
     haloRoughness: 0.25,
-    haloMetalness: 0.40,
+    haloMetalness: 0.4,
     floorColor: '#08090b',
     accentColor: '#00a19c', // Iconic Petronas Emerald Turquoise speedline
     highlightColor: '#00f5d4', // Bright neon mint/cyan highlight accent
