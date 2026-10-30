@@ -172,6 +172,7 @@ export interface ICountbackComparator {
     a: DriverStandingEntity,
     b: DriverStandingEntity,
     driverFinishHistograms: ReadonlyMap<DriverId, readonly number[]>,
+    qualifyingHistograms?: ReadonlyMap<DriverId, readonly number[]>,
   ): number;
 
   /**
@@ -181,6 +182,7 @@ export interface ICountbackComparator {
     a: ConstructorStandingEntity,
     b: ConstructorStandingEntity,
     teamFinishHistograms: ReadonlyMap<ConstructorId, readonly number[]>,
+    qualifyingHistograms?: ReadonlyMap<ConstructorId, readonly number[]>,
   ): number;
 }
 

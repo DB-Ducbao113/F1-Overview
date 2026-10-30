@@ -114,9 +114,11 @@ describe('Characterization Baseline — Countback Tie-Breaker Behavior', () => {
     expect(result.drivers[1].driverId).toBe('driver_b');
   });
 
-  it('falls back to podium totals when positions P1 to P10 are equal in current application behavior', () => {
+  it('falls back to baseline ranking when race finishes are equal, eliminating legacy podium fallback', () => {
     // Both have 50 points, 1 win, 0 finishes in histogram.
     // Driver A has 3 podiums in baseline metadata, Driver B has 2.
+    // Under corrected FIA rules, podium totals are not used as an independent fallback.
+    // The tie is broken by baseline official ranking.
     const driversWithDifferentPodiums: DriverStanding[] = [
       { ...baseDrivers[0], podiums: 3 },
       { ...baseDrivers[1], podiums: 2 },
@@ -129,18 +131,17 @@ describe('Characterization Baseline — Countback Tie-Breaker Behavior', () => {
       baseConstructors,
     );
 
-    // Current implementation uses podium count as fallback tiebreaker
+    // Retains deterministic baseline order
     expect(result.drivers[0].driverId).toBe('driver_a');
     expect(result.drivers[0].podiums).toBe(3);
     expect(result.drivers[1].driverId).toBe('driver_b');
     expect(result.drivers[1].podiums).toBe(2);
   });
 
-  it('CHARACTERIZATION: verifies current implementation ignores P11-P20 in countback histogram', () => {
+  it('evaluates finishing positions beyond P10 (P11+) in race countback per FIA Article A2.1.4(c)', () => {
     // Both drivers have 0 points, 0 wins, 0 podiums.
     // Driver A has 1x P11, Driver B has 1x P12.
-    // Under full FIA regulations, Driver A should beat Driver B.
-    // In CURRENT implementation, positions > 10 are ignored (tally only records <= 10).
+    // Under FIA Article A2.1.4(c), Driver A must beat Driver B on countback of 11th places.
     const raceP11P12: DetailedRaceResult = {
       id: 'race-2026-r18',
       season: 2026,
@@ -179,9 +180,11 @@ describe('Characterization Baseline — Countback Tie-Breaker Behavior', () => {
       ],
     };
 
+    // Pass drivers with Driver B first to verify that countback (P11 vs P12)
+    // actively determines the ranking regardless of array order:
     const zeroPointsDrivers: DriverStanding[] = [
-      { ...baseDrivers[0], points: 0, wins: 0, podiums: 0 },
-      { ...baseDrivers[1], points: 0, wins: 0, podiums: 0 },
+      { ...baseDrivers[1], points: 0, wins: 0, podiums: 0, rank: 2 },
+      { ...baseDrivers[0], points: 0, wins: 0, podiums: 0, rank: 1 },
     ];
 
     const result = recalculateStandingsFromRaces(
@@ -191,10 +194,11 @@ describe('Characterization Baseline — Countback Tie-Breaker Behavior', () => {
       baseConstructors,
     );
 
-    // Current application does not compare P11; they remain in original array order (preserving determinism)
-    // Documented as Characterization Limitation (addressed in normative test)
+    // Driver A (P11) ranks ahead of Driver B (P12)
     expect(result.drivers).toHaveLength(2);
-    expect(result.drivers[0].points).toBe(0);
-    expect(result.drivers[1].points).toBe(0);
+    expect(result.drivers[0].driverId).toBe('driver_a');
+    expect(result.drivers[0].rank).toBe(1);
+    expect(result.drivers[1].driverId).toBe('driver_b');
+    expect(result.drivers[1].rank).toBe(2);
   });
 });

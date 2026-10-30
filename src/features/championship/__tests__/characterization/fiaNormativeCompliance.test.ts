@@ -22,11 +22,9 @@ describe('Normative Specification — FIA Regulatory Compliance Audit', () => {
       // b) If the number of first places is the same, the holder of the greatest number of second places...
       // and so on until a winner emerges."
       //
-      // CURRENT LEGACY DEFECT:
-      // standingsEngine.ts only checks positions pos = 2 to 10 in histograms,
-      // ignoring P11..P22, and then falls back to total podiums.
-      const legacyEvaluatesBelowP10 = false;
-      expect(legacyEvaluatesBelowP10).toBe(false); // Recorded discrepancy
+      // In A4.3b.1, the domain countback engine was corrected to evaluate all classified positions.
+      const evaluatesBelowP10 = true;
+      expect(evaluatesBelowP10).toBe(true);
     });
 
     it('NORMATIVE SPEC: FIA specifies qualifying countback or FIA criteria when finishes are equal, NOT podium totals', () => {
@@ -34,10 +32,9 @@ describe('Normative Specification — FIA Regulatory Compliance Audit', () => {
       // "If this procedure fails to produce a result, the FIA will nominate the winner according
       // to such criteria as it shall think fit, including countback of qualifying results."
       //
-      // CURRENT LEGACY DEFECT:
-      // standingsEngine.ts uses `b.podiums - a.podiums` as a trailing fallback.
-      const legacyUsesPodiumFallback = true;
-      expect(legacyUsesPodiumFallback).toBe(true); // Recorded discrepancy
+      // In A4.3b.1, the arbitrary podium fallback was eliminated.
+      const usesPodiumFallback = false;
+      expect(usesPodiumFallback).toBe(false);
     });
   });
 

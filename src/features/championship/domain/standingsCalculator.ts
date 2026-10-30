@@ -55,6 +55,7 @@ export function recalculateStandingsFromRaces(
       wins: number;
       podiums: number;
       countryFlag: string;
+      rank?: number;
     }
   >();
 
@@ -67,6 +68,7 @@ export function recalculateStandingsFromRaces(
       wins: number;
       podiums: number;
       engine: string;
+      rank?: number;
     }
   >();
 
@@ -90,6 +92,7 @@ export function recalculateStandingsFromRaces(
       wins: d.wins,
       podiums: d.podiums,
       countryFlag: d.countryFlag,
+      rank: d.rank,
     });
   });
 
@@ -102,6 +105,7 @@ export function recalculateStandingsFromRaces(
       wins: c.wins,
       podiums: c.podiums,
       engine: c.engine,
+      rank: c.rank,
     });
   });
 
