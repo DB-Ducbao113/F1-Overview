@@ -4,4 +4,3 @@ export * from './teamSponsors';
 export * from './teamHistoryStats';
 export * from './teamCloseups';
 export * from './teamLogoSVGs';
-

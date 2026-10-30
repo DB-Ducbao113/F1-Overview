@@ -9,7 +9,7 @@ import {
   Compass,
   FileText,
 } from 'lucide-react';
-import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
+import type { CameraPreset } from '../rendering/CameraController';
 
 interface ShowroomQuickHUDProps {
   enableWheelZoom: boolean;

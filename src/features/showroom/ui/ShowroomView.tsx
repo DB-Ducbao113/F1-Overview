@@ -1,31 +1,33 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
-import { HotspotDetailsModal } from './HotspotDetailsModal';
+import type { CameraPreset } from '../rendering/CameraController';
+import { HotspotDetailsModal } from './modals/HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
 const LazyShowroomLoadingPanel = lazy(() =>
-  import('./Showroom3DLoader').then((module) => ({ default: module.ShowroomLoadingPanel })),
+  import('./fallbacks/Showroom3DLoader').then((module) => ({
+    default: module.ShowroomLoadingPanel,
+  })),
 );
 const ShowroomScene = lazy(() =>
-  import('../../features/showroom/rendering/ShowroomScene').then((module) => ({
+  import('../rendering/ShowroomScene').then((module) => ({
     default: module.ShowroomScene,
   })),
 );
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
-import { SchematicComparisonModal } from './SchematicComparisonModal';
+import { SchematicComparisonModal } from './modals/SchematicComparisonModal';
 
-import { HotspotItem } from '../../features/showroom/data/hotspotsData';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
-import { getTeam3DLivery } from '../../features/showroom/data/teamLiveries';
-import { useNavigationStore } from '../../store/useNavigationStore';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
+import { HotspotItem } from '../data/hotspotsData';
+import { TeamId } from '../../../types';
+import { TEAMS_DATA } from '../../../data/teams';
+import { getTeam3DLivery } from '../data/teamLiveries';
+import { useNavigationStore } from '../../../store/useNavigationStore';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
+import { getDefaultAutoRotate, getFrameLoopMode } from '../performance/showroomMotionState';
 import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
-import { ConstructorLogo } from '../common/ConstructorLogo';
-import { getTeamSponsors } from '../../features/showroom/data/teamSponsors';
+import { ConstructorLogo } from '../../../components/common/ConstructorLogo';
+import { getTeamSponsors } from '../data/teamSponsors';
 import {
   GraphicsQualityMode,
   QualityTier,
@@ -33,10 +35,10 @@ import {
   saveQualityMode,
   detectInitialQualityTier,
   resolveQualityProfile,
-} from '../../features/showroom/performance/core';
+} from '../performance/core';
 
 import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
-import { ErrorBoundary } from '../common/ErrorBoundary';
+import { ErrorBoundary } from '../../../components/common/ErrorBoundary';
 
 interface WebGLFallbackProps {
   teamName: string;

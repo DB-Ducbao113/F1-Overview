@@ -8,7 +8,10 @@ import {
   shouldRequestFrames,
   type MotionStateInput,
 } from './showroomMotionState';
-import { getReducedMotionPreference, subscribeReducedMotion } from '../../hooks/useReducedMotion';
+import {
+  getReducedMotionPreference,
+  subscribeReducedMotion,
+} from '../../../hooks/useReducedMotion';
 
 const baseInput: MotionStateInput = {
   reducedMotion: false,

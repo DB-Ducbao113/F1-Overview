@@ -7,7 +7,7 @@ import {
   type AcquireResult,
   type TextureNamespace,
 } from './resources/showroomTextureCache';
-import { yieldToMain } from '../../../components/showroom/showroomTaskScheduler';
+import { yieldToMain } from '../performance/showroomTaskScheduler';
 
 /**
  * Acquire generated texture sets only after React commits the consumer.

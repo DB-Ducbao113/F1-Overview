@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
+import type { CameraPreset } from '../rendering/CameraController';
 import {
   RotateCcw,
   Play,
@@ -22,7 +22,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { BOTTOM_SAFE_AREA_CLASS } from './showroomMobileLayout';
-import { GraphicsQualityMode, QualityTier } from '../../features/showroom/performance/core';
+import { GraphicsQualityMode, QualityTier } from '../performance/core';
 void BOTTOM_SAFE_AREA_CLASS; // referenced via template above
 
 export type StudioLightingMode = 'studio';

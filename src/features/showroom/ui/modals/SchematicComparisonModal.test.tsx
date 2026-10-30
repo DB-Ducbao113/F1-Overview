@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SchematicComparisonModal } from './SchematicComparisonModal';
-import { TeamId } from '../../types';
+import { TeamId } from '../../../../types';
 
 describe('SchematicComparisonModal Component', () => {
   const teams: TeamId[] = [

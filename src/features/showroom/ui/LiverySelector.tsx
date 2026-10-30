@@ -1,8 +1,8 @@
 import React from 'react';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
+import { TeamId } from '../../../types';
+import { TEAMS_DATA } from '../../../data/teams';
 import { Palette, Check } from 'lucide-react';
-import { ConstructorLogo } from '../common/ConstructorLogo';
+import { ConstructorLogo } from '../../../components/common/ConstructorLogo';
 
 interface LiverySelectorProps {
   selectedTeamId: TeamId;

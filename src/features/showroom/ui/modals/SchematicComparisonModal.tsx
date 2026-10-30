@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ZoomIn, ZoomOut, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
-import { getTeam3DLivery } from '../../features/showroom/data/teamLiveries';
-import { ConstructorLogo } from '../common/ConstructorLogo';
-import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
+import { TeamId } from '../../../../types';
+import { TEAMS_DATA } from '../../../../data/teams';
+import { getTeam3DLivery } from '../../data/teamLiveries';
+import { ConstructorLogo } from '../../../../components/common/ConstructorLogo';
+import type { CameraPreset } from '../../rendering/CameraController';
 
 interface SchematicComparisonModalProps {
   isOpen: boolean;

@@ -30,7 +30,7 @@ const ChampionshipView = lazy(() =>
 );
 
 const ShowroomView = lazy(() =>
-  import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
+  import('./features/showroom/ui/ShowroomView').then((m) => ({ default: m.ShowroomView })),
 );
 const TeamDetailPage = lazy(() =>
   import('./components/pages/TeamDetailPage').then((m) => ({ default: m.TeamDetailPage })),

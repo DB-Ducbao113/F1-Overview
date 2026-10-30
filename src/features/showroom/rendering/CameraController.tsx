@@ -4,7 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { HotspotItem } from '../data/hotspotsData';
-import { getDampingTailMs } from '../../../components/showroom/showroomMotionState';
+import { getDampingTailMs } from '../performance/showroomMotionState';
 
 export type CameraPreset =
   | 'overview'
