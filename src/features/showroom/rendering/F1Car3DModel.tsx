@@ -156,6 +156,32 @@ const RealF1CarMesh: React.FC<{
   const haloTex = cachedTextures?.get('halo');
   const wheelTex = cachedTextures?.get('wheel');
 
+  // Decoupled shadow mapping toggles: updates mesh flags without destroying materials
+  useLayoutEffect(() => {
+    if (!clonedScene) return;
+    clonedScene.traverse((child: any) => {
+      if (child.isMesh) {
+        child.castShadow = qualityProfile.shadows;
+        child.receiveShadow = qualityProfile.shadows;
+      }
+    });
+    invalidate();
+  }, [clonedScene, qualityProfile.shadows, invalidate]);
+
+  // Decoupled texture anisotropy adjustment: restores or clamps anisotropy without disposing materials
+  useLayoutEffect(() => {
+    const targetAnisotropy = Math.min(16, qualityProfile.maxAnisotropy);
+    let changed = false;
+    cachedTextures?.forEach((tex) => {
+      if (tex && tex.anisotropy !== targetAnisotropy) {
+        tex.anisotropy = targetAnisotropy;
+        tex.needsUpdate = true;
+        changed = true;
+      }
+    });
+    if (changed) invalidate();
+  }, [cachedTextures, qualityProfile.maxAnisotropy, invalidate]);
+
   // Apply all required livery materials before R3F can submit the car's first
   // frame. This also makes the explicit readiness signal truthful.
   useLayoutEffect(() => {
@@ -174,14 +200,6 @@ const RealF1CarMesh: React.FC<{
       return;
 
     performance.mark('showroom:car:material-application:start');
-
-    // Clamp texture anisotropy according to active quality profile
-    cachedTextures?.forEach((tex) => {
-      if (tex && tex.anisotropy > qualityProfile.maxAnisotropy) {
-        tex.anisotropy = qualityProfile.maxAnisotropy;
-        tex.needsUpdate = true;
-      }
-    });
 
     // Dispose old dynamic materials to prevent WebGL memory leaks
     activeMaterialsRef.current.forEach((m) => m.dispose());
@@ -419,6 +437,7 @@ const RealF1CarMesh: React.FC<{
       activeMaterialsRef.current.forEach((m) => m.dispose());
       activeMaterialsRef.current = [];
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Shadows and anisotropy are decoupled into dedicated effects to prevent costly material tear-down
   }, [
     clonedScene,
     teamId,
@@ -435,8 +454,6 @@ const RealF1CarMesh: React.FC<{
     wheelTex,
     invalidate,
     qualityProfile.materialQuality,
-    qualityProfile.shadows,
-    qualityProfile.maxAnisotropy,
   ]);
 
   // Language changes create a new startup key while the car's textures and

@@ -29,14 +29,153 @@ describe('showroomQuality', () => {
   });
 
   describe('detectInitialQualityTier', () => {
-    it('returns average for mobile by default', () => {
+    function mockEnvironment({
+      renderer,
+      cores = 8,
+      memory = 8,
+      hasDebugInfo = true,
+    }: {
+      renderer?: string;
+      cores?: number | undefined;
+      memory?: number | undefined;
+      hasDebugInfo?: boolean;
+    }) {
+      const mockDoc = {
+        createElement: (tagName: string) => {
+          if (tagName === 'canvas') {
+            return {
+              getContext: (type: string) => {
+                if (type.includes('webgl')) {
+                  return {
+                    getExtension: (ext: string) =>
+                      hasDebugInfo && ext === 'WEBGL_debug_renderer_info'
+                        ? { UNMASKED_RENDERER_WEBGL: 0x9246 }
+                        : null,
+                    getParameter: (param: number) => (param === 0x9246 ? (renderer ?? '') : ''),
+                  };
+                }
+                return null;
+              },
+            };
+          }
+          return {};
+        },
+      };
+
+      vi.stubGlobal('window', {});
+      vi.stubGlobal('document', mockDoc);
+      vi.stubGlobal('navigator', {
+        hardwareConcurrency: cores,
+        deviceMemory: memory,
+      });
+    }
+
+    it('returns average or performance for mobile by default', () => {
       const tier = detectInitialQualityTier(true);
       expect(['average', 'performance']).toContain(tier);
     });
 
-    it('returns high or average for desktop', () => {
-      const tier = detectInitialQualityTier(false);
-      expect(['high', 'average']).toContain(tier);
+    it('returns performance for Intel UHD 630', () => {
+      mockEnvironment({
+        renderer:
+          'ANGLE (Intel, Intel(R) UHD Graphics 630 (0x00009BC4) Direct3D11 vs_5_0 ps_5_0, D3D11)',
+        cores: 12,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('performance');
+    });
+
+    it('returns high for dedicated NVIDIA GTX 1650 Max-Q', () => {
+      mockEnvironment({
+        renderer: 'ANGLE (NVIDIA, NVIDIA GeForce GTX 1650 with Max-Q Design Direct3D11)',
+        cores: 12,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('high');
+    });
+
+    it('returns performance for Integrated AMD Radeon (Vega / Radeon Graphics)', () => {
+      mockEnvironment({
+        renderer: 'AMD Radeon(TM) Graphics',
+        cores: 8,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('performance');
+
+      mockEnvironment({
+        renderer: 'AMD Radeon Vega 8 Graphics',
+        cores: 8,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('performance');
+    });
+
+    it('returns high for dedicated AMD Radeon RX with adequate cores', () => {
+      mockEnvironment({
+        renderer: 'AMD Radeon RX 6700 XT',
+        cores: 12,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('high');
+    });
+
+    it('does not blindly assign high to Apple GPU on mobile devices', () => {
+      mockEnvironment({
+        renderer: 'Apple GPU',
+        cores: 6,
+        memory: 4,
+      });
+      expect(detectInitialQualityTier(true)).toBe('performance');
+
+      mockEnvironment({
+        renderer: 'Apple GPU',
+        cores: 6,
+        memory: 6,
+      });
+      expect(detectInitialQualityTier(true)).toBe('average');
+    });
+
+    it('assigns high to Apple Silicon desktop Macs with adequate cores', () => {
+      mockEnvironment({
+        renderer: 'Apple M2 Pro',
+        cores: 10,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('high');
+    });
+
+    it('handles hidden or unknown GPU renderer gracefully with safe average', () => {
+      mockEnvironment({
+        renderer: '',
+        hasDebugInfo: false,
+        cores: 8,
+        memory: 16,
+      });
+      expect(detectInitialQualityTier(false)).toBe('average');
+    });
+
+    it('handles missing deviceMemory and hardwareConcurrency without crashing', () => {
+      mockEnvironment({
+        renderer: 'ANGLE (Intel, Intel(R) UHD Graphics 630)',
+        cores: undefined,
+        memory: undefined,
+      });
+      expect(detectInitialQualityTier(false)).toBe('performance');
+
+      mockEnvironment({
+        renderer: 'NVIDIA GeForce RTX 4070',
+        cores: undefined,
+        memory: undefined,
+      });
+      expect(detectInitialQualityTier(false)).toBe('high');
+
+      mockEnvironment({
+        renderer: '',
+        hasDebugInfo: false,
+        cores: undefined,
+        memory: undefined,
+      });
+      expect(detectInitialQualityTier(false)).toBe('average');
     });
   });
 

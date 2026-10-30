@@ -105,7 +105,14 @@ export const ShowroomView: React.FC = () => {
   const handleSelectTeam = useCallback(
     (newTeamId: TeamId) => {
       setSelectedTeamId(newTeamId);
-      setSearchParams({ team: newTeamId }, { replace: true });
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('team', newTeamId);
+          return next;
+        },
+        { replace: true },
+      );
     },
     [setSearchParams],
   );

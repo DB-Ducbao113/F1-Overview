@@ -97,6 +97,8 @@ export async function runShowroomBenchmark(suiteName = 'baseline') {
   ];
   if (useNvidia) {
     chromeFlags.push('--force_high_performance_gpu');
+  } else {
+    chromeFlags.push('--gpu-preference=2');
   }
   chromeFlags.push('about:blank');
 

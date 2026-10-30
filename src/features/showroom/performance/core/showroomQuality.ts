@@ -167,25 +167,23 @@ export const DESKTOP_QUALITY_PROFILES: Record<QualityTier, QualityProfile> = {
 export function detectInitialQualityTier(isMobile: boolean): QualityTier {
   if (typeof window === 'undefined') return 'average';
 
-  // 1. Check mobile layout
+  const rawMemory = (navigator as any).deviceMemory;
+  const rawCores = navigator.hardwareConcurrency;
+  const hasLowMemory = typeof rawMemory === 'number' && rawMemory <= 4;
+  const hasLowCores = typeof rawCores === 'number' && rawCores <= 4;
+
+  // 1. Mobile layout heuristics: never auto-assign 'high' to mobile devices to protect battery & thermals
   if (isMobile) {
-    const memory = (navigator as any).deviceMemory;
-    const cores = navigator.hardwareConcurrency || 4;
-    if (memory && memory <= 3) return 'performance';
-    if (cores <= 4) return 'performance';
+    if (hasLowMemory || hasLowCores) return 'performance';
     return 'average';
   }
 
-  // 2. Desktop hardware heuristics
-  const memory = (navigator as any).deviceMemory;
-  const cores = navigator.hardwareConcurrency || 4;
-
-  // Weak desktop (≤4GB RAM or ≤4 cores)
-  if ((memory && memory <= 4) || cores < 6) {
-    return 'average';
+  // 2. Desktop hardware heuristics: low-spec desktop hardware starts conservatively
+  if (hasLowMemory || hasLowCores) {
+    return 'performance';
   }
 
-  // 3. WebGL GPU renderer string check (unmasked renderer)
+  // 3. WebGL GPU renderer probe (unmasked renderer)
   try {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -197,7 +195,20 @@ export function detectInitialQualityTier(isMobile: boolean): QualityTier {
             .getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
             ?.toLowerCase() || '';
 
-        // Known integrated or low-end GPUs
+        // Integrated, software-emulated or low-power GPU architectures
+        // Distinguish integrated AMD Radeon APUs (Vega, Radeon Graphics, R2-R5, 600M series)
+        const isIntegratedRadeon =
+          renderer.includes('radeon') &&
+          (renderer.includes('graphics') ||
+            renderer.includes('vega') ||
+            renderer.includes('r2') ||
+            renderer.includes('r3') ||
+            renderer.includes('r4') ||
+            renderer.includes('r5') ||
+            renderer.includes('610m') ||
+            renderer.includes('660m') ||
+            renderer.includes('740m'));
+
         if (
           renderer.includes('intel') ||
           renderer.includes('uhd') ||
@@ -206,20 +217,35 @@ export function detectInitialQualityTier(isMobile: boolean): QualityTier {
           renderer.includes('adreno') ||
           renderer.includes('powervr') ||
           renderer.includes('llvmpipe') ||
-          renderer.includes('swiftshader')
+          renderer.includes('swiftshader') ||
+          renderer.includes('basic render') ||
+          isIntegratedRadeon
         ) {
-          return 'average';
+          return 'performance';
         }
 
-        // Dedicated GPUs (NVIDIA RTX/GTX, AMD Radeon, Apple Silicon)
-        if (
+        // Dedicated high-performance GPUs (NVIDIA RTX/GTX, discrete AMD Radeon RX/Pro)
+        const isDedicatedNvidia =
           renderer.includes('nvidia') ||
           renderer.includes('geforce') ||
           renderer.includes('rtx') ||
-          renderer.includes('gtx') ||
-          renderer.includes('radeon') ||
-          renderer.includes('apple')
-        ) {
+          renderer.includes('gtx');
+
+        const isDedicatedRadeon =
+          renderer.includes('radeon rx') ||
+          renderer.includes('radeon pro') ||
+          renderer.includes('rdna');
+
+        // Apple Silicon desktop Macs (M-series with adequate cores)
+        const isDesktopAppleSilicon =
+          renderer.includes('apple') &&
+          (renderer.includes('m1') ||
+            renderer.includes('m2') ||
+            renderer.includes('m3') ||
+            renderer.includes('m4') ||
+            (typeof rawCores === 'number' && rawCores >= 8));
+
+        if (isDedicatedNvidia || isDedicatedRadeon || isDesktopAppleSilicon) {
           return 'high';
         }
       }
@@ -229,7 +255,8 @@ export function detectInitialQualityTier(isMobile: boolean): QualityTier {
     return 'average';
   }
 
-  return 'high';
+  // Safe fallback for unmasked / unclassified desktop devices with adequate hardware
+  return 'average';
 }
 
 /**
