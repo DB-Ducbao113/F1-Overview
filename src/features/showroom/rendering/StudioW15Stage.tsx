@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { MeshReflectorMaterial } from '@react-three/drei';
+import React, { useCallback, useLayoutEffect } from 'react';
+import * as THREE from 'three';
+import { StudioReflectorMaterial } from './StudioReflectorMaterial';
 import { useThree } from '@react-three/fiber';
 import { STUDIO_TEXTURE_REVISION } from './resources/showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
@@ -17,48 +18,43 @@ import {
 // acquireSet useMemo dependency stays referentially equal across renders).
 const STUDIO_SLOTS = ['north', 'south', 'west', 'east'] as const;
 
+// Shared floor geometry so quality switches never reallocate GPU geometry buffers
+const STUDIO_FLOOR_GEOMETRY = new THREE.PlaneGeometry(24, 24);
+
 const StudioReflectorFloor = React.memo<{
   resolution: number;
   blur: [number, number];
-}>(({ resolution, blur }) => {
-  const reflectorRef = useRef<any>(null);
-
-  useEffect(() => {
-    const mat = reflectorRef.current;
-    return () => {
-      if (mat) {
-        mat.tDiffuse?.dispose?.();
-        mat.tDepth?.dispose?.();
-        mat.tDiffuseBlur?.dispose?.();
-        mat.dispose?.();
-      }
-    };
-  }, []);
-
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
-      <planeGeometry args={[24, 24]} />
-      <MeshReflectorMaterial
-        ref={reflectorRef}
-        blur={blur}
-        resolution={resolution}
-        mirror={0.55}
-        mixBlur={0.6}
-        mixStrength={2.0}
-        roughness={0.32}
-        depthScale={1.2}
-        minDepthThreshold={0.4}
-        maxDepthThreshold={1.4}
-        color="#2a303b"
-        metalness={0.4}
-      />
-    </mesh>
-  );
-});
+}>(({ resolution, blur }) => (
+  <mesh
+    dispose={null}
+    rotation={[-Math.PI / 2, 0, 0]}
+    position={[0, -0.002, 0]}
+    geometry={STUDIO_FLOOR_GEOMETRY}
+  >
+    <StudioReflectorMaterial
+      blur={blur}
+      resolution={resolution}
+      mirror={0.55}
+      mixBlur={0.6}
+      mixStrength={2.0}
+      roughness={0.32}
+      depthScale={1.2}
+      minDepthThreshold={0.4}
+      maxDepthThreshold={1.4}
+      color="#2a303b"
+      metalness={0.4}
+    />
+  </mesh>
+));
 
 const StudioStandardFloor = React.memo(() => (
-  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]} receiveShadow>
-    <planeGeometry args={[24, 24]} />
+  <mesh
+    dispose={null}
+    rotation={[-Math.PI / 2, 0, 0]}
+    position={[0, -0.002, 0]}
+    receiveShadow
+    geometry={STUDIO_FLOOR_GEOMETRY}
+  >
     <meshStandardMaterial color="#232832" roughness={0.45} metalness={0.35} />
   </mesh>
 ));

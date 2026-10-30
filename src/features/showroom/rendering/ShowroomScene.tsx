@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows } from '@react-three/drei';
+import { StudioContactShadows } from './StudioContactShadows';
 import { F1Car3DModel } from './F1Car3DModel';
 import { CameraController } from './CameraController';
 import { StudioW15Stage } from './StudioW15Stage';
@@ -58,7 +58,11 @@ const WebGLContextGuard: React.FC<{
   return null;
 };
 
-const ShowroomResourceDiagnostics: React.FC = () => {
+const ShowroomResourceDiagnostics: React.FC<{
+  qualityMode?: GraphicsQualityMode;
+  qualityTier?: QualityTier;
+  qualityProfile?: QualityProfile;
+}> = ({ qualityMode, qualityTier, qualityProfile }) => {
   const { gl } = useThree();
 
   useEffect(() => {
@@ -68,6 +72,11 @@ const ShowroomResourceDiagnostics: React.FC = () => {
       memory: { ...gl.info.memory },
       render: { ...gl.info.render },
       programs: gl.info.programs?.length ?? 0,
+      activeProfile: {
+        mode: qualityMode,
+        tier: qualityTier,
+        profile: qualityProfile,
+      },
     });
     diagnosticsWindow.__SHOWROOM_CACHE_STATS__ = () => ({
       car: getCacheStats('car'),
@@ -77,7 +86,7 @@ const ShowroomResourceDiagnostics: React.FC = () => {
       delete diagnosticsWindow.__SHOWROOM_RENDERER_STATS__;
       delete diagnosticsWindow.__SHOWROOM_CACHE_STATS__;
     };
-  }, [gl]);
+  }, [gl, qualityMode, qualityTier, qualityProfile]);
 
   return null;
 };
@@ -225,7 +234,7 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
 
       {/* Dynamic Ground Contact Shadows */}
       {qualityProfile.contactShadows && (
-        <ContactShadows
+        <StudioContactShadows
           position={[0, 0, 0]}
           opacity={0.9}
           scale={10}
@@ -249,7 +258,13 @@ export const ShowroomScene: React.FC<ShowroomSceneProps> = ({
         zoomTrigger={zoomTrigger}
         zoomDirection={zoomDirection}
       />
-      {diagnosticsEnabled() && <ShowroomResourceDiagnostics />}
+      {diagnosticsEnabled() && (
+        <ShowroomResourceDiagnostics
+          qualityMode={qualityMode}
+          qualityTier={qualityTier}
+          qualityProfile={qualityProfile}
+        />
+      )}
     </Canvas>
   );
 };

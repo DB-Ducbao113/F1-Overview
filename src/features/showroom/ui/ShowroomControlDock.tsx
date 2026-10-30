@@ -666,6 +666,7 @@ export const ShowroomControlDock: React.FC<ShowroomControlDockProps> = React.mem
                         <button
                           key={mode.id}
                           type="button"
+                          data-quality-mode={mode.id}
                           onClick={() => onChangeQualityMode?.(mode.id as GraphicsQualityMode)}
                           className={`py-1 px-1 rounded-lg text-[10px] font-bold transition-all text-center flex flex-col items-center justify-center cursor-pointer border ${
                             isActive
