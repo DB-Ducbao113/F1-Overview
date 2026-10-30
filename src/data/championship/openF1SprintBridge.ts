@@ -28,13 +28,12 @@ import { GrandPrixQualifyingData } from '../../types/qualifying';
  *   accumulating.
  */
 
-export const SPRINT_POINTS_BY_POSITION: readonly number[] = [8, 7, 6, 5, 4, 3, 2, 1];
+import {
+  SPRINT_POINTS_BY_POSITION,
+  sprintPointsForPosition,
+} from '../../features/championship/domain';
 
-export function sprintPointsForPosition(position: number, official?: number): number {
-  if (Number.isFinite(official)) return official as number;
-  if (position >= 1 && position <= 8) return SPRINT_POINTS_BY_POSITION[position - 1];
-  return 0;
-}
+export { SPRINT_POINTS_BY_POSITION, sprintPointsForPosition };
 
 export interface OpenF1SprintSource {
   getFinishedSprintEntries(season: SeasonYear, round: number): DetailedRaceResultEntry[] | null;

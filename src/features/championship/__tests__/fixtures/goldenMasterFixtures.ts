@@ -3,14 +3,21 @@ import { DetailedRaceResult } from '../../../../types';
 /**
  * DETERMINISTIC GOLDEN MASTER FIXTURES
  *
- * Fixed, reproducible test fixtures covering all representative application states:
+ * Fixed, reproducible test fixtures covering representative application states:
  * - Completed post-cutoff Grand Prix
  * - Sprint weekend with explicit sprint entries
  * - Scheduled future round (0 entries)
  * - Baseline locked rounds (R1-R17 for 2026)
- * - Historical 2024 / 2025 rounds
  *
- * NO network requests or live dates are used.
+ * PROVENANCE CLASSIFICATION (PHASE 2 AUDIT):
+ * - ALL fixtures in this file are SYNTHETIC test data (`isSynthesized: true`).
+ * - They are used exclusively by characterization and regression tests.
+ * - They are NEVER imported into production runtime data (`src/data/`), local storage seeds, or public APIs.
+ * - Calendar & Result Discrepancy Note:
+ *   * FIXTURE_COMPLETED_RACE_2026_R18: Synthetic test fixture (Russell P1 is synthetic; 2026 baseline lists Antonelli leading).
+ *   * FIXTURE_SPRINT_RACE_2026_R19: Synthetic test fixture for sprint points calculation (Round 19 used for test staging; official CALENDAR_2026 places São Paulo at Round 20).
+ *   * FIXTURE_SCHEDULED_RACE_2026_R20: Synthetic test fixture for zero-entry scheduled rounds (official CALENDAR_2026 places Las Vegas at Round 21).
+ *   * FIXTURE_CUTOFF_LOCKED_RACE_2026_R16: Synthetic test fixture for cutoff protection (Monza at Round 16 is used for testing <=17 cutoff; official CALENDAR_2026 places Monza at Round 13).
  */
 
 export const FIXTURE_COMPLETED_RACE_2026_R18: DetailedRaceResult = {

@@ -19,7 +19,7 @@ export type SessionType =
 export type SessionClassificationStatus =
   'Finished' | 'Lapped' | 'DNF' | 'DNS' | 'DSQ' | 'NC' | string;
 
-export type RaceEventStatus = 'completed' | 'scheduled' | 'cancelled' | 'suspended';
+export type RaceEventStatus = 'completed' | 'scheduled' | 'live' | 'cancelled' | 'suspended';
 
 export type ClassificationProvenance = 'official' | 'provisional' | 'baseline' | 'synthesized';
 
@@ -190,7 +190,7 @@ export interface IStandingsCalculator {
    */
   calculate(
     season: SeasonYear,
-    races: readonly RaceSession[],
+    races: readonly (RaceSession | any)[],
     baseDrivers?: readonly DriverStandingEntity[],
     baseConstructors?: readonly ConstructorStandingEntity[],
   ): SeasonStandingsEntity;

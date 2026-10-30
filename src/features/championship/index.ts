@@ -1,2 +1,2 @@
-export * from './domain/contracts/domainContracts';
+export * from './domain';
 export * from './application/contracts/applicationContracts';

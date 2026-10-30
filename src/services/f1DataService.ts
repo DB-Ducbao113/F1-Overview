@@ -1,14 +1,6 @@
-import {
-  DetailedRaceResult,
-  DetailedRaceResultEntry,
-  SeasonYear,
-  TeamId,
-  F1SyncMetadata,
-  UNKNOWN_TEAM_ID,
-} from '../types';
+import { DetailedRaceResult, DetailedRaceResultEntry, SeasonYear, F1SyncMetadata } from '../types';
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
-import { DRIVER_STANDINGS_2026 } from '../data/championship/standings';
 import { attachOpenF1SprintResults } from '../data/championship/openF1SprintBridge';
 
 const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v3';
@@ -42,47 +34,9 @@ export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> 
   2026: DETAILED_RACE_RESULTS_2026,
 };
 
-// Map Ergast/Jolpica constructor IDs to our internal TeamId
-const CONSTRUCTOR_MAP: Record<string, TeamId> = {
-  red_bull: 'redbull',
-  cadillac: 'cadillac',
-  ferrari: 'ferrari',
-  mclaren: 'mclaren',
-  mercedes: 'mercedes',
-  aston_martin: 'astonmartin',
-  alpine: 'alpine',
-  rb: 'racingbulls',
-  sauber: 'audi',
-  audi: 'audi',
-  haas: 'haas',
-  williams: 'williams',
-};
+import { mapConstructorId, normalizeDriverId } from '../features/championship/domain';
 
-export function mapConstructorId(constructorId: string | undefined): TeamId {
-  if (constructorId && CONSTRUCTOR_MAP[constructorId]) return CONSTRUCTOR_MAP[constructorId];
-  // Never credit an unmapped constructor to another team: park under 'unknown'.
-  if (typeof console !== 'undefined') {
-    console.warn(`Unmapped constructorId "${constructorId ?? ''}", falling back to 'unknown'.`);
-  }
-  return UNKNOWN_TEAM_ID;
-}
-// Jolpica returns e.g. "max_verstappen"/"arvid_lindblad" while the app's standings
-// baseline keys drivers as "verstappen"/"lindblad"; without this mapping a freshly
-// synced round creates ghost duplicate drivers instead of crediting the real one.
-const DRIVER_MAP: Record<string, string> = {
-  max_verstappen: 'verstappen',
-  arvid_lindblad: 'lindblad',
-};
-
-const CANONICAL_DRIVER_IDS = new Set(DRIVER_STANDINGS_2026.map((driver) => driver.driverId));
-
-export function normalizeDriverId(driverId: string | undefined): string {
-  if (!driverId) return 'unknown';
-  if (DRIVER_MAP[driverId]) return DRIVER_MAP[driverId];
-
-  const surname = driverId.split('_').pop();
-  return surname && CANONICAL_DRIVER_IDS.has(surname) ? surname : driverId;
-}
+export { mapConstructorId, normalizeDriverId };
 
 function normalizeRaceResults(races: DetailedRaceResult[]): DetailedRaceResult[] {
   return (Array.isArray(races) ? races : []).map((race) => {

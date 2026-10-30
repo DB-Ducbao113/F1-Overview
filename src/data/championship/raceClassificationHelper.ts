@@ -91,19 +91,9 @@ const DRIVER_GRID_2024: GridDriver[] = [
 
 const FIA_POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
 
-/**
- * Fastest-lap bonus point rule.
- * 2024 keeps +1 only for a top-10 finisher holding the fastest lap;
- * removed from 2025 onwards.
- */
-export function fastestLapBonusPoints(
-  season: SeasonYear,
-  position: number,
-  isFastestLap: boolean,
-): number {
-  if (!isFastestLap || position < 1 || position > 10) return 0;
-  return season === 2024 ? 1 : 0;
-}
+import { fastestLapBonusPoints } from '../../features/championship/domain';
+
+export { fastestLapBonusPoints };
 
 function normalizeDriverName(name: string): string {
   return name.toLowerCase().replace(/[^a-z]/g, '');
