@@ -2,7 +2,7 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Texture } from 'three';
-import { __resetCacheForTests, getCacheStats } from './showroomTextureCache';
+import { __resetCacheForTests, getCacheStats } from './resources/showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
 
 const SLOTS = ['body'] as const;

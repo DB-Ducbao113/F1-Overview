@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
-import { TEAM_LOGO_SVG_STRINGS, TEAM_BACKDROP_LABEL } from '../../data/showroom/teamLogoSVGs';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { TEAM_HISTORY_DATA } from '../../data/showroom/teamHistoryStats';
+import { TeamId } from '../../../types';
+import { TEAMS_DATA } from '../../../data/teams';
+import { TEAM_LOGO_SVG_STRINGS, TEAM_BACKDROP_LABEL } from '../../../data/showroom/teamLogoSVGs';
+import { getTeam3DLivery } from '../../../data/showroom/teamLiveries';
+import { TEAM_HISTORY_DATA } from '../../../data/showroom/teamHistoryStats';
 
 /**
  * Cleanly translates Vietnamese driver role descriptions to English when viewing in EN mode.

@@ -2,13 +2,13 @@ import React, { useRef, useMemo, useEffect, useLayoutEffect, useCallback } from 
 import { useGLTF, Html } from '@react-three/drei';
 import { useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { F1_HOTSPOTS, HotspotItem } from '../../data/showroom/hotspotsData';
-import { CAR_TEXTURE_REVISION } from './showroomTextureCache';
+import { F1_HOTSPOTS, HotspotItem } from '../../../data/showroom/hotspotsData';
+import { CAR_TEXTURE_REVISION } from './resources/showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
-import { QualityProfile, DESKTOP_QUALITY_PROFILES } from '../../features/showroom/performance/core';
-import { TeamId } from '../../types';
-import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
-import { getTeamSponsors } from '../../data/showroom/teamSponsors';
+import { QualityProfile, DESKTOP_QUALITY_PROFILES } from '../performance/core';
+import { TeamId } from '../../../types';
+import { getTeam3DLivery } from '../../../data/showroom/teamLiveries';
+import { getTeamSponsors } from '../../../data/showroom/teamSponsors';
 import {
   generateNoseTexture,
   generateBodyworkTexture,

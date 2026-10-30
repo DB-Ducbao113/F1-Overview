@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CameraPreset } from './CameraController';
+import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
 import {
   RotateCcw,
   Play,

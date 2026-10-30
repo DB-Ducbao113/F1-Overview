@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { TeamId } from '../../types';
-import { Team3DLivery } from '../../data/showroom/teamLiveries';
-import { TeamSponsorConfig } from '../../data/showroom/teamSponsors';
+import { TeamId } from '../../../types';
+import { Team3DLivery } from '../../../data/showroom/teamLiveries';
+import { TeamSponsorConfig } from '../../../data/showroom/teamSponsors';
 
 /**
  * Creates ultra-crisp THREE.CanvasTexture for GLTF UV surfaces with mipmaps, anisotropy,

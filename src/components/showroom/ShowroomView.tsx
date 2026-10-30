@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { CameraPreset } from './CameraController';
+import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
 import { HotspotDetailsModal } from './HotspotDetailsModal';
 import { LiverySelector } from './LiverySelector';
 import { ShowroomControlDock } from './ShowroomControlDock';
@@ -8,7 +8,9 @@ const LazyShowroomLoadingPanel = lazy(() =>
   import('./Showroom3DLoader').then((module) => ({ default: module.ShowroomLoadingPanel })),
 );
 const ShowroomScene = lazy(() =>
-  import('./ShowroomScene').then((module) => ({ default: module.ShowroomScene })),
+  import('../../features/showroom/rendering/ShowroomScene').then((module) => ({
+    default: module.ShowroomScene,
+  })),
 );
 import { HotspotSelectorBar } from './HotspotSelectorBar';
 import { ShowroomQuickHUD } from './ShowroomQuickHUD';
@@ -21,7 +23,10 @@ import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getDefaultAutoRotate, getFrameLoopMode } from './showroomMotionState';
-import { disposeAll, getCacheStats } from './showroomTextureCache';
+import {
+  disposeAll,
+  getCacheStats,
+} from '../../features/showroom/rendering/resources/showroomTextureCache';
 import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
 import { ConstructorLogo } from '../common/ConstructorLogo';
 import { getTeamSponsors } from '../../data/showroom/teamSponsors';

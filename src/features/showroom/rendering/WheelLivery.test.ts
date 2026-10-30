@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { TEAM_3D_LIVERIES } from '../../data/showroom/teamLiveries';
-import { TeamId } from '../../types';
+import { TEAM_3D_LIVERIES } from '../../../data/showroom/teamLiveries';
+import { TeamId } from '../../../types';
 import {
   generateWheelTexture,
   drawBBSMultiSpokeWheel,

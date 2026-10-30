@@ -3,8 +3,8 @@ import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { HotspotItem } from '../../data/showroom/hotspotsData';
-import { getDampingTailMs } from './showroomMotionState';
+import { HotspotItem } from '../../../data/showroom/hotspotsData';
+import { getDampingTailMs } from '../../../components/showroom/showroomMotionState';
 
 export type CameraPreset =
   | 'overview'

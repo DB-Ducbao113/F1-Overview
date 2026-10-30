@@ -11,11 +11,11 @@ import {
   QualityTier,
   QualityProfile,
   DESKTOP_QUALITY_PROFILES,
-} from '../../features/showroom/performance/core';
+} from '../performance/core';
 import { ShowroomAdaptiveQualityMonitor } from './ShowroomAdaptiveQualityMonitor';
 
-import type { HotspotItem } from '../../data/showroom/hotspotsData';
-import type { TeamId } from '../../types';
+import type { HotspotItem } from '../../../data/showroom/hotspotsData';
+import type { TeamId } from '../../../types';
 
 interface ShowroomDiagnosticsWindow {
   __SHOWROOM_RENDERER_STATS__?: () => {

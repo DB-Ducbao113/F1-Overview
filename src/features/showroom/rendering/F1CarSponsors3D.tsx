@@ -1,5 +1,5 @@
 import React from 'react';
-import { TeamId } from '../../types';
+import { TeamId } from '../../../types';
 
 interface F1CarSponsors3DProps {
   teamId: TeamId;

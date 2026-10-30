@@ -1,11 +1,11 @@
 import React, { useCallback, useLayoutEffect } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
-import { STUDIO_TEXTURE_REVISION } from './showroomTextureCache';
+import { STUDIO_TEXTURE_REVISION } from './resources/showroomTextureCache';
 import { useShowroomTextureSet } from './useShowroomTextureSet';
-import { QualityProfile, DESKTOP_QUALITY_PROFILES } from '../../features/showroom/performance/core';
-import { TeamId } from '../../types';
-import { TEAMS_DATA } from '../../data/teams';
+import { QualityProfile, DESKTOP_QUALITY_PROFILES } from '../performance/core';
+import { TeamId } from '../../../types';
+import { TEAMS_DATA } from '../../../data/teams';
 import {
   createTeamBackdropTexture,
   createTechnicalBackdropTexture,

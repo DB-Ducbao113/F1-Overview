@@ -8,7 +8,7 @@ import {
   ADAPTIVE_UPGRADE_COOLDOWN_MS,
   STARTUP_GRACE_PERIOD_MS,
   ADAPTIVE_THRESHOLDS,
-} from '../../features/showroom/performance/core';
+} from '../performance/core';
 
 interface ShowroomAdaptiveQualityMonitorProps {
   active: boolean;

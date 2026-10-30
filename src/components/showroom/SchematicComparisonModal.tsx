@@ -5,7 +5,7 @@ import { TeamId } from '../../types';
 import { TEAMS_DATA } from '../../data/teams';
 import { getTeam3DLivery } from '../../data/showroom/teamLiveries';
 import { ConstructorLogo } from '../common/ConstructorLogo';
-import { CameraPreset } from './CameraController';
+import type { CameraPreset } from '../../features/showroom/rendering/CameraController';
 
 interface SchematicComparisonModalProps {
   isOpen: boolean;

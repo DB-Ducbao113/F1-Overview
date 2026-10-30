@@ -6,8 +6,8 @@ import {
   disposePreparedSet,
   type AcquireResult,
   type TextureNamespace,
-} from './showroomTextureCache';
-import { yieldToMain } from './showroomTaskScheduler';
+} from './resources/showroomTextureCache';
+import { yieldToMain } from '../../../components/showroom/showroomTaskScheduler';
 
 /**
  * Acquire generated texture sets only after React commits the consumer.
