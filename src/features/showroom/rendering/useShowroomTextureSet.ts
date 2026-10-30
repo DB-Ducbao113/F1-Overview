@@ -26,6 +26,7 @@ export const useShowroomTextureSet = (
   generate: (slot: string) => Texture,
 ): Map<string, Texture> | null => {
   const [handle, setHandle] = useState<AcquireResult | null>(null);
+  const [committedHandle, setCommittedHandle] = useState<AcquireResult | null>(null);
   const committedHandleRef = useRef<AcquireResult | null>(null);
   const pendingHandleRef = useRef<AcquireResult | null>(null);
 
@@ -107,6 +108,7 @@ export const useShowroomTextureSet = (
     if (pendingHandleRef.current === handle) pendingHandleRef.current = null;
     const previous = committedHandleRef.current;
     committedHandleRef.current = handle;
+    setCommittedHandle(handle);
     previous?.release();
   }, [handle, setKey]);
 
@@ -125,5 +127,6 @@ export const useShowroomTextureSet = (
   // scene unmount that would recreate reflection render targets and shaders.
   // The previous handle is released by the same layout-effect cleanup and the
   // cache keeps that entry valid through the replacement commit.
-  return handle?.key === setKey ? handle.textures : null;
+  const activeHandle = handle?.key === setKey ? handle : committedHandle;
+  return activeHandle?.textures ?? null;
 };

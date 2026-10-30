@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { STUDIO_TEXTURE_REVISION } from './resources/showroomTextureCache';
@@ -20,24 +20,41 @@ const STUDIO_SLOTS = ['north', 'south', 'west', 'east'] as const;
 const StudioReflectorFloor = React.memo<{
   resolution: number;
   blur: [number, number];
-}>(({ resolution, blur }) => (
-  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
-    <planeGeometry args={[24, 24]} />
-    <MeshReflectorMaterial
-      blur={blur}
-      resolution={resolution}
-      mirror={0.55}
-      mixBlur={0.6}
-      mixStrength={2.0}
-      roughness={0.32}
-      depthScale={1.2}
-      minDepthThreshold={0.4}
-      maxDepthThreshold={1.4}
-      color="#2a303b"
-      metalness={0.4}
-    />
-  </mesh>
-));
+}>(({ resolution, blur }) => {
+  const reflectorRef = useRef<any>(null);
+
+  useEffect(() => {
+    const mat = reflectorRef.current;
+    return () => {
+      if (mat) {
+        mat.tDiffuse?.dispose?.();
+        mat.tDepth?.dispose?.();
+        mat.tDiffuseBlur?.dispose?.();
+        mat.dispose?.();
+      }
+    };
+  }, []);
+
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]}>
+      <planeGeometry args={[24, 24]} />
+      <MeshReflectorMaterial
+        ref={reflectorRef}
+        blur={blur}
+        resolution={resolution}
+        mirror={0.55}
+        mixBlur={0.6}
+        mixStrength={2.0}
+        roughness={0.32}
+        depthScale={1.2}
+        minDepthThreshold={0.4}
+        maxDepthThreshold={1.4}
+        color="#2a303b"
+        metalness={0.4}
+      />
+    </mesh>
+  );
+});
 
 const StudioStandardFloor = React.memo(() => (
   <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.002, 0]} receiveShadow>
