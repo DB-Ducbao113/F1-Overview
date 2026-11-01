@@ -87,7 +87,7 @@ export function recalculateStandingsFromRaces(
     };
   }
 
-  // For 2026 (ongoing season after 18 events):
+  // For 2026 (ongoing season after 19 events):
   // Initialize with official baseline standings (reflecting events 1-17)
   const driverMap = new Map<
     string,
