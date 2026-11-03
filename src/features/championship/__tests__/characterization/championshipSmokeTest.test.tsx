@@ -2,8 +2,8 @@ import React from 'react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import { ChampionshipView } from '../../../../components/championship/ChampionshipView';
-import { StandingsTable } from '../../../../components/championship/StandingsTable';
+import { ChampionshipView } from '../../ui/ChampionshipView';
+import { StandingsTable } from '../../ui/components/StandingsTable';
 import { useChampionshipStore } from '../../../../store/useChampionshipStore';
 
 describe('Championship Interface — Browser & Component Smoke Tests', () => {

@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CircuitTrackMap } from './CircuitTrackMap';
-import { CircuitDetailModal } from './CircuitDetailModal';
-import { getCircuitByRound } from '../../data/championship/circuitsData';
+import { CircuitDetailModal } from '../modals/CircuitDetailModal';
+import { getCircuitByRound } from '../../../../data/championship/circuitsData';
 
 describe('CircuitTrackMap Component', () => {
   it('renders thumbnail variant with mini SVG path for Round 1 (Albert Park)', () => {
@@ -74,7 +74,7 @@ describe('CircuitStreetReview Component', () => {
 
   it('provides authentic Street View review checkpoints for all 24 circuits in the calendar', async () => {
     const { CIRCUIT_REVIEW_POINTS, getCircuitReviewPoints } =
-      await import('../../data/championship/circuitReviewPoints');
+      await import('../../../../data/championship/circuitReviewPoints');
     for (let round = 1; round <= 24; round++) {
       const circuit = getCircuitByRound(round);
       if (!circuit) continue;
