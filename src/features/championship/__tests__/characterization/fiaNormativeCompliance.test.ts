@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mapConstructorId } from '../../../../services/f1DataService';
+import { mapConstructorId, normalizeConstructorId } from '../../../../services/f1DataService';
 
 /**
  * NORMATIVE SPECIFICATION TESTS — FIA REGULATORY COMPLIANCE
@@ -45,15 +45,17 @@ describe('Normative Specification — FIA Regulatory Compliance Audit', () => {
       // 2025: Stake F1 Team Kick Sauber (Constructors' Championship name: Kick Sauber-Ferrari)
       // 2026: Audi Revolut F1 Team (Audi factory entry)
       //
-      // CURRENT LEGACY DEFECT:
-      // mapConstructorId maps 'sauber' -> 'audi' unconditionally without season awareness.
-      const currentMapping = mapConstructorId('sauber');
-      expect(currentMapping).toBe('audi'); // Documents current behavior
+      // In A4.3b.2, season-aware normalization separates historical Sauber identity from 2026 Audi:
+      expect(normalizeConstructorId('sauber', 2024)).toBe('sauber');
+      expect(normalizeConstructorId('kick_sauber', 2024)).toBe('sauber');
+      expect(normalizeConstructorId('sauber', 2025)).toBe('sauber');
+      expect(normalizeConstructorId('kick_sauber', 2025)).toBe('sauber');
+      expect(normalizeConstructorId('audi', 2026)).toBe('audi');
+      expect(normalizeConstructorId('sauber', 2026)).toBe('audi');
 
-      // Target specification for A4.3 domain normalizer:
-      // normalizeConstructorId('sauber', 2024) -> 'sauber'
-      // normalizeConstructorId('sauber', 2025) -> 'sauber'
-      // normalizeConstructorId('audi', 2026) -> 'audi'
+      // Legacy presentation mapping preserves 2026 asset/showroom compatibility:
+      expect(mapConstructorId('sauber')).toBe('audi');
+      expect(mapConstructorId('sauber', 2024)).toBe('audi');
     });
   });
 

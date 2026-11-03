@@ -13,6 +13,23 @@ import { SeasonYear, TeamId } from '../../../../types';
 export type DriverId = string;
 export type ConstructorId = TeamId;
 
+/**
+ * Historical championship constructor identity.
+ * Distinguishes competition entrants across seasons (e.g. 'sauber' for 2024/2025)
+ * from current 2026 presentation assets ('audi').
+ */
+export type HistoricalConstructorId = 'sauber' | TeamId;
+
+export interface ConstructorIdentityResolution {
+  readonly historicalId: HistoricalConstructorId;
+  readonly presentationTeamId: TeamId;
+  readonly displayName: string;
+  readonly fullName: string;
+  readonly powerUnit: string;
+  readonly lineageId: string;
+  readonly isHistorical: boolean;
+}
+
 export type SessionType =
   'fp1' | 'fp2' | 'fp3' | 'qualifying' | 'sprint_qualifying' | 'sprint' | 'race';
 
@@ -131,6 +148,8 @@ export interface ConstructorStandingEntity {
   readonly wins: number;
   readonly podiums: number;
   readonly engine: string;
+  readonly historicalId?: HistoricalConstructorId;
+  readonly lineageId?: string;
 }
 
 export interface SeasonStandingsEntity {
@@ -200,10 +219,20 @@ export interface IStandingsCalculator {
 
 export interface IConstructorNormalizer {
   /**
-   * Canonicalizes external API / historical constructor aliases to strongly-typed TeamId.
-   * Must be season-aware to avoid mapping pre-2026 Sauber to Audi.
+   * Canonicalizes external API / historical constructor aliases to strongly-typed HistoricalConstructorId.
+   * Season-aware: returns 'sauber' for 2024/2025 and 'audi' for 2026.
    */
-  normalize(rawConstructorId: string | undefined, season?: SeasonYear): ConstructorId;
+  normalize(rawConstructorId: string | undefined, season?: SeasonYear): HistoricalConstructorId;
+
+  /**
+   * Fully resolves historical identity, presentation team ID, display names, and lineage.
+   */
+  resolve(rawConstructorId: string | undefined, season?: SeasonYear): ConstructorIdentityResolution;
+
+  /**
+   * Maps raw constructor ID to presentation TeamId for UI assets and 3D showroom models.
+   */
+  toPresentationTeamId(rawConstructorId: string | undefined, season?: SeasonYear): TeamId;
 }
 
 export interface IDriverNormalizer {

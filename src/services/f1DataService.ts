@@ -34,9 +34,14 @@ export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> 
   2026: DETAILED_RACE_RESULTS_2026,
 };
 
-import { mapConstructorId, normalizeDriverId } from '../features/championship/domain';
+import {
+  mapConstructorId,
+  normalizeConstructorId,
+  resolveConstructorIdentity,
+  normalizeDriverId,
+} from '../features/championship/domain';
 
-export { mapConstructorId, normalizeDriverId };
+export { mapConstructorId, normalizeConstructorId, resolveConstructorIdentity, normalizeDriverId };
 
 function normalizeRaceResults(races: DetailedRaceResult[]): DetailedRaceResult[] {
   return (Array.isArray(races) ? races : []).map((race) => {
@@ -368,7 +373,7 @@ export async function syncF1SeasonData(
       const savedByRound = new Map(existingResults.map((race) => [race.round, race]));
       const transformed = [...racesByRound.values()].map((race: any): DetailedRaceResult | null => {
         const entries: DetailedRaceResultEntry[] = (race.Results || []).map((res: any) => {
-          const teamId = mapConstructorId(res.Constructor?.constructorId);
+          const teamId = mapConstructorId(res.Constructor?.constructorId, season);
           const pos = parseInt(res.position, 10) || 20;
           return {
             position: pos,
@@ -394,7 +399,7 @@ export async function syncF1SeasonData(
             driverName: `${res.Driver?.givenName || ''} ${res.Driver?.familyName || ''}`.trim(),
             driverCode: res.Driver?.code || 'F1',
             driverNumber: parseInt(res.Driver?.permanentNumber, 10) || undefined,
-            teamId: mapConstructorId(res.Constructor?.constructorId),
+            teamId: mapConstructorId(res.Constructor?.constructorId, season),
             teamName: res.Constructor?.name || 'Constructor',
             laps: parseInt(res.laps, 10) || 0,
             status: res.status || 'Finished',
