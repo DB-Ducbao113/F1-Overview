@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DetailedRaceResult, DriverStanding } from '../../../types';
-import { fiaScoringRules } from '../domain/fiaScoringRules';
-import { compareCountback, zerosHistogram } from '../domain/countbackComparator';
+import { fiaScoringRules, racePointsForPosition } from '../domain/fiaScoringRules';
+import {
+  compareCountback,
+  zerosHistogram,
+  isValidClassifiedFinish,
+  buildCountbackHistograms,
+} from '../domain/countbackComparator';
+import { recalculateStandingsFromRaces } from '../domain/standingsCalculator';
 import { resolveConstructorIdentity } from '../domain/constructorMapping';
 import { calculateSeasonStandingsUseCase } from '../application/useCases/calculateSeasonStandingsUseCase';
 import {
@@ -622,6 +628,293 @@ describe('Milestone A4.6 Final Integration & Regression Acceptance Suite', () =>
       expect(initResult.detailedResults[2026]).toBeDefined();
       expect(initResult.calculatedStandings[2026]?.drivers.length).toBeGreaterThan(0);
       expect(initResult.syncMeta.source).toBe('Local snapshot');
+    });
+  });
+
+  describe('Stage 1 — Classified DNF and FIA Scoring Correctness Verification', () => {
+    it('awards official points to a classified DNF in P9 (completed >=90% race distance)', () => {
+      // FIA Sporting Regulations Art. B2.5.5: Competitors covering >=90% laps are classified.
+      // If classified in top 10 (e.g. P9), they receive championship points (2 pts).
+      const mockClassifiedDnfRace: DetailedRaceResult = {
+        id: 'race-2026-r18-united-states',
+        season: 2026,
+        round: 18, // Beyond baseline cutoff 17
+        grandPrix: 'United States Grand Prix',
+        officialName: 'FORMULA 1 UNITED STATES GRAND PRIX 2026',
+        circuit: 'Circuit of the Americas',
+        date: '2026-10-25',
+        status: 'completed',
+        lapsTotal: 56,
+        entries: [
+          {
+            position: 1,
+            driverId: 'verstappen',
+            driverName: 'Max Verstappen',
+            driverCode: 'VER',
+            teamId: 'redbull',
+            teamName: 'Red Bull Racing',
+            laps: 56,
+            status: 'Finished',
+            timeOrGap: '1:30:00.000',
+            points: 25,
+          },
+          {
+            position: 9,
+            driverId: 'norris',
+            driverName: 'Lando Norris',
+            driverCode: 'NOR',
+            teamId: 'mclaren',
+            teamName: 'McLaren',
+            laps: 52, // 52 / 56 = 92.8% (>= 90%, classified!)
+            status: 'Engine', // Retired due to engine but classified P9
+            timeOrGap: 'DNF',
+            points: 2, // Official FIA points awarded for P9
+          },
+        ],
+      };
+
+      const baseDrivers: DriverStanding[] = [
+        {
+          rank: 1,
+          driverId: 'verstappen',
+          driverName: 'Max Verstappen',
+          driverCode: 'VER',
+          teamId: 'redbull',
+          teamName: 'Red Bull Racing',
+          points: 300,
+          wins: 7,
+          podiums: 12,
+          countryFlag: '🇳🇱',
+        },
+        {
+          rank: 2,
+          driverId: 'norris',
+          driverName: 'Lando Norris',
+          driverCode: 'NOR',
+          teamId: 'mclaren',
+          teamName: 'McLaren',
+          points: 250,
+          wins: 4,
+          podiums: 10,
+          countryFlag: '🇬🇧',
+        },
+      ];
+
+      const { drivers } = recalculateStandingsFromRaces(
+        2026,
+        [mockClassifiedDnfRace],
+        baseDrivers,
+        [],
+      );
+      const norris = drivers.find((d) => d.driverId === 'norris');
+      expect(norris).toBeDefined();
+      expect(norris?.points).toBe(252); // Exactly 250 baseline + 2 awarded points
+      expect(norris?.wins).toBe(4); // No win added
+      expect(norris?.podiums).toBe(10); // No podium added
+    });
+
+    it('awards 0 points to an unclassified DNF (<90% race distance or status NC)', () => {
+      const mockUnclassifiedDnfRace: DetailedRaceResult = {
+        id: 'race-2026-r18-united-states',
+        season: 2026,
+        round: 18,
+        grandPrix: 'United States Grand Prix',
+        officialName: 'FORMULA 1 UNITED STATES GRAND PRIX 2026',
+        circuit: 'Circuit of the Americas',
+        date: '2026-10-25',
+        status: 'completed',
+        lapsTotal: 56,
+        entries: [
+          {
+            position: 18,
+            driverId: 'norris',
+            driverName: 'Lando Norris',
+            driverCode: 'NOR',
+            teamId: 'mclaren',
+            teamName: 'McLaren',
+            laps: 10, // <90% distance
+            status: 'Not classified',
+            timeOrGap: 'DNF',
+            points: 0,
+          },
+        ],
+      };
+
+      const baseDrivers: DriverStanding[] = [
+        {
+          rank: 1,
+          driverId: 'norris',
+          driverName: 'Lando Norris',
+          driverCode: 'NOR',
+          teamId: 'mclaren',
+          teamName: 'McLaren',
+          points: 250,
+          wins: 4,
+          podiums: 10,
+          countryFlag: '🇬🇧',
+        },
+      ];
+
+      const { drivers } = recalculateStandingsFromRaces(
+        2026,
+        [mockUnclassifiedDnfRace],
+        baseDrivers,
+        [],
+      );
+      const norris = drivers.find((d) => d.driverId === 'norris');
+      expect(norris?.points).toBe(250); // Unchanged (+0)
+    });
+
+    it('awards 0 points and excludes DNS and DSQ from finishing positions and standings points', () => {
+      // In FIA regulations, DNS and DSQ award 0 points
+      expect(racePointsForPosition(0)).toBe(0);
+      expect(racePointsForPosition(11)).toBe(0);
+
+      // Verify countback validity helper rejects DNS, DSQ, Disqualified, Did Not Start
+      expect(isValidClassifiedFinish(10, 'DNS')).toBe(false);
+      expect(isValidClassifiedFinish(10, 'Did Not Start')).toBe(false);
+      expect(isValidClassifiedFinish(5, 'DSQ')).toBe(false);
+      expect(isValidClassifiedFinish(5, 'Disqualified')).toBe(false);
+      expect(isValidClassifiedFinish(5, 'DSQ - Infringement')).toBe(false);
+
+      // Verify unclassified statuses are also rejected
+      expect(isValidClassifiedFinish(18, 'NC')).toBe(false);
+      expect(isValidClassifiedFinish(18, 'NC ')).toBe(false);
+      expect(isValidClassifiedFinish(18, 'Not Classified')).toBe(false);
+      expect(isValidClassifiedFinish(18, 'UNCLASSIFIED')).toBe(false);
+
+      // In contrast, classified finishes and classified DNFs (>=90%) ARE valid
+      expect(isValidClassifiedFinish(1, 'Finished')).toBe(true);
+      expect(isValidClassifiedFinish(9, '+1 Lap')).toBe(true);
+      expect(isValidClassifiedFinish(14, 'Engine')).toBe(true);
+      expect(isValidClassifiedFinish(18, 'Collision')).toBe(true);
+      expect(isValidClassifiedFinish(18, 'DNF (Accident)')).toBe(true);
+    });
+
+    it('counts classified DNF in countback finishing histograms while rejecting NC, DNS, and DSQ', () => {
+      const mockRace: DetailedRaceResult = {
+        id: 'race-2026-r18',
+        season: 2026,
+        round: 18,
+        grandPrix: 'Test GP',
+        officialName: 'Test GP',
+        circuit: 'Test Circuit',
+        date: '2026-10-25',
+        status: 'completed',
+        lapsTotal: 50,
+        entries: [
+          // Driver A: Classified DNF at P12 (>=90% distance, e.g. retired lap 47/50)
+          {
+            position: 12,
+            driverId: 'norris',
+            driverName: 'Lando Norris',
+            driverCode: 'NOR',
+            teamId: 'mclaren',
+            teamName: 'McLaren',
+            laps: 47,
+            status: 'Gearbox',
+            timeOrGap: 'DNF',
+            points: 0,
+          },
+          // Driver B: Unclassified DNF (<90% distance, retired lap 10/50)
+          {
+            position: 12,
+            driverId: 'piastri',
+            driverName: 'Oscar Piastri',
+            driverCode: 'PIA',
+            teamId: 'mclaren',
+            teamName: 'McLaren',
+            laps: 10,
+            status: 'Not Classified',
+            timeOrGap: 'DNF',
+            points: 0,
+          },
+          // Driver C: Disqualified
+          {
+            position: 12,
+            driverId: 'russell',
+            driverName: 'George Russell',
+            driverCode: 'RUS',
+            teamId: 'mercedes',
+            teamName: 'Mercedes',
+            laps: 50,
+            status: 'DSQ',
+            timeOrGap: 'DSQ',
+            points: 0,
+          },
+        ],
+      };
+
+      const { driverHistograms } = buildCountbackHistograms([mockRace]);
+
+      // Norris (Classified DNF at P12) has histogram entry for P12
+      const histNorris = driverHistograms.get('norris') || zerosHistogram();
+      expect(histNorris[12]).toBe(1);
+
+      // Piastri (NC) and Russell (DSQ) must have 0 classified finishes
+      const histPiastri = driverHistograms.get('piastri') || zerosHistogram();
+      expect(histPiastri[12] || 0).toBe(0);
+
+      const histRussell = driverHistograms.get('russell') || zerosHistogram();
+      expect(histRussell[12] || 0).toBe(0);
+
+      // Countback tie-breaker: Norris vs Piastri with identical points (0) and wins (0)
+      const diff = compareCountback(
+        { points: 0, wins: 0, driverId: 'norris' },
+        { points: 0, wins: 0, driverId: 'piastri' },
+        histNorris,
+        histPiastri,
+      );
+      // diff < 0 means Norris ranks ahead of Piastri (compareCountback sorts descending: a before b gives negative)
+      expect(diff).toBeLessThan(0);
+    });
+
+    it('faithfully preserves official upstream Jolpica points even if non-standard or adjusted', () => {
+      // In rain-shortened races (e.g. 50% distance) or steward adjustments, Jolpica provides official points
+      const mockShortenedRace: DetailedRaceResult = {
+        id: 'race-2026-r18-shortened',
+        season: 2026,
+        round: 18,
+        grandPrix: 'Rain GP',
+        officialName: 'Rain GP 2026',
+        circuit: 'Spa',
+        date: '2026-10-25',
+        status: 'completed',
+        lapsTotal: 20,
+        entries: [
+          {
+            position: 1,
+            driverId: 'verstappen',
+            driverName: 'Max Verstappen',
+            driverCode: 'VER',
+            teamId: 'redbull',
+            teamName: 'Red Bull Racing',
+            laps: 20,
+            status: 'Finished',
+            timeOrGap: '45:00.000',
+            points: 12.5, // 50% points awarded by stewards
+          },
+        ],
+      };
+
+      const baseDrivers: DriverStanding[] = [
+        {
+          rank: 1,
+          driverId: 'verstappen',
+          driverName: 'Max Verstappen',
+          driverCode: 'VER',
+          teamId: 'redbull',
+          teamName: 'Red Bull Racing',
+          points: 300,
+          wins: 7,
+          podiums: 12,
+          countryFlag: '🇳🇱',
+        },
+      ];
+
+      const { drivers } = recalculateStandingsFromRaces(2026, [mockShortenedRace], baseDrivers, []);
+      const verstappen = drivers.find((d) => d.driverId === 'verstappen');
+      expect(verstappen?.points).toBe(312.5); // Accurately reflects 300 + 12.5
     });
   });
 });

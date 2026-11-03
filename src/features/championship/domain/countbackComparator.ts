@@ -40,7 +40,11 @@ export const zerosHistogram = (maxPosition: number = DEFAULT_MAX_POSITION): numb
 
 /**
  * Validates whether a race classification entry constitutes a valid classified finish.
- * In FIA regulations, Did Not Start (DNS) and Disqualified (DSQ) do not count as classified finishes.
+ * In FIA regulations (Article A2.1.4(c) and Article B2.5.5), Did Not Start (DNS),
+ * Disqualified (DSQ), and unclassified finishers (NC / Not Classified / <90% distance)
+ * do not count as classified finishes for countback histograms.
+ * Classified DNFs (e.g., covered >=90% distance with status like 'Collision' or 'Engine'
+ * and an officially awarded finishing position) ARE valid classified finishes.
  */
 export function isValidClassifiedFinish(position: number, status?: string): boolean {
   if (typeof position !== 'number' || !Number.isInteger(position) || position < 1) {
@@ -52,7 +56,11 @@ export function isValidClassifiedFinish(position: number, status?: string): bool
       s.startsWith('DSQ') ||
       s.startsWith('DNS') ||
       s === 'DISQUALIFIED' ||
-      s === 'DID NOT START'
+      s === 'DID NOT START' ||
+      s === 'NC' ||
+      s.startsWith('NC ') ||
+      s === 'NOT CLASSIFIED' ||
+      s === 'UNCLASSIFIED'
     ) {
       return false;
     }
