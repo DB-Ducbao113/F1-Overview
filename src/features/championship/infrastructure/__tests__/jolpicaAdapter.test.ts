@@ -193,22 +193,250 @@ describe('Jolpica API Infrastructure Adapter', () => {
       expect(races[0].Results).toHaveLength(1);
     });
 
-    it('throws PartialSyncError when second page fails after first page succeeded', async () => {
-      let pageCall = 0;
+    it('handles exactly 500 records across 5 full pages without truncation', async () => {
+      let fetchCount = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        fetchCount++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+        const roundNum = offset / 100 + 1;
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '500',
+              limit: '100',
+              offset: String(offset),
+              RaceTable: {
+                Races: [
+                  {
+                    round: String(roundNum),
+                    raceName: `Round ${roundNum}`,
+                    Results: Array.from({ length: 100 }, (_, i) => ({
+                      position: String(i + 1),
+                      Driver: { driverId: `driver_${roundNum}_${i}` },
+                      points: '1',
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(fetchCount).toBe(5);
+      expect(races).toHaveLength(5);
+      const totalResults = races.reduce((sum, r) => sum + (r.Results?.length || 0), 0);
+      expect(totalResults).toBe(500);
+    });
+
+    it('handles more than 500 records (e.g. 528 records for a 24-round 22-car grid)', async () => {
+      let fetchCount = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        fetchCount++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+        const isLastPage = offset === 500;
+        const count = isLastPage ? 28 : 100;
+        const roundNum = Math.floor(offset / 100) + 1;
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '528',
+              limit: '100',
+              offset: String(offset),
+              RaceTable: {
+                Races: [
+                  {
+                    round: String(roundNum),
+                    raceName: `Round ${roundNum}`,
+                    Results: Array.from({ length: count }, (_, i) => ({
+                      position: String(i + 1),
+                      Driver: { driverId: `driver_${roundNum}_${i}` },
+                      points: '1',
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(fetchCount).toBe(6);
+      expect(races).toHaveLength(6);
+      const totalResults = races.reduce((sum, r) => sum + (r.Results?.length || 0), 0);
+      expect(totalResults).toBe(528);
+    });
+
+    it('terminates cleanly on incomplete last page without requesting unnecessary pages', async () => {
+      let fetchCount = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        fetchCount++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+        const count = offset === 0 ? 100 : 45;
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '145',
+              limit: '100',
+              offset: String(offset),
+              RaceTable: {
+                Races: [
+                  {
+                    round: offset === 0 ? '1' : '2',
+                    raceName: 'Race',
+                    Results: Array.from({ length: count }, (_, i) => ({
+                      position: String(i + 1),
+                      Driver: { driverId: `d_${offset}_${i}` },
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(fetchCount).toBe(2);
+      expect(races).toHaveLength(2);
+    });
+
+    it('handles inconsistent pagination metadata safely when total is missing or 0', async () => {
+      let fetchCount = 0;
       globalThis.fetch = vi.fn().mockImplementation(async () => {
-        pageCall++;
-        if (pageCall === 1) {
+        fetchCount++;
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '0', // Inconsistent: 0 total but 10 results returned
+              limit: '100',
+              offset: '0',
+              RaceTable: {
+                Races: [
+                  {
+                    round: '1',
+                    raceName: 'Race 1',
+                    Results: Array.from({ length: 10 }, (_, i) => ({
+                      position: String(i + 1),
+                      Driver: { driverId: `d_${i}` },
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(fetchCount).toBe(1);
+      expect(races).toHaveLength(1);
+      expect(races[0].Results).toHaveLength(10);
+    });
+
+    it('merges duplicate entries across page boundaries without duplicate drivers', async () => {
+      let fetchCount = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        fetchCount++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+        if (offset === 0) {
+          // Page 1: Round 5 has drivers 1..12
           return {
             ok: true,
             status: 200,
             headers: new Headers(),
             json: async () => ({
               MRData: {
-                total: '150', // indicates more than 100 results, triggers second page
+                total: '150',
                 limit: '100',
                 offset: '0',
                 RaceTable: {
-                  Races: [{ round: '1', raceName: 'R1', Results: [] }],
+                  Races: [
+                    {
+                      round: '5',
+                      raceName: 'Round 5 GP',
+                      Results: Array.from({ length: 12 }, (_, i) => ({
+                        position: String(i + 1),
+                        Driver: { driverId: `driver_${i + 1}` },
+                      })),
+                    },
+                  ],
+                },
+              },
+            }),
+          } as Response;
+        }
+
+        // Page 2: Round 5 has drivers 11..22 (overlapping 11, 12, plus new 13..22)
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '150',
+              limit: '100',
+              offset: '100',
+              RaceTable: {
+                Races: [
+                  {
+                    round: '5',
+                    raceName: 'Round 5 GP',
+                    Results: Array.from({ length: 12 }, (_, i) => ({
+                      position: String(i + 11),
+                      Driver: { driverId: `driver_${i + 11}` },
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(races).toHaveLength(1);
+      expect(races[0].round).toBe('5');
+      // Overlapping drivers 11 and 12 must not be duplicated; exactly 22 drivers
+      expect(races[0].Results).toHaveLength(22);
+      const driverIds = races[0].Results?.map((r) => r.Driver?.driverId);
+      expect(new Set(driverIds).size).toBe(22);
+    });
+
+    it('throws PartialSyncError when failure occurs after several successful pages', async () => {
+      let pageCall = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async () => {
+        pageCall++;
+        if (pageCall <= 2) {
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers(),
+            json: async () => ({
+              MRData: {
+                total: '350',
+                limit: '100',
+                offset: String((pageCall - 1) * 100),
+                RaceTable: {
+                  Races: [{ round: String(pageCall), raceName: `R${pageCall}`, Results: [] }],
                 },
               },
             }),
@@ -221,17 +449,26 @@ describe('Jolpica API Infrastructure Adapter', () => {
         } as Response;
       });
 
-      await expect(fetchAllRacesFromJolpica(2026, 'results')).rejects.toThrow(PartialSyncError);
+      let caughtError: any;
+      try {
+        await fetchAllRacesFromJolpica(2026, 'results');
+      } catch (err) {
+        caughtError = err;
+      }
+
+      expect(caughtError).toBeInstanceOf(PartialSyncError);
+      expect(caughtError.loadedPages).toBe(2);
+      expect(caughtError.message).toContain('failed after 2 page(s) loaded');
     });
 
-    it('throws PartialSyncError if total exceeds the 500 entry page cap', async () => {
+    it('throws PartialSyncError if total exceeds the 1,000 entry page cap', async () => {
       globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
         headers: new Headers(),
         json: async () => ({
           MRData: {
-            total: '600', // exceeds 5 * 100 = 500
+            total: '1200', // exceeds 10 * 100 = 1000
             RaceTable: { Races: [] },
           },
         }),

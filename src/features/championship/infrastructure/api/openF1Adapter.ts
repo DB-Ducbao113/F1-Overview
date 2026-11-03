@@ -212,3 +212,4 @@ export class OpenF1Adapter implements IOpenF1Adapter {
 }
 
 export const openF1Adapter = new OpenF1Adapter();
+

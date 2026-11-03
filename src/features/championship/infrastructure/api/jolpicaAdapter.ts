@@ -9,7 +9,7 @@ import {
 
 export const JOLPICA_API_BASE = '/api/jolpica/ergast/f1';
 export const JOLPICA_DEFAULT_LIMIT = 100;
-export const JOLPICA_MAX_PAGES = 5;
+export const JOLPICA_MAX_PAGES = 10;
 export const JOLPICA_MAX_ATTEMPTS = 3;
 export const JOLPICA_TOTAL_BUDGET_MS = 30_000;
 export const JOLPICA_REQUEST_TIMEOUT_MS = 12_000;
@@ -135,7 +135,9 @@ export async function fetchAllRacesFromJolpica(
     const data = (await res.json()) as RawJolpicaResponse;
     const races = data?.MRData?.RaceTable?.Races || [];
     const rawTotal = parseInt(data?.MRData?.total || '0', 10);
-    const safeRawTotal = Number.isFinite(rawTotal) && rawTotal >= 0 ? rawTotal : 0;
+    const hasValidTotal = Number.isFinite(rawTotal) && rawTotal > 0;
+    const safeRawTotal = hasValidTotal ? rawTotal : 0;
+
     // The cap truncates the season: surface it as partial, never as success.
     if (pages === 0 && safeRawTotal > limit * maxPages) {
       throw new PartialSyncError(
@@ -143,7 +145,7 @@ export async function fetchAllRacesFromJolpica(
         0,
       );
     }
-    const total = Math.min(safeRawTotal, limit * maxPages);
+    const total = hasValidTotal ? Math.min(safeRawTotal, limit * maxPages) : undefined;
 
     for (const r of races) {
       const rnd = parseInt(r.round, 10);
@@ -201,9 +203,25 @@ export async function fetchAllRacesFromJolpica(
       }
     }
 
+    const pageResultCount = races.reduce(
+      (sum, r) => sum + (r.Results?.length || 0) + (r.SprintResults?.length || 0),
+      0,
+    );
+
     pages += 1;
     offset += limit;
-    if (offset >= total || races.length === 0 || pages >= maxPages) break;
+
+    if (total !== undefined && pages >= maxPages && offset < total) {
+      throw new PartialSyncError(
+        `Jolpica ${type} total ${safeRawTotal} exceeded maximum page capacity (${limit * maxPages})`,
+        pages,
+      );
+    }
+
+    const hasMore =
+      total !== undefined ? offset < total : pageResultCount >= limit && races.length > 0;
+
+    if (!hasMore || races.length === 0 || pages >= maxPages) break;
   }
 
   return [...raceMap.values()].sort((a, b) => parseInt(a.round, 10) - parseInt(b.round, 10));
