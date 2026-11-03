@@ -2,38 +2,15 @@ import { DetailedRaceResult, DetailedRaceResultEntry, SeasonYear, F1SyncMetadata
 import { DETAILED_RACE_RESULTS_2024 } from '../data/championship/detailedResults2024';
 import { DETAILED_RACE_RESULTS_2026 } from '../data/championship/detailedResults2026';
 import { attachOpenF1SprintResults } from '../data/championship/openF1SprintBridge';
-
-const STORAGE_DETAILED_RESULTS_KEY = 'f1_detailed_results_v3';
-const STORAGE_SYNC_META_KEY = 'f1_sync_meta_v2';
-const STORAGE_SYNC_REVIEW_KEY = 'f1_sync_review_v1';
-const STORAGE_DISMISSED_REVIEW_KEY = 'f1_sync_review_dismissed_v1';
-const JOLPICA_API_BASE = '/api/jolpica/ergast/f1';
-
-function buildJolpicaUrl(
-  season: SeasonYear,
-  type: 'results' | 'sprint',
-  limit: number,
-  offset: number,
-): string {
-  if (typeof import.meta !== 'undefined' && import.meta.env?.DEV) {
-    return `${JOLPICA_API_BASE}/${season}/${type}.json?limit=${limit}&offset=${offset}`;
-  }
-
-  const params = new URLSearchParams({
-    path: `ergast/f1/${season}/${type}.json`,
-    limit: String(limit),
-    offset: String(offset),
-  });
-  return `/api/jolpica?${params.toString()}`;
-}
-
-// Initial baseline data mapped by season
-export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> = {
-  2024: DETAILED_RACE_RESULTS_2024,
-  2025: [], // 2025 transition season
-  2026: DETAILED_RACE_RESULTS_2026,
-};
-
+import {
+  championshipStorage,
+  fetchAllRacesFromJolpica,
+  PartialSyncError,
+  STORAGE_DETAILED_RESULTS_KEY,
+  STORAGE_SYNC_META_KEY,
+  STORAGE_SYNC_REVIEW_KEY,
+  STORAGE_DISMISSED_REVIEW_KEY,
+} from '../features/championship/infrastructure';
 import {
   mapConstructorId,
   normalizeConstructorId,
@@ -41,7 +18,23 @@ import {
   normalizeDriverId,
 } from '../features/championship/domain';
 
-export { mapConstructorId, normalizeConstructorId, resolveConstructorIdentity, normalizeDriverId };
+export {
+  mapConstructorId,
+  normalizeConstructorId,
+  resolveConstructorIdentity,
+  normalizeDriverId,
+  STORAGE_DETAILED_RESULTS_KEY,
+  STORAGE_SYNC_META_KEY,
+  STORAGE_SYNC_REVIEW_KEY,
+  STORAGE_DISMISSED_REVIEW_KEY,
+};
+
+// Initial baseline data mapped by season
+export const INITIAL_DETAILED_RESULTS: Record<SeasonYear, DetailedRaceResult[]> = {
+  2024: DETAILED_RACE_RESULTS_2024,
+  2025: [], // 2025 transition season
+  2026: DETAILED_RACE_RESULTS_2026,
+};
 
 function normalizeRaceResults(races: DetailedRaceResult[]): DetailedRaceResult[] {
   return (Array.isArray(races) ? races : []).map((race) => {
@@ -115,13 +108,13 @@ export function reconcileSeasonRaces(
 }
 
 /**
- * Load persisted results from localStorage, merging cleanly with initial baseline
+ * Load persisted results from localStorage, merging cleanly with initial baseline.
+ * Delegates storage read to Championship Infrastructure Layer.
  */
 export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResult[]> {
   try {
-    const raw = localStorage.getItem(STORAGE_DETAILED_RESULTS_KEY);
-    if (raw) {
-      const parsed: Record<SeasonYear, DetailedRaceResult[]> = JSON.parse(raw);
+    const parsed = championshipStorage.loadRawDetailedResults();
+    if (parsed) {
       return attachOpenF1SprintResults({
         2024:
           parsed[2024] && parsed[2024].length > 0
@@ -141,37 +134,29 @@ export function loadSavedDetailedResults(): Record<SeasonYear, DetailedRaceResul
 }
 
 /**
- * Remove any leftover interactive-sync review snapshot persisted by older
- * builds. The sync pipeline now applies reconciled results automatically, so a
- * stale review must never re-appear or block future syncs.
+ * Remove any leftover interactive-sync review snapshot persisted by older builds.
+ * Delegates storage cleanup to Championship Infrastructure Layer.
  */
 export function clearStaleSyncReview(): void {
-  try {
-    localStorage.removeItem(STORAGE_SYNC_REVIEW_KEY);
-    localStorage.removeItem(STORAGE_DISMISSED_REVIEW_KEY);
-  } catch {
-    // Continue with in-memory reconciliation if browser storage is unavailable.
-  }
+  championshipStorage.clearStaleSyncReview();
 }
 
 /**
- * Save updated results to localStorage (ready for Supabase database sync)
+ * Save updated results to localStorage (ready for Supabase database sync).
+ * Delegates storage persistence to Championship Infrastructure Layer.
  */
 export function persistDetailedResults(data: Record<SeasonYear, DetailedRaceResult[]>): void {
-  try {
-    localStorage.setItem(STORAGE_DETAILED_RESULTS_KEY, JSON.stringify(data));
-  } catch {
-    // ignore
-  }
+  championshipStorage.persistRawDetailedResults(data);
 }
 
 /**
- * Load or initialize sync metadata
+ * Load or initialize sync metadata.
+ * Delegates storage read to Championship Infrastructure Layer.
  */
 export function loadSyncMetadata(): F1SyncMetadata {
   try {
-    const raw = localStorage.getItem(STORAGE_SYNC_META_KEY);
-    if (raw) return JSON.parse(raw);
+    const raw = championshipStorage.loadSyncMetadata();
+    if (raw) return raw;
   } catch {
     // ignore
   }
@@ -184,155 +169,18 @@ export function loadSyncMetadata(): F1SyncMetadata {
   };
 }
 
+/**
+ * Save updated sync metadata.
+ * Delegates storage persistence to Championship Infrastructure Layer.
+ */
 export function persistSyncMetadata(meta: F1SyncMetadata): void {
-  try {
-    localStorage.setItem(STORAGE_SYNC_META_KEY, JSON.stringify(meta));
-  } catch {
-    // ignore
-  }
-}
-
-class PartialSyncError extends Error {
-  partial = true;
-  loadedPages: number;
-  constructor(message: string, loadedPages: number) {
-    super(message);
-    this.loadedPages = loadedPages;
-  }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function retryDelayMs(attempt: number, retryAfter: string | null): number {
-  if (retryAfter) {
-    const seconds = Number.parseInt(retryAfter, 10);
-    if (Number.isFinite(seconds) && seconds >= 0) return Math.min(seconds * 1000, 30_000);
-  }
-  return Math.min(1000 * 2 ** attempt, 8000);
-}
-
-/**
- * Single Jolpica page fetch with bounded retry (max attempts + total budget).
- * Retries 429/5xx with backoff and honors numeric Retry-After; other errors
- * throw immediately. The total budget covers sleeps AND fetch time: each
- * request timeout shrinks to the remaining budget.
- */
-async function fetchJolpicaPage(url: string): Promise<Response> {
-  const MAX_ATTEMPTS = 3;
-  const TOTAL_BUDGET_MS = 30_000;
-  const REQUEST_TIMEOUT_MS = 12_000;
-  const deadline = Date.now() + TOTAL_BUDGET_MS;
-  let lastStatus = 0;
-
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-    const remaining = deadline - Date.now();
-    if (remaining <= 0) {
-      throw new Error(`Jolpica endpoint timed out (retry budget of 30s exhausted)`);
-    }
-    const res = await fetch(url, {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(Math.min(REQUEST_TIMEOUT_MS, remaining)),
-    });
-    if (res.ok) return res;
-    lastStatus = res.status;
-    const retryable = res.status === 429 || res.status >= 500;
-    if (!retryable || attempt === MAX_ATTEMPTS - 1) {
-      throw new Error(`Jolpica endpoint returned ${res.status}`);
-    }
-    const delay = retryDelayMs(attempt, res.headers.get('Retry-After'));
-    if (Date.now() + delay >= deadline) {
-      throw new Error(`Jolpica endpoint returned ${res.status} (retry budget exhausted)`);
-    }
-    await sleep(delay);
-  }
-  throw new Error(`Jolpica endpoint returned ${lastStatus}`);
-}
-
-/**
- * Paginated fetch helper for Jolpica API (capped at 100 entries per request,
- * at most 5 pages). Throws PartialSyncError when a later page fails after
- * earlier pages succeeded, so callers never report partial data as success.
- */
-async function fetchAllRacesFromJolpica(
-  season: SeasonYear,
-  type: 'results' | 'sprint' = 'results',
-): Promise<any[]> {
-  const LIMIT = 100;
-  const MAX_PAGES = 5;
-  let offset = 0;
-  let pages = 0;
-  const raceMap = new Map<number, any>();
-
-  while (true) {
-    const url = buildJolpicaUrl(season, type, LIMIT, offset);
-    let res: Response;
-    try {
-      res = await fetchJolpicaPage(url);
-    } catch (err) {
-      if (raceMap.size === 0) throw err;
-      throw new PartialSyncError(
-        `Jolpica ${type} page ${pages + 1} failed after ${pages} page(s) loaded`,
-        pages,
-      );
-    }
-    const data = await res.json();
-    const races = data?.MRData?.RaceTable?.Races || [];
-    const rawTotal = parseInt(data?.MRData?.total || '0', 10);
-    const safeRawTotal = Number.isFinite(rawTotal) && rawTotal >= 0 ? rawTotal : 0;
-    // The cap truncates the season: surface it as partial, never as success.
-    if (pages === 0 && safeRawTotal > LIMIT * MAX_PAGES) {
-      throw new PartialSyncError(
-        `Jolpica ${type} total ${safeRawTotal} exceeds the ${LIMIT * MAX_PAGES}-entry page cap`,
-        0,
-      );
-    }
-    const total = Math.min(safeRawTotal, LIMIT * MAX_PAGES);
-
-    for (const r of races) {
-      const rnd = parseInt(r.round, 10);
-      if (!Number.isFinite(rnd)) continue;
-      if (!raceMap.has(rnd)) {
-        raceMap.set(rnd, {
-          ...r,
-          Results: r.Results ? [...r.Results] : [],
-          SprintResults: r.SprintResults ? [...r.SprintResults] : [],
-        });
-      } else {
-        const existing = raceMap.get(rnd)!;
-        const seenDrivers = new Set((existing.Results || []).map((e: any) => e?.Driver?.driverId));
-        if (r.Results) {
-          for (const e of r.Results) {
-            if (e?.Driver?.driverId && seenDrivers.has(e.Driver.driverId)) continue;
-            seenDrivers.add(e?.Driver?.driverId);
-            existing.Results.push(e);
-          }
-        }
-        const seenSprint = new Set(
-          (existing.SprintResults || []).map((e: any) => e?.Driver?.driverId),
-        );
-        if (r.SprintResults) {
-          for (const e of r.SprintResults) {
-            if (e?.Driver?.driverId && seenSprint.has(e.Driver.driverId)) continue;
-            seenSprint.add(e?.Driver?.driverId);
-            existing.SprintResults.push(e);
-          }
-        }
-      }
-    }
-
-    pages += 1;
-    offset += LIMIT;
-    if (offset >= total || races.length === 0 || pages >= MAX_PAGES) break;
-  }
-
-  return [...raceMap.values()].sort((a, b) => parseInt(a.round, 10) - parseInt(b.round, 10));
+  championshipStorage.persistSyncMetadata(meta);
 }
 
 /**
  * Sync F1 Season Data:
- * Fetches race and sprint classifications from Jolpica, retaining the last saved snapshot if unavailable
+ * Fetches race and sprint classifications via Jolpica API adapter,
+ * retaining the last saved snapshot if unavailable.
  */
 export async function syncF1SeasonData(
   season: SeasonYear,
@@ -345,7 +193,7 @@ export async function syncF1SeasonData(
   source: string;
 }> {
   try {
-    // Try live Ergast/Jolpica API with full pagination
+    // Try live Ergast/Jolpica API via Infrastructure Adapter
     const racesApi = await fetchAllRacesFromJolpica(season, 'results');
     let sprintRaces: any[] = [];
     let sprintSyncWarning = '';

@@ -1,0 +1,214 @@
+/**
+ * OpenF1 Real-Time & Replay Data Infrastructure Adapter
+ * Integrates with OpenF1 API (openf1.org) for authentic real-world driver tracking telemetry,
+ * speed, gear, DRS status, positions, race control flags, and track coordinates.
+ */
+
+import {
+  CuratedReplayRace,
+  IOpenF1Adapter,
+  OpenF1Bounds,
+  OpenF1CarData,
+  OpenF1Driver,
+  OpenF1DriverState,
+  OpenF1ErrorCode,
+  OpenF1Location,
+  OpenF1Position,
+  OpenF1RaceControl,
+  OpenF1Session,
+} from '../contracts/infrastructureContracts';
+
+export type {
+  CuratedReplayRace,
+  OpenF1Bounds,
+  OpenF1CarData,
+  OpenF1Driver,
+  OpenF1DriverState,
+  OpenF1ErrorCode,
+  OpenF1Location,
+  OpenF1Position,
+  OpenF1RaceControl,
+  OpenF1Session,
+};
+
+/**
+ * Curated iconic races from OpenF1 database for instant replay
+ */
+export const CURATED_REPLAY_RACES: CuratedReplayRace[] = [
+  {
+    id: 'melbourne-2024',
+    name: 'Australian GP 2024',
+    circuitName: 'Albert Park, Melbourne',
+    circuitKey: 10,
+    sessionKey: 9488,
+    year: 2024,
+    dateStart: '2024-03-24T04:00:00+00:00',
+    dateEnd: '2024-03-24T06:00:00+00:00',
+    sampleStartTime: '2024-03-24T04:15:00',
+  },
+  {
+    id: 'monaco-2024',
+    name: 'Monaco GP 2024',
+    circuitName: 'Circuit de Monaco',
+    circuitKey: 22,
+    sessionKey: 9523,
+    year: 2024,
+    dateStart: '2024-05-26T13:00:00+00:00',
+    dateEnd: '2024-05-26T15:00:00+00:00',
+    sampleStartTime: '2024-05-26T13:20:00',
+  },
+  {
+    id: 'suzuka-2024',
+    name: 'Japanese GP 2024',
+    circuitName: 'Suzuka International Racing Course',
+    circuitKey: 46,
+    sessionKey: 9496,
+    year: 2024,
+    dateStart: '2024-04-07T05:00:00+00:00',
+    dateEnd: '2024-04-07T07:00:00+00:00',
+    sampleStartTime: '2024-04-07T05:15:00',
+  },
+  {
+    id: 'sakhir-2024',
+    name: 'Bahrain GP 2024',
+    circuitName: 'Bahrain International Circuit',
+    circuitKey: 63,
+    sessionKey: 9472,
+    year: 2024,
+    dateStart: '2024-03-02T15:00:00+00:00',
+    dateEnd: '2024-03-02T17:00:00+00:00',
+    sampleStartTime: '2024-03-02T15:15:00',
+  },
+];
+
+// In-memory cache to prevent exceeding 30 req/min (bounded: oldest evicted).
+const memoryCache = new Map<string, { timestamp: number; data: unknown }>();
+export const OPENF1_CACHE_TTL_MS = 2000;
+export const OPENF1_MAX_CLIENT_CACHE_ENTRIES = 500;
+
+export class OpenF1Adapter implements IOpenF1Adapter {
+  lastErrorCode: OpenF1ErrorCode = null;
+
+  async fetchJson<T>(
+    endpoint: string,
+    queryParams: Record<string, string | number> = {},
+  ): Promise<T | null> {
+    const query = new URLSearchParams();
+    Object.entries(queryParams).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') {
+        query.append(k, String(v));
+      }
+    });
+
+    const queryString = query.toString();
+    const cacheKey = `${endpoint}?${queryString}`;
+
+    const cached = memoryCache.get(cacheKey);
+    const now = Date.now();
+    if (cached && now - cached.timestamp < OPENF1_CACHE_TTL_MS) {
+      return cached.data as T;
+    }
+
+    // Dev Vite maps path segments to OpenF1. The Vercel function uses a query
+    // allowlist, so production must pass the endpoint explicitly.
+    const isDev = typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
+    const url = isDev
+      ? `/api/openf1/${endpoint}${queryString ? `?${queryString}` : ''}`
+      : `/api/openf1?${new URLSearchParams({ endpoint, ...Object.fromEntries(query.entries()) }).toString()}`;
+
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) {
+        this.lastErrorCode = res.status === 429 ? 'upstream-rate-limited' : 'upstream-down';
+        return null;
+      }
+      const data = await res.json();
+      memoryCache.delete(cacheKey);
+      memoryCache.set(cacheKey, { timestamp: now, data });
+      while (memoryCache.size > OPENF1_MAX_CLIENT_CACHE_ENTRIES) {
+        const oldest = memoryCache.keys().next();
+        if (oldest.done) break;
+        memoryCache.delete(oldest.value);
+      }
+      this.lastErrorCode = 'ok';
+      return data as T;
+    } catch (err) {
+      this.lastErrorCode =
+        err instanceof DOMException && err.name === 'TimeoutError' ? 'timeout' : 'proxy-error';
+      return null;
+    }
+  }
+
+  /**
+   * Get latest active or most recent session
+   */
+  async getLatestSession(): Promise<OpenF1Session | null> {
+    const sessions = await this.fetchJson<OpenF1Session[]>('sessions', { session_key: 'latest' });
+    if (sessions && sessions.length > 0) {
+      return sessions[0];
+    }
+    return null;
+  }
+
+  /**
+   * Get drivers for a specific session
+   */
+  async getSessionDrivers(sessionKey: number): Promise<OpenF1Driver[]> {
+    const drivers = await this.fetchJson<OpenF1Driver[]>('drivers', { session_key: sessionKey });
+    return drivers || [];
+  }
+
+  /**
+   * Get driver locations within a short time window (e.g., 2 seconds)
+   */
+  async getLocationWindow(
+    sessionKey: number,
+    dateStartIso: string,
+    dateEndIso: string,
+  ): Promise<OpenF1Location[]> {
+    const locations = await this.fetchJson<OpenF1Location[]>('location', {
+      session_key: sessionKey,
+      'date>=': dateStartIso,
+      'date<=': dateEndIso,
+    });
+    return locations || [];
+  }
+
+  /**
+   * Get car data (speed, gear, DRS) within a short window
+   */
+  async getCarDataWindow(
+    sessionKey: number,
+    dateStartIso: string,
+    dateEndIso: string,
+  ): Promise<OpenF1CarData[]> {
+    const carData = await this.fetchJson<OpenF1CarData[]>('car_data', {
+      session_key: sessionKey,
+      'date>=': dateStartIso,
+      'date<=': dateEndIso,
+    });
+    return carData || [];
+  }
+
+  /**
+   * Get latest positions (P1, P2...) for the session
+   */
+  async getPositions(sessionKey: number): Promise<OpenF1Position[]> {
+    const positions = await this.fetchJson<OpenF1Position[]>('position', {
+      session_key: sessionKey,
+    });
+    return positions || [];
+  }
+
+  /**
+   * Get race control flags (Safety Car, Yellow, Green, Red)
+   */
+  async getRaceControl(sessionKey: number): Promise<OpenF1RaceControl[]> {
+    const events = await this.fetchJson<OpenF1RaceControl[]>('race_control', {
+      session_key: sessionKey,
+    });
+    return events || [];
+  }
+}
+
+export const openF1Adapter = new OpenF1Adapter();
