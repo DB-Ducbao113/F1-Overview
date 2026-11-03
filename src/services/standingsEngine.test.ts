@@ -19,7 +19,7 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     expect(antonelli).toBeDefined();
     expect(antonelli!.podiums).toBeGreaterThan(0);
-    expect(antonelli!.podiums).toBe(14);
+    expect(antonelli!.podiums).toBe(15);
 
     expect(russell).toBeDefined();
     expect(russell!.podiums).toBeGreaterThan(0);
@@ -37,11 +37,11 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     expect(mercedes).toBeDefined();
     expect(mercedes!.podiums).toBeGreaterThan(0);
-    expect(mercedes!.podiums).toBe(22);
+    expect(mercedes!.podiums).toBe(23);
 
     expect(ferrari).toBeDefined();
     expect(ferrari!.podiums).toBeGreaterThan(0);
-    expect(ferrari!.podiums).toBe(11);
+    expect(ferrari!.podiums).toBe(12);
 
     expect(mclaren).toBeDefined();
     expect(mclaren!.podiums).toBeGreaterThan(0);
@@ -49,16 +49,16 @@ describe('2026 Standings and Podiums Integrity', () => {
   });
 
   it('only increments podiums for races beyond the baseline cutoff', () => {
-    const sampleRound18Race: DetailedRaceResult = {
-      id: 'race-2026-r18-united-states',
+    const sampleRound19Race: DetailedRaceResult = {
+      id: 'race-2026-r19-mexico',
       season: 2026,
-      round: 18,
-      grandPrix: 'United States Grand Prix',
-      officialName: 'United States Grand Prix 2026',
-      circuit: 'Circuit of The Americas',
-      date: '25 Oct 2026',
+      round: 19,
+      grandPrix: 'Mexico City Grand Prix',
+      officialName: 'Gran Premio de la Ciudad de México 2026',
+      circuit: 'Autódromo Hermanos Rodríguez',
+      date: '01 Nov 2026',
       status: 'completed',
-      lapsTotal: 62,
+      lapsTotal: 71,
       entries: [
         {
           position: 1,
@@ -67,9 +67,9 @@ describe('2026 Standings and Podiums Integrity', () => {
           driverCode: 'RUS',
           teamId: 'mercedes',
           teamName: 'Mercedes',
-          laps: 62,
+          laps: 71,
           status: 'Finished',
-          timeOrGap: '1:40:00.000',
+          timeOrGap: '1:38:00.000',
           points: 25,
         },
         {
@@ -79,7 +79,7 @@ describe('2026 Standings and Podiums Integrity', () => {
           driverCode: 'NOR',
           teamId: 'mclaren',
           teamName: 'McLaren',
-          laps: 62,
+          laps: 71,
           status: 'Finished',
           timeOrGap: '+2.123s',
           points: 18,
@@ -91,7 +91,7 @@ describe('2026 Standings and Podiums Integrity', () => {
           driverCode: 'ANT',
           teamId: 'mercedes',
           teamName: 'Mercedes',
-          laps: 62,
+          laps: 71,
           status: 'Finished',
           timeOrGap: '+4.567s',
           points: 15,
@@ -101,7 +101,7 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     const res = recalculateStandingsFromRaces(
       2026,
-      [sampleRound18Race],
+      [sampleRound19Race],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
@@ -112,19 +112,19 @@ describe('2026 Standings and Podiums Integrity', () => {
 
     // Russell got P1 (podium +1) -> 8 + 1 = 9
     expect(russell!.podiums).toBe(9);
-    // Antonelli got P3 (podium +1) -> 14 + 1 = 15
-    expect(antonelli!.podiums).toBe(15);
-    // Mercedes got P1 & P3 (podiums +2) -> 22 + 2 = 24
-    expect(mercedes!.podiums).toBe(24);
+    // Antonelli got P3 (podium +1) -> 15 + 1 = 16
+    expect(antonelli!.podiums).toBe(16);
+    // Mercedes got P1 & P3 (podiums +2) -> 23 + 2 = 25
+    expect(mercedes!.podiums).toBe(25);
 
     const baselineRound = recalculateStandingsFromRaces(
       2026,
-      [{ ...sampleRound18Race, id: 'race-2026-r17-singapore', round: 17 }],
+      [{ ...sampleRound19Race, id: 'race-2026-r18-united-states', round: 18 }],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
-    expect(baselineRound.drivers.find((d) => d.driverId === 'antonelli')?.podiums).toBe(14);
-    expect(baselineRound.constructors.find((c) => c.teamId === 'mercedes')?.podiums).toBe(22);
+    expect(baselineRound.drivers.find((d) => d.driverId === 'antonelli')?.podiums).toBe(15);
+    expect(baselineRound.constructors.find((c) => c.teamId === 'mercedes')?.podiums).toBe(23);
   });
 
   it('recalculateStandingsFromRaces should defensively recover podiums if base has 0 podiums', () => {

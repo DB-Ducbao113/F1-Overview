@@ -5,7 +5,7 @@ import { DriverStanding, ConstructorStanding, SeasonYear, SeasonStandings } from
 // Source: Formula 1 Official Results (formula1.com/en/results)
 // - 2024: Completed Season (Official Final Classification)
 // - 2025: Completed Season (Official Final Classification)
-// - 2026: Ongoing Season (Official Current Live Standings after 17 events)
+// - 2026: Ongoing Season (Official Current Live Standings after 18 events)
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ export const CONSTRUCTOR_STANDINGS_2025: ConstructorStanding[] = [
 ];
 
 // ----------------------------------------------------------------------------
-// 3. SEASON 2026 — Official Live Standings (Ongoing Season after 17 events)
+// 3. SEASON 2026 — Official Live Standings (Ongoing Season after 18 events)
 // ----------------------------------------------------------------------------
 export const DRIVER_STANDINGS_2026: DriverStanding[] = [
   { rank: 1, driverId: 'antonelli', driverName: 'Andrea Kimi Antonelli', driverCode: 'ANT', teamId: 'mercedes', teamName: 'Mercedes', points: 365, wins: 9, podiums: 15, countryFlag: '🇮🇹' },
@@ -158,7 +158,7 @@ export const STANDINGS_DATA: Record<SeasonYear, SeasonStandings> = {
     season: 2026,
     status: 'ongoing',
     lastUpdated: '2026-11-01',
-    notes: 'Official Live Standings after 19 events · Mercedes & Andrea Kimi Antonelli Leading',
+    notes: 'Official Live Standings after 18 events · Mercedes & Andrea Kimi Antonelli Leading',
     leaderTitle: 'Current Championship Leader: Andrea Kimi Antonelli (365 pts) · Mercedes (607 pts)',
     drivers: DRIVER_STANDINGS_2026,
     constructors: CONSTRUCTOR_STANDINGS_2026,

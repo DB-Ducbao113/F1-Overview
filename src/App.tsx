@@ -24,13 +24,13 @@ const HomeView = lazy(() =>
   import('./components/home/HomeView').then((m) => ({ default: m.HomeView })),
 );
 const ChampionshipView = lazy(() =>
-  import('./components/championship/ChampionshipView').then((m) => ({
+  import('./features/championship/ui/ChampionshipView').then((m) => ({
     default: m.ChampionshipView,
   })),
 );
 
 const ShowroomView = lazy(() =>
-  import('./components/showroom/ShowroomView').then((m) => ({ default: m.ShowroomView })),
+  import('./features/showroom/ui/ShowroomView').then((m) => ({ default: m.ShowroomView })),
 );
 const TeamDetailPage = lazy(() =>
   import('./components/pages/TeamDetailPage').then((m) => ({ default: m.TeamDetailPage })),
@@ -53,7 +53,7 @@ const AboutPage = lazy(() =>
   import('./components/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
 );
 const RaceClassificationModal = lazy(() =>
-  import('./components/championship/RaceClassificationModal').then((m) => ({
+  import('./features/championship/ui/modals/RaceClassificationModal').then((m) => ({
     default: m.RaceClassificationModal,
   })),
 );

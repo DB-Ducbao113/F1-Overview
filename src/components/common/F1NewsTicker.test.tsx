@@ -29,7 +29,7 @@ describe('F1NewsTicker Component', () => {
     expect(html).toContain('FP1');
     expect(html).not.toContain('SINGAPORE FP1');
     expect(html).toContain('17 / 23 CHẶNG ĐÃ HOÀN THÀNH');
-    expect(html).toContain('340 ĐIỂM');
+    expect(html).toContain('365 ĐIỂM');
 
     // Contains Singapore GP latest result headline.
     expect(html).toContain('SINGAPORE GP');

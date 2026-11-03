@@ -1,0 +1,731 @@
+import React, { useState, useEffect, Suspense, lazy, useCallback, useMemo, useRef } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import type { CameraPreset } from '../rendering/CameraController';
+import { HotspotDetailsModal } from './modals/HotspotDetailsModal';
+import { LiverySelector } from './LiverySelector';
+import { ShowroomControlDock } from './ShowroomControlDock';
+const LazyShowroomLoadingPanel = lazy(() =>
+  import('./fallbacks/Showroom3DLoader').then((module) => ({
+    default: module.ShowroomLoadingPanel,
+  })),
+);
+const ShowroomScene = lazy(() =>
+  import('../rendering/ShowroomScene').then((module) => ({
+    default: module.ShowroomScene,
+  })),
+);
+import { HotspotSelectorBar } from './HotspotSelectorBar';
+import { ShowroomQuickHUD } from './ShowroomQuickHUD';
+import { SchematicComparisonModal } from './modals/SchematicComparisonModal';
+
+import { HotspotItem } from '../data/hotspotsData';
+import { TeamId } from '../../../types';
+import { TEAMS_DATA } from '../../../data/teams';
+import { getTeam3DLivery } from '../data/teamLiveries';
+import { useNavigationStore } from '../../../store/useNavigationStore';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
+import { getDefaultAutoRotate, getFrameLoopMode } from '../performance/showroomMotionState';
+import { resolveMobileLayout, subscribeMobileLayout } from './showroomMobileLayout';
+import { ConstructorLogo } from '../../../components/common/ConstructorLogo';
+import { getTeamSponsors } from '../data/teamSponsors';
+import {
+  GraphicsQualityMode,
+  QualityTier,
+  getSavedQualityMode,
+  saveQualityMode,
+  detectInitialQualityTier,
+  resolveQualityProfile,
+} from '../performance/core';
+
+import { ArrowRight, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { ErrorBoundary } from '../../../components/common/ErrorBoundary';
+
+interface WebGLFallbackProps {
+  teamName: string;
+  carModelName: string;
+  primaryColor: string;
+  lang: 'vi' | 'en';
+}
+
+const ShowroomWebGLFallback: React.FC<WebGLFallbackProps> = ({
+  teamName,
+  carModelName,
+  primaryColor,
+  lang,
+}) => (
+  <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#09090e] text-white">
+    <div
+      className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-black mb-4 shadow-xl"
+      style={{ backgroundColor: primaryColor }}
+    >
+      F1
+    </div>
+    <h3 className="font-display text-xl font-bold uppercase tracking-wider mb-2 text-white">
+      {teamName} — {carModelName}
+    </h3>
+    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-4">
+      <span>⚠️</span>
+      <span>
+        {lang === 'vi'
+          ? 'Chế độ 2D (Thiết bị chưa bật tăng tốc đồ họa WebGL)'
+          : '2D Mode (WebGL hardware acceleration unavailable)'}
+      </span>
+    </div>
+    <p className="text-xs text-studio-400 max-w-md leading-relaxed mb-6">
+      {lang === 'vi'
+        ? 'Bạn có thể kích hoạt tăng tốc phần cứng trong cài đặt trình duyệt để xem mô hình 3D xoay 360°, hoặc cuộn xuống dưới để khám phá trọn bộ hồ sơ kỹ thuật chi tiết của xe.'
+        : 'Enable hardware acceleration in your browser settings for full 360° 3D interaction, or scroll down to explore the complete technical dossier.'}
+    </p>
+    <button
+      onClick={() => {
+        document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
+      }}
+      className="px-5 py-2.5 rounded-xl bg-f1red text-white text-xs font-bold uppercase tracking-wider hover:bg-red-700 transition-all cursor-pointer shadow-lg shadow-f1red/20"
+    >
+      {lang === 'vi' ? 'Xem Hồ Sơ Kỹ Thuật Chi Tiết ↓' : 'View Technical Dossier ↓'}
+    </button>
+  </div>
+);
+
+export const ShowroomView: React.FC = () => {
+  const { lang } = useNavigationStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Selected Team for 3D Livery synced with query param ?team=...
+  const teamParam = searchParams.get('team') as TeamId | null;
+  const validTeamParam = teamParam && TEAMS_DATA[teamParam] ? teamParam : null;
+  const [prevTeamParam, setPrevTeamParam] = useState<TeamId | null>(validTeamParam);
+  const [selectedTeamId, setSelectedTeamId] = useState<TeamId>(validTeamParam || 'mercedes');
+
+  if (validTeamParam && validTeamParam !== prevTeamParam) {
+    setPrevTeamParam(validTeamParam);
+    setSelectedTeamId(validTeamParam);
+  }
+
+  const handleSelectTeam = useCallback(
+    (newTeamId: TeamId) => {
+      setSelectedTeamId(newTeamId);
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('team', newTeamId);
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  // Active Hotspot item
+  const [activeHotspot, setActiveHotspot] = useState<HotspotItem | null>(null);
+
+  // Active Camera Preset
+  const [cameraPreset, setCameraPreset] = useState<CameraPreset | null>('overview');
+  const [presetTrigger, setPresetTrigger] = useState<number>(0);
+
+  // ── Reduced motion (M3B.2) ──
+  // Tracks `prefers-reduced-motion: reduce` live so a mid-session preference
+  // change is honored. Auto-rotation starts OFF for affected users while the
+  // scene still renders on demand; manual camera, hotspot and livery controls
+  // and every piece of UI remain fully functional.
+  const reducedMotion = useReducedMotion();
+  const [autoRotate, setAutoRotate] = useState<boolean>(() => getDefaultAutoRotate(reducedMotion));
+  const prevReducedMotionRef = useRef(reducedMotion);
+
+  // When the preference turns ON, stop auto-rotation. When it turns OFF we do
+  // not force rotation back on; the user keeps control. Either way the scene
+  // revision includes the flag so the frame invalidator repaints without a
+  // reload.
+  useEffect(() => {
+    if (prevReducedMotionRef.current === reducedMotion) return;
+    prevReducedMotionRef.current = reducedMotion;
+    if (reducedMotion) setAutoRotate(false);
+  }, [reducedMotion]);
+
+  // Engineering Hotspots Visibility (Clean default view matching studio photo)
+  const [showHotspots, setShowHotspots] = useState<boolean>(false);
+
+  // Smooth Scrolling & Zoom controls: wheel zoom is false by default so mouse wheel scrolls webpage
+  const [enableWheelZoom, setEnableWheelZoom] = useState<boolean>(false);
+  const [zoomTrigger, setZoomTrigger] = useState<number>(0);
+  const [zoomDirection, setZoomDirection] = useState<'in' | 'out' | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  // 2D CAD Blueprint & Component Comparison Modal
+  const [isSchematicOpen, setIsSchematicOpen] = useState<boolean>(false);
+  const showroomStageRef = useRef<HTMLDivElement | null>(null);
+  const [isStageVisible, setIsStageVisible] = useState(true);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(
+    () => typeof document === 'undefined' || document.visibilityState === 'visible',
+  );
+  const [isWebGLContextLost, setIsWebGLContextLost] = useState(false);
+  const [contextRevision, setContextRevision] = useState(0);
+  const [usableSceneKey, setUsableSceneKey] = useState<string | null>(null);
+  const [readySceneParts, setReadySceneParts] = useState<{
+    key: string;
+    car: boolean;
+    studio: boolean;
+  }>({ key: '', car: false, studio: false });
+
+  useEffect(() => {
+    const handleVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    const stage = showroomStageRef.current;
+    if (!stage || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStageVisible(entry.isIntersecting),
+      { rootMargin: '160px 0px', threshold: 0.01 },
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
+
+  const isCanvasActive = isDocumentVisible && isStageVisible && !isWebGLContextLost;
+
+  //M3C: mobile composition reacts to viewport-width crossings of the 1023 px
+  // breakpoint (rotation / window resize). The subscription fires only when
+  // the boolean flips, so ordinary resizes never re-render the Showroom.
+  const [isMobileLayout, setIsMobileLayout] = useState<boolean>(
+    () =>
+      resolveMobileLayout(typeof window === 'undefined' ? 1920 : window.innerWidth).isMobileLayout,
+  );
+
+  useEffect(() => {
+    const unsubscribe = subscribeMobileLayout(setIsMobileLayout);
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
+  // ── Adaptive Graphics Quality System ──
+  const [qualityMode, setQualityModeState] = useState<GraphicsQualityMode>(() =>
+    getSavedQualityMode(),
+  );
+  const [qualityTier, setQualityTier] = useState<QualityTier>(() =>
+    detectInitialQualityTier(isMobileLayout),
+  );
+
+  const handleSelectQualityMode = useCallback((newMode: GraphicsQualityMode) => {
+    setQualityModeState(newMode);
+    saveQualityMode(newMode);
+    if (newMode !== 'auto') {
+      setQualityTier(newMode);
+    }
+  }, []);
+
+  const handleAdaptiveTierChange = useCallback((newTier: QualityTier) => {
+    setQualityTier(newTier);
+  }, []);
+
+  const qualityProfile = useMemo(
+    () => resolveQualityProfile(qualityMode, qualityTier, isMobileLayout),
+    [qualityMode, qualityTier, isMobileLayout],
+  );
+
+  const startupSceneKey = `${selectedTeamId}:${lang}:${contextRevision}`;
+  const isSceneUsable = usableSceneKey === startupSceneKey;
+  const isCarReady = readySceneParts.key === startupSceneKey && readySceneParts.car;
+  const isStudioReady = readySceneParts.key === startupSceneKey && readySceneParts.studio;
+  const sceneRevision = `${selectedTeamId}:${lang}:${activeHotspot?.id ?? 'none'}:${showHotspots}:${cameraPreset ?? 'none'}:${presetTrigger}:${autoRotate}:${enableWheelZoom}:${zoomTrigger}:${reducedMotion}:${qualityMode}:${qualityTier}`;
+
+  useEffect(() => {
+    if (isSceneUsable) performance.mark('showroom:loader-hidden');
+  }, [isSceneUsable]);
+
+  const handleWebGLContextStateChange = useCallback((isLost: boolean) => {
+    setIsWebGLContextLost(isLost);
+    if (!isLost) setContextRevision((revision) => revision + 1);
+  }, []);
+
+  const handleScenePartReady = useCallback((sceneKey: string, part: 'car' | 'studio') => {
+    setReadySceneParts((current) => {
+      const next =
+        current.key === sceneKey
+          ? { ...current, [part]: true }
+          : { key: sceneKey, car: part === 'car', studio: part === 'studio' };
+      return current.key === next.key && current.car === next.car && current.studio === next.studio
+        ? current
+        : next;
+    });
+  }, []);
+
+  const handleToggleHotspots = useCallback(() => {
+    setShowHotspots((prev) => !prev);
+  }, []);
+
+  const handleToggleAutoRotate = useCallback(() => {
+    setAutoRotate((prev) => !prev);
+  }, []);
+
+  const handleToggleWheelZoom = useCallback(() => {
+    setEnableWheelZoom((prev) => !prev);
+  }, []);
+
+  // Listen to window scroll to show Back to Top floating button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 450);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToDossier = () => {
+    document.getElementById('technical-dossier')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleZoom = useCallback((dir: 'in' | 'out') => {
+    setZoomDirection(dir);
+    setZoomTrigger((prev) => prev + 1);
+  }, []);
+
+  const handleResetView = useCallback(() => {
+    setActiveHotspot(null);
+    setCameraPreset('overview');
+    setPresetTrigger((prev) => prev + 1);
+    setAutoRotate(true);
+  }, []);
+
+  const handleSelectPreset = useCallback((preset: CameraPreset) => {
+    setCameraPreset(preset);
+    setPresetTrigger((prev) => prev + 1);
+    setActiveHotspot(null);
+    setAutoRotate(false);
+  }, []);
+
+  const handleSelectHotspot = useCallback((hotspot: HotspotItem) => {
+    setActiveHotspot(hotspot);
+    setCameraPreset(null);
+    setAutoRotate(false);
+  }, []);
+
+  const team = useMemo(() => TEAMS_DATA[selectedTeamId] || TEAMS_DATA.ferrari, [selectedTeamId]);
+  const livery = useMemo(() => getTeam3DLivery(selectedTeamId), [selectedTeamId]);
+  const teamSponsors = useMemo(() => getTeamSponsors(selectedTeamId), [selectedTeamId]);
+
+  return (
+    <div className="min-h-screen bg-studio-950 text-white flex flex-col font-sans">
+      {/* ── Unified Showroom Header & Constructor Livery Selector Bar ── */}
+      <div className="bg-studio-950/95 backdrop-blur-xl border-b border-studio-800/80 sticky top-16 z-30 shadow-md">
+        <div className="page-container py-2.5 space-y-2">
+          {/* Top Row: Title, Refined Description & Dossier Quick Action */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="w-7 h-7 rounded-lg bg-f1red flex items-center justify-center font-display text-[11px] font-black text-white shadow-md shadow-f1red/30 shrink-0">
+                3D
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-display text-sm sm:text-base font-black uppercase tracking-wider text-white">
+                  {lang === 'vi' ? 'Showroom Kỹ Thuật 3D Xe F1' : 'F1 3D Technical Showroom'}
+                </h1>
+                <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-700/80 px-2 py-0.5 rounded-full">
+                  {lang === 'vi' ? 'MẪU THAM CHIẾU' : 'REFERENCE MODEL'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <button
+                type="button"
+                onClick={() => setIsSchematicOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-gradient-to-r from-red-600/25 to-amber-500/20 hover:from-red-600/35 hover:to-amber-500/30 text-xs font-bold text-amber-300 hover:text-white transition-all border border-amber-500/40 cursor-pointer shadow-sm"
+                title={
+                  lang === 'vi'
+                    ? 'Xem bản vẽ CAD 2D gốc & bảng màu xe'
+                    : 'View original 2D CAD blueprint & color matrix'
+                }
+              >
+                <FileText className="w-3.5 h-3.5 text-amber-400" />
+                <span>{lang === 'vi' ? 'Bản Vẽ CAD 2D' : '2D Blueprint'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={scrollToDossier}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-bold text-studio-200 hover:text-white transition-colors border border-studio-700/70 cursor-pointer shadow-sm"
+              >
+                <span>{lang === 'vi' ? 'Hồ Sơ Kỹ Thuật' : 'Technical Dossier'}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-f1red" />
+              </button>
+            </div>
+          </div>
+
+          {/* Streamlined Livery Selector Tabs */}
+          <LiverySelector
+            selectedTeamId={selectedTeamId}
+            onSelectTeam={handleSelectTeam}
+            lang={lang}
+          />
+        </div>
+      </div>
+
+      {/* ── 3D Interactive Showroom Canvas Stage ── */}
+      <div
+        ref={showroomStageRef}
+        className="relative w-full h-[620px] sm:h-[680px] lg:h-[720px] overflow-hidden bg-gradient-to-b from-[#0f1118] via-[#07080c] to-[#020204] select-none"
+      >
+        {/* Dynamic Studio Ambient Spotlight & Team Accent Halo */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-colors duration-700 ease-out"
+          style={{
+            background: `radial-gradient(ellipse 65% 55% at 50% 38%, ${team.primaryColor}16 0%, transparent 68%)`,
+          }}
+        />
+
+        {/* Studio Technical Metadata Watermark (Mercedes / Maranello Engineering Stage style) */}
+        <div className="absolute bottom-4 left-4 z-10 pointer-events-none hidden lg:flex flex-col text-[10px] font-mono tracking-widest text-studio-500 uppercase select-none space-y-0.5">
+          <span className="inline-flex items-center gap-1 text-studio-400 font-bold">
+            <span>STUDIO</span>
+            <span>{livery.shortCarName}</span>
+            <span>·</span>
+            <span>PHOTOMETRIC STAGE</span>
+          </span>
+          <span>CALIBRATION: 5600K CRI 98 // CYCLORAMA SPEC</span>
+        </div>
+
+        {/* Top Left Floating Team Badge with Official Logo */}
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 pointer-events-none">
+          <div
+            className={
+              isMobileLayout
+                ? 'p-2 rounded-2xl bg-studio-950/85 border border-studio-800/80 shadow-xl flex items-center gap-1.5 max-w-[190px]'
+                : 'p-3 sm:p-3.5 rounded-2xl bg-studio-950/85 backdrop-blur-xl border border-studio-800/80 shadow-2xl space-y-1.5 max-w-[280px] sm:max-w-xs'
+            }
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <ConstructorLogo teamId={selectedTeamId} size="sm" />
+              <span
+                className={
+                  isMobileLayout
+                    ? 'text-[10px] font-black uppercase tracking-wider text-white truncate'
+                    : 'text-[10px] font-black uppercase tracking-widest text-studio-400'
+                }
+              >
+                {team.name}
+                {!isMobileLayout && <> · {livery.carModelName}</>}
+              </span>
+            </div>
+            {!isMobileLayout && (
+              <h2 className="font-display text-sm sm:text-base font-black uppercase text-white leading-tight">
+                {team.fullName}
+              </h2>
+            )}
+            <div className="text-[11px] text-studio-300 space-y-0.5 pt-1.5 border-t border-studio-800/60 font-medium">
+              <p className="truncate">⚡ {team.powerUnit}</p>
+              <p className="text-studio-400">
+                {lang === 'vi' ? 'Trụ sở:' : 'Base:'} {team.base}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Right Compact Control Dock (Camera Presets & Interactive Tools) */}
+        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
+          <ShowroomControlDock
+            cameraPreset={cameraPreset}
+            onSelectPreset={handleSelectPreset}
+            autoRotate={autoRotate}
+            onToggleAutoRotate={handleToggleAutoRotate}
+            onResetView={handleResetView}
+            lang={lang}
+            showHotspots={showHotspots}
+            onToggleHotspots={handleToggleHotspots}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
+            isMobileLayout={isMobileLayout}
+            qualityMode={qualityMode}
+            effectiveQuality={qualityTier}
+            onChangeQualityMode={handleSelectQualityMode}
+          />
+        </div>
+
+        {/* ── Three.js WebGL 3D Canvas ── */}
+        <ErrorBoundary
+          fallback={
+            <ShowroomWebGLFallback
+              teamName={team.name}
+              carModelName={livery.carModelName}
+              primaryColor={team.primaryColor}
+              lang={lang}
+            />
+          }
+        >
+          <Suspense fallback={null}>
+            <ShowroomScene
+              selectedTeamId={selectedTeamId}
+              lang={lang}
+              isCanvasActive={isCanvasActive}
+              frameloopMode={getFrameLoopMode(isCanvasActive)}
+              sceneRevision={sceneRevision}
+              activeHotspot={activeHotspot}
+              handleSelectHotspot={handleSelectHotspot}
+              showHotspots={showHotspots}
+              startupSceneKey={startupSceneKey}
+              handleScenePartReady={handleScenePartReady}
+              cameraPreset={cameraPreset}
+              presetTrigger={presetTrigger}
+              autoRotate={autoRotate}
+              startupReady={isSceneUsable}
+              reducedMotion={reducedMotion}
+              enableWheelZoom={enableWheelZoom}
+              zoomTrigger={zoomTrigger}
+              zoomDirection={zoomDirection}
+              onContextStateChange={handleWebGLContextStateChange}
+              isCarReady={isCarReady}
+              isStudioReady={isStudioReady}
+              setUsableSceneKey={setUsableSceneKey}
+              qualityMode={qualityMode}
+              qualityTier={qualityTier}
+              qualityProfile={qualityProfile}
+              onTierChange={handleAdaptiveTierChange}
+            />
+          </Suspense>
+        </ErrorBoundary>
+
+        {!isSceneUsable && !isWebGLContextLost && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-studio-950/35 pointer-events-none">
+            <Suspense fallback={null}>
+              <LazyShowroomLoadingPanel />
+            </Suspense>
+          </div>
+        )}
+
+        {isWebGLContextLost && (
+          <div className="absolute inset-0 z-30">
+            <ShowroomWebGLFallback
+              teamName={team.name}
+              carModelName={livery.carModelName}
+              primaryColor={team.primaryColor}
+              lang={lang}
+            />
+          </div>
+        )}
+
+        {/* ── Floating Prominent Quick HUD (Wheel Mode, Zoom Buttons, Auto-Rotate, Reset, 4-Wall Tour) ── */}
+        <div className="absolute inset-x-0 bottom-0 pb-[env(safe-area-inset-bottom)] pointer-events-none m3c-hud-safe">
+          <ShowroomQuickHUD
+            enableWheelZoom={enableWheelZoom}
+            onToggleWheelZoom={handleToggleWheelZoom}
+            onZoom={handleZoom}
+            onResetView={handleResetView}
+            autoRotate={autoRotate}
+            onToggleAutoRotate={handleToggleAutoRotate}
+            cameraPreset={cameraPreset}
+            onSelectPreset={handleSelectPreset}
+            lang={lang}
+            onOpenSchematic={() => setIsSchematicOpen(true)}
+          />
+        </div>
+
+        {/* ── Slide-Over Technical Details Modal Drawer: Synced with selected team ── */}
+        <HotspotDetailsModal
+          hotspot={activeHotspot}
+          teamId={selectedTeamId}
+          onClose={() => {
+            setActiveHotspot(null);
+            setCameraPreset('overview');
+          }}
+          onSelectHotspot={handleSelectHotspot}
+          lang={lang}
+        />
+
+        {/* ── Interactive 2D CAD Blueprint & Component Livery Comparison Modal ── */}
+        <SchematicComparisonModal
+          isOpen={isSchematicOpen}
+          onClose={() => setIsSchematicOpen(false)}
+          teamId={selectedTeamId}
+          lang={lang}
+          onFocusPart={handleSelectPreset}
+        />
+      </div>
+
+      {/* ── Component 1-6 Interactive Navigation Strip ── */}
+      <HotspotSelectorBar
+        activeHotspot={activeHotspot}
+        onSelectHotspot={handleSelectHotspot}
+        teamId={selectedTeamId}
+        lang={lang}
+      />
+
+      {/* ── Scrollable Technical Overview & Constructor Machine Dossier Below Canvas ── */}
+      <div
+        id="technical-dossier"
+        className="bg-studio-950 text-white border-t border-studio-800 py-12 scroll-mt-14"
+      >
+        <div className="page-container space-y-10">
+          {/* Section Header: Dynamically reflects active team */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-studio-800 pb-6">
+            <div>
+              <div className="flex items-center gap-2">
+                <ConstructorLogo teamId={selectedTeamId} size="sm" />
+                <span className="text-xs font-black uppercase tracking-widest text-f1red">
+                  {lang === 'vi' ? 'Hồ Sơ Kỹ Thuật Đội Đua' : 'Technical Dossier & Machine'}
+                </span>
+              </div>
+              <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-white mt-1 flex items-center gap-3 flex-wrap">
+                <span>{livery.fullName}</span>
+                <span className="text-sm font-bold tracking-wider text-studio-400 font-mono bg-studio-900 border border-studio-800 px-3 py-1 rounded-full">
+                  {livery.carModelName}
+                </span>
+              </h3>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                to={`/teams/${selectedTeamId}?season=2026`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md transition-all cursor-pointer"
+              >
+                <span>{lang === 'vi' ? 'Xem Hồ Sơ Đội' : 'Team Profile'}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-f1red" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Team Drivers, Principal & Technical Details Bar */}
+          <div className="flex flex-wrap items-center gap-4 text-xs text-studio-300 font-mono py-2.5 px-4 rounded-xl bg-studio-900/60 border border-studio-800/80">
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Tay đua: ' : 'Drivers: '}
+              </span>
+              <span className="text-white font-bold">
+                {lang === 'vi' ? livery.driversVi : livery.driversEn}
+              </span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Lãnh đội: ' : 'Principal: '}
+              </span>
+              <span className="text-studio-200">{livery.teamPrincipal}</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Trụ sở: ' : 'Base: '}
+              </span>
+              <span className="text-studio-200">{livery.base}</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-studio-700 hidden sm:block" />
+            <div>
+              <span className="text-studio-500 font-sans">
+                {lang === 'vi' ? 'Tài trợ chính: ' : 'Title Partner: '}
+              </span>
+              <span className="text-amber-300 font-bold">{teamSponsors.primarySponsor}</span>
+            </div>
+          </div>
+
+          {/* 4 Technical Pillars tailored to active team */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Aero */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-red-950/70 border border-red-800/80 flex items-center justify-center text-f1red font-bold text-sm">
+                    01
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Aerodynamics
+                  </span>
+                </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'Khí Động Học & Khung Gầm' : 'Aero & Ground Effect'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi' ? livery.aeroPhilosophyVi : livery.aeroPhilosophyEn}
+                </p>
+              </div>
+            </div>
+
+            {/* 2. Powertrain */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-amber-950/70 border border-amber-800/80 flex items-center justify-center text-amber-400 font-bold text-sm">
+                    02
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Power Unit
+                  </span>
+                </div>
+                <h4 className="font-display text-base font-bold text-white uppercase truncate">
+                  {livery.powerUnit.split(' ')[0]} {livery.powerUnit.split(' ')[1] || 'Hybrid'}
+                </h4>
+                <p className="text-xs text-studio-300 font-mono">{livery.powerUnit}</p>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi' ? livery.powertrainNoteVi : livery.powertrainNoteEn}
+                </p>
+              </div>
+            </div>
+
+            {/* 3. Halo Safety */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-950/70 border border-emerald-800/80 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                    03
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Safety Cell
+                  </span>
+                </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'An Toàn Titan Halo' : 'Titanium Halo Cell'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi'
+                    ? `Khung bảo vệ Titan Grade 5 sơn phối màu ${livery.teamName} chịu lực va chạm tĩnh 12.3 tấn bảo vệ tuyệt đối vùng buồng lái tay đua.`
+                    : `Grade 5 Titanium safety cell finished in ${livery.teamName} livery withstanding 12.3 tonnes of impact force shielding the cockpit.`}
+                </p>
+              </div>
+            </div>
+
+            {/* 4. Pirelli & Brakes */}
+            <div className="p-5 rounded-2xl bg-studio-900/60 border border-studio-800 space-y-2 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-lg bg-sky-950/70 border border-sky-800/80 flex items-center justify-center text-sky-400 font-bold text-sm">
+                    04
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-studio-500 font-mono">
+                    Pirelli & Brakes
+                  </span>
+                </div>
+                <h4 className="font-display text-base font-bold text-white uppercase">
+                  {lang === 'vi' ? 'Lốp Pirelli 18-Inch & Phanh' : '18-Inch Pirelli & Brakes'}
+                </h4>
+                <p className="text-xs text-studio-400 leading-relaxed">
+                  {lang === 'vi'
+                    ? 'Thành lốp mỏng 18 inch kết hợp mâm hợp kim Magiê và đĩa phanh Carbon Brembo đạt 1,000°C khi hãm tốc từ 340 km/h.'
+                    : 'Low-profile rubber minimizes sidewall deflection, paired with Brembo carbon-carbon brake discs glowing red at 1,000°C.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating Back to Top 3D Stage Button */}
+      {showBackToTop && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-2xl bg-f1red/95 hover:bg-f1red text-white shadow-2xl backdrop-blur-md border border-white/20 transition-all hover:scale-110 cursor-pointer animate-fade-in flex items-center gap-2 text-xs font-bold shadow-f1red/30 active:scale-95"
+          aria-label={lang === 'vi' ? 'Lên đầu trang xem xe 3D' : 'Back to 3D Stage'}
+        >
+          <ChevronUp className="w-4 h-4" />
+          <span className="hidden sm:inline">
+            {lang === 'vi' ? 'Lên Đầu Trang 3D' : 'Back to 3D'}
+          </span>
+        </button>
+      )}
+    </div>
+  );
+};
