@@ -6,6 +6,7 @@ import {
 } from '../../../data/championship/standings';
 import {
   FIXTURE_COMPLETED_RACE_2026_R18,
+  FIXTURE_COMPLETED_RACE_2026_R19,
   FIXTURE_SPRINT_RACE_2026_R19,
   FIXTURE_SCHEDULED_RACE_2026_R20,
   FIXTURE_CUTOFF_LOCKED_RACE_2026_R16,
@@ -23,77 +24,77 @@ describe('Championship Data Integrity — Golden Master Deterministic Snapshots'
     expect(result.drivers).toHaveLength(22);
     expect(result.constructors).toHaveLength(11);
 
-    // Baseline leader checks
+    // Baseline leader checks (official verified baseline through Round 18)
     const p1Driver = result.drivers[0];
     expect(p1Driver.driverId).toBe('antonelli');
-    expect(p1Driver.points).toBe(340);
-    expect(p1Driver.wins).toBe(8);
-    expect(p1Driver.podiums).toBe(14);
+    expect(p1Driver.points).toBe(365);
+    expect(p1Driver.wins).toBe(9);
+    expect(p1Driver.podiums).toBe(15);
 
     const p1Constructor = result.constructors[0];
     expect(p1Constructor.teamId).toBe('mercedes');
-    expect(p1Constructor.points).toBe(578);
-    expect(p1Constructor.wins).toBe(11);
-    expect(p1Constructor.podiums).toBe(22);
+    expect(p1Constructor.points).toBe(607);
+    expect(p1Constructor.wins).toBe(12);
+    expect(p1Constructor.podiums).toBe(23);
   });
 
-  it('matches golden master snapshot for post-cutoff Grand Prix (Round 18)', () => {
+  it('matches golden master snapshot for post-cutoff Grand Prix (Round 19)', () => {
     const result = recalculateStandingsFromRaces(
       2026,
-      [FIXTURE_COMPLETED_RACE_2026_R18],
+      [FIXTURE_COMPLETED_RACE_2026_R19],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
 
-    // Russell won R18: baseline points 238 + 25 = 263, wins 3 + 1 = 4, podiums 8 + 1 = 9
+    // Russell won R19: baseline points 242 + 25 = 267, wins 3 + 1 = 4, podiums 8 + 1 = 9
     const russell = result.drivers.find((d) => d.driverId === 'russell')!;
-    expect(russell.points).toBe(263);
+    expect(russell.points).toBe(267);
     expect(russell.wins).toBe(4);
     expect(russell.podiums).toBe(9);
 
-    // Norris got P2: baseline 201 + 18 = 219, podiums 5 + 1 = 6
+    // Norris got P2: baseline 211 + 18 = 229, podiums 5 + 1 = 6
     const norris = result.drivers.find((d) => d.driverId === 'norris')!;
-    expect(norris.points).toBe(219);
+    expect(norris.points).toBe(229);
     expect(norris.podiums).toBe(6);
 
-    // Antonelli got P3: baseline 340 + 15 = 355, podiums 14 + 1 = 15
+    // Antonelli got P3: baseline 365 + 15 = 380, podiums 15 + 1 = 16
     const antonelli = result.drivers.find((d) => d.driverId === 'antonelli')!;
-    expect(antonelli.points).toBe(355);
-    expect(antonelli.podiums).toBe(15);
+    expect(antonelli.points).toBe(380);
+    expect(antonelli.podiums).toBe(16);
 
-    // Mercedes got P1 & P3: baseline 578 + 25 + 15 = 618, wins 11 + 1 = 12, podiums 22 + 2 = 24
+    // Mercedes got P1 & P3: baseline 607 + 25 + 15 = 647, wins 12 + 1 = 13, podiums 23 + 2 = 25
     const mercedes = result.constructors.find((c) => c.teamId === 'mercedes')!;
-    expect(mercedes.points).toBe(618);
-    expect(mercedes.wins).toBe(12);
-    expect(mercedes.podiums).toBe(24);
+    expect(mercedes.points).toBe(647);
+    expect(mercedes.wins).toBe(13);
+    expect(mercedes.podiums).toBe(25);
   });
 
-  it('matches golden master snapshot for Sprint Weekend (Round 18 + Round 19 Sprint)', () => {
+  it('matches golden master snapshot for Sprint Weekend (Round 19 Race + Round 19 Sprint)', () => {
     const result = recalculateStandingsFromRaces(
       2026,
-      [FIXTURE_COMPLETED_RACE_2026_R18, FIXTURE_SPRINT_RACE_2026_R19],
+      [FIXTURE_COMPLETED_RACE_2026_R19, FIXTURE_SPRINT_RACE_2026_R19],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
 
-    // Russell: baseline 238 + R18(25) + R19 Sprint(8) + R19 Race(18) = 289
+    // Russell: baseline 242 + R19 Race 1(25) + R19 Sprint(8) + R19 Race 2(18) = 293
     const russell = result.drivers.find((d) => d.driverId === 'russell')!;
-    expect(russell.points).toBe(289);
+    expect(russell.points).toBe(293);
 
-    // Norris: baseline 201 + R18(18) + R19 Sprint(7) + R19 Race(25) = 251
+    // Norris: baseline 211 + R19 Race 1(18) + R19 Sprint(7) + R19 Race 2(25) = 261
     const norris = result.drivers.find((d) => d.driverId === 'norris')!;
-    expect(norris.points).toBe(251);
+    expect(norris.points).toBe(261);
 
-    // Antonelli: baseline 340 + R18(15) + R19 Sprint(5) = 360
+    // Antonelli: baseline 365 + R19 Race 1(15) + R19 Sprint(5) = 385
     const antonelli = result.drivers.find((d) => d.driverId === 'antonelli')!;
-    expect(antonelli.points).toBe(360);
+    expect(antonelli.points).toBe(385);
 
-    // Piastri: baseline 138 + R18(12) + R19 Sprint(6) = 156
+    // Piastri: baseline 144 + R19 Race 1(12) + R19 Sprint(6) = 162
     const piastri = result.drivers.find((d) => d.driverId === 'piastri')!;
-    expect(piastri.points).toBe(156);
+    expect(piastri.points).toBe(162);
   });
 
-  it('preserves data integrity policy by ignoring races at or below baseline cutoff (Round 16)', () => {
+  it('preserves data integrity policy by ignoring races at or below baseline cutoff (Round 16 and Round 18)', () => {
     const before = recalculateStandingsFromRaces(
       2026,
       [],
@@ -101,18 +102,33 @@ describe('Championship Data Integrity — Golden Master Deterministic Snapshots'
       CONSTRUCTOR_STANDINGS_2026,
     );
 
-    const after = recalculateStandingsFromRaces(
+    const afterR16 = recalculateStandingsFromRaces(
       2026,
       [FIXTURE_CUTOFF_LOCKED_RACE_2026_R16],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
 
-    // Round 16 is at or below cutoff (17), so Antonelli points must NOT be double-counted!
-    expect(after.drivers.find((d) => d.driverId === 'antonelli')?.points).toBe(
+    // Round 16 is at or below cutoff (18), so Antonelli points must NOT be double-counted!
+    expect(afterR16.drivers.find((d) => d.driverId === 'antonelli')?.points).toBe(
       before.drivers.find((d) => d.driverId === 'antonelli')?.points,
     );
-    expect(after.constructors.find((c) => c.teamId === 'mercedes')?.points).toBe(
+    expect(afterR16.constructors.find((c) => c.teamId === 'mercedes')?.points).toBe(
+      before.constructors.find((c) => c.teamId === 'mercedes')?.points,
+    );
+
+    const afterR18 = recalculateStandingsFromRaces(
+      2026,
+      [FIXTURE_COMPLETED_RACE_2026_R18],
+      DRIVER_STANDINGS_2026,
+      CONSTRUCTOR_STANDINGS_2026,
+    );
+
+    // Round 18 is at or below cutoff (18), so Antonelli points must NOT be double-counted!
+    expect(afterR18.drivers.find((d) => d.driverId === 'antonelli')?.points).toBe(
+      before.drivers.find((d) => d.driverId === 'antonelli')?.points,
+    );
+    expect(afterR18.constructors.find((c) => c.teamId === 'mercedes')?.points).toBe(
       before.constructors.find((c) => c.teamId === 'mercedes')?.points,
     );
   });
@@ -120,14 +136,14 @@ describe('Championship Data Integrity — Golden Master Deterministic Snapshots'
   it('guarantees scheduled races with 0 entries cause 0 mutations to standings', () => {
     const before = recalculateStandingsFromRaces(
       2026,
-      [FIXTURE_COMPLETED_RACE_2026_R18],
+      [FIXTURE_COMPLETED_RACE_2026_R19],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );
 
     const after = recalculateStandingsFromRaces(
       2026,
-      [FIXTURE_COMPLETED_RACE_2026_R18, FIXTURE_SCHEDULED_RACE_2026_R20],
+      [FIXTURE_COMPLETED_RACE_2026_R19, FIXTURE_SCHEDULED_RACE_2026_R20],
       DRIVER_STANDINGS_2026,
       CONSTRUCTOR_STANDINGS_2026,
     );

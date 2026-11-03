@@ -11,9 +11,9 @@ import { DetailedRaceResult } from '../../../../types';
 describe('Characterization Baseline — Standings Calculation & Scoring', () => {
   it('correctly calculates WDC and WCC points for post-cutoff Grand Prix finishes', () => {
     const mockRace: DetailedRaceResult = {
-      id: 'race-2026-r18-test',
+      id: 'race-2026-r19-test',
       season: 2026,
-      round: 18,
+      round: 19,
       grandPrix: 'Test Grand Prix',
       officialName: 'Test Grand Prix 2026',
       circuit: 'Test Circuit',
@@ -94,9 +94,9 @@ describe('Characterization Baseline — Standings Calculation & Scoring', () => 
 
     it('counts sprint points exactly once when explicit sprintEntries are present', () => {
       const mockSprintRace: DetailedRaceResult = {
-        id: 'race-2026-r18-sprint',
+        id: 'race-2026-r19-sprint',
         season: 2026,
-        round: 18,
+        round: 19,
         grandPrix: 'Sprint Weekend GP',
         officialName: 'Sprint Weekend GP 2026',
         circuit: 'Sprint Circuit',

@@ -321,7 +321,7 @@ describe('sprint standings: FIA countback for ties', () => {
       {
         id: 'r1',
         season: 2026,
-        round: 18,
+        round: firstRoundAfterBaseline,
         grandPrix: 'GP',
         officialName: 'GP',
         circuit: 'C',

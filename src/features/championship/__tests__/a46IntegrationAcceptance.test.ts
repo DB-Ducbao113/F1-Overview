@@ -636,9 +636,9 @@ describe('Milestone A4.6 Final Integration & Regression Acceptance Suite', () =>
       // FIA Sporting Regulations Art. B2.5.5: Competitors covering >=90% laps are classified.
       // If classified in top 10 (e.g. P9), they receive championship points (2 pts).
       const mockClassifiedDnfRace: DetailedRaceResult = {
-        id: 'race-2026-r18-united-states',
+        id: 'race-2026-r19-mexico',
         season: 2026,
-        round: 18, // Beyond baseline cutoff 17
+        round: 19, // Beyond baseline cutoff 18
         grandPrix: 'United States Grand Prix',
         officialName: 'FORMULA 1 UNITED STATES GRAND PRIX 2026',
         circuit: 'Circuit of the Americas',
@@ -715,9 +715,9 @@ describe('Milestone A4.6 Final Integration & Regression Acceptance Suite', () =>
 
     it('awards 0 points to an unclassified DNF (<90% race distance or status NC)', () => {
       const mockUnclassifiedDnfRace: DetailedRaceResult = {
-        id: 'race-2026-r18-united-states',
+        id: 'race-2026-r19-mexico',
         season: 2026,
-        round: 18,
+        round: 19,
         grandPrix: 'United States Grand Prix',
         officialName: 'FORMULA 1 UNITED STATES GRAND PRIX 2026',
         circuit: 'Circuit of the Americas',
@@ -793,9 +793,9 @@ describe('Milestone A4.6 Final Integration & Regression Acceptance Suite', () =>
 
     it('counts classified DNF in countback finishing histograms while rejecting NC, DNS, and DSQ', () => {
       const mockRace: DetailedRaceResult = {
-        id: 'race-2026-r18',
+        id: 'race-2026-r19',
         season: 2026,
-        round: 18,
+        round: 19,
         grandPrix: 'Test GP',
         officialName: 'Test GP',
         circuit: 'Test Circuit',
@@ -872,9 +872,9 @@ describe('Milestone A4.6 Final Integration & Regression Acceptance Suite', () =>
     it('faithfully preserves official upstream Jolpica points even if non-standard or adjusted', () => {
       // In rain-shortened races (e.g. 50% distance) or steward adjustments, Jolpica provides official points
       const mockShortenedRace: DetailedRaceResult = {
-        id: 'race-2026-r18-shortened',
+        id: 'race-2026-r19-shortened',
         season: 2026,
-        round: 18,
+        round: 19,
         grandPrix: 'Rain GP',
         officialName: 'Rain GP 2026',
         circuit: 'Spa',

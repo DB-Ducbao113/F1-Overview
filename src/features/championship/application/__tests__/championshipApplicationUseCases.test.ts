@@ -23,9 +23,9 @@ describe('Championship Application Layer — Use Cases', () => {
   describe('CalculateSeasonStandingsUseCase', () => {
     it('calculates driver and constructor standings via domain rules', () => {
       const race: DetailedRaceResult = {
-        id: 'race-2026-r18-test',
+        id: 'race-2026-r19-test',
         season: 2026,
-        round: 18,
+        round: 19,
         grandPrix: 'Test GP',
         officialName: 'Test GP 2026',
         circuit: 'Test Circuit',

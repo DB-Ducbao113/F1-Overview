@@ -227,9 +227,13 @@ export async function runA46BrowserAcceptance() {
     console.log('\n[Phase 1.1] Viewport Test: Desktop 1920x1080...');
     await setViewport(cdp, 1920, 1080);
     await cdp.send('Page.navigate', { url: `${BASE_URL}/season/2026?tab=standings` });
-    const standings1920 = await waitForContent(`
+    await sleep(800);
+    const standings1920 = await waitForContent(
+      `
       Boolean(document.querySelector('table, .standings-table, button'))
-    `);
+    `,
+      10000,
+    );
     qaChecks['viewport_1920px'] = standings1920;
     await takeScreenshot(cdp, 'a46-viewport-1920px.png');
 

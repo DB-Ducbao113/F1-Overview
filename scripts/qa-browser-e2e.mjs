@@ -142,7 +142,16 @@ export async function runBrowserFunctionalQA() {
     shell: true,
     stdio: 'ignore',
   });
-  await sleep(1500);
+  // Poll until preview server is listening
+  for (let i = 0; i < 30; i++) {
+    try {
+      const res = await fetch(`http://127.0.0.1:${PORT}/`);
+      if (res.status < 500) break;
+    } catch {
+      await sleep(200);
+    }
+  }
+  await sleep(500);
 
   // Launch Chrome with high-perf GPU flag
   const chrome = spawn(CHROME_PATH, [
@@ -194,9 +203,18 @@ export async function runBrowserFunctionalQA() {
       }
     });
 
+    const requestMap = new Map();
+    cdp.on('Network.requestWillBeSent', (params) => {
+      if (params?.requestId && params?.request?.url) {
+        requestMap.set(params.requestId, params.request.url);
+      }
+    });
+
     cdp.on('Network.loadingFailed', (params) => {
       if (params?.errorText && !params.errorText.includes('net::ERR_ABORTED')) {
-        networkErrors.push({ reason: params.errorText });
+        const url = requestMap.get(params.requestId) || 'unknown';
+        console.log('  [Network.loadingFailed]', url, params.errorText);
+        networkErrors.push({ url, reason: params.errorText });
       }
     });
 

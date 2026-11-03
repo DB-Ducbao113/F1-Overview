@@ -75,7 +75,7 @@ describe('Characterization Baseline — Season Switching, Cutoffs & Source Prior
       expect(BASELINE_CUTOFF_BY_SEASON[2025].completedRounds).toBe(24);
       expect(BASELINE_CUTOFF_BY_SEASON[2025].final).toBe(true);
 
-      expect(BASELINE_CUTOFF_BY_SEASON[2026].completedRounds).toBe(17);
+      expect(BASELINE_CUTOFF_BY_SEASON[2026].completedRounds).toBe(18);
       expect(BASELINE_CUTOFF_BY_SEASON[2026].final).toBe(false);
     });
   });

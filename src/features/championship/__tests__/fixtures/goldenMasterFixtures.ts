@@ -189,6 +189,18 @@ export const FIXTURE_COMPLETED_RACE_2026_R18: DetailedRaceResult = {
   sprintEntries: [],
 };
 
+export const FIXTURE_COMPLETED_RACE_2026_R19: DetailedRaceResult = {
+  ...FIXTURE_COMPLETED_RACE_2026_R18,
+  id: 'race-2026-r19-mexico-city-grand-prix',
+  round: 19,
+  grandPrix: 'Mexico City Grand Prix',
+  officialName: 'Formula 1 Gran Premio de la Ciudad de México 2026',
+  circuit: 'Autódromo Hermanos Rodríguez',
+  location: 'Mexico City',
+  country: 'Mexico',
+  date: '2026-11-01',
+};
+
 export const FIXTURE_SPRINT_RACE_2026_R19: DetailedRaceResult = {
   id: 'race-2026-r19-sao-paulo-grand-prix',
   season: 2026,

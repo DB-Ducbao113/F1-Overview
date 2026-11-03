@@ -1,5 +1,6 @@
 /**
- * THIN COMPATIBILITY LAYER — STANDINGS ENGINE
+ * src/services/standingsEngine.ts
+ * Backward compatibility facade.
  *
  * All pure championship domain logic has been extracted to `src/features/championship/domain/`.
  * This module preserves the public API for existing callers without duplicating business rules.

@@ -16,9 +16,9 @@ describe('Jolpica driver ID normalization', () => {
 
   it('credits new race points to the existing driver and constructor standings', () => {
     const race: DetailedRaceResult = {
-      id: 'race-2026-r18-next-grand-prix',
+      id: 'race-2026-r19-next-grand-prix',
       season: 2026,
-      round: 18,
+      round: 19,
       grandPrix: 'Next Grand Prix',
       officialName: 'Next Grand Prix 2026',
       circuit: 'Next Circuit',
@@ -48,11 +48,11 @@ describe('Jolpica driver ID normalization', () => {
       CONSTRUCTOR_STANDINGS_2026,
     );
 
-    expect(standings.drivers.find((driver) => driver.driverId === 'antonelli')?.points).toBe(365);
+    expect(standings.drivers.find((driver) => driver.driverId === 'antonelli')?.points).toBe(390);
     expect(standings.drivers.filter((driver) => driver.driverId === 'kimi_antonelli')).toHaveLength(
       0,
     );
-    expect(standings.constructors.find((team) => team.teamId === 'mercedes')?.points).toBe(603);
+    expect(standings.constructors.find((team) => team.teamId === 'mercedes')?.points).toBe(632);
   });
 
   it('credits sprint-only results without counting them as Grand Prix wins or podiums', () => {
@@ -106,12 +106,12 @@ describe('Jolpica driver ID normalization', () => {
     const russell = standings.drivers.find((driver) => driver.driverId === 'russell');
     const mercedes = standings.constructors.find((team) => team.teamId === 'mercedes');
 
-    expect(antonelli?.points).toBe(348);
-    expect(antonelli?.wins).toBe(8);
-    expect(antonelli?.podiums).toBe(14);
-    expect(russell?.points).toBe(245);
-    expect(mercedes?.points).toBe(593);
-    expect(mercedes?.wins).toBe(11);
-    expect(mercedes?.podiums).toBe(22);
+    expect(antonelli?.points).toBe(373);
+    expect(antonelli?.wins).toBe(9);
+    expect(antonelli?.podiums).toBe(15);
+    expect(russell?.points).toBe(249);
+    expect(mercedes?.points).toBe(622);
+    expect(mercedes?.wins).toBe(12);
+    expect(mercedes?.podiums).toBe(23);
   });
 });
