@@ -1,14 +1,33 @@
-import { SeasonYear, DetailedRaceResult, F1SyncMetadata } from '../../../../types';
-import { SeasonStandingsEntity } from '../../domain/contracts/domainContracts';
+import {
+  SeasonYear,
+  DetailedRaceResult,
+  F1SyncMetadata,
+  TeamId,
+  DriverStanding,
+  ConstructorStanding,
+} from '../../../../types';
 
 /**
  * APPLICATION LAYER CONTRACTS — CHAMPIONSHIP USE CASES & PORTS
  *
- * Defines the application boundaries, storage repository ports, and external data adapters.
- * Independent of presentation UI and concrete infrastructure implementations.
+ * Defines application boundaries, use case contracts, and presentation identity abstractions.
+ * Strictly decoupled from presentation UI and concrete infrastructure implementations.
  */
 
-// --- 1. Freshness & Provenance Metadata ---
+// --- 1. Presentation Identity Abstraction ---
+
+/**
+ * Presentation team identifier at the application boundary.
+ * Disambiguates known active 2026 constructors from unmapped/unknown historical entrants
+ * without unsafe type assertions or mutating global TeamId.
+ */
+export type PresentationTeamId = TeamId | 'unknown';
+
+export function isKnownPresentationTeam(teamId: string | undefined | null): teamId is TeamId {
+  return typeof teamId === 'string' && teamId !== 'unknown' && teamId !== '';
+}
+
+// --- 2. Freshness & Provenance Metadata ---
 
 export type SyncStatusType = 'idle' | 'syncing' | 'success' | 'error';
 
@@ -20,87 +39,52 @@ export interface DataFreshnessMetadata {
   readonly message?: string;
 }
 
-// --- 2. Data Adapter Ports (Secondary / Driven Ports) ---
+// --- 3. Use Case Results & Contracts ---
 
-export interface AdapterFetchResult<T> {
-  readonly success: boolean;
-  readonly partial?: boolean;
-  readonly data: T;
-  readonly message: string;
-  readonly source: string;
-  readonly statusCode?: number;
+export interface StandingsCalculationResult {
+  readonly drivers: DriverStanding[];
+  readonly constructors: ConstructorStanding[];
 }
 
-export interface IF1RaceResultsAdapter {
-  /**
-   * Fetches full Grand Prix race results from an external API (e.g. Jolpica/Ergast).
-   */
-  fetchRaceResults(
+export interface ICalculateSeasonStandingsUseCase {
+  execute(
     season: SeasonYear,
-    limit?: number,
-    offset?: number,
-  ): Promise<AdapterFetchResult<DetailedRaceResult[]>>;
+    races: DetailedRaceResult[],
+    baseDrivers?: DriverStanding[],
+    baseConstructors?: ConstructorStanding[],
+  ): StandingsCalculationResult;
+  computeAllInitialStandings(
+    resultsMap: Record<SeasonYear, DetailedRaceResult[]>,
+  ): Record<SeasonYear, StandingsCalculationResult>;
 }
-
-export interface IF1SprintResultsAdapter {
-  /**
-   * Fetches Sprint race results from an external timing source (e.g. Jolpica or OpenF1).
-   */
-  fetchSprintResults(
-    season: SeasonYear,
-    limit?: number,
-    offset?: number,
-  ): Promise<AdapterFetchResult<DetailedRaceResult[]>>;
-}
-
-// --- 3. Storage Repository Port (Secondary / Driven Port) ---
-
-export interface IChampionshipStorageRepository {
-  /**
-   * Loads persisted race results across all supported seasons.
-   */
-  loadResults(): Record<SeasonYear, DetailedRaceResult[]>;
-
-  /**
-   * Persists updated season results to underlying client storage.
-   */
-  saveResults(results: Record<SeasonYear, DetailedRaceResult[]>): void;
-
-  /**
-   * Retrieves synchronization metadata.
-   */
-  loadMetadata(): F1SyncMetadata;
-
-  /**
-   * Persists synchronization metadata.
-   */
-  saveMetadata(metadata: F1SyncMetadata): void;
-
-  /**
-   * Clears legacy or stale review artifacts from older application versions.
-   */
-  clearStaleReview(): void;
-}
-
-// --- 4. Use Case Contract (Primary / Driving Port) ---
 
 export interface SyncSeasonUseCaseResult {
   readonly success: boolean;
   readonly partial?: boolean;
   readonly results: DetailedRaceResult[];
-  readonly standings?: SeasonStandingsEntity;
+  readonly standings?: StandingsCalculationResult;
   readonly message: string;
   readonly source: string;
   readonly syncMetadata: F1SyncMetadata;
 }
 
-export interface ISyncSeasonUseCase {
-  /**
-   * Executes season synchronization, reconciling upstream API results with local cache
-   * and recalculating live standings.
-   */
+export interface ISyncSeasonResultsUseCase {
   execute(
     season: SeasonYear,
     existingResults: DetailedRaceResult[],
+    options?: {
+      abortSignal?: AbortSignal;
+      currentResultsMap?: Record<SeasonYear, DetailedRaceResult[]>;
+    },
   ): Promise<SyncSeasonUseCaseResult>;
+}
+
+export interface InitialChampionshipData {
+  readonly detailedResults: Record<SeasonYear, DetailedRaceResult[]>;
+  readonly calculatedStandings: Record<SeasonYear, StandingsCalculationResult>;
+  readonly syncMeta: F1SyncMetadata;
+}
+
+export interface ILoadInitialChampionshipDataUseCase {
+  execute(): InitialChampionshipData;
 }

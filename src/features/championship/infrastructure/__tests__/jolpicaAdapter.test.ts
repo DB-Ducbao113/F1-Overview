@@ -413,6 +413,7 @@ describe('Jolpica API Infrastructure Adapter', () => {
       });
 
       const races = await fetchAllRacesFromJolpica(2026, 'results');
+      expect(fetchCount).toBe(2);
       expect(races).toHaveLength(1);
       expect(races[0].round).toBe('5');
       // Overlapping drivers 11 and 12 must not be duplicated; exactly 22 drivers

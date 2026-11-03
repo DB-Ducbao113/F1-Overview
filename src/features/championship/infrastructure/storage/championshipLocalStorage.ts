@@ -77,4 +77,3 @@ export class ChampionshipLocalStorage implements IChampionshipStorage {
 }
 
 export const championshipStorage = new ChampionshipLocalStorage();
-

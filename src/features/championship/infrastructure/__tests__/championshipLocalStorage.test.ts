@@ -174,4 +174,3 @@ describe('Championship Local Storage Infrastructure Repository', () => {
     });
   });
 });
-
