@@ -17,14 +17,40 @@ import {
 // --- 1. Presentation Identity Abstraction ---
 
 /**
+ * The canonical 11 active constructor identifiers for presentation.
+ * Aligns strictly with the domain TeamId union without WebGL dependencies.
+ */
+export const ACTIVE_PRESENTATION_TEAMS: readonly TeamId[] = [
+  'ferrari',
+  'mclaren',
+  'redbull',
+  'mercedes',
+  'astonmartin',
+  'alpine',
+  'racingbulls',
+  'haas',
+  'williams',
+  'audi',
+  'cadillac',
+] as const;
+
+const ACTIVE_PRESENTATION_TEAM_SET: ReadonlySet<string> = new Set<string>(
+  ACTIVE_PRESENTATION_TEAMS,
+);
+
+/**
  * Presentation team identifier at the application boundary.
- * Disambiguates known active 2026 constructors from unmapped/unknown historical entrants
+ * Disambiguates known active constructors from unmapped/unknown historical entrants
  * without unsafe type assertions or mutating global TeamId.
  */
 export type PresentationTeamId = TeamId | 'unknown';
 
-export function isKnownPresentationTeam(teamId: string | undefined | null): teamId is TeamId {
-  return typeof teamId === 'string' && teamId !== 'unknown' && teamId !== '';
+/**
+ * Sound type guard verifying membership in the canonical set of 11 active TeamIds.
+ * Strictly rejects 'unknown', empty strings, legacy aliases, and arbitrary strings.
+ */
+export function isKnownPresentationTeam(teamId: unknown): teamId is TeamId {
+  return typeof teamId === 'string' && ACTIVE_PRESENTATION_TEAM_SET.has(teamId);
 }
 
 // --- 2. Freshness & Provenance Metadata ---
@@ -75,6 +101,7 @@ export interface ISyncSeasonResultsUseCase {
     options?: {
       abortSignal?: AbortSignal;
       currentResultsMap?: Record<SeasonYear, DetailedRaceResult[]>;
+      isFresh?: () => boolean;
     },
   ): Promise<SyncSeasonUseCaseResult>;
 }

@@ -118,6 +118,8 @@ export async function fetchAllRacesFromJolpica(
   const maxPages = config?.maxPages ?? JOLPICA_MAX_PAGES;
   let offset = 0;
   let pages = 0;
+  let accumulatedEntries = 0;
+  let initialTotal: number | undefined = undefined;
   const raceMap = new Map<number, RawJolpicaRace>();
 
   while (true) {
@@ -134,18 +136,63 @@ export async function fetchAllRacesFromJolpica(
     }
     const data = (await res.json()) as RawJolpicaResponse;
     const races = data?.MRData?.RaceTable?.Races || [];
-    const rawTotal = parseInt(data?.MRData?.total || '0', 10);
+    const rawTotalStr = data?.MRData?.total;
+    const rawTotal = rawTotalStr ? parseInt(rawTotalStr, 10) : NaN;
     const hasValidTotal = Number.isFinite(rawTotal) && rawTotal > 0;
     const safeRawTotal = hasValidTotal ? rawTotal : 0;
 
-    // The cap truncates the season: surface it as partial, never as success.
-    if (pages === 0 && safeRawTotal > limit * maxPages) {
+    // Check offset consistency if provided by API
+    const responseOffsetStr = data?.MRData?.offset;
+    const responseOffset = responseOffsetStr ? parseInt(responseOffsetStr, 10) : NaN;
+    if (Number.isFinite(responseOffset) && responseOffset !== offset) {
       throw new PartialSyncError(
-        `Jolpica ${type} total ${safeRawTotal} exceeds the ${limit * maxPages}-entry page cap`,
-        0,
+        `Jolpica ${type} page returned inconsistent offset ${responseOffset} (expected ${offset})`,
+        pages,
       );
     }
-    const total = hasValidTotal ? Math.min(safeRawTotal, limit * maxPages) : undefined;
+
+    // Set and validate total on initial page
+    if (pages === 0) {
+      if (hasValidTotal) {
+        initialTotal = safeRawTotal;
+        if (safeRawTotal > limit * maxPages) {
+          throw new PartialSyncError(
+            `Jolpica ${type} total ${safeRawTotal} exceeds the ${limit * maxPages}-entry page cap`,
+            0,
+          );
+        }
+      }
+    } else {
+      // Validate total consistency across subsequent pages
+      if (
+        initialTotal !== undefined &&
+        hasValidTotal &&
+        Math.abs(safeRawTotal - initialTotal) > 0
+      ) {
+        if (safeRawTotal < accumulatedEntries) {
+          throw new PartialSyncError(
+            `Jolpica ${type} total fluctuated from ${initialTotal} to ${safeRawTotal} mid-sync`,
+            pages,
+          );
+        }
+      }
+    }
+
+    const total =
+      initialTotal ?? (hasValidTotal ? Math.min(safeRawTotal, limit * maxPages) : undefined);
+
+    const pageResultCount = races.reduce(
+      (sum, r) => sum + (r.Results?.length || 0) + (r.SprintResults?.length || 0),
+      0,
+    );
+
+    // If upstream explicitly declared additional records, an empty page must never be silently accepted
+    if (total !== undefined && offset < total && races.length === 0) {
+      throw new PartialSyncError(
+        `Jolpica ${type} returned unexpected empty batch at offset ${offset} while upstream declared ${total} records`,
+        pages,
+      );
+    }
 
     for (const r of races) {
       const rnd = parseInt(r.round, 10);
@@ -203,17 +250,13 @@ export async function fetchAllRacesFromJolpica(
       }
     }
 
-    const pageResultCount = races.reduce(
-      (sum, r) => sum + (r.Results?.length || 0) + (r.SprintResults?.length || 0),
-      0,
-    );
-
+    accumulatedEntries += pageResultCount;
     pages += 1;
     offset += limit;
 
     if (total !== undefined && pages >= maxPages && offset < total) {
       throw new PartialSyncError(
-        `Jolpica ${type} total ${safeRawTotal} exceeded maximum page capacity (${limit * maxPages})`,
+        `Jolpica ${type} total ${total} exceeded maximum page capacity (${limit * maxPages})`,
         pages,
       );
     }

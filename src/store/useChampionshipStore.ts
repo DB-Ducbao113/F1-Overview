@@ -61,6 +61,7 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
       activeSyncController?.abort();
       activeSyncController = null;
       activeSyncSeason = null;
+      syncGeneration++;
     }
     set({ selectedSeason: season });
   },
@@ -98,6 +99,7 @@ export const useChampionshipStore = create<ChampionshipStoreState>((set, get) =>
       const syncRes = await syncSeasonResultsUseCase.execute(season, currentRaces, {
         abortSignal: abortController.signal,
         currentResultsMap: get().detailedResults,
+        isFresh: () => currentGeneration === syncGeneration && !abortController.signal.aborted,
       });
 
       // Discard stale responses if generation has changed or request was cancelled

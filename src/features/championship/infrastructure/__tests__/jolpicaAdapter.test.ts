@@ -477,6 +477,149 @@ describe('Jolpica API Infrastructure Adapter', () => {
 
       await expect(fetchAllRacesFromJolpica(2026, 'results')).rejects.toThrow(PartialSyncError);
     });
+
+    it('throws PartialSyncError when upstream declared 528 records but unexpectedly returns an empty page after 400 records', async () => {
+      let pageCall = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        pageCall++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+
+        if (offset < 400) {
+          // Pages 1..4 return 100 results each (400 total)
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers(),
+            json: async () => ({
+              MRData: {
+                total: '528',
+                limit: '100',
+                offset: String(offset),
+                RaceTable: {
+                  Races: [
+                    {
+                      round: String(Math.floor(offset / 100) + 1),
+                      raceName: `GP ${Math.floor(offset / 100) + 1}`,
+                      Results: Array.from({ length: 100 }, (_, i) => ({
+                        position: String(i + 1),
+                        Driver: { driverId: `drv_${offset}_${i}` },
+                      })),
+                    },
+                  ],
+                },
+              },
+            }),
+          } as Response;
+        }
+
+        // Page 5 (offset 400) unexpectedly returns an empty list while total is 528
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '528',
+              limit: '100',
+              offset: '400',
+              RaceTable: {
+                Races: [],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      let caught: any;
+      try {
+        await fetchAllRacesFromJolpica(2026, 'results');
+      } catch (err) {
+        caught = err;
+      }
+
+      expect(caught).toBeInstanceOf(PartialSyncError);
+      expect(caught.message).toContain('unexpected empty batch');
+      expect(caught.loadedPages).toBe(4);
+      expect(pageCall).toBe(5);
+    });
+
+    it('throws PartialSyncError when upstream returns an inconsistent offset', async () => {
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              total: '200',
+              limit: '100',
+              // Return wrong offset 0 when offset 100 is requested
+              offset: offset === 100 ? '0' : '0',
+              RaceTable: {
+                Races: [{ round: '1', Results: [{ Driver: { driverId: 'd1' } }] }],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      let caught: any;
+      try {
+        await fetchAllRacesFromJolpica(2026, 'results');
+      } catch (err) {
+        caught = err;
+      }
+
+      expect(caught).toBeInstanceOf(PartialSyncError);
+      expect(caught.message).toContain('inconsistent offset');
+    });
+
+    it('throws PartialSyncError when total fluctuates mid-sync below accumulated records', async () => {
+      let pageCall = 0;
+      globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+        pageCall++;
+        const parsedUrl = new URL(url, 'http://localhost');
+        const offset = parseInt(parsedUrl.searchParams.get('offset') || '0', 10);
+
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({
+            MRData: {
+              // Page 1 says 300, Page 2 says 50 (below the 100 already accumulated)
+              total: offset === 0 ? '300' : '50',
+              limit: '100',
+              offset: String(offset),
+              RaceTable: {
+                Races: [
+                  {
+                    round: String(pageCall),
+                    Results: Array.from({ length: 100 }, (_, i) => ({
+                      position: String(i + 1),
+                      Driver: { driverId: `drv_${offset}_${i}` },
+                    })),
+                  },
+                ],
+              },
+            },
+          }),
+        } as Response;
+      });
+
+      let caught: any;
+      try {
+        await fetchAllRacesFromJolpica(2026, 'results');
+      } catch (err) {
+        caught = err;
+      }
+
+      expect(caught).toBeInstanceOf(PartialSyncError);
+      expect(caught.message).toContain('total fluctuated');
+    });
   });
 
   describe('JolpicaAdapter Class Instance', () => {

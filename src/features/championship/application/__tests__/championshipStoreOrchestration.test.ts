@@ -105,6 +105,65 @@ describe('Championship Store Orchestration & Concurrency Protection', () => {
     expect(useChampionshipStore.getState().selectedSeason).toBe(2024);
   });
 
+  it('safely handles rapid season switching A -> B -> A and discards stale sync responses', async () => {
+    let callCount = 0;
+    vi.spyOn(syncSeasonResultsUseCase, 'execute').mockImplementation(
+      async (season, _races, options) => {
+        callCount++;
+        const currentCall = callCount;
+        if (currentCall === 1) {
+          // First call for season 2024 is artificially delayed
+          await new Promise((r) => setTimeout(r, 60));
+          if (options?.abortSignal?.aborted || (options?.isFresh && !options.isFresh())) {
+            return {
+              success: false,
+              results: [],
+              message: 'Aborted',
+              source: 'Cancelled',
+              syncMetadata: {
+                lastSyncTimestamp: '10:00:00',
+                syncStatus: 'error',
+                source: 'Cancelled',
+                completedRoundsCount: 0,
+              },
+            };
+          }
+        }
+        return {
+          success: true,
+          results: [],
+          message: `Sync ${season} OK`,
+          source: 'Jolpica F1 API',
+          syncMetadata: {
+            lastSyncTimestamp: '10:00:01',
+            syncStatus: 'success',
+            source: 'Jolpica F1 API',
+            completedRoundsCount: 24,
+            message: `Sync ${season} OK`,
+          },
+        };
+      },
+    );
+
+    // 1. User starts sync on 2024
+    const sync1 = useChampionshipStore.getState().syncSeasonData(2024);
+
+    // 2. User rapidly switches to 2026
+    useChampionshipStore.getState().setSelectedSeason(2026);
+
+    // 3. User switches back to 2024 and syncs again
+    useChampionshipStore.getState().setSelectedSeason(2024);
+    const sync2 = useChampionshipStore.getState().syncSeasonData(2024);
+
+    await Promise.all([sync1, sync2]);
+
+    // Store state must reflect the fresh sync, never corrupted by the delayed first sync
+    const state = useChampionshipStore.getState();
+    expect(state.selectedSeason).toBe(2024);
+    expect(state.syncMeta.syncStatus).toBe('success');
+    expect(state.syncMeta.message).toBe('Sync 2024 OK');
+  });
+
   it('updates state on successful synchronization', async () => {
     vi.spyOn(syncSeasonResultsUseCase, 'execute').mockResolvedValueOnce({
       success: true,

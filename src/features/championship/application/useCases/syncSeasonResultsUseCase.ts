@@ -169,19 +169,29 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
     })[season];
   }
 
+  private isCancelledOrStale(options?: {
+    abortSignal?: AbortSignal;
+    isFresh?: () => boolean;
+  }): boolean {
+    if (options?.abortSignal?.aborted) return true;
+    if (options?.isFresh && !options.isFresh()) return true;
+    return false;
+  }
+
   async execute(
     season: SeasonYear,
     existingResults: DetailedRaceResult[],
     options?: {
       abortSignal?: AbortSignal;
       currentResultsMap?: Record<SeasonYear, DetailedRaceResult[]>;
+      isFresh?: () => boolean;
     },
   ): Promise<SyncSeasonUseCaseResult> {
     const fallbackResults =
       existingResults.length > 0 ? existingResults : INITIAL_DETAILED_RESULTS[season] || [];
 
-    // Check pre-execution cancellation
-    if (options?.abortSignal?.aborted) {
+    // Check pre-execution cancellation or stale status
+    if (this.isCancelledOrStale(options)) {
       const cancelledMeta: F1SyncMetadata = {
         lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
           hour: '2-digit',
@@ -209,8 +219,8 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
       const racesApi = await this.api.fetchAllRaces(season, 'results');
 
       // Check cancellation between requests
-      if (options?.abortSignal?.aborted) {
-        throw new DOMException('Sync operation was cancelled', 'AbortError');
+      if (this.isCancelledOrStale(options)) {
+        throw new DOMException('Sync operation was cancelled or superseded', 'AbortError');
       }
 
       let sprintRaces: RawJolpicaRace[] = [];
@@ -224,8 +234,8 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
       }
 
       // Check cancellation before processing
-      if (options?.abortSignal?.aborted) {
-        throw new DOMException('Sync operation was cancelled', 'AbortError');
+      if (this.isCancelledOrStale(options)) {
+        throw new DOMException('Sync operation was cancelled or superseded', 'AbortError');
       }
 
       if (racesApi.length > 0 || sprintRaces.length > 0) {
@@ -239,8 +249,8 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
         );
 
         // Check cancellation before persistence
-        if (options?.abortSignal?.aborted) {
-          throw new DOMException('Sync operation was cancelled', 'AbortError');
+        if (this.isCancelledOrStale(options)) {
+          throw new DOMException('Sync operation was cancelled or superseded', 'AbortError');
         }
 
         // 2. Recalculate standings for this season
@@ -261,14 +271,19 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
           message: `Đã đồng bộ ${syncedResults.length} chặng, gồm cả điểm Sprint nếu có, từ Jolpica.${sprintSyncWarning}`,
         };
 
-        // 4. Persist updated results and metadata to storage
-        if (options?.currentResultsMap) {
-          const nextResultsMap = {
-            ...options.currentResultsMap,
-            [season]: syncedResults,
-          };
-          this.storage.persistRawDetailedResults(nextResultsMap);
+        // 4. Persist updated results and metadata to storage ONLY IF STILL FRESH
+        if (this.isCancelledOrStale(options)) {
+          throw new DOMException('Sync operation was cancelled or superseded', 'AbortError');
         }
+
+        const stored = this.storage.loadRawDetailedResults() || INITIAL_DETAILED_RESULTS;
+        const nextResultsMap: Record<SeasonYear, DetailedRaceResult[]> = {
+          ...INITIAL_DETAILED_RESULTS,
+          ...stored,
+          ...(options?.currentResultsMap || {}),
+          [season]: syncedResults,
+        };
+        this.storage.persistRawDetailedResults(nextResultsMap);
         this.storage.persistSyncMetadata(syncMeta);
 
         return {
@@ -281,7 +296,11 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
         };
       }
     } catch (err: any) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
+      if (
+        this.isCancelledOrStale(options) ||
+        (err instanceof DOMException && err.name === 'AbortError') ||
+        (err instanceof Error && err.name === 'AbortError')
+      ) {
         const cancelledMeta: F1SyncMetadata = {
           lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
             hour: '2-digit',
@@ -295,6 +314,7 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
           completedRoundsCount: fallbackResults.length,
           message: 'Đồng bộ đã bị hủy.',
         };
+        // CRITICAL: NEVER write to storage when cancelled or stale
         return {
           success: false,
           results: fallbackResults,
@@ -335,6 +355,29 @@ export class SyncSeasonResultsUseCase implements ISyncSeasonResultsUseCase {
     }
 
     // Empty upstream payload fallback
+    if (this.isCancelledOrStale(options)) {
+      const cancelledMeta: F1SyncMetadata = {
+        lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          day: '2-digit',
+          month: '2-digit',
+        }),
+        syncStatus: 'error',
+        source: 'Cancelled',
+        completedRoundsCount: fallbackResults.length,
+        message: 'Đồng bộ đã bị hủy.',
+      };
+      return {
+        success: false,
+        results: fallbackResults,
+        message: 'Đồng bộ đã bị hủy.',
+        source: 'Cancelled',
+        syncMetadata: cancelledMeta,
+      };
+    }
+
     const emptyMeta: F1SyncMetadata = {
       lastSyncTimestamp: new Date().toLocaleTimeString('vi-VN', {
         hour: '2-digit',
