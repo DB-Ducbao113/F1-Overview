@@ -55,5 +55,17 @@ scratch/
 .prettiercache
 .vite/
 
+# Local shadow state & test runner artifacts
+.results-engine/
+benchmark-artifacts/
+
+# Browser QA temporary profiles & generated screenshots
+.chrome-profile/
+chrome-profile*/
+chrome-user-data*/
+playwright-report/
+test-results/
+browser_*.png
+
 # Local source assets (not shipped or committed)
 source-assets/

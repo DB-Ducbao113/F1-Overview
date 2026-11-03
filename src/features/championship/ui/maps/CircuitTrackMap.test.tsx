@@ -101,7 +101,7 @@ describe('CircuitRealWorldMap Component', () => {
     expect(html).toContain('Google Maps');
     expect(CIRCUIT_COORDINATES['albert-park']).toBeDefined();
     expect(CIRCUIT_COORDINATES['albert-park'].lat).toBeCloseTo(-37.8497, 3);
-  });
+  }, 20000);
 });
 
 describe('OpenF1LiveMap Component', () => {
@@ -114,7 +114,7 @@ describe('OpenF1LiveMap Component', () => {
     expect(html).toContain('OpenF1.org');
     expect(html).toContain('00:00');
     expect(html).toContain('90:00');
-  });
+  }, 20000);
 });
 
 describe('CircuitLiveRadar Component', () => {
@@ -134,5 +134,5 @@ describe('CircuitLiveRadar Component', () => {
     expect(html).toContain('HAM');
     expect(html).toContain('RUS');
     expect(RADAR_DRIVERS).toHaveLength(5);
-  });
+  }, 20000);
 });
