@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigationStore } from '../../store/useNavigationStore';
 import { t } from '../../i18n/translations';
-import { Menu, X, Trophy, Home, Box } from 'lucide-react';
+import { Menu, X, Trophy, Home, Box, Cpu } from 'lucide-react';
 import { OfficialBrandLogo } from '../common/OfficialBrandLogo';
 
 export const Navbar: React.FC = React.memo(() => {
@@ -22,6 +22,7 @@ export const Navbar: React.FC = React.memo(() => {
         label: strings.championship,
         icon: <Trophy className="w-4 h-4" />,
       },
+      { id: 'engineering', path: '/engineering', label: 'Engineering', icon: <Cpu className="w-4 h-4" /> },
       {
         id: 'collection',
         path: '/showroom',
@@ -64,7 +65,9 @@ export const Navbar: React.FC = React.memo(() => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
-                  : item.id === 'championship'
+                  : item.id === 'engineering'
+                    ? location.pathname.startsWith('/engineering')
+                    : item.id === 'championship'
                     ? location.pathname.startsWith('/season') ||
                       location.pathname.startsWith('/teams') ||
                       location.pathname.startsWith('/drivers')
@@ -143,7 +146,9 @@ export const Navbar: React.FC = React.memo(() => {
               const isActive =
                 item.id === 'home'
                   ? location.pathname === '/'
-                  : item.id === 'championship'
+                  : item.id === 'engineering'
+                    ? location.pathname.startsWith('/engineering')
+                    : item.id === 'championship'
                     ? location.pathname.startsWith('/season') ||
                       location.pathname.startsWith('/teams') ||
                       location.pathname.startsWith('/drivers')
