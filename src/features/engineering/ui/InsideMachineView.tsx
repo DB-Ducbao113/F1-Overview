@@ -55,7 +55,7 @@ export default function InsideMachineView() {
     fetch(modelUrl, { method: 'HEAD', signal: controller.signal })
       .then((response) => {
         const contentType = response.headers.get('content-type') ?? '';
-        if (!response.ok || /text\\/html/i.test(contentType)) {
+        if (!response.ok || contentType.toLowerCase().includes('text/html')) {
           throw new Error('R4.5 binary model not installed');
         }
         if (!controller.signal.aborted) setSourceReady(true);
