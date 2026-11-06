@@ -1,0 +1,34 @@
+name: Engineering V2 Build Validation
+
+on:
+  push:
+    branches:
+      - feat/engineering-inside-machine-v2
+    paths:
+      - 'src/features/engineering/**'
+      - 'src/App.tsx'
+      - 'src/components/layout/Navbar.tsx'
+      - '.github/workflows/engineering-v2-validation.yml'
+  pull_request:
+    paths:
+      - 'src/features/engineering/**'
+      - 'src/App.tsx'
+      - 'src/components/layout/Navbar.tsx'
+      - '.github/workflows/engineering-v2-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  engineering-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run build:check
