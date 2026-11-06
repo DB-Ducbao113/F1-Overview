@@ -15,7 +15,6 @@ const SYSTEMS = [
   { id: 'FLOOR_DIFFUSER', label: 'Floor & diffuser', category: 'Underbody', description: 'The floor and diffuser shape the pressure field beneath and behind the vehicle.' },
   { id: 'REAR_WING', label: 'Rear wing', category: 'Rear aerodynamics', description: 'The rear wing helps determine downforce and drag, working with the rest of the aerodynamic package.' },
 ] as const;
-type PartId = (typeof SYSTEMS)[number]['id'];
 type Quality = 'high' | 'balanced' | 'performance';
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
