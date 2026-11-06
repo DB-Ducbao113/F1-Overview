@@ -4,19 +4,59 @@ import { ContactShadows, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 const PARTS = [
-  { id: 'FRONT_LEFT_WHEEL', node: 'PEDS_FRONT_LEFT_WHEEL', offset: [0.1, 0.72, 0.08], name: 'Front-left wheel' },
-  { id: 'FRONT_RIGHT_WHEEL', node: 'PEDS_FRONT_RIGHT_WHEEL', offset: [0.1, -0.72, 0.08], name: 'Front-right wheel' },
-  { id: 'REAR_LEFT_WHEEL', node: 'PEDS_REAR_LEFT_WHEEL', offset: [-0.1, 0.72, 0.08], name: 'Rear-left wheel' },
-  { id: 'REAR_RIGHT_WHEEL', node: 'PEDS_REAR_RIGHT_WHEEL', offset: [-0.1, -0.72, 0.08], name: 'Rear-right wheel' },
+  {
+    id: 'FRONT_LEFT_WHEEL',
+    node: 'PEDS_FRONT_LEFT_WHEEL',
+    offset: [0.1, 0.72, 0.08],
+    name: 'Front-left wheel',
+  },
+  {
+    id: 'FRONT_RIGHT_WHEEL',
+    node: 'PEDS_FRONT_RIGHT_WHEEL',
+    offset: [0.1, -0.72, 0.08],
+    name: 'Front-right wheel',
+  },
+  {
+    id: 'REAR_LEFT_WHEEL',
+    node: 'PEDS_REAR_LEFT_WHEEL',
+    offset: [-0.1, 0.72, 0.08],
+    name: 'Rear-left wheel',
+  },
+  {
+    id: 'REAR_RIGHT_WHEEL',
+    node: 'PEDS_REAR_RIGHT_WHEEL',
+    offset: [-0.1, -0.72, 0.08],
+    name: 'Rear-right wheel',
+  },
   { id: 'FRONT_WING', node: 'PEDS_FRONT_WING', offset: [0.92, 0, 0.14], name: 'Front wing' },
   { id: 'REAR_WING', node: 'PEDS_REAR_WING', offset: [-0.86, 0, 0.28], name: 'Rear wing' },
-  { id: 'COCKPIT_HALO', node: 'PEDS_R42_COCKPIT_HALO', offset: [0, 0, 0.55], name: 'Cockpit & halo' },
-  { id: 'LEFT_SIDEPOD', node: 'PEDS_R42_LEFT_SIDEPOD', offset: [0, 0.75, 0.1], name: 'Left sidepod' },
-  { id: 'RIGHT_SIDEPOD', node: 'PEDS_R42_RIGHT_SIDEPOD', offset: [0, -0.75, 0.1], name: 'Right sidepod' },
-  { id: 'FLOOR_DIFFUSER', node: 'PEDS_R42_FLOOR_DIFFUSER', offset: [0, 0, -0.54], name: 'Floor / diffuser' },
+  {
+    id: 'COCKPIT_HALO',
+    node: 'PEDS_R42_COCKPIT_HALO',
+    offset: [0, 0, 0.55],
+    name: 'Cockpit & halo',
+  },
+  {
+    id: 'LEFT_SIDEPOD',
+    node: 'PEDS_R42_LEFT_SIDEPOD',
+    offset: [0, 0.75, 0.1],
+    name: 'Left sidepod',
+  },
+  {
+    id: 'RIGHT_SIDEPOD',
+    node: 'PEDS_R42_RIGHT_SIDEPOD',
+    offset: [0, -0.75, 0.1],
+    name: 'Right sidepod',
+  },
+  {
+    id: 'FLOOR_DIFFUSER',
+    node: 'PEDS_R42_FLOOR_DIFFUSER',
+    offset: [0, 0, -0.54],
+    name: 'Floor / diffuser',
+  },
 ] as const;
 
-type PartId = typeof PARTS[number]['id'];
+type PartId = (typeof PARTS)[number]['id'];
 type ComponentDefinition = {
   node: string;
   parentAssemblyId: string;
@@ -24,7 +64,14 @@ type ComponentDefinition = {
   animationOrder: number;
 };
 
-type Props = { progress: number; selected: PartId | null; blueprint: boolean; isolate: boolean; quality: 'high' | 'balanced' | 'performance'; modelUrl: string };
+type Props = {
+  progress: number;
+  selected: PartId | null;
+  blueprint: boolean;
+  isolate: boolean;
+  quality: 'high' | 'balanced' | 'performance';
+  modelUrl: string;
+};
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 const ease = (t: number) => t * t * (3 - 2 * t);
@@ -38,13 +85,18 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
   useEffect(() => {
     const controller = new AbortController();
     fetch('/models/engineering/assembly-manifest-r4-5.json', { signal: controller.signal })
-      .then((response) => { if (!response.ok) throw new Error('Assembly metadata unavailable'); return response.json(); })
+      .then((response) => {
+        if (!response.ok) throw new Error('Assembly metadata unavailable');
+        return response.json();
+      })
       .then((manifest: { components?: ComponentDefinition[] }) => {
         if (!controller.signal.aborted && Array.isArray(manifest.components)) {
           setComponents(manifest.components);
         }
       })
-      .catch(() => { /* Assembly-level animation remains available without optional metadata. */ });
+      .catch(() => {
+        /* Assembly-level animation remains available without optional metadata. */
+      });
     return () => controller.abort();
   }, []);
   const materials = useMemo(() => new Map<THREE.Mesh, THREE.Material | THREE.Material[]>(), []);
@@ -63,7 +115,9 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
       }
     });
     return () => {
-      materials.forEach((material, mesh) => { mesh.material = material; });
+      materials.forEach((material, mesh) => {
+        mesh.material = material;
+      });
       materials.clear();
     };
   }, [scene, materials, components]);
@@ -72,12 +126,22 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
     const generated: THREE.Material[] = [];
     materials.forEach((material, mesh) => {
       if (blueprint) {
-        const next = new THREE.MeshBasicMaterial({ color: '#7fa8bb', wireframe: true, transparent: true, opacity: 0.78 });
+        const next = new THREE.MeshBasicMaterial({
+          color: '#7fa8bb',
+          wireframe: true,
+          transparent: true,
+          opacity: 0.78,
+        });
         mesh.material = next;
         generated.push(next);
       } else mesh.material = material;
     });
-    return () => { materials.forEach((material, mesh) => { mesh.material = material; }); generated.forEach((m) => m.dispose()); };
+    return () => {
+      materials.forEach((material, mesh) => {
+        mesh.material = material;
+      });
+      generated.forEach((m) => m.dispose());
+    };
   }, [blueprint, materials, scene]);
 
   useFrame(() => {
@@ -100,7 +164,9 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
       const origin = originals.current.get(component.node);
       if (!object || !origin) return;
       const focus = component.parentAssemblyId === selected;
-      const separation = focus ? ease(clamp((progress - 0.25 - component.animationOrder * 0.045) / 0.4)) : 0;
+      const separation = focus
+        ? ease(clamp((progress - 0.25 - component.animationOrder * 0.045) / 0.4))
+        : 0;
       object.position.set(
         origin.x + component.explodedOffset[0] * separation,
         origin.y + component.explodedOffset[1] * separation,
@@ -117,7 +183,11 @@ export default function InsideMachineScene(props: Props) {
     <Canvas
       dpr={props.quality === 'high' ? [1, 2] : props.quality === 'balanced' ? [1, 1.5] : [1, 1]}
       camera={{ position: [4.8, 4.2, 2.7], fov: 36, near: 0.05, far: 150 }}
-      gl={{ antialias: props.quality !== 'performance', powerPreference: 'high-performance', alpha: true }}
+      gl={{
+        antialias: props.quality !== 'performance',
+        powerPreference: 'high-performance',
+        alpha: true,
+      }}
       style={{ width: '100%', height: '100%' }}
     >
       <color attach="background" args={[props.blueprint ? '#e9f0f2' : '#0a111b']} />
@@ -127,8 +197,24 @@ export default function InsideMachineScene(props: Props) {
       <directionalLight position={[-5, -2, 4]} intensity={2.4} color="#ff6740" />
       <directionalLight position={[-2, 5, -6]} intensity={2.1} color="#8ac6ff" />
       <Vehicle {...props} />
-      {props.quality === 'high' && !props.blueprint && <ContactShadows opacity={0.28} scale={9} blur={2.5} far={5} resolution={256} position={[0, -0.65, 0]} />}
-      <OrbitControls makeDefault enablePan={false} minDistance={3} maxDistance={12} enableDamping dampingFactor={0.08} />
+      {props.quality === 'high' && !props.blueprint && (
+        <ContactShadows
+          opacity={0.28}
+          scale={9}
+          blur={2.5}
+          far={5}
+          resolution={256}
+          position={[0, -0.65, 0]}
+        />
+      )}
+      <OrbitControls
+        makeDefault
+        enablePan={false}
+        minDistance={3}
+        maxDistance={12}
+        enableDamping
+        dampingFactor={0.08}
+      />
     </Canvas>
   );
 }

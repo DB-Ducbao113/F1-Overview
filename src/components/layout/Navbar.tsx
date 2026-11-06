@@ -22,7 +22,12 @@ export const Navbar: React.FC = React.memo(() => {
         label: strings.championship,
         icon: <Trophy className="w-4 h-4" />,
       },
-      { id: 'engineering', path: '/engineering', label: 'Engineering', icon: <Cpu className="w-4 h-4" /> },
+      {
+        id: 'engineering',
+        path: '/engineering',
+        label: 'Engineering',
+        icon: <Cpu className="w-4 h-4" />,
+      },
       {
         id: 'collection',
         path: '/showroom',
@@ -68,11 +73,11 @@ export const Navbar: React.FC = React.memo(() => {
                   : item.id === 'engineering'
                     ? location.pathname.startsWith('/engineering')
                     : item.id === 'championship'
-                    ? location.pathname.startsWith('/season') ||
-                      location.pathname.startsWith('/teams') ||
-                      location.pathname.startsWith('/drivers')
-                    : location.pathname.startsWith('/showroom') ||
-                      location.pathname.startsWith('/gallery');
+                      ? location.pathname.startsWith('/season') ||
+                        location.pathname.startsWith('/teams') ||
+                        location.pathname.startsWith('/drivers')
+                      : location.pathname.startsWith('/showroom') ||
+                        location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}
@@ -149,11 +154,11 @@ export const Navbar: React.FC = React.memo(() => {
                   : item.id === 'engineering'
                     ? location.pathname.startsWith('/engineering')
                     : item.id === 'championship'
-                    ? location.pathname.startsWith('/season') ||
-                      location.pathname.startsWith('/teams') ||
-                      location.pathname.startsWith('/drivers')
-                    : location.pathname.startsWith('/showroom') ||
-                      location.pathname.startsWith('/gallery');
+                      ? location.pathname.startsWith('/season') ||
+                        location.pathname.startsWith('/teams') ||
+                        location.pathname.startsWith('/drivers')
+                      : location.pathname.startsWith('/showroom') ||
+                        location.pathname.startsWith('/gallery');
               return (
                 <Link
                   key={item.id}

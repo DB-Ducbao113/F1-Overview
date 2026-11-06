@@ -166,7 +166,8 @@ export const App: React.FC = () => {
       <F1StartLightsPreloader />
 
       {/* ── 3D Aerodynamic Wind Tunnel Telemetry Particle Stream ── */}
-      {!location.pathname.startsWith('/showroom') && !location.pathname.startsWith('/engineering') && <F1SpeedStream />}
+      {!location.pathname.startsWith('/showroom') &&
+        !location.pathname.startsWith('/engineering') && <F1SpeedStream />}
 
       {/* ── D2. Film Grain Overlay (Cinematic Texture) ── */}
       <div
@@ -219,7 +220,10 @@ export const App: React.FC = () => {
               <Route path="/season/:year/race/:round" element={<RaceRoute />} />
               <Route path="/showroom" element={<ShowroomView />} />
               <Route path="/engineering" element={<InsideMachineView />} />
-              <Route path="/engineering/inside-the-machine" element={<Navigate to="/engineering" replace />} />
+              <Route
+                path="/engineering/inside-the-machine"
+                element={<Navigate to="/engineering" replace />}
+              />
               <Route path="/gallery" element={<Navigate to="/showroom" replace />} />
               <Route path="/teams/:teamId" element={<TeamDetailPage />} />
               <Route path="/drivers/:driverId" element={<DriverDetailPage />} />
