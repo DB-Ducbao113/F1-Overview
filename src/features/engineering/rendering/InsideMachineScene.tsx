@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ContactShadows, Environment, OrbitControls, useGLTF } from '@react-three/drei';
+import { ContactShadows, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 export const PARTS = [
@@ -93,8 +93,7 @@ export default function InsideMachineScene(props: Props) {
       <directionalLight position={[-5, -2, 4]} intensity={2.4} color="#ff6740" />
       <directionalLight position={[-2, 5, -6]} intensity={2.1} color="#8ac6ff" />
       <Vehicle {...props} />
-      {props.quality === 'high' && !props.blueprint && <ContactShadows opacity={0.28} scale={9} blur={2.5} far={5} resolution={256} position={[0, 0, -1.1]} />}
-      {props.quality === 'high' && <Environment preset="city" environmentIntensity={0.5} />}
+      {props.quality === 'high' && !props.blueprint && <ContactShadows opacity={0.28} scale={9} blur={2.5} far={5} resolution={256} position={[0, -0.65, 0]} />}
       <OrbitControls makeDefault enablePan={false} minDistance={3} maxDistance={12} enableDamping dampingFactor={0.08} />
     </Canvas>
   );
