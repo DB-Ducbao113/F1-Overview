@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import { R45_COMPONENTS } from '../data/r45Components';
 import {
   assemblyWeight,
   componentWeight,
-  isMotionPart,
   poseFromOrigin,
   type Vec3,
 } from '../domain/assemblyMotion';
@@ -27,17 +27,9 @@ const PARTS = [
   { id: 'FLOOR_DIFFUSER', node: 'PEDS_R42_FLOOR_DIFFUSER', offset: [0, 0, -0.54] },
 ] as const;
 
-type PartId = (typeof PARTS)[number]['id'];
-type ComponentDefinition = {
-  node: string;
-  parentAssemblyId: string;
-  explodedOffset: Vec3;
-  animationOrder: number;
-};
-
 type Props = {
   progress: number;
-  selected: PartId | null;
+  selected: string | null;
   blueprint: boolean;
   isolate: boolean;
   quality: 'high' | 'balanced' | 'performance';
@@ -68,37 +60,6 @@ function Vehicle({
   const gltf = useGLTF(modelUrl);
   // Clone the scene hierarchy, not its geometry, to isolate runtime transforms.
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
-  const [components, setComponents] = useState<ComponentDefinition[]>([]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/models/engineering/assembly-manifest-r4-5.json', {
-      signal: controller.signal,
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error('Assembly metadata unavailable');
-        return response.json();
-      })
-      .then((manifest: { components?: unknown[] }) => {
-        if (controller.signal.aborted || !Array.isArray(manifest.components)) return;
-        const valid = manifest.components.filter((component): component is ComponentDefinition => {
-          if (!component || typeof component !== 'object') return false;
-          const value = component as Partial<ComponentDefinition>;
-          return (
-            isMotionPart({ node: value.node, offset: value.explodedOffset }) &&
-            typeof value.parentAssemblyId === 'string' &&
-            typeof value.animationOrder === 'number' &&
-            Number.isFinite(value.animationOrder)
-          );
-        });
-        setComponents(valid);
-      })
-      .catch(() => {
-        // The ten external assemblies still animate if the optional fine-grained manifest is missing.
-      });
-    return () => controller.abort();
-  }, []);
-
   const baseMaterials = useMemo(() => {
     const originals = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
     scene.traverse((object) => {
@@ -158,21 +119,13 @@ function Vehicle({
 
   const fineParts = useMemo<MotionNode[]>(
     () =>
-      components.flatMap((component) => {
-        const object = scene.getObjectByName(component.node);
+      R45_COMPONENTS.flatMap(([node, assemblyId, offset, animationOrder]) => {
+        const object = scene.getObjectByName(node);
         return object
-          ? [
-              {
-                object,
-                origin: initialPosition(object),
-                offset: component.explodedOffset,
-                assemblyId: component.parentAssemblyId,
-                animationOrder: component.animationOrder,
-              },
-            ]
+          ? [{ object, origin: initialPosition(object), offset, assemblyId, animationOrder }]
           : [];
       }),
-    [components, scene],
+    [scene],
   );
 
   // In isolate mode, remove the central chassis from the inspection silhouette.
@@ -205,7 +158,12 @@ function Vehicle({
 
     if (chassis) chassis.visible = !isolate;
     authoredInternals.forEach((object) => {
-      object.visible = !isolate;
+      object.visible =
+        !isolate ||
+        fineParts.some((entry) =>
+          entry.assemblyId === selected &&
+          (entry.object === object || object.children.includes(entry.object)),
+        );
     });
   });
 
