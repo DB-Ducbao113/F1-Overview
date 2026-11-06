@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const PARTS = [
+const PARTS = [
   { id: 'FRONT_LEFT_WHEEL', node: 'PEDS_FRONT_LEFT_WHEEL', offset: [0.1, 0.72, 0.08], name: 'Front-left wheel' },
   { id: 'FRONT_RIGHT_WHEEL', node: 'PEDS_FRONT_RIGHT_WHEEL', offset: [0.1, -0.72, 0.08], name: 'Front-right wheel' },
   { id: 'REAR_LEFT_WHEEL', node: 'PEDS_REAR_LEFT_WHEEL', offset: [-0.1, 0.72, 0.08], name: 'Rear-left wheel' },
