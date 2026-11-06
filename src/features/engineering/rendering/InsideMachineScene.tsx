@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -17,6 +17,13 @@ export const PARTS = [
 ] as const;
 
 type PartId = typeof PARTS[number]['id'];
+type ComponentDefinition = {
+  node: string;
+  parentAssemblyId: string;
+  explodedOffset: [number, number, number];
+  animationOrder: number;
+};
+
 type Props = { progress: number; selected: PartId | null; blueprint: boolean; isolate: boolean; quality: 'high' | 'balanced' | 'performance'; modelUrl: string };
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -26,13 +33,27 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
   const gltf = useGLTF(modelUrl);
   const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const originals = useRef(new Map<string, THREE.Vector3>());
+  const [components, setComponents] = useState<ComponentDefinition[]>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/models/engineering/assembly-manifest-r4-5.json', { signal: controller.signal })
+      .then((response) => { if (!response.ok) throw new Error('Assembly metadata unavailable'); return response.json(); })
+      .then((manifest: { components?: ComponentDefinition[] }) => {
+        if (!controller.signal.aborted && Array.isArray(manifest.components)) {
+          setComponents(manifest.components);
+        }
+      })
+      .catch(() => { /* Assembly-level animation remains available without optional metadata. */ });
+    return () => controller.abort();
+  }, []);
   const materials = useMemo(() => new Map<THREE.Mesh, THREE.Material | THREE.Material[]>(), []);
 
   useEffect(() => {
     originals.current.clear();
-    PARTS.forEach((part) => {
-      const object = scene.getObjectByName(part.node);
-      if (object) originals.current.set(part.node, object.position.clone());
+    [...PARTS.map((part) => part.node), ...components.map((part) => part.node)].forEach((name) => {
+      const object = scene.getObjectByName(name);
+      if (object) originals.current.set(name, object.position.clone());
     });
     scene.traverse((object) => {
       if (object instanceof THREE.Mesh) {
@@ -45,7 +66,7 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
       materials.forEach((material, mesh) => { mesh.material = material; });
       materials.clear();
     };
-  }, [scene, materials]);
+  }, [scene, materials, components]);
 
   useEffect(() => {
     const generated: THREE.Material[] = [];
@@ -72,6 +93,19 @@ function Vehicle({ progress, selected, blueprint, isolate, modelUrl }: Omit<Prop
         origin.z + part.offset[2] * emphasis,
       );
       object.visible = !isolate || !selected || selected === part.id;
+    });
+
+    components.forEach((component) => {
+      const object = scene.getObjectByName(component.node);
+      const origin = originals.current.get(component.node);
+      if (!object || !origin) return;
+      const focus = component.parentAssemblyId === selected;
+      const separation = focus ? ease(clamp((progress - 0.25 - component.animationOrder * 0.045) / 0.4)) : 0;
+      object.position.set(
+        origin.x + component.explodedOffset[0] * separation,
+        origin.y + component.explodedOffset[1] * separation,
+        origin.z + component.explodedOffset[2] * separation,
+      );
     });
   });
 
