@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { R45_COMPONENTS } from '../data/r45Components';
 import {
   assemblyWeight,
   clamp01,
@@ -35,7 +36,9 @@ describe('R4.5 assembly motion contract', () => {
     const back = poseFromOrigin(origin, offset, assemblyWeight(0, 0, 10));
     expect(initial).toEqual(origin);
     expect(back).toEqual(initial);
-    expect(final).toEqual([1.35, 0.45, -1.55]);
+    expect(final[0]).toBeCloseTo(1.35, 10);
+    expect(final[1]).toBeCloseTo(0.45, 10);
+    expect(final[2]).toBeCloseTo(-1.55, 10);
     expect(poseFromOrigin(origin, offset, assemblyWeight(0.5, 0, 10))).toEqual(
       poseFromOrigin(origin, offset, assemblyWeight(0.5, 0, 10)),
     );
@@ -53,6 +56,14 @@ describe('R4.5 assembly motion contract', () => {
     expect(clamp01(Number.POSITIVE_INFINITY)).toBe(0);
     expect(clamp01(-100)).toBe(0);
     expect(clamp01(200)).toBe(1);
+  });
+
+  it('keeps all 65 unique source-authored component paths in the V2 contract', () => {
+    expect(R45_COMPONENTS).toHaveLength(65);
+    const nodes = R45_COMPONENTS.map(([name]) => name);
+    expect(new Set(nodes).size).toBe(65);
+    expect(R45_COMPONENTS.filter(([, assembly]) => assembly === 'POWERTRAIN')).toHaveLength(5);
+    expect(R45_COMPONENTS.filter(([, assembly]) => assembly === 'FRONT_LEFT_WHEEL')).toHaveLength(7);
   });
 
   it('rejects malformed part metadata before animation', () => {
