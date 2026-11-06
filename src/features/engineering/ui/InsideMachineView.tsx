@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { Box, ChevronLeft, ChevronRight, CircleHelp, Crosshair, Layers, RotateCcw, ScanLine, SlidersHorizontal } from 'lucide-react';
 import { useNavigationStore } from '../../../store/useNavigationStore';
 import './insideMachine.css';
@@ -33,11 +33,9 @@ export default function InsideMachineView() {
   const [blueprint, setBlueprint] = useState(false);
   const [isolate, setIsolate] = useState(false);
   const [quality, setQuality] = useState<Quality>(getPreferredQuality);
-  const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const [sourceReady, setSourceReady] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const rangeRef = useRef<HTMLInputElement>(null);
   const system = SYSTEMS[selectedIndex];
 
   useEffect(() => {
@@ -75,17 +73,16 @@ export default function InsideMachineView() {
         <div className="itm-v2__canvas">
           <div className="itm-v2__canvas-hud">
             <span><ScanLine size={14} /> PRECISION / ENGINEERING</span>
-            <span className="itm-v2__hud-right">MODEL B <i /> {ready ? 'RENDER ONLINE' : sourceReady ? 'INITIALIZING' : 'STANDBY'}</span>
+            <span className="itm-v2__hud-right">MODEL B <i /> {sourceReady ? 'RENDER SOURCE READY' : 'STANDBY'}</span>
           </div>
           <div className="itm-v2__stage">
             {sourceReady && !failed ? (
               <Suspense fallback={<div className="itm-v2__loading">INITIALIZING RENDERER</div>}>
                 <Scene progress={progress} selected={system.id} blueprint={blueprint} isolate={isolate} quality={quality} modelUrl={MODEL_URL} />
-                {!ready && <span className="itm-v2__sr-only">Model loaded</span>}
               </Suspense>
             ) : (
               <div className="itm-v2__fallback">
-                <img src={POSTER_URL} alt="F1 vehicle engineering assembly" onLoad={() => setReady(true)} />
+                <img src={POSTER_URL} alt="F1 vehicle engineering assembly" />
                 <span>{failed ? (vi ? 'Chưa cài đặt gói 3D R4.5 vào public/models/engineering' : 'R4.5 model assets are not installed') : 'LOADING MODEL SOURCE'}</span>
               </div>
             )}
@@ -114,7 +111,7 @@ export default function InsideMachineView() {
       <section className="itm-v2__controls" aria-label="Assembly controls">
         <div className="itm-v2__scrubber">
           <div className="itm-v2__scrubber-head"><span><span className="itm-v2__accent">02</span> / DISASSEMBLY SEQUENCE</span><output htmlFor="itm-explode">{Math.round(progress * 100)}%</output></div>
-          <input ref={rangeRef} id="itm-explode" type="range" min="0" max="100" step="1" value={Math.round(progress * 100)} onChange={(e) => setProgress(Number(e.target.value) / 100)} aria-label={vi ? 'Mức độ tháo rời' : 'Assembly separation progress'} style={{ background: `linear-gradient(90deg,#ff5937 ${progress * 100}%,#34404d ${progress * 100}%)` }} />
+          <input id="itm-explode" type="range" min="0" max="100" step="1" value={Math.round(progress * 100)} onChange={(e) => setProgress(Number(e.target.value) / 100)} aria-label={vi ? 'Mức độ tháo rời' : 'Assembly separation progress'} style={{ background: `linear-gradient(90deg,#ff5937 ${progress * 100}%,#34404d ${progress * 100}%)` }} />
           <div className="itm-v2__scrubber-foot"><span>ASSEMBLED</span><span>EXPLODED</span></div>
           <div className="itm-v2__step-actions"><button type="button" onClick={() => setProgress(clamp(progress - 0.1))}><ChevronLeft size={16} /> STEP BACK</button><button type="button" onClick={() => setProgress(clamp(progress + 0.1))}>STEP FORWARD <ChevronRight size={16} /></button></div>
         </div>
