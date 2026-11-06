@@ -11,55 +11,19 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { useNavigationStore } from '../../../store/useNavigationStore';
+import { ENGINEERING_SYSTEMS } from '../data/engineeringSystems';
+import { EngineeringCanvasBoundary } from './EngineeringCanvasBoundary';
+import { EngineeringPoster } from './EngineeringPoster';
 import './insideMachine.css';
 
 const Scene = lazy(() => import('../rendering/InsideMachineScene'));
-const MODEL_URL = '/models/engineering/model-b-cinematic-r4-5-balanced.glb';
-const POSTER_URL = '/models/engineering/fallback.webp';
+const SYSTEMS = ENGINEERING_SYSTEMS;
+const MODEL_URLS = {
+  high: '/models/engineering/model-b-cinematic-r4-5-high.glb',
+  balanced: '/models/engineering/model-b-cinematic-r4-5-balanced.glb',
+  performance: '/models/engineering/model-b-cinematic-r4-5-performance.glb',
+} as const;
 
-const SYSTEMS = [
-  {
-    id: 'FRONT_WING',
-    label: 'Front wing',
-    category: 'Aerodynamics',
-    description:
-      'The front wing establishes the first major aerodynamic flow structures along the chassis.',
-  },
-  {
-    id: 'FRONT_LEFT_WHEEL',
-    label: 'Front wheel',
-    category: 'Contact patch',
-    description:
-      'The wheel, carbon brake disc, hub, and suspension connect aerodynamic loads to the road.',
-  },
-  {
-    id: 'COCKPIT_HALO',
-    label: 'Cockpit & halo',
-    category: 'Survival cell',
-    description:
-      'The cockpit and halo protect the driver while balancing visibility and external aerodynamic surfaces.',
-  },
-  {
-    id: 'LEFT_SIDEPOD',
-    label: 'Sidepod',
-    category: 'Thermal architecture',
-    description:
-      'The sidepod bodywork directs external airflow around the radiator region and toward the rear.',
-  },
-  {
-    id: 'FLOOR_DIFFUSER',
-    label: 'Floor & diffuser',
-    category: 'Underbody',
-    description: 'The floor and diffuser shape the pressure field beneath and behind the vehicle.',
-  },
-  {
-    id: 'REAR_WING',
-    label: 'Rear wing',
-    category: 'Rear aerodynamics',
-    description:
-      'The rear wing helps determine downforce and drag, working with the rest of the aerodynamic package.',
-  },
-] as const;
 type Quality = 'high' | 'balanced' | 'performance';
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -81,30 +45,41 @@ export default function InsideMachineView() {
   const [sourceReady, setSourceReady] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const system = SYSTEMS[selectedIndex];
+  const modelUrl = MODEL_URLS[quality];
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(MODEL_URL, { method: 'HEAD', signal: controller.signal })
-      .then((result) => {
-        if (!result.ok) throw new Error('model not installed');
-        setSourceReady(true);
+    setSourceReady(false);
+    setFailed(false);
+
+    fetch(modelUrl, { method: 'HEAD', signal: controller.signal })
+      .then((response) => {
+        const contentType = response.headers.get('content-type') ?? '';
+        if (!response.ok || /text\\/html/i.test(contentType)) {
+          throw new Error('R4.5 binary model not installed');
+        }
+        if (!controller.signal.aborted) setSourceReady(true);
       })
       .catch((error: unknown) => {
-        if (!(error instanceof Error && error.name === 'AbortError')) setFailed(true);
+        if (!controller.signal.aborted && !(error instanceof Error && error.name === 'AbortError')) {
+          setFailed(true);
+        }
       });
+
     return () => controller.abort();
-  }, []);
+  }, [modelUrl]);
 
   const selectSystem = useCallback((index: number) => {
     setSelectedIndex(index);
     setIsolate(false);
-    setProgress(clamp(0.17 + (index / (SYSTEMS.length - 1)) * 0.74));
+    setProgress(0.88);
   }, []);
 
   const reset = () => {
     setProgress(0);
     setIsolate(false);
     setBlueprint(false);
+    setSelectedIndex(0);
   };
 
   return (
@@ -147,27 +122,20 @@ export default function InsideMachineView() {
           </div>
           <div className="itm-v2__stage">
             {sourceReady && !failed ? (
-              <Suspense fallback={<div className="itm-v2__loading">INITIALIZING RENDERER</div>}>
-                <Scene
-                  progress={progress}
-                  selected={system.id}
-                  blueprint={blueprint}
-                  isolate={isolate}
-                  quality={quality}
-                  modelUrl={MODEL_URL}
-                />
-              </Suspense>
+              <EngineeringCanvasBoundary key={modelUrl} onFailure={() => setFailed(true)}>
+                <Suspense fallback={<EngineeringPoster unavailable={false} />}>
+                  <Scene
+                    progress={progress}
+                    selected={system.id}
+                    blueprint={blueprint}
+                    isolate={isolate}
+                    quality={quality}
+                    modelUrl={modelUrl}
+                  />
+                </Suspense>
+              </EngineeringCanvasBoundary>
             ) : (
-              <div className="itm-v2__fallback">
-                <img src={POSTER_URL} alt="F1 vehicle engineering assembly" />
-                <span>
-                  {failed
-                    ? vi
-                      ? 'Chưa cài đặt gói 3D R4.5 vào public/models/engineering'
-                      : 'R4.5 model assets are not installed'
-                    : 'LOADING MODEL SOURCE'}
-                </span>
-              </div>
+              <EngineeringPoster unavailable={failed} />
             )}
           </div>
           <div className="itm-v2__crosshair itm-v2__crosshair--tl" aria-hidden="true" />
@@ -180,12 +148,12 @@ export default function InsideMachineView() {
         <aside className="itm-v2__inspector" aria-label="Component inspector">
           <div className="itm-v2__inspector-head">
             <span>ASSEMBLY INDEX</span>
-            <span>{String(selectedIndex + 1).padStart(2, '0')} / 06</span>
+            <span>{String(selectedIndex + 1).padStart(2, '0')} / {String(SYSTEMS.length).padStart(2, '0')}</span>
           </div>
           <div className="itm-v2__section-overline">ACTIVE SYSTEM</div>
           <h2>{system.label}</h2>
           <p className="itm-v2__category">{system.category}</p>
-          <p className="itm-v2__description">{system.description}</p>
+          <p className="itm-v2__description">{vi ? system.vi : system.en}</p>
           <div className="itm-v2__list">
             {SYSTEMS.map((item, index) => (
               <button
